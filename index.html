@@ -3,463 +3,320 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookSusi – Begleitung & Escort Österreich</title>
+  <title>BookSusi – Escorts & Begleitung Österreich</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ── TOP BAR ── -->
-  <div class="topbar">
-    <span>🇦🇹 &nbsp;Wien · Graz · Salzburg · Linz · Innsbruck</span>
-    <span class="topbar-right">
-      <a href="#">Anmelden</a>
-      <a href="#" class="btn-topbar">Inserat erstellen</a>
-    </span>
-  </div>
-
   <!-- ── NAVBAR ── -->
   <header class="navbar">
-    <div class="navbar-inner container">
-      <a href="#" class="logo">
-        <span class="logo-book">book</span><span class="logo-susi">susi</span><span class="logo-dot">.</span>
-      </a>
+    <div class="navbar-inner">
+      <a href="#" class="logo">BookSusi<span class="logo-heart">♀</span></a>
       <nav class="nav-links">
-        <a href="#">Escorts</a>
-        <a href="#">Massage</a>
-        <a href="#">Trans</a>
-        <a href="#">Männer</a>
-        <a href="#">Paare</a>
-        <a href="#">Studio/Agentur</a>
-        <a href="#">Blog</a>
+        <a href="#" class="nav-item active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+          SedCards
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          Locations
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Reviews
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Forum
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Jobs
+        </a>
       </nav>
-      <div class="nav-actions">
-        <a href="#" class="btn-outline">Login</a>
-        <a href="#" class="btn-primary">Gratis Inserat</a>
+      <div class="nav-auth">
+        <a href="#" class="btn-register">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Registrieren
+        </a>
+        <a href="#" class="btn-login">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Login
+        </a>
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="#">Escorts</a>
-      <a href="#">Massage</a>
-      <a href="#">Trans</a>
-      <a href="#">Männer</a>
-      <a href="#">Studio/Agentur</a>
+      <a href="#">SedCards</a>
+      <a href="#">Locations</a>
+      <a href="#">Reviews</a>
+      <a href="#">Forum</a>
+      <a href="#">Jobs</a>
+      <a href="#">Registrieren</a>
       <a href="#">Login</a>
-      <a href="#" class="btn-primary-full">Gratis Inserat</a>
     </div>
   </header>
 
-  <!-- ── HERO ── -->
-  <section class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content container">
-      <h1>Österreichs <span>größte</span> Begleit&shy;plattform</h1>
-      <p>Diskrete Escorts, Massagen & Begleitung in ganz Österreich.</p>
-      <div class="search-bar">
-        <select class="search-select" id="searchCity">
-          <option value="">Stadt wählen</option>
-          <option>Wien</option>
-          <option>Graz</option>
-          <option>Salzburg</option>
-          <option>Linz</option>
-          <option>Innsbruck</option>
-          <option>Klagenfurt</option>
-          <option>Villach</option>
-          <option>Wels</option>
-        </select>
-        <select class="search-select" id="searchCat">
-          <option value="">Kategorie</option>
-          <option>Escort Dame</option>
-          <option>Massage</option>
-          <option>Trans / TS</option>
-          <option>Männer</option>
-          <option>Paare</option>
-        </select>
-        <select class="search-select" id="searchAge">
-          <option value="">Alter</option>
-          <option>18 – 21</option>
-          <option>22 – 29</option>
-          <option>30 – 39</option>
-          <option>40+</option>
-        </select>
-        <button class="btn-search" onclick="filterProfiles()">Suchen</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── STATS STRIP ── -->
-  <div class="stats-strip">
-    <div class="container stats-inner">
-      <div class="stat"><span class="stat-num">2.400+</span><span>Aktive Profile</span></div>
-      <div class="stat"><span class="stat-num">8</span><span>Bundesländer</span></div>
-      <div class="stat"><span class="stat-num">100%</span><span>Diskret</span></div>
-      <div class="stat"><span class="stat-num">24/7</span><span>Verfügbar</span></div>
-    </div>
-  </div>
-
-  <!-- ── FILTER BAR ── -->
-  <section class="filter-bar container">
-    <div class="filter-tags" id="filterTags">
-      <button class="tag active" data-filter="all">Alle</button>
-      <button class="tag" data-filter="wien">Wien</button>
-      <button class="tag" data-filter="graz">Graz</button>
-      <button class="tag" data-filter="salzburg">Salzburg</button>
-      <button class="tag" data-filter="linz">Linz</button>
-      <button class="tag" data-filter="innsbruck">Innsbruck</button>
-      <button class="tag vip">⭐ VIP</button>
-      <button class="tag new">NEU</button>
-    </div>
-    <div class="sort-wrap">
-      <label>Sortieren:</label>
-      <select class="sort-select" id="sortSelect" onchange="sortProfiles()">
-        <option value="newest">Neueste</option>
-        <option value="az">A–Z</option>
-        <option value="age_asc">Jüngstes Alter</option>
-      </select>
+  <!-- ── CATEGORY ICONS ── -->
+  <section class="categories">
+    <div class="cat-scroll">
+      <a href="#" class="cat-item active" data-filter="all">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+        <span>alle</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="search">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <span>suchen</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="hier">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <span>hier</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="safesex">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <span>safe sex</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="regulars">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span>regulars</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="online">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <span>online</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="2025">
+        <div class="cat-icon cat-icon--pink"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="white" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="6" stroke="white" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="white" stroke-width="2"/></svg></div>
+        <span>2025</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="gigolos">
+        <div class="cat-icon cat-icon--male"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
+        <span>gigolos</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="anal">
+        <div class="cat-icon cat-icon--img"><img src="https://picsum.photos/seed/cat-anal/40/40" alt=""/></div>
+        <span>anal</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="ao">
+        <div class="cat-icon cat-icon--img"><img src="https://picsum.photos/seed/cat-ao/40/40" alt=""/></div>
+        <span>AO</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="bdsm">
+        <div class="cat-icon cat-icon--img"><img src="https://picsum.photos/seed/cat-bdsm/40/40" alt=""/></div>
+        <span>BDSM</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="xltitten">
+        <div class="cat-icon cat-icon--img"><img src="https://picsum.photos/seed/cat-xl/40/40" alt=""/></div>
+        <span>XL Titten</span>
+      </a>
+      <a href="#" class="cat-item" data-filter="ts">
+        <div class="cat-icon cat-icon--ts"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
+        <span>TS</span>
+      </a>
     </div>
   </section>
 
   <!-- ── PROFILE GRID ── -->
-  <main class="container profile-section">
-    <h2 class="section-title">Empfohlene Profile <span class="badge-new">Neu</span></h2>
+  <main class="main-content">
     <div class="profile-grid" id="profileGrid">
 
       <!-- Card 1 -->
-      <div class="profile-card" data-city="wien" data-age="24" data-name="Alina">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/alina1/400/500" alt="Alina" />
-          <span class="badge vip-badge">VIP</span>
-          <span class="badge online-badge">● Online</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card featured" data-city="wien">
+        <div class="card-header">
+          <span class="card-name">Herrin Chris Dea <span class="verified">✓</span></span>
+          <span class="card-location">Wien, 1010, Stephansplatz &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Alina</span>
-            <span class="card-age">24 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Wien</span>
-            <span>💎 Escort</span>
-          </div>
-          <div class="card-tags">
-            <span>GFE</span><span>Dinner Date</span><span>Ü-Nacht</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/chris1/280/340" alt="Herrin Chris Dea" />
         </div>
       </div>
 
       <!-- Card 2 -->
-      <div class="profile-card" data-city="wien" data-age="28" data-name="Bella">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/bella9/400/500" alt="Bella" />
-          <span class="badge online-badge">● Online</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card" data-city="wien">
+        <div class="card-header">
+          <span class="card-name">Nikolett <span class="verified">✓</span></span>
+          <span class="card-location">Wien, 1020, Praterstraße &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Bella</span>
-            <span class="card-age">28 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Wien</span>
-            <span>💆 Massage</span>
-          </div>
-          <div class="card-tags">
-            <span>Tantra</span><span>Relax</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/niko9/280/340" alt="Nikolett" />
         </div>
       </div>
 
       <!-- Card 3 -->
-      <div class="profile-card" data-city="graz" data-age="22" data-name="Carina">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/carina3/400/500" alt="Carina" />
-          <span class="badge new-badge">NEU</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card" data-city="graz">
+        <div class="card-header">
+          <span class="card-name">Karen</span>
+          <span class="card-location">Graz, 8010, Hauptplatz &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Carina</span>
-            <span class="card-age">22 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Graz</span>
-            <span>💎 Escort</span>
-          </div>
-          <div class="card-tags">
-            <span>GFE</span><span>Reisebegleitung</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/karen3/280/340" alt="Karen" />
         </div>
       </div>
 
       <!-- Card 4 -->
-      <div class="profile-card" data-city="salzburg" data-age="31" data-name="Diana">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/diana7/400/500" alt="Diana" />
-          <span class="badge vip-badge">VIP</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card" data-city="salzburg">
+        <div class="card-header">
+          <span class="card-name">Maya <span class="verified">✓</span></span>
+          <span class="card-location">Salzburg, 5020, Getreidegasse &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Diana</span>
-            <span class="card-age">31 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Salzburg</span>
-            <span>💎 Escort</span>
-          </div>
-          <div class="card-tags">
-            <span>Business</span><span>Dinner</span><span>Reise</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/maya7/280/340" alt="Maya" />
         </div>
       </div>
 
-      <!-- Card 5 -->
-      <div class="profile-card" data-city="linz" data-age="26" data-name="Elena">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/elena5/400/500" alt="Elena" />
-          <span class="badge online-badge">● Online</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <!-- Card 5 – Featured/Boosted (pink border) -->
+      <div class="profile-card boosted" data-city="wien">
+        <div class="card-header">
+          <span class="card-name">Rebecca <span class="verified">✓</span></span>
+          <span class="card-location">Wien, 1080, Josefstädter Str. &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Elena</span>
-            <span class="card-age">26 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Linz</span>
-            <span>💆 Massage</span>
-          </div>
-          <div class="card-tags">
-            <span>Erotik</span><span>Body2Body</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/rebecca5/280/340" alt="Rebecca" />
+          <span class="boo-badge">Boo</span>
         </div>
       </div>
 
       <!-- Card 6 -->
-      <div class="profile-card" data-city="wien" data-age="29" data-name="Francesca">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/fran22/400/500" alt="Francesca" />
-          <span class="badge vip-badge">VIP</span>
-          <span class="badge online-badge">● Online</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card" data-city="linz">
+        <div class="card-header">
+          <span class="card-name">Armina <span class="verified">✓</span></span>
+          <span class="card-location">Linz, 4020, Landstraße &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Francesca</span>
-            <span class="card-age">29 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Wien</span>
-            <span>💎 Escort</span>
-          </div>
-          <div class="card-tags">
-            <span>Italienerin</span><span>GFE</span><span>Dinner</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/armina6/280/340" alt="Armina" />
         </div>
       </div>
 
-      <!-- Card 7 -->
-      <div class="profile-card" data-city="innsbruck" data-age="23" data-name="Gina">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/gina11/400/500" alt="Gina" />
-          <span class="badge new-badge">NEU</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <!-- Ad Card -->
+      <div class="profile-card ad-card" data-city="">
+        <div class="card-header ad-label">
+          <span>WERBUNG</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Gina</span>
-            <span class="card-age">23 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Innsbruck</span>
-            <span>💎 Escort</span>
-          </div>
-          <div class="card-tags">
-            <span>GFE</span><span>Outdoor</span>
+        <div class="ad-body">
+          <div class="ad-text">
+            <h3>LAUFHAUS</h3>
+            <p class="ad-num">32</p>
+            <p class="ad-sub">TOP GIRLS</p>
+            <p>Puchstraße 182<br/>GRAZ</p>
+            <p>www.lh182.at</p>
+            <p>+43 664/8872 8800</p>
           </div>
         </div>
       </div>
 
       <!-- Card 8 -->
-      <div class="profile-card" data-city="graz" data-age="35" data-name="Helena">
-        <div class="card-img-wrap">
-          <img src="https://picsum.photos/seed/helena4/400/500" alt="Helena" />
-          <span class="badge online-badge">● Online</span>
-          <div class="card-overlay">
-            <a href="#" class="btn-profile">Profil ansehen</a>
-          </div>
+      <div class="profile-card" data-city="graz">
+        <div class="card-header">
+          <span class="card-name">Melek</span>
+          <span class="card-location">Graz, 8020, Annenstraße &rsaquo;</span>
         </div>
-        <div class="card-info">
-          <div class="card-name-row">
-            <span class="card-name">Helena</span>
-            <span class="card-age">35 J.</span>
-          </div>
-          <div class="card-meta">
-            <span>📍 Graz</span>
-            <span>💆 Massage</span>
-          </div>
-          <div class="card-tags">
-            <span>Lingam</span><span>Tantra</span><span>Relax</span>
-          </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/melek8/280/340" alt="Melek" />
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="profile-card" data-city="salzburg">
+        <div class="card-header">
+          <span class="card-name">Melysa <span class="verified">✓</span></span>
+          <span class="card-location">Salzburg, 5020, Linzer Gasse &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/melysa9/280/340" alt="Melysa" />
+        </div>
+      </div>
+
+      <!-- Card 10 -->
+      <div class="profile-card" data-city="innsbruck">
+        <div class="card-header">
+          <span class="card-name">Sara <span class="verified">✓</span></span>
+          <span class="card-location">Innsbruck, 6020, Maria-Theresien-Str. &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/sara10/280/340" alt="Sara" />
+        </div>
+      </div>
+
+      <!-- Card 11 -->
+      <div class="profile-card" data-city="wien">
+        <div class="card-header">
+          <span class="card-name">Amelie</span>
+          <span class="card-location">Wien, 1150, Mariahilfer Str. &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/amelie11/280/340" alt="Amelie" />
+        </div>
+      </div>
+
+      <!-- Card 12 -->
+      <div class="profile-card" data-city="wien">
+        <div class="card-header">
+          <span class="card-name">Mia</span>
+          <span class="card-location">Wien, 1050, Margaretenstraße &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/mia12/280/340" alt="Mia" />
+        </div>
+      </div>
+
+      <!-- Card 13 -->
+      <div class="profile-card" data-city="graz">
+        <div class="card-header">
+          <span class="card-name">Martha</span>
+          <span class="card-location">Graz, 8010, Herrengasse &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/martha13/280/340" alt="Martha" />
+        </div>
+      </div>
+
+      <!-- Card 14 -->
+      <div class="profile-card" data-city="salzburg">
+        <div class="card-header">
+          <span class="card-name">Kasandra <span class="verified">✓</span></span>
+          <span class="card-location">Salzburg, 5020, Neutorstraße &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/kasandra14/280/340" alt="Kasandra" />
+        </div>
+      </div>
+
+      <!-- Card 15 -->
+      <div class="profile-card" data-city="innsbruck">
+        <div class="card-header">
+          <span class="card-name">Sonya</span>
+          <span class="card-location">Innsbruck, 6020, Bürgerstraße &rsaquo;</span>
+        </div>
+        <div class="card-img-wrap">
+          <img src="https://picsum.photos/seed/sonya15/280/340" alt="Sonya" />
         </div>
       </div>
 
     </div><!-- /profile-grid -->
 
     <div class="load-more-wrap">
-      <button class="btn-load-more">Mehr anzeigen</button>
+      <button class="btn-load-more" onclick="loadMore()">Mehr anzeigen</button>
     </div>
   </main>
 
-  <!-- ── HOW IT WORKS ── -->
-  <section class="how-it-works">
-    <div class="container">
-      <h2 class="section-title center">So einfach funktioniert's</h2>
-      <div class="steps-grid">
-        <div class="step">
-          <div class="step-icon">🔍</div>
-          <h3>1. Suchen</h3>
-          <p>Filter nach Stadt, Kategorie und Alter. Finde genau das, wonach du suchst.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">💌</div>
-          <h3>2. Kontaktieren</h3>
-          <p>Schreibe direkt und diskret über unser internes Nachrichtensystem.</p>
-        </div>
-        <div class="step">
-          <div class="step-icon">📅</div>
-          <h3>3. Treffen</h3>
-          <p>Vereinbare deinen Termin und genieße eine unvergessliche Zeit.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CITIES ── -->
-  <section class="cities-section">
-    <div class="container">
-      <h2 class="section-title center">Escorts nach Stadt</h2>
-      <div class="cities-grid">
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/vienna/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Wien</span>
-          <span class="city-count">1.200+ Profile</span>
-        </a>
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/graz/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Graz</span>
-          <span class="city-count">320+ Profile</span>
-        </a>
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/salzburg/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Salzburg</span>
-          <span class="city-count">180+ Profile</span>
-        </a>
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/linz/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Linz</span>
-          <span class="city-count">150+ Profile</span>
-        </a>
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/innsbruck/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Innsbruck</span>
-          <span class="city-count">90+ Profile</span>
-        </a>
-        <a href="#" class="city-card" style="background-image:url('https://picsum.photos/seed/klagenfurt/600/400')">
-          <div class="city-overlay"></div>
-          <span class="city-name">Klagenfurt</span>
-          <span class="city-count">70+ Profile</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── WHY US ── -->
-  <section class="why-us">
-    <div class="container">
-      <h2 class="section-title center">Warum BookSusi?</h2>
-      <div class="features-grid">
-        <div class="feature">
-          <span class="feat-icon">🔒</span>
-          <h4>100% Diskret</h4>
-          <p>Deine Privatsphäre hat höchste Priorität. Keine Datenweitergabe.</p>
-        </div>
-        <div class="feature">
-          <span class="feat-icon">✅</span>
-          <h4>Verifizierte Profile</h4>
-          <p>Alle Profile werden manuell geprüft – keine Fake-Anzeigen.</p>
-        </div>
-        <div class="feature">
-          <span class="feat-icon">💳</span>
-          <h4>Gratis Inserat</h4>
-          <p>Basisinserate sind für Damen kostenlos und unbegrenzt aktiv.</p>
-        </div>
-        <div class="feature">
-          <span class="feat-icon">📱</span>
-          <h4>Mobile optimiert</h4>
-          <p>Perfekt auf jedem Gerät – Smartphone, Tablet oder Desktop.</p>
-        </div>
-        <div class="feature">
-          <span class="feat-icon">⚡</span>
-          <h4>Sofort sichtbar</h4>
-          <p>Dein Inserat geht innerhalb von Minuten online.</p>
-        </div>
-        <div class="feature">
-          <span class="feat-icon">💬</span>
-          <h4>Direktnachrichten</h4>
-          <p>Sicheres internes Messaging – kein WhatsApp nötig.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CTA BANNER ── -->
-  <section class="cta-banner">
-    <div class="cta-overlay"></div>
-    <div class="container cta-content">
-      <h2>Jetzt kostenlos inserieren</h2>
-      <p>Erstelle dein Profil in wenigen Minuten – gratis und ohne Kreditkarte.</p>
-      <a href="#" class="btn-cta">Inserat erstellen</a>
-    </div>
-  </section>
-
   <!-- ── FOOTER ── -->
   <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <a href="#" class="logo footer-logo">
-          <span class="logo-book">book</span><span class="logo-susi">susi</span><span class="logo-dot">.</span>
-        </a>
-        <p>Österreichs diskrete Escort- & Begleitplattform seit 2010.</p>
-        <div class="social-links">
-          <a href="#">Twitter / X</a>
-          <a href="#">Telegram</a>
-        </div>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h5>BookSusi</h5>
+        <a href="#">Über uns</a>
+        <a href="#">Presse</a>
+        <a href="#">Kontakt</a>
+        <a href="#">Jobs</a>
       </div>
       <div class="footer-col">
         <h5>Kategorien</h5>
-        <a href="#">Escort Damen</a>
-        <a href="#">Massagen</a>
+        <a href="#">SedCards</a>
+        <a href="#">Locations</a>
+        <a href="#">Gigolos</a>
         <a href="#">Trans / TS</a>
-        <a href="#">Männer</a>
-        <a href="#">Paare</a>
-        <a href="#">Agenturen</a>
+        <a href="#">BDSM</a>
       </div>
       <div class="footer-col">
         <h5>Städte</h5>
@@ -468,16 +325,6 @@
         <a href="#">Salzburg</a>
         <a href="#">Linz</a>
         <a href="#">Innsbruck</a>
-        <a href="#">Klagenfurt</a>
-      </div>
-      <div class="footer-col">
-        <h5>Info</h5>
-        <a href="#">Über uns</a>
-        <a href="#">FAQ</a>
-        <a href="#">Inserat schalten</a>
-        <a href="#">Kontakt</a>
-        <a href="#">Presse</a>
-        <a href="#">Sitemap</a>
       </div>
       <div class="footer-col">
         <h5>Rechtliches</h5>
@@ -487,23 +334,22 @@
         <a href="#">Cookie-Einstellungen</a>
       </div>
     </div>
-    <div class="footer-bottom container">
-      <p>© 2024 BookSusi.com – Alle Rechte vorbehalten. | Nur für Erwachsene ab 18 Jahren. | Alle abgebildeten Personen sind volljährig.</p>
+    <div class="footer-bottom">
+      <p>© 2025 BookSusi – Nur für Erwachsene ab 18 Jahren. Alle abgebildeten Personen sind volljährig.</p>
     </div>
   </footer>
 
-  <!-- ── AGE GATE MODAL ── -->
+  <!-- ── AGE GATE ── -->
   <div class="age-gate" id="ageGate">
     <div class="age-gate-box">
-      <div class="age-logo"><span class="logo-book">book</span><span class="logo-susi">susi</span><span class="logo-dot">.</span></div>
+      <div class="age-logo">BookSusi<span class="logo-heart">♀</span></div>
       <h2>Altersverifikation</h2>
-      <p>Diese Website enthält Inhalte, die nur für Erwachsene bestimmt sind.</p>
-      <p>Bist du <strong>18 Jahre oder älter?</strong></p>
+      <p>Diese Website enthält Inhalte nur für Erwachsene.</p>
+      <p><strong>Bist du 18 Jahre oder älter?</strong></p>
       <div class="age-buttons">
         <button class="btn-yes" onclick="enterSite()">Ja, ich bin 18+</button>
         <a href="https://www.google.com" class="btn-no">Nein, verlassen</a>
       </div>
-      <p class="age-note">Mit dem Betreten akzeptierst du unsere <a href="#">AGB</a> und <a href="#">Datenschutzerklärung</a>.</p>
     </div>
   </div>
 
