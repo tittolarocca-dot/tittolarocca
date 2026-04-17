@@ -1,12 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Mail\NewSubscriptionMail;
+use App\Mail\ProfileApprovedMail;
 use App\Models\ListingOrder;
 use App\Models\PlatformSubscription;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -81,6 +84,13 @@ class StripeWebhookController extends Controller
             'listing_expires_at' => $expiresAt,
         ]);
 
+        // Notify inserent their profile is now active
+        try {
+            Mail::to($profile->user->email)->send(new ProfileApprovedMail($profile));
+        } catch (\Exception $e) {
+            Log::warning('ProfileApprovedMail failed: ' . $e->getMessage());
+        }
+
         Log::info("Profile {$profile->id} activated until {$expiresAt}");
     }
 
@@ -111,6 +121,15 @@ class StripeWebhookController extends Controller
         );
 
         $this->refreshSubscriberCount($profileId);
+
+        // Notify inserent about new subscriber
+        try {
+            Mail::to($profile->user->email)->send(
+                new NewSubscriptionMail($profile, $user, $profile->subscription_price_chf)
+            );
+        } catch (\Exception $e) {
+            Log::warning('NewSubscriptionMail failed: ' . $e->getMessage());
+        }
 
         Log::info("Platform subscription created for user {$userId} → profile {$profileId}");
     }

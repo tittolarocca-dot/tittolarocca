@@ -40,15 +40,16 @@ class ProfileController extends Controller
             : collect([]);
 
         $reviews = $profile->approvedReviews()
-            ->with('user:id,name')
+            ->with('reviewer:id,name')
             ->latest()
             ->take(20)
             ->get()
             ->map(fn($r) => [
                 'id'         => $r->id,
-                'rating'     => $r->rating,
-                'body'       => $r->body,
-                'author'     => $r->user->name,
+                'stars'      => $r->stars,
+                'comment'    => $r->comment,
+                'reply'      => $r->reply_status === 'approved' ? $r->inserent_reply : null,
+                'author'     => $r->reviewer->name,
                 'created_at' => $r->created_at->format('d.m.Y'),
             ]);
 
@@ -71,10 +72,11 @@ class ProfileController extends Controller
             'publicMedia'        => $publicMedia,
             'privateMedia'       => $privateMedia,
             'reviews'            => $reviews,
-            'isOwner'            => $isOwner,
-            'isSubscribed'       => $subscribed,
-            'hasSubscriptionOffer' => $profile->subscription_price_chf > 0,
-            'subscribed'         => $request->query('subscribed') === '1',
+            'isOwner'             => $isOwner,
+            'isSubscribed'        => $subscribed,
+            'hasSubscriptionOffer'=> $profile->subscription_price_chf > 0,
+            'hasReviewed'         => $user ? \App\Models\Review::where('reviewer_user_id', $user->id)->where('profile_id', $profile->id)->exists() : false,
+            'subscribed'          => $request->query('subscribed') === '1',
         ]);
     }
 }

@@ -35,6 +35,9 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/nachrichten',           [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{userId}', [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::get('/auszahlungen',          [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
+    Route::post('/auszahlungen/bankdaten', [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
+    Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
 });
 
 // Mitglieder-Bereich
@@ -45,6 +48,7 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::get('/nachrichten',                        [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{profile}',             [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
     Route::get('/nachrichten/{userId}/verlauf',       [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::post('/bewertung/{profile}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
 });
 
 // Stripe Webhooks

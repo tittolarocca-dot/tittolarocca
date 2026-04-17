@@ -151,17 +151,60 @@
         </div>
       </div>
 
+      <!-- Review Form (nur für Abonnenten) -->
+      <div v-if="isSubscribed && !hasReviewed" class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <h2 class="font-semibold text-gray-900 mb-4">Bewertung abgeben</h2>
+        <form @submit.prevent="submitReview" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Sterne</label>
+            <div class="flex gap-1">
+              <button v-for="n in 5" :key="n" type="button"
+                @click="reviewForm.stars = n"
+                class="text-3xl transition"
+                :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-300'">★</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Kommentar (optional)</label>
+            <textarea v-model="reviewForm.comment" rows="3" maxlength="1000"
+              placeholder="Deine Erfahrung…"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400 resize-none" />
+          </div>
+          <PrimaryButton type="submit" :loading="submittingReview" :disabled="!reviewForm.stars">
+            Bewertung einreichen
+          </PrimaryButton>
+        </form>
+      </div>
+
       <!-- Reviews -->
-      <div v-if="reviews.length" class="bg-white rounded-xl border border-gray-200 p-6">
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
         <h2 class="font-semibold text-gray-900 mb-4">Bewertungen ({{ reviews.length }})</h2>
-        <div class="space-y-4">
+        <div v-if="reviews.length === 0" class="text-center py-8 text-gray-400 text-sm">
+          Noch keine Bewertungen.
+        </div>
+        <div v-else class="space-y-4">
           <div v-for="r in reviews" :key="r.id" class="border-b border-gray-100 pb-4 last:border-0">
             <div class="flex items-center gap-2 mb-1">
-              <span class="text-yellow-400">{{ '★'.repeat(r.rating) }}{{ '☆'.repeat(5 - r.rating) }}</span>
+              <span class="text-yellow-400">{{ '★'.repeat(r.stars) }}{{ '☆'.repeat(5 - r.stars) }}</span>
               <span class="text-sm font-semibold text-gray-700">{{ r.author }}</span>
               <span class="text-xs text-gray-400 ml-auto">{{ r.created_at }}</span>
             </div>
-            <p class="text-sm text-gray-600">{{ r.body }}</p>
+            <p class="text-sm text-gray-600">{{ r.comment }}</p>
+            <!-- Inserent reply -->
+            <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-pink-200 text-sm text-gray-500 italic">
+              <span class="font-semibold text-pink-600">Antwort: </span>{{ r.reply }}
+            </div>
+            <!-- Reply form for owner -->
+            <div v-if="isOwner && !r.reply" class="mt-2">
+              <button @click="replyTarget = replyTarget === r.id ? null : r.id"
+                class="text-xs text-pink-600 hover:underline">Antworten</button>
+              <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
+                <input v-model="replyText" type="text" placeholder="Deine Antwort…" maxlength="500"
+                  class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-pink-400" />
+                <button @click="submitReply(r.id)"
+                  class="bg-pink-600 text-white text-xs px-3 py-1 rounded hover:bg-pink-700">Senden</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -190,12 +233,17 @@ const props = defineProps({
   isOwner:             { type: Boolean, default: false },
   isSubscribed:        { type: Boolean, default: false },
   hasSubscriptionOffer:{ type: Boolean, default: false },
+  hasReviewed:         { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
 });
 
-const activeTab     = ref('public');
-const lightboxItem  = ref(null);
-const subscribing   = ref(false);
+const activeTab       = ref('public');
+const lightboxItem    = ref(null);
+const subscribing     = ref(false);
+const submittingReview= ref(false);
+const reviewForm      = ref({ stars: 0, comment: '' });
+const replyTarget     = ref(null);
+const replyText       = ref('');
 
 const tabs = computed(() => [
   { key: 'public',  label: 'Öffentlich', count: props.publicMedia.length },
@@ -204,7 +252,7 @@ const tabs = computed(() => [
 
 const avgRating = computed(() => {
   if (!props.reviews.length) return 0;
-  return props.reviews.reduce((s, r) => s + r.rating, 0) / props.reviews.length;
+  return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
 });
 
 function openLightbox(item) {
@@ -221,5 +269,23 @@ function subscribe() {
 function cancelSub() {
   if (!confirm('Abonnement wirklich kündigen?')) return;
   router.post(route('konto.cancel', props.profile.slug));
+}
+
+function submitReview() {
+  if (!reviewForm.value.stars) return;
+  submittingReview.value = true;
+  router.post(route('konto.review.store', props.profile.slug), reviewForm.value, {
+    preserveScroll: true,
+    onFinish: () => { submittingReview.value = false; },
+    onSuccess: () => { reviewForm.value = { stars: 0, comment: '' }; },
+  });
+}
+
+function submitReply(reviewId) {
+  if (!replyText.value.trim()) return;
+  router.post(route('inserat.review.reply', reviewId), { reply: replyText.value }, {
+    preserveScroll: true,
+    onSuccess: () => { replyTarget.value = null; replyText.value = ''; },
+  });
 }
 </script>
