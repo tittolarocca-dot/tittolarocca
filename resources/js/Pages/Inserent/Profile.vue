@@ -1,0 +1,237 @@
+<template>
+  <AppLayout>
+    <Head :title="profile ? 'Profil bearbeiten' : 'Profil erstellen'" />
+
+    <div class="max-w-3xl mx-auto px-4 py-8">
+
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+          {{ profile ? 'Profil bearbeiten' : 'Profil erstellen' }}
+        </h1>
+        <p class="text-gray-500 text-sm mt-1">
+          {{ profile ? 'Ändere deine Angaben – Änderungen sind sofort sichtbar.' : 'Fülle alle Pflichtfelder aus. Du wählst danach ein Paket.' }}
+        </p>
+      </div>
+
+      <!-- Stepper (nur beim Erstellen) -->
+      <div v-if="!profile" class="flex items-center gap-0 mb-8">
+        <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-0 flex-1 last:flex-none">
+          <div :class="[
+            'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
+            i === 0 ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-500',
+          ]">{{ i + 1 }}</div>
+          <span class="ml-1.5 text-xs font-medium" :class="i === 0 ? 'text-pink-600' : 'text-gray-400'">
+            {{ step }}
+          </span>
+          <div v-if="i < steps.length - 1" class="flex-1 h-px bg-gray-200 mx-3"></div>
+        </div>
+      </div>
+
+      <form @submit.prevent="submit" class="space-y-6">
+
+        <!-- Sektion: Basisdaten -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+          <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Basisdaten</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <InputField
+              id="display_name"
+              label="Name / Pseudonym"
+              v-model="form.display_name"
+              :error="form.errors.display_name"
+              required
+              placeholder="z.B. Susi oder Lady X"
+            />
+            <InputField
+              id="age"
+              label="Alter"
+              v-model="form.age"
+              type="number"
+              min="18"
+              max="99"
+              :error="form.errors.age"
+              required
+              placeholder="z.B. 25"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Stadt -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Stadt <span class="text-pink-500">*</span>
+              </label>
+              <select v-model="form.city_id"
+                :class="['w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition',
+                  form.errors.city_id ? 'border-red-400' : 'border-gray-300']">
+                <option value="">Stadt wählen…</option>
+                <option v-for="city in cities" :key="city.id" :value="city.id">
+                  {{ city.name }} ({{ city.canton }})
+                </option>
+              </select>
+              <p v-if="form.errors.city_id" class="mt-1 text-xs text-red-600">{{ form.errors.city_id }}</p>
+            </div>
+
+            <!-- Kategorie -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Kategorie <span class="text-pink-500">*</span>
+              </label>
+              <select v-model="form.category_id"
+                :class="['w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition',
+                  form.errors.category_id ? 'border-red-400' : 'border-gray-300']">
+                <option value="">Kategorie wählen…</option>
+                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                  {{ cat.name }}
+                </option>
+              </select>
+              <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-600">{{ form.errors.category_id }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sektion: Beschreibung -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+          <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Beschreibung</h2>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Über mich
+              <span class="text-gray-400 font-normal ml-1">({{ form.description?.length ?? 0 }}/2000)</span>
+            </label>
+            <textarea v-model="form.description"
+              rows="5"
+              maxlength="2000"
+              placeholder="Beschreibe dich, deine Angebote und was Besucher erwarten können…"
+              :class="['w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition resize-none',
+                form.errors.description ? 'border-red-400' : 'border-gray-300']"
+            />
+            <p v-if="form.errors.description" class="mt-1 text-xs text-red-600">{{ form.errors.description }}</p>
+          </div>
+        </div>
+
+        <!-- Sektion: Leistungen / Tags -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+          <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Angebote / Tags</h2>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="tag in tags" :key="tag.id"
+              type="button"
+              @click="toggleTag(tag.id)"
+              :class="[
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
+                form.tag_ids.includes(tag.id)
+                  ? 'bg-pink-600 text-white border-pink-600'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-pink-400',
+              ]">
+              {{ tag.name }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Sektion: Kontakt & Preise -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+          <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Kontakt & Preis</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <InputField
+                id="whatsapp_number"
+                label="WhatsApp-Nummer"
+                v-model="form.whatsapp_number"
+                type="tel"
+                placeholder="+41 79 123 45 67"
+                :error="form.errors.whatsapp_number"
+                hint="Nur für Abonnenten sichtbar – verschlüsselt gespeichert"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Abo-Preis (CHF/Monat) <span class="text-pink-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">CHF</span>
+                <input
+                  v-model="form.subscription_price_chf"
+                  type="number"
+                  min="9"
+                  max="999"
+                  step="1"
+                  :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition',
+                    form.errors.subscription_price_chf ? 'border-red-400' : 'border-gray-300']"
+                />
+              </div>
+              <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
+              <p class="mt-1 text-xs text-gray-400">Abonnenten zahlen diesen Betrag monatlich für Zugriff auf deine privaten Medien.</p>
+
+              <!-- Verdienst-Rechner -->
+              <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-pink-50 rounded-lg px-3 py-2 text-xs text-pink-700">
+                Bei 10 Abonnenten: <strong>CHF {{ earnings(10) }}/Mo</strong> ·
+                Bei 50: <strong>CHF {{ earnings(50) }}/Mo</strong>
+                <span class="text-pink-400 block mt-0.5">(nach 20% Plattform-Provision)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 justify-end">
+          <Link v-if="profile" :href="route('inserat.dashboard')"
+            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition">
+            Abbrechen
+          </Link>
+          <PrimaryButton type="submit" :loading="form.processing">
+            {{ profile ? 'Änderungen speichern' : 'Profil erstellen & weiter' }}
+          </PrimaryButton>
+        </div>
+
+      </form>
+    </div>
+  </AppLayout>
+</template>
+
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import InputField from '@/Components/InputField.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
+const props = defineProps({
+  profile:    Object,
+  cities:     Array,
+  categories: Array,
+  tags:       Array,
+});
+
+const steps = ['Profil erstellen', 'Paket wählen', 'Zahlung', 'Live!'];
+
+const form = useForm({
+  display_name:           props.profile?.display_name           ?? '',
+  description:            props.profile?.description            ?? '',
+  city_id:                props.profile?.city_id                ?? '',
+  category_id:            props.profile?.category_id            ?? '',
+  age:                    props.profile?.age                    ?? '',
+  whatsapp_number:        props.profile?.whatsapp_number        ?? '',
+  subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
+  tag_ids:                props.profile?.tag_ids                ?? [],
+});
+
+function toggleTag(id) {
+  const idx = form.tag_ids.indexOf(id);
+  if (idx === -1) form.tag_ids.push(id);
+  else            form.tag_ids.splice(idx, 1);
+}
+
+function earnings(subs) {
+  return (form.subscription_price_chf * subs * 0.8).toFixed(2);
+}
+
+function submit() {
+  if (props.profile) {
+    form.put(route('inserat.profile.update'));
+  } else {
+    form.post(route('inserat.profile.store'));
+  }
+}
+</script>
