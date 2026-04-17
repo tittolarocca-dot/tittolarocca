@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\ListingOrder;
 use App\Models\PlatformSubscription;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\SignatureVerificationException;
@@ -48,9 +49,20 @@ class StripeWebhookController extends Controller
         return response('OK', 200);
     }
 
-    // ── Listing-Paket: Einmalzahlung ─────────────────────────────────────
+    // ── Checkout abgeschlossen (Listing ODER Abo) ────────────────────────
 
     private function handleCheckoutCompleted(object $session): void
+    {
+        $type = $session->metadata->type ?? 'listing';
+
+        if ($type === 'subscription') {
+            $this->activatePlatformSubscription($session);
+        } else {
+            $this->activateListingOrder($session);
+        }
+    }
+
+    private function activateListingOrder(object $session): void
     {
         $orderId = $session->metadata->order_id ?? null;
         if (! $orderId) return;
@@ -58,15 +70,11 @@ class StripeWebhookController extends Controller
         $order = ListingOrder::with('profile', 'listingPackage')->find($orderId);
         if (! $order || $order->status === 'paid') return;
 
-        $order->update([
-            'status'  => 'paid',
-            'paid_at' => now(),
-        ]);
+        $order->update(['status' => 'paid', 'paid_at' => now()]);
 
-        // Profil automatisch aktivieren
-        $profile    = $order->profile;
-        $package    = $order->listingPackage;
-        $expiresAt  = now()->addDays($package->duration_days);
+        $profile   = $order->profile;
+        $package   = $order->listingPackage;
+        $expiresAt = now()->addDays($package->duration_days);
 
         $profile->update([
             'status'             => 'active',
@@ -74,6 +82,37 @@ class StripeWebhookController extends Controller
         ]);
 
         Log::info("Profile {$profile->id} activated until {$expiresAt}");
+    }
+
+    private function activatePlatformSubscription(object $session): void
+    {
+        $profileId = $session->metadata->profile_id ?? null;
+        $userId    = $session->metadata->user_id ?? null;
+        $stripeSubId = $session->subscription ?? null;
+
+        if (! $profileId || ! $userId || ! $stripeSubId) return;
+
+        // Idempotency check
+        if (PlatformSubscription::where('stripe_subscription_id', $stripeSubId)->exists()) return;
+
+        $profile = Profile::find($profileId);
+        $user    = User::find($userId);
+        if (! $profile || ! $user) return;
+
+        PlatformSubscription::updateOrCreate(
+            ['subscriber_user_id' => $userId, 'profile_id' => $profileId],
+            [
+                'stripe_subscription_id' => $stripeSubId,
+                'amount_chf'             => $profile->subscription_price_chf,
+                'status'                 => 'active',
+                'current_period_start'   => now(),
+                'current_period_end'     => now()->addMonth(),
+            ]
+        );
+
+        $this->refreshSubscriberCount($profileId);
+
+        Log::info("Platform subscription created for user {$userId} → profile {$profileId}");
     }
 
     // ── Abo: monatliche Erneuerung ────────────────────────────────────────
