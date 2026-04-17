@@ -2,207 +2,212 @@
   <AppLayout>
     <Head :title="profile.display_name" />
 
-    <!-- Success banner after subscribing -->
-    <div v-if="subscribed" class="bg-green-500 text-white text-center py-3 text-sm font-semibold">
+    <!-- Success banner -->
+    <div v-if="subscribed" class="bg-[#e91e8c] text-white text-center py-3 text-sm font-semibold">
       🎉 Abonnement erfolgreich! Du hast jetzt Zugang zu allen privaten Inhalten.
     </div>
 
-    <div class="max-w-5xl mx-auto px-4 py-8">
-
-      <!-- Header -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <div class="flex flex-col sm:flex-row gap-6">
-
-          <!-- Avatar / First public photo -->
-          <div class="shrink-0">
-            <div class="w-32 h-32 rounded-xl overflow-hidden bg-pink-100 flex items-center justify-center">
-              <img v-if="publicMedia[0]" :src="publicMedia[0].url" alt="Profilfoto" class="w-full h-full object-cover" />
-              <span v-else class="text-5xl">👤</span>
+    <!-- Photo Grid -->
+    <div class="bg-[#0a0a0a] border-b border-[#1a1a1a]">
+      <div class="max-w-7xl mx-auto">
+        <div v-if="publicMedia.length" class="flex overflow-x-auto h-64 md:h-80">
+          <div v-for="(item, i) in publicMedia.slice(0,4)" :key="item.id"
+            class="shrink-0 cursor-pointer relative"
+            :class="i === 0 ? 'w-1/2' : 'w-1/4'"
+            @click="openLightbox(item)">
+            <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover border-r border-[#0a0a0a]" />
+            <div v-if="i === 3 && publicMedia.length > 4"
+              class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-xl">
+              +{{ publicMedia.length - 4 }}
             </div>
           </div>
+        </div>
+        <div v-else class="h-48 bg-[#1a1a1a] flex items-center justify-center text-gray-600 text-5xl">👤</div>
+      </div>
+    </div>
 
-          <!-- Info -->
-          <div class="flex-1">
-            <div class="flex flex-wrap items-center gap-3 mb-2">
-              <h1 class="text-2xl font-bold text-gray-900">{{ profile.display_name }}</h1>
-              <span v-if="profile.age" class="bg-pink-100 text-pink-700 text-sm font-semibold px-2.5 py-0.5 rounded-full">
-                {{ profile.age }} J.
-              </span>
-              <span v-if="profile.city" class="bg-gray-100 text-gray-600 text-sm px-2.5 py-0.5 rounded-full">
-                📍 {{ profile.city }}
-              </span>
-            </div>
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row gap-6">
 
-            <div class="flex flex-wrap gap-2 mb-3">
-              <span v-for="tag in profile.tags" :key="tag"
-                class="text-xs bg-pink-50 text-pink-600 border border-pink-200 px-2 py-0.5 rounded-full">
-                {{ tag }}
-              </span>
-            </div>
+        <!-- LEFT: Contact Sidebar -->
+        <div class="md:w-72 shrink-0 space-y-4">
 
-            <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">{{ profile.description }}</p>
-
-            <div class="flex gap-6 mt-4 text-sm text-gray-500">
-              <span>👁 {{ profile.total_views }} Aufrufe</span>
-              <span>❤️ {{ profile.total_subscribers }} Abonnenten</span>
-              <span v-if="reviews.length">⭐ {{ avgRating.toFixed(1) }} ({{ reviews.length }} Bewertungen)</span>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="shrink-0 flex flex-col gap-3 min-w-[160px]">
-            <!-- Owner -->
+          <!-- Subscribe / Owner CTA -->
+          <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4">
             <template v-if="isOwner">
               <Link :href="route('inserat.profile.edit')"
-                class="w-full text-center bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-gray-200 transition">
-                ✏️ Bearbeiten
+                class="block w-full text-center bg-[#2a2a2a] text-gray-300 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#3a3a3a] transition mb-2">
+                ✏️ Profil bearbeiten
               </Link>
               <Link :href="route('inserat.media.index')"
-                class="w-full text-center border border-pink-300 text-pink-600 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-pink-50 transition">
-                🖼️ Medien
+                class="block w-full text-center border border-[#e91e8c] text-[#e91e8c] text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#e91e8c]/10 transition">
+                🖼️ Medien verwalten
               </Link>
             </template>
-
-            <!-- Subscribed -->
             <template v-else-if="isSubscribed">
-              <div class="text-center bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
-                <p class="text-green-700 text-sm font-semibold">✅ Abonniert</p>
-                <p class="text-xs text-green-600 mt-0.5">Privater Zugang aktiv</p>
+              <div class="text-center mb-3">
+                <p class="text-green-400 text-sm font-semibold">✅ Abonniert</p>
+                <p class="text-xs text-gray-500 mt-0.5">Privater Zugang aktiv</p>
               </div>
-              <div v-if="profile.whatsapp_number" class="text-center bg-green-600 text-white rounded-lg px-4 py-2.5">
-                <a :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`" target="_blank"
-                  class="text-sm font-semibold">💬 WhatsApp</a>
-              </div>
-              <form @submit.prevent="cancelSub">
-                <button type="submit" class="w-full text-xs text-gray-400 hover:text-red-600 transition mt-1">
-                  Abonnement kündigen
-                </button>
-              </form>
+              <a v-if="profile.whatsapp_number"
+                :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`"
+                target="_blank"
+                class="flex items-center justify-between w-full bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-sm font-semibold px-4 py-3 rounded-lg hover:bg-[#25D366]/20 transition mb-2">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  WhatsApp
+                </div>
+                <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              </a>
+              <button @click="cancelSub" class="w-full text-xs text-gray-600 hover:text-red-400 transition">
+                Abonnement kündigen
+              </button>
             </template>
-
-            <!-- Subscribe CTA -->
             <template v-else-if="hasSubscriptionOffer">
-              <div class="bg-pink-50 border border-pink-200 rounded-lg p-3 text-center">
-                <p class="text-pink-800 text-xs font-semibold uppercase tracking-wide mb-1">Privater Zugang</p>
-                <p class="text-2xl font-bold text-pink-600">CHF {{ profile.subscription_price_chf }}</p>
-                <p class="text-xs text-pink-500">/ Monat</p>
+              <div class="text-center mb-3">
+                <p class="text-gray-400 text-xs uppercase tracking-wide mb-1">Privater Zugang</p>
+                <p class="text-3xl font-black text-white">CHF {{ profile.subscription_price_chf }}</p>
+                <p class="text-xs text-gray-500">/ Monat</p>
               </div>
               <form v-if="$page.props.auth.user" @submit.prevent="subscribe">
-                <PrimaryButton type="submit" :loading="subscribing" full-width>
-                  Jetzt abonnieren
-                </PrimaryButton>
+                <button type="submit" :disabled="subscribing"
+                  class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
+                  {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
+                </button>
               </form>
               <Link v-else :href="route('register')"
-                class="w-full text-center bg-pink-600 text-white text-sm font-bold px-4 py-2.5 rounded-lg hover:bg-pink-700 transition block">
+                class="block w-full text-center bg-[#e91e8c] hover:bg-[#c91478] text-white font-bold py-3 rounded-lg transition text-sm">
                 Registrieren & Abonnieren
               </Link>
             </template>
           </div>
-        </div>
-      </div>
 
-      <!-- Media Tabs -->
-      <div class="bg-white rounded-xl border border-gray-200 mb-6">
-        <div class="flex border-b border-gray-100">
-          <button v-for="tab in tabs" :key="tab.key"
-            @click="activeTab = tab.key"
-            class="px-5 py-3 text-sm font-semibold transition border-b-2 -mb-px"
-            :class="activeTab === tab.key ? 'border-pink-500 text-pink-600' : 'border-transparent text-gray-500 hover:text-gray-700'">
-            {{ tab.label }} ({{ tab.count }})
-          </button>
-        </div>
-
-        <div class="p-4">
-          <!-- Public Media -->
-          <div v-if="activeTab === 'public'">
-            <div v-if="publicMedia.length === 0" class="text-center py-12 text-gray-400">
-              Noch keine öffentlichen Fotos.
+          <!-- Stats -->
+          <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 space-y-2 text-sm">
+            <div class="flex justify-between text-gray-400">
+              <span>👁 Aufrufe</span><span class="text-white font-semibold">{{ profile.total_views }}</span>
             </div>
-            <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              <div v-for="item in publicMedia" :key="item.id"
-                class="aspect-square rounded-lg overflow-hidden cursor-pointer"
-                @click="openLightbox(item)">
-                <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover hover:scale-105 transition duration-200" />
-              </div>
+            <div class="flex justify-between text-gray-400">
+              <span>❤️ Abonnenten</span><span class="text-white font-semibold">{{ profile.total_subscribers }}</span>
+            </div>
+            <div v-if="reviews.length" class="flex justify-between text-gray-400">
+              <span>⭐ Bewertung</span>
+              <span class="text-white font-semibold">{{ avgRating.toFixed(1) }} ({{ reviews.length }})</span>
+            </div>
+            <div v-if="profile.city" class="flex justify-between text-gray-400">
+              <span>📍 Stadt</span><span class="text-white">{{ profile.city }}</span>
+            </div>
+            <div v-if="profile.age" class="flex justify-between text-gray-400">
+              <span>🎂 Alter</span><span class="text-white">{{ profile.age }} Jahre</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Content -->
+        <div class="flex-1 min-w-0 space-y-5">
+
+          <!-- Header -->
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-2">
+              <h1 class="text-2xl font-black text-white">{{ profile.display_name }}</h1>
+              <span v-if="profile.category" class="text-xs bg-[#e91e8c]/20 text-[#e91e8c] border border-[#e91e8c]/30 px-2.5 py-0.5 rounded-full">
+                {{ profile.category }}
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span v-for="tag in profile.tags" :key="tag"
+                class="text-xs bg-[#2a2a2a] text-gray-400 border border-[#3a3a3a] px-2.5 py-1 rounded-full">
+                {{ tag }}
+              </span>
             </div>
           </div>
 
-          <!-- Private Media -->
-          <div v-if="activeTab === 'private'">
-            <template v-if="isOwner || isSubscribed">
-              <div v-if="privateMedia.length === 0" class="text-center py-12 text-gray-400">
-                Noch keine privaten Inhalte verfügbar.
-              </div>
-              <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                <div v-for="item in privateMedia" :key="item.id"
-                  class="aspect-square rounded-lg overflow-hidden cursor-pointer"
-                  @click="openLightbox(item)">
-                  <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover hover:scale-105 transition duration-200" />
-                  <div v-else class="w-full h-full bg-gray-800 flex items-center justify-center text-white text-4xl">▶</div>
+          <!-- Description -->
+          <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5">
+            <p class="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
+          </div>
+
+          <!-- Media Tabs -->
+          <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl overflow-hidden">
+            <div class="flex border-b border-[#2a2a2a]">
+              <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
+                class="px-5 py-3 text-sm font-semibold transition border-b-2 -mb-px"
+                :class="activeTab === tab.key ? 'border-[#e91e8c] text-[#e91e8c]' : 'border-transparent text-gray-500 hover:text-gray-300'">
+                {{ tab.label }} ({{ tab.count }})
+              </button>
+            </div>
+            <div class="p-4">
+              <!-- Public Media -->
+              <div v-if="activeTab === 'public'">
+                <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-600">Noch keine Fotos.</div>
+                <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                  <div v-for="item in publicMedia" :key="item.id"
+                    class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                    <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
+                  </div>
                 </div>
               </div>
-            </template>
-            <div v-else class="text-center py-16">
-              <div class="text-5xl mb-4">🔒</div>
-              <p class="font-semibold text-gray-700 mb-2">Private Inhalte</p>
-              <p class="text-sm text-gray-500 mb-6">Abonniere für CHF {{ profile.subscription_price_chf }}/Monat um alle privaten Fotos & Videos zu sehen.</p>
+              <!-- Private Media -->
+              <div v-if="activeTab === 'private'">
+                <template v-if="isOwner || isSubscribed">
+                  <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-600">Noch keine privaten Inhalte.</div>
+                  <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                    <div v-for="item in privateMedia" :key="item.id"
+                      class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                      <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
+                      <div v-else class="w-full h-full bg-[#2a2a2a] flex items-center justify-center text-white text-4xl">▶</div>
+                    </div>
+                  </div>
+                </template>
+                <div v-else class="text-center py-16">
+                  <div class="text-5xl mb-4">🔒</div>
+                  <p class="text-gray-400 font-semibold mb-2">Private Inhalte</p>
+                  <p class="text-sm text-gray-600">Abonniere für CHF {{ profile.subscription_price_chf }}/Monat</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Review Form (nur für Abonnenten) -->
-      <div v-if="isSubscribed && !hasReviewed" class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h2 class="font-semibold text-gray-900 mb-4">Bewertung abgeben</h2>
-        <form @submit.prevent="submitReview" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Sterne</label>
-            <div class="flex gap-1">
-              <button v-for="n in 5" :key="n" type="button"
-                @click="reviewForm.stars = n"
-                class="text-3xl transition"
-                :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-300'">★</button>
-            </div>
+          <!-- Review Form -->
+          <div v-if="isSubscribed && !hasReviewed" class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5">
+            <h2 class="font-semibold text-white mb-4">Bewertung abgeben</h2>
+            <form @submit.prevent="submitReview" class="space-y-4">
+              <div class="flex gap-1">
+                <button v-for="n in 5" :key="n" type="button" @click="reviewForm.stars = n"
+                  class="text-3xl transition" :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-700'">★</button>
+              </div>
+              <textarea v-model="reviewForm.comment" rows="3" maxlength="1000" placeholder="Deine Erfahrung…"
+                class="w-full bg-[#0f0f0f] border border-[#3a3a3a] text-gray-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e91e8c] resize-none placeholder-gray-700" />
+              <button type="submit" :disabled="!reviewForm.stars || submittingReview"
+                class="bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">
+                {{ submittingReview ? 'Einreichen…' : 'Bewertung einreichen' }}
+              </button>
+            </form>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Kommentar (optional)</label>
-            <textarea v-model="reviewForm.comment" rows="3" maxlength="1000"
-              placeholder="Deine Erfahrung…"
-              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400 resize-none" />
-          </div>
-          <PrimaryButton type="submit" :loading="submittingReview" :disabled="!reviewForm.stars">
-            Bewertung einreichen
-          </PrimaryButton>
-        </form>
-      </div>
 
-      <!-- Reviews -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 class="font-semibold text-gray-900 mb-4">Bewertungen ({{ reviews.length }})</h2>
-        <div v-if="reviews.length === 0" class="text-center py-8 text-gray-400 text-sm">
-          Noch keine Bewertungen.
-        </div>
-        <div v-else class="space-y-4">
-          <div v-for="r in reviews" :key="r.id" class="border-b border-gray-100 pb-4 last:border-0">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-yellow-400">{{ '★'.repeat(r.stars) }}{{ '☆'.repeat(5 - r.stars) }}</span>
-              <span class="text-sm font-semibold text-gray-700">{{ r.author }}</span>
-              <span class="text-xs text-gray-400 ml-auto">{{ r.created_at }}</span>
-            </div>
-            <p class="text-sm text-gray-600">{{ r.comment }}</p>
-            <!-- Inserent reply -->
-            <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-pink-200 text-sm text-gray-500 italic">
-              <span class="font-semibold text-pink-600">Antwort: </span>{{ r.reply }}
-            </div>
-            <!-- Reply form for owner -->
-            <div v-if="isOwner && !r.reply" class="mt-2">
-              <button @click="replyTarget = replyTarget === r.id ? null : r.id"
-                class="text-xs text-pink-600 hover:underline">Antworten</button>
-              <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
-                <input v-model="replyText" type="text" placeholder="Deine Antwort…" maxlength="500"
-                  class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-pink-400" />
-                <button @click="submitReply(r.id)"
-                  class="bg-pink-600 text-white text-xs px-3 py-1 rounded hover:bg-pink-700">Senden</button>
+          <!-- Reviews -->
+          <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5">
+            <h2 class="font-semibold text-white mb-4">Bewertungen ({{ reviews.length }})</h2>
+            <div v-if="!reviews.length" class="text-center py-6 text-gray-600 text-sm">Noch keine Bewertungen.</div>
+            <div v-else class="space-y-4">
+              <div v-for="r in reviews" :key="r.id" class="border-b border-[#2a2a2a] pb-4 last:border-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-yellow-400 text-sm">{{ '★'.repeat(r.stars) }}{{ '☆'.repeat(5 - r.stars) }}</span>
+                  <span class="text-sm font-semibold text-gray-300">{{ r.author }}</span>
+                  <span class="text-xs text-gray-600 ml-auto">{{ r.created_at }}</span>
+                </div>
+                <p class="text-sm text-gray-400">{{ r.comment }}</p>
+                <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-[#e91e8c]/40 text-sm text-gray-500 italic">
+                  <span class="font-semibold text-[#e91e8c]">Antwort: </span>{{ r.reply }}
+                </div>
+                <div v-if="isOwner && !r.reply" class="mt-2">
+                  <button @click="replyTarget = replyTarget === r.id ? null : r.id" class="text-xs text-[#e91e8c] hover:underline">Antworten</button>
+                  <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
+                    <input v-model="replyText" type="text" placeholder="Deine Antwort…" maxlength="500"
+                      class="flex-1 bg-[#0f0f0f] border border-[#3a3a3a] text-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e91e8c]" />
+                    <button @click="submitReply(r.id)" class="bg-[#e91e8c] text-white text-xs px-3 py-1 rounded hover:bg-[#c91478]">Senden</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -211,10 +216,9 @@
     </div>
 
     <!-- Lightbox -->
-    <div v-if="lightboxItem" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
-      @click.self="lightboxItem = null">
-      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300" @click="lightboxItem = null">✕</button>
-      <img v-if="lightboxItem.type === 'image'" :src="lightboxItem.url" class="max-h-screen max-w-screen object-contain" />
+    <div v-if="lightboxItem" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50" @click.self="lightboxItem = null">
+      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center" @click="lightboxItem = null">✕</button>
+      <img v-if="lightboxItem.type === 'image'" :src="lightboxItem.url" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
     </div>
   </AppLayout>
 </template>
@@ -223,7 +227,6 @@
 import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
   profile:             { type: Object, required: true },
@@ -237,13 +240,13 @@ const props = defineProps({
   subscribed:          { type: Boolean, default: false },
 });
 
-const activeTab       = ref('public');
-const lightboxItem    = ref(null);
-const subscribing     = ref(false);
-const submittingReview= ref(false);
-const reviewForm      = ref({ stars: 0, comment: '' });
-const replyTarget     = ref(null);
-const replyText       = ref('');
+const activeTab        = ref('public');
+const lightboxItem     = ref(null);
+const subscribing      = ref(false);
+const submittingReview = ref(false);
+const reviewForm       = ref({ stars: 0, comment: '' });
+const replyTarget      = ref(null);
+const replyText        = ref('');
 
 const tabs = computed(() => [
   { key: 'public',  label: 'Öffentlich', count: props.publicMedia.length },
@@ -255,9 +258,7 @@ const avgRating = computed(() => {
   return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
 });
 
-function openLightbox(item) {
-  lightboxItem.value = item;
-}
+function openLightbox(item) { lightboxItem.value = item; }
 
 function subscribe() {
   subscribing.value = true;

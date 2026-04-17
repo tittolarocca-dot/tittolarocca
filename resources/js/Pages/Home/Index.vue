@@ -2,74 +2,132 @@
   <AppLayout>
     <Head title="Startseite" />
 
-    <!-- Kategorie-Leiste -->
-    <div class="bg-white border-b border-gray-200 sticky top-12 z-40">
-      <div class="max-w-7xl mx-auto px-4 overflow-x-auto">
-        <div class="flex gap-1 py-2">
-          <Link :href="route('home')"
-            class="flex flex-col items-center gap-1 px-3 py-1.5 rounded cursor-pointer min-w-[56px] transition-colors"
-            :class="!activeCategory ? 'text-pink-600' : 'text-gray-500 hover:text-pink-500'">
-            <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg"
-              :class="!activeCategory ? 'border-pink-500' : 'border-gray-300'">🏠</div>
-            <span class="text-[10px]">alle</span>
-          </Link>
-          <Link v-for="cat in categories" :key="cat.id"
-            :href="route('category', cat.slug)"
-            class="flex flex-col items-center gap-1 px-3 py-1.5 rounded cursor-pointer min-w-[56px] transition-colors"
-            :class="activeCategory?.id === cat.id ? 'text-pink-600' : 'text-gray-500 hover:text-pink-500'">
-            <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-              :class="activeCategory?.id === cat.id ? 'border-pink-500 bg-pink-50' : 'border-gray-300'">
-              {{ cat.name.charAt(0) }}
-            </div>
-            <span class="text-[10px] text-center leading-tight">{{ cat.name }}</span>
-          </Link>
+    <!-- Hero -->
+    <div class="bg-[#0f0f0f] pt-8 pb-4 px-4">
+      <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-black text-white mb-6">
+          Sex und Erotik Inserate in der Schweiz
+        </h1>
+
+        <!-- Featured Profiles Carousel -->
+        <div v-if="profiles.data.length" class="relative mb-6">
+          <div class="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
+            <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
+              :href="route('profile.show', profile.slug)"
+              class="flex flex-col items-center shrink-0 w-20 cursor-pointer group">
+              <div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-[#e91e8c] ring-offset-2 ring-offset-[#0f0f0f] group-hover:ring-white transition">
+                <img v-if="profile.public_media?.[0]"
+                  :src="profile.public_media[0].url"
+                  :alt="profile.display_name"
+                  class="w-full h-full object-cover" />
+                <div v-else class="w-full h-full bg-[#2a2a2a] flex items-center justify-center text-2xl">👤</div>
+              </div>
+              <span class="text-xs text-gray-300 mt-1.5 text-center truncate w-full">{{ profile.display_name }}</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="flex flex-wrap gap-3 mb-3">
+          <div class="relative">
+            <select v-model="filters.city"
+              class="bg-[#2a2a2a] border border-[#3a3a3a] text-gray-300 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[150px]">
+              <option value="">Region</option>
+              <option v-for="c in cities" :key="c.id" :value="c.slug">{{ c.name }}</option>
+            </select>
+            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          <div class="relative">
+            <select v-model="filters.category"
+              class="bg-[#2a2a2a] border border-[#3a3a3a] text-gray-300 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[150px]">
+              <option value="">Rubrik</option>
+              <option v-for="c in categories" :key="c.id" :value="c.slug">{{ c.name }}</option>
+            </select>
+            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          <div class="relative flex-1 min-w-[200px]">
+            <input v-model="filters.search" type="text" placeholder="Suchen..."
+              @keyup.enter="applyFilters"
+              class="w-full bg-[#2a2a2a] border border-[#3a3a3a] text-gray-300 text-sm rounded px-4 py-2.5 pr-10 focus:outline-none focus:border-[#e91e8c] placeholder-gray-600" />
+            <svg class="absolute right-3 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <button @click="applyFilters" class="bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-5 py-2.5 rounded transition">
+            Suchen
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <div class="flex gap-3">
+            <span v-if="activeCity" class="text-[#e91e8c]">📍 {{ activeCity.name }}</span>
+            <span v-if="activeCategory" class="text-[#e91e8c]">🏷 {{ activeCategory.name }}</span>
+            <Link v-if="activeCity || activeCategory" :href="route('home')" class="text-gray-600 hover:text-white transition">✕ Filter zurücksetzen</Link>
+          </div>
+          <span>{{ profiles.total }} Inserate</span>
         </div>
       </div>
     </div>
 
-    <!-- Filter-Info -->
-    <div v-if="activeCity || activeCategory" class="bg-pink-50 border-b border-pink-100">
-      <div class="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 text-sm text-pink-700">
-        <span v-if="activeCity">📍 {{ activeCity.name }}</span>
-        <span v-if="activeCategory">· {{ activeCategory.name }}</span>
-        <Link :href="route('home')" class="ml-auto text-xs text-pink-500 underline">Filter zurücksetzen</Link>
-      </div>
-    </div>
-
-    <!-- Profile Grid -->
-    <div class="max-w-7xl mx-auto px-4 py-4">
-      <div v-if="profiles.data.length === 0" class="text-center py-16 text-gray-400">
-        <div class="text-4xl mb-3">🔍</div>
-        <p>Keine Profile gefunden.</p>
+    <!-- Listings -->
+    <div class="max-w-7xl mx-auto px-4 pb-12">
+      <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-500">
+        <div class="text-5xl mb-4">🔍</div>
+        <p class="text-lg">Keine Inserate gefunden.</p>
       </div>
 
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        <a v-for="profile in profiles.data" :key="profile.id"
-          :href="route('profile.show', profile.slug)"
-          class="bg-white border border-gray-200 rounded overflow-hidden hover:shadow-md transition-shadow cursor-pointer group">
-          <!-- Name + Ort -->
-          <div class="px-2 pt-2 pb-1.5">
-            <div class="font-bold text-gray-800 text-sm truncate">
-              {{ profile.display_name }}
-              <span class="text-pink-500 text-xs">✓</span>
+      <div v-else class="space-y-3">
+        <!-- TOP AD -->
+        <a v-if="profiles.data[0]" :href="route('profile.show', profiles.data[0].slug)"
+          class="block bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden hover:border-[#e91e8c] transition group">
+          <div class="flex">
+            <div class="relative w-64 shrink-0 h-52">
+              <img v-if="profiles.data[0].public_media?.[0]"
+                :src="profiles.data[0].public_media[0].url"
+                :alt="profiles.data[0].display_name"
+                class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full bg-[#2a2a2a] flex items-center justify-center text-5xl">👤</div>
+              <span class="absolute bottom-2 left-2 bg-[#e91e8c] text-white text-xs font-bold px-2 py-0.5 rounded">TOP AD</span>
             </div>
-            <div class="text-xs text-gray-500 truncate">
-              {{ profile.city?.name }}{{ profile.city ? ', ' : '' }}{{ profile.category?.name }} ›
-            </div>
-          </div>
-          <!-- Foto -->
-          <div class="relative h-48 bg-gray-100 overflow-hidden">
-            <img v-if="profile.public_media?.[0]"
-              :src="profile.public_media[0].thumbnail_path || profile.public_media[0].storage_path"
-              :alt="profile.display_name"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-            <div v-else class="w-full h-full flex items-center justify-center text-gray-300 text-4xl">👤</div>
-            <!-- Abo-Preis Badge -->
-            <div class="absolute bottom-2 right-2 bg-pink-600 text-white text-xs font-bold px-2 py-0.5 rounded">
-              CHF {{ profile.subscription_price_chf }}/Mo
+            <div class="p-5 flex-1">
+              <h2 class="text-xl font-bold text-white group-hover:text-[#e91e8c] transition mb-2">
+                {{ profiles.data[0].display_name }}
+              </h2>
+              <p class="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4">{{ profiles.data[0].description }}</p>
+              <div class="flex flex-wrap gap-3 text-xs">
+                <span v-if="profiles.data[0].category" class="text-[#e91e8c]">🏷 {{ profiles.data[0].category?.name }}</span>
+                <span v-if="profiles.data[0].city" class="text-gray-500">📍 {{ profiles.data[0].city?.name }}</span>
+                <span class="ml-auto text-[#e91e8c] font-bold text-sm">CHF {{ profiles.data[0].subscription_price_chf }}/Mo</span>
+              </div>
             </div>
           </div>
         </a>
+
+        <!-- PREMIUM Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
+            :href="route('profile.show', profile.slug)"
+            class="flex bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden hover:border-[#e91e8c] transition group h-36">
+            <div class="w-32 shrink-0">
+              <img v-if="profile.public_media?.[0]"
+                :src="profile.public_media[0].url"
+                :alt="profile.display_name"
+                class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full bg-[#2a2a2a] flex items-center justify-center text-3xl">👤</div>
+            </div>
+            <div class="p-3 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[#e91e8c] text-xs font-bold uppercase tracking-wide">Premium</span>
+              </div>
+              <h3 class="text-white text-sm font-bold group-hover:text-[#e91e8c] transition truncate mb-1">
+                {{ profile.display_name }}
+              </h3>
+              <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{{ profile.description }}</p>
+              <div class="flex items-center gap-2 mt-2 text-xs text-gray-600">
+                <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
+                <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
 
       <!-- Pagination -->
@@ -78,23 +136,43 @@
           :href="link.url || '#'"
           v-html="link.label"
           class="px-3 py-1.5 text-sm rounded border transition-colors"
-          :class="link.active
-            ? 'bg-pink-600 text-white border-pink-600'
-            : 'bg-white text-gray-600 border-gray-200 hover:border-pink-400'" />
+          :class="link.active ? 'bg-[#e91e8c] text-white border-[#e91e8c]' : 'bg-[#1a1a1a] text-gray-400 border-[#2a2a2a] hover:border-[#e91e8c]'" />
       </div>
     </div>
   </AppLayout>
 </template>
 
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
-defineProps({
+const props = defineProps({
   profiles:       Object,
   cities:         Array,
   categories:     Array,
   activeCity:     Object,
   activeCategory: Object,
 });
+
+const filters = ref({
+  city:     props.activeCity?.slug ?? '',
+  category: props.activeCategory?.slug ?? '',
+  search:   '',
+});
+
+function applyFilters() {
+  if (filters.value.city) {
+    router.get(route('city', filters.value.city));
+  } else if (filters.value.category) {
+    router.get(route('category', filters.value.category));
+  } else {
+    router.get(route('home'));
+  }
+}
 </script>
+
+<style scoped>
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

@@ -1,82 +1,80 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[#0f0f0f] text-white">
     <FlashMessage />
+
     <!-- Navbar -->
-    <header class="bg-pink-600 sticky top-0 z-50 shadow-md">
-      <div class="max-w-7xl mx-auto px-4 flex items-center h-12 gap-0">
-        <Link href="/" class="text-white font-bold text-xl mr-6 shrink-0">
-          Inserate<span class="text-pink-200">Plattform</span>
+    <header class="bg-[#1a1a1a] border-b border-[#2a2a2a] sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 flex items-center h-14 gap-6">
+        <Link href="/" class="text-2xl font-black shrink-0">
+          <span class="text-white">inserate</span><span class="text-[#e91e8c]">®</span>
         </Link>
-        <nav class="hidden md:flex flex-1 h-full">
-          <Link v-for="city in cities" :key="city.id"
+        <nav class="hidden md:flex items-center gap-5 text-sm text-gray-400">
+          <Link v-for="city in cities.slice(0,6)" :key="city.id"
             :href="route('city', city.slug)"
-            class="flex items-center px-3 h-full text-white text-xs font-semibold hover:bg-pink-700 border-r border-pink-500 transition-colors"
-            :class="{ 'bg-pink-700': activeCitySlug === city.slug }">
+            class="hover:text-white transition"
+            :class="{ 'text-white font-semibold': activeCitySlug === city.slug }">
             {{ city.name }}
           </Link>
         </nav>
-        <div class="flex items-center gap-2 ml-auto shrink-0">
+        <div class="flex items-center gap-3 ml-auto shrink-0">
           <template v-if="$page.props.auth.user">
-            <Link :href="route('inserat.dashboard')" class="text-white text-xs font-semibold px-3 py-1.5 hover:bg-pink-500 rounded transition">
-              Mein Inserat
+            <Link :href="route('inserat.dashboard')" class="text-sm text-gray-300 hover:text-white transition">
+              Mein Konto
             </Link>
-            <Link :href="route('logout')" method="post" as="button"
-              class="text-white text-xs font-semibold px-3 py-1.5 hover:bg-pink-500 rounded transition">
-              Logout
+            <Link :href="route('logout')" method="post" as="button" class="text-sm text-gray-400 hover:text-white transition">
+              Abmelden
             </Link>
           </template>
           <template v-else>
-            <Link :href="route('register')" class="text-white text-xs font-semibold px-3 py-1.5 hover:bg-pink-500 rounded transition">
-              Registrieren
+            <Link :href="route('login')" class="text-sm text-gray-300 hover:text-white transition flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Anmelden
             </Link>
-            <Link :href="route('login')" class="bg-white text-pink-600 text-xs font-bold px-3 py-1.5 rounded hover:bg-pink-50 transition">
-              Login
+            <Link :href="route('register')"
+              class="bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-4 py-2 rounded transition">
+              Inserat aufgeben
             </Link>
           </template>
         </div>
       </div>
     </header>
 
-    <!-- Page Content -->
-    <main>
-      <slot />
-    </main>
+    <main><slot /></main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 mt-16 py-10">
-      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+    <footer class="bg-[#0a0a0a] border-t border-[#1a1a1a] mt-16 py-10">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-500">
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
+          <h5 class="text-gray-300 font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-pink-400 transition">Über uns</a>
-            <a href="#" class="block hover:text-pink-400 transition">Kontakt</a>
+            <a href="#" class="block hover:text-[#e91e8c] transition">Über uns</a>
+            <a href="#" class="block hover:text-[#e91e8c] transition">Kontakt</a>
           </div>
         </div>
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
+          <h5 class="text-gray-300 font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
           <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-pink-400 transition">Inserat erstellen</Link>
-            <a href="#" class="block hover:text-pink-400 transition">Preise</a>
+            <Link :href="route('register')" class="block hover:text-[#e91e8c] transition">Inserat erstellen</Link>
+            <a href="#" class="block hover:text-[#e91e8c] transition">Preise</a>
           </div>
         </div>
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Städte</h5>
+          <h5 class="text-gray-300 font-semibold mb-3 uppercase text-xs tracking-wide">Städte</h5>
           <div class="space-y-1">
-            <Link v-for="city in cities.slice(0,6)" :key="city.id"
-              :href="route('city', city.slug)"
-              class="block hover:text-pink-400 transition">{{ city.name }}</Link>
+            <Link v-for="city in cities.slice(0,6)" :key="city.id" :href="route('city', city.slug)"
+              class="block hover:text-[#e91e8c] transition">{{ city.name }}</Link>
           </div>
         </div>
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
+          <h5 class="text-gray-300 font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-pink-400 transition">Impressum</a>
-            <a href="#" class="block hover:text-pink-400 transition">Datenschutz</a>
-            <a href="#" class="block hover:text-pink-400 transition">AGB</a>
+            <a href="#" class="block hover:text-[#e91e8c] transition">Impressum</a>
+            <a href="#" class="block hover:text-[#e91e8c] transition">Datenschutz</a>
+            <a href="#" class="block hover:text-[#e91e8c] transition">AGB</a>
           </div>
         </div>
       </div>
-      <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-gray-700 text-xs text-center text-gray-500">
+      <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-[#1a1a1a] text-xs text-center text-gray-600">
         © {{ new Date().getFullYear() }} Inserate Plattform – Nur für Erwachsene ab 18 Jahren.
       </div>
     </footer>

@@ -18,10 +18,10 @@
 
       <div>
         <div class="flex justify-between items-baseline mb-1">
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Passwort <span class="text-pink-500">*</span>
+          <label for="password" class="block text-sm font-medium text-gray-300">
+            Passwort <span class="text-[#e91e8c]">*</span>
           </label>
-          <a href="#" class="text-xs text-pink-600 hover:underline">Passwort vergessen?</a>
+          <a href="#" class="text-xs text-[#e91e8c] hover:underline">Passwort vergessen?</a>
         </div>
         <input
           id="password"
@@ -29,23 +29,23 @@
           type="password"
           autocomplete="current-password"
           :class="[
-            'w-full px-3 py-2 border rounded-md text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition',
-            form.errors.password ? 'border-red-400 bg-red-50' : 'border-gray-300',
+            'w-full px-3 py-2 border rounded-md text-sm bg-[#111111] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] focus:border-[#e91e8c] transition',
+            form.errors.password ? 'border-red-500 bg-red-900/20' : 'border-[#2a2a2a]',
           ]"
         />
-        <p v-if="form.errors.password" class="mt-1 text-xs text-red-600">{{ form.errors.password }}</p>
+        <p v-if="form.errors.password" class="mt-1 text-xs text-red-400">{{ form.errors.password }}</p>
       </div>
 
       <!-- Remember me -->
       <label class="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" v-model="form.remember"
-          class="w-4 h-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500" />
-        <span class="text-sm text-gray-600">Angemeldet bleiben</span>
+          class="w-4 h-4 rounded border-[#2a2a2a] bg-[#111111] text-[#e91e8c] focus:ring-[#e91e8c]" />
+        <span class="text-sm text-gray-400">Angemeldet bleiben</span>
       </label>
 
       <!-- Allgemeiner Fehler -->
       <div v-if="form.errors.email && !form.errors.password"
-        class="bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm text-red-700">
+        class="bg-red-900/20 border border-red-500/30 rounded-md px-3 py-2 text-sm text-red-400">
         {{ form.errors.email }}
       </div>
 
@@ -55,7 +55,7 @@
 
       <p class="text-center text-sm text-gray-500 pt-1">
         Noch kein Konto?
-        <Link :href="route('register')" class="text-pink-600 font-semibold hover:underline">Jetzt registrieren</Link>
+        <Link :href="route('register')" class="text-[#e91e8c] font-semibold hover:underline">Jetzt registrieren</Link>
       </p>
     </form>
   </AuthLayout>
