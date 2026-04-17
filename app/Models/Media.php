@@ -11,7 +11,13 @@ class Media extends Model
         'filesize_bytes', 'duration_seconds',
     ];
 
-    public function profile() { return $this->belongsTo(Profile::class); }
-    public function isPublic(): bool   { return $this->visibility === 'public'; }
-    public function isApproved(): bool { return $this->status === 'approved'; }
+    protected $casts = [
+        'sort_order'      => 'integer',
+        'filesize_bytes'  => 'integer',
+        'duration_seconds'=> 'integer',
+    ];
+
+    public function profile()   { return $this->belongsTo(Profile::class); }
+    public function isPublic()  { return $this->visibility === 'public'; }
+    public function isApproved(){ return $this->status === 'approved'; }
 }

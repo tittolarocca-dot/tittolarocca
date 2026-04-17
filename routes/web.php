@@ -31,6 +31,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/medien',      [\App\Http\Controllers\Inserent\MediaController::class, 'index'])->name('media.index');
     Route::post('/medien',     [\App\Http\Controllers\Inserent\MediaController::class, 'store'])->name('media.store');
     Route::delete('/medien/{media}', [\App\Http\Controllers\Inserent\MediaController::class, 'destroy'])->name('media.destroy');
+    Route::post('/medien/reihenfolge', [\App\Http\Controllers\Inserent\MediaController::class, 'reorder'])->name('media.reorder');
     Route::get('/nachrichten', [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
 });
 
@@ -48,10 +49,9 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
     ->name('stripe.webhook')
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
-// Medien (geschützt via Signed URL oder Auth-Check)
+// Medien – public/approved ohne Auth; private benötigt aktives Abo
 Route::get('/media/{media}', [\App\Http\Controllers\MediaStreamController::class, 'show'])
-    ->name('media.stream')
-    ->middleware('auth');
+    ->name('media.stream');
 
 // Zahlung Bestätigung
 Route::get('/zahlung/erfolg',      fn() => inertia('Payment/Success'))->name('payment.success');
