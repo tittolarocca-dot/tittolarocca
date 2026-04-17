@@ -32,7 +32,9 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/medien',     [\App\Http\Controllers\Inserent\MediaController::class, 'store'])->name('media.store');
     Route::delete('/medien/{media}', [\App\Http\Controllers\Inserent\MediaController::class, 'destroy'])->name('media.destroy');
     Route::post('/medien/reihenfolge', [\App\Http\Controllers\Inserent\MediaController::class, 'reorder'])->name('media.reorder');
-    Route::get('/nachrichten', [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
+    Route::get('/nachrichten',           [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
+    Route::post('/nachrichten/{userId}', [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
+    Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
 });
 
 // Mitglieder-Bereich
@@ -40,8 +42,9 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::get('/abonnements',  [\App\Http\Controllers\Member\SubscriptionController::class, 'index'])->name('subscriptions');
     Route::post('/abonnieren/{profile}', [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/kuendigen/{profile}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
-    Route::get('/nachrichten',  [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
-    Route::post('/nachrichten/{profile}', [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/nachrichten',                        [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
+    Route::post('/nachrichten/{profile}',             [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/nachrichten/{userId}/verlauf',       [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
 });
 
 // Stripe Webhooks
