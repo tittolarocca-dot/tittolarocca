@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50">
+    <FlashMessage />
     <!-- Navbar -->
     <header class="bg-pink-600 sticky top-0 z-50 shadow-md">
       <div class="max-w-7xl mx-auto px-4 flex items-center h-12 gap-0">
@@ -85,6 +86,7 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
 const page = usePage();
 const cities = computed(() => page.props.cities ?? []);
