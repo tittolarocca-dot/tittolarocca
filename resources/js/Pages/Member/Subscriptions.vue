@@ -2,38 +2,38 @@
   <AppLayout>
     <Head title="Meine Abonnements" />
     <div class="max-w-4xl mx-auto px-4 py-8">
-      <h1 class="text-2xl font-bold text-gray-900 mb-6">Meine Abonnements</h1>
+      <h1 class="text-2xl font-bold text-white mb-6">Meine Abonnements</h1>
 
-      <div v-if="subscriptions.length === 0" class="text-center py-16 text-gray-400">
+      <div v-if="subscriptions.length === 0" class="text-center py-16 text-gray-500">
         <div class="text-5xl mb-3">💫</div>
         <p>Du hast noch keine Abonnements.</p>
-        <Link :href="route('home')" class="text-pink-600 hover:underline text-sm mt-2 block">
+        <Link :href="route('home')" class="text-[#e91e8c] hover:underline text-sm mt-2 block">
           Profile entdecken →
         </Link>
       </div>
 
       <div v-else class="space-y-4">
         <div v-for="sub in subscriptions" :key="sub.id"
-          class="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-between gap-4">
+          class="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 flex items-center justify-between gap-4">
           <div>
             <Link :href="route('profile.show', sub.profile.slug)"
-              class="font-semibold text-gray-900 hover:text-pink-600 transition">
+              class="font-semibold text-white hover:text-[#e91e8c] transition">
               {{ sub.profile.display_name }}
             </Link>
             <p class="text-sm text-gray-500">{{ sub.profile.city }}</p>
           </div>
 
           <div class="text-right">
-            <p class="font-bold text-gray-900">CHF {{ sub.amount_chf }}<span class="text-xs text-gray-400 font-normal">/Monat</span></p>
+            <p class="font-bold text-white">CHF {{ sub.amount_chf }}<span class="text-xs text-gray-500 font-normal">/Monat</span></p>
             <p class="text-xs mt-0.5"
-              :class="sub.status === 'active' ? 'text-green-600' : 'text-orange-500'">
+              :class="sub.status === 'active' ? 'text-green-500' : 'text-yellow-500'">
               {{ statusLabel(sub.status) }}
             </p>
-            <p v-if="sub.renews_at" class="text-xs text-gray-400">Verlängert am {{ sub.renews_at }}</p>
+            <p v-if="sub.renews_at" class="text-xs text-gray-500">Verlängert am {{ sub.renews_at }}</p>
           </div>
 
           <Link :href="route('profile.show', sub.profile.slug)"
-            class="shrink-0 border border-gray-200 text-gray-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:border-pink-300 hover:text-pink-600 transition">
+            class="shrink-0 border border-[#2a2a2a] text-gray-400 text-xs font-semibold px-3 py-1.5 rounded-lg hover:border-[#e91e8c]/50 hover:text-[#e91e8c] transition">
             Zum Profil
           </Link>
         </div>
