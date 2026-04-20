@@ -18,7 +18,7 @@
         </nav>
         <div class="flex items-center gap-3 ml-auto shrink-0">
           <template v-if="$page.props.auth.user">
-            <Link :href="route('inserat.dashboard')" class="text-sm text-gray-300 hover:text-white transition">
+            <Link :href="dashboardRoute" class="text-sm text-gray-300 hover:text-white transition">
               Mein Konto
             </Link>
             <Link :href="route('logout')" method="post" as="button" class="text-sm text-gray-400 hover:text-white transition">
@@ -89,4 +89,9 @@ import FlashMessage from '@/Components/FlashMessage.vue';
 const page = usePage();
 const cities = computed(() => page.props.cities ?? []);
 const activeCitySlug = computed(() => page.props.activeCity?.slug);
+const dashboardRoute = computed(() =>
+  page.props.auth.user?.role === 'inserent'
+    ? route('inserat.dashboard')
+    : route('konto.dashboard')
+);
 </script>

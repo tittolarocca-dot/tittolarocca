@@ -42,6 +42,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
 
 // Mitglieder-Bereich
 Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () {
+    Route::get('/',              [\App\Http\Controllers\Member\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/abonnements',  [\App\Http\Controllers\Member\SubscriptionController::class, 'index'])->name('subscriptions');
     Route::post('/abonnieren/{profile}', [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/kuendigen/{profile}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
