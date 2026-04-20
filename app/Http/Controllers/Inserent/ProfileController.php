@@ -29,9 +29,8 @@ class ProfileController extends Controller
                 'status'                 => $profile->status,
                 'listing_expires_at'     => $profile->listing_expires_at?->format('d.m.Y'),
             ] : null,
-            'cities'     => City::where('is_active', true)->orderBy('sort_order')->get(['id', 'name', 'canton']),
-            'categories' => Category::where('is_active', true)->orderBy('sort_order')->get(['id', 'name']),
-            'tags'       => Tag::orderBy('name')->get(['id', 'name']),
+            // cities and categories come from HandleInertiaRequests (include slug)
+            'tags' => Tag::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
