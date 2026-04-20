@@ -46,6 +46,28 @@ class ListingController extends Controller
 
         $package = ListingPackage::findOrFail($request->package_id);
 
+        // Gratis-Paket: direkt aktivieren ohne Stripe
+        if ($package->price_chf == 0) {
+            $expiresAt = now()->addDays($package->duration_days);
+            $profile->update([
+                'status'             => 'active',
+                'listing_expires_at' => $expiresAt,
+            ]);
+
+            ListingOrder::create([
+                'profile_id'         => $profile->id,
+                'listing_package_id' => $package->id,
+                'user_id'            => $user->id,
+                'amount_chf'         => 0,
+                'currency'           => 'CHF',
+                'status'             => 'paid',
+                'paid_at'            => now(),
+            ]);
+
+            return redirect()->route('payment.success')
+                ->with('success', 'Gratis-Inserat ist jetzt für ' . $package->duration_days . ' Tage aktiv!');
+        }
+
         // Offene Order für dieses Profil + Paket (idempotent)
         $order = ListingOrder::firstOrCreate(
             [

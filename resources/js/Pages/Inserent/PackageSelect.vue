@@ -38,7 +38,11 @@
           ]">
 
           <!-- Badge -->
-          <div v-if="pkg.name === 'Standard'"
+          <div v-if="pkg.price_chf == 0"
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+            Testmodus
+          </div>
+          <div v-else-if="pkg.name === 'Standard'"
             class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#e91e8c] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
             Beliebteste Wahl
           </div>
@@ -53,7 +57,8 @@
 
           <h3 class="font-bold text-white text-lg">{{ pkg.name }}</h3>
           <div class="mt-1 mb-3">
-            <span class="text-2xl font-extrabold text-[#e91e8c]">CHF {{ pkg.price_chf }}</span>
+            <span v-if="pkg.price_chf == 0" class="text-2xl font-extrabold text-green-500">GRATIS</span>
+            <span v-else class="text-2xl font-extrabold text-[#e91e8c]">CHF {{ pkg.price_chf }}</span>
             <span class="text-gray-500 text-sm ml-1">/ {{ pkg.duration_days }} Tage</span>
           </div>
 
@@ -67,16 +72,23 @@
       </div>
 
       <!-- Checkout Box -->
-      <div v-if="selected" class="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] p-6">
+      <div v-if="selected" :class="[
+        'rounded-2xl border p-6',
+        selected.price_chf == 0
+          ? 'bg-green-900/10 border-green-700/30'
+          : 'bg-[#1a1a1a] border-[#2a2a2a]'
+      ]">
         <div class="flex items-center justify-between flex-wrap gap-4">
           <div>
             <p class="font-semibold text-white">{{ selected.name }}-Paket</p>
             <p class="text-sm text-gray-400">{{ selected.duration_days }} Tage Laufzeit · automatisch deaktiviert nach Ablauf</p>
-            <p class="text-xs text-gray-500 mt-1">Sichere Zahlung via Stripe · Kreditkarte, TWINT (bald)</p>
+            <p v-if="selected.price_chf == 0" class="text-xs text-green-500 mt-1">✓ Testmodus – keine Zahlung erforderlich</p>
+            <p v-else class="text-xs text-gray-500 mt-1">Sichere Zahlung via Stripe · Kreditkarte, TWINT (bald)</p>
           </div>
           <div class="text-right">
-            <p class="text-3xl font-extrabold text-[#e91e8c]">CHF {{ selected.price_chf }}</p>
-            <p class="text-xs text-gray-500">inkl. MwSt.</p>
+            <p v-if="selected.price_chf == 0" class="text-3xl font-extrabold text-green-500">GRATIS</p>
+            <p v-else class="text-3xl font-extrabold text-[#e91e8c]">CHF {{ selected.price_chf }}</p>
+            <p class="text-xs text-gray-500">{{ selected.price_chf == 0 ? '14 Tage kostenlos' : 'inkl. MwSt.' }}</p>
           </div>
         </div>
 
@@ -86,9 +98,16 @@
             ← Zurück
           </Link>
           <form @submit.prevent="pay" class="ml-auto">
-            <PrimaryButton type="submit" :loading="loading" class="px-8">
-              Jetzt bezahlen · CHF {{ selected.price_chf }}
-            </PrimaryButton>
+            <button type="submit" :disabled="loading"
+              :class="[
+                'px-8 py-2.5 rounded-md text-sm font-bold transition',
+                selected.price_chf == 0
+                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-[#e91e8c] hover:bg-[#c91478] text-white',
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              ]">
+              {{ selected.price_chf == 0 ? 'Gratis aktivieren' : `Jetzt bezahlen · CHF ${selected.price_chf}` }}
+            </button>
           </form>
         </div>
       </div>
@@ -97,7 +116,7 @@
       <div class="flex flex-wrap gap-6 mt-6 justify-center text-xs text-gray-500">
         <span class="flex items-center gap-1.5">🔒 SSL-verschlüsselt</span>
         <span class="flex items-center gap-1.5">✅ Sofortige Aktivierung</span>
-        <span class="flex items-center gap-1.5">💳 Stripe – sicher & zuverlässig</span>
+        <span v-if="selected?.price_chf != 0" class="flex items-center gap-1.5">💳 Stripe – sicher & zuverlässig</span>
         <span class="flex items-center gap-1.5">🔄 Keine automatische Verlängerung</span>
       </div>
     </div>
