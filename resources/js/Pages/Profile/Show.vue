@@ -223,6 +223,7 @@
               </div>
               <!-- Private Media -->
               <div v-if="activeTab === 'private'">
+                <!-- Subscriber / Owner: full access -->
                 <template v-if="isOwner || isSubscribed">
                   <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
                   <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
@@ -233,11 +234,55 @@
                     </div>
                   </div>
                 </template>
-                <div v-else class="text-center py-16">
-                  <div class="text-5xl mb-4">🔒</div>
-                  <p class="text-gray-700 font-semibold mb-2">Private Inhalte</p>
-                  <p class="text-sm text-gray-500">Abonniere für CHF {{ profile.subscription_price_chf }}/Monat</p>
-                </div>
+
+                <!-- Non-subscriber: blurred preview grid -->
+                <template v-else-if="privateMediaCount > 0">
+                  <div class="relative">
+                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                      <div v-for="i in Math.min(privateMediaCount, 10)" :key="i"
+                        class="aspect-square rounded-lg overflow-hidden relative select-none">
+                        <!-- Gradient background that mimics a blurred photo -->
+                        <div class="absolute inset-0 scale-110"
+                          :style="`background: ${blurGradients[(i - 1) % blurGradients.length]}; filter: blur(10px) brightness(0.65);`" />
+                        <!-- Lock icon overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                          <svg class="w-7 h-7 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Fade + subscribe CTA overlay at bottom -->
+                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-white via-white/95 to-transparent flex flex-col items-center pb-4">
+                      <svg class="w-10 h-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                      </svg>
+                      <p class="font-bold text-gray-800 text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
+                      <p class="text-xs text-gray-500 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
+                      <template v-if="!$page.props.auth.user">
+                        <Link :href="route('register')"
+                          class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          Kostenlos testen – 7 Tage gratis
+                        </Link>
+                      </template>
+                      <template v-else-if="!hasTrialed">
+                        <button @click="startTrial" :disabled="trialing"
+                          class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          {{ trialing ? 'Wird aktiviert…' : '7 Tage gratis testen' }}
+                        </button>
+                      </template>
+                      <template v-else>
+                        <button @click="subscribe" :disabled="subscribing"
+                          class="bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          {{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
+                        </button>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+
+                <div v-else class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
               </div>
             </div>
           </div>
@@ -316,6 +361,7 @@ const props = defineProps({
   hasSubscriptionOffer:{ type: Boolean, default: false },
   hasReviewed:         { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
+  privateMediaCount:   { type: Number,  default: 0 },
 });
 
 const activeTab        = ref('public');
@@ -327,9 +373,20 @@ const reviewForm       = ref({ stars: 0, comment: '' });
 const replyTarget      = ref(null);
 const replyText        = ref('');
 
+const blurGradients = [
+  'linear-gradient(135deg, #f093fb, #f5576c)',
+  'linear-gradient(135deg, #4facfe, #00f2fe)',
+  'linear-gradient(135deg, #f7971e, #ffd200)',
+  'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+  'linear-gradient(135deg, #84fab0, #8fd3f4)',
+  'linear-gradient(135deg, #fd7043, #e91e8c)',
+  'linear-gradient(135deg, #30cfd0, #330867)',
+  'linear-gradient(135deg, #f6d365, #fda085)',
+];
+
 const tabs = computed(() => [
   { key: 'public',  label: 'Öffentlich', count: props.publicMedia.length },
-  { key: 'private', label: 'Privat 🔒',  count: props.privateMedia.length },
+  { key: 'private', label: 'Privat 🔒',  count: props.privateMediaCount || props.privateMedia.length },
 ]);
 
 const avgRating = computed(() => {
