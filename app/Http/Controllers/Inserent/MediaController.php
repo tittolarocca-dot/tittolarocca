@@ -89,12 +89,12 @@ class MediaController extends Controller
             'type'           => $type,
             'storage_path'   => $path,
             'visibility'     => $visibility,
-            'status'         => 'pending',
+            'status'         => 'approved',
             'sort_order'     => $nextSort,
             'filesize_bytes' => $file->getSize(),
         ]);
 
-        return back()->with('success', 'Datei hochgeladen. Sie wird geprüft und bald freigeschaltet.');
+        return back()->with('success', 'Datei hochgeladen und sofort sichtbar.');
     }
 
     public function destroy(Request $request, Media $media)
