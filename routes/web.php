@@ -44,13 +44,13 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
 Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () {
     Route::get('/',              [\App\Http\Controllers\Member\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/abonnements',  [\App\Http\Controllers\Member\SubscriptionController::class, 'index'])->name('subscriptions');
-    Route::post('/abonnieren/{profile}', [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
-    Route::post('/gratis-test/{profile}',[\App\Http\Controllers\Member\SubscriptionController::class, 'trial'])->name('trial');
-    Route::post('/kuendigen/{profile}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
+    Route::post('/abonnieren/{profile:slug}', [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
+    Route::post('/gratis-test/{profile:slug}',[\App\Http\Controllers\Member\SubscriptionController::class, 'trial'])->name('trial');
+    Route::post('/kuendigen/{profile:slug}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
     Route::get('/nachrichten',                        [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
-    Route::post('/nachrichten/{profile}',             [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
-    Route::get('/nachrichten/{userId}/verlauf',       [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
-    Route::post('/bewertung/{profile}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
+    Route::post('/nachrichten/{profile:slug}',         [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/nachrichten/{userId}/verlauf',        [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::post('/bewertung/{profile:slug}',           [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
 });
 
 // Stripe Webhooks
