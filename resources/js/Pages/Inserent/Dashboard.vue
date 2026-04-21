@@ -35,6 +35,7 @@
               <p class="text-xs mt-0.5" :class="stats.isActive ? 'text-green-600' : 'text-yellow-600'">
                 {{ stats.isActive ? `Läuft bis ${stats.expiresAt}` : 'Kaufe ein Paket, um sichtbar zu werden.' }}
               </p>
+              <p class="text-xs text-gray-400 mt-0.5">Inseriert am {{ stats.createdAt }}</p>
             </div>
           </div>
           <Link v-if="!stats.isActive" :href="route('inserat.package.select')"
@@ -45,6 +46,24 @@
             class="shrink-0 border border-green-600 text-green-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-green-50 transition">
             Verlängern
           </Link>
+        </div>
+
+        <!-- Push-Karte -->
+        <div v-if="stats.isActive" class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🚀</span>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm">Inserat pushen</p>
+              <p class="text-xs text-gray-500 mt-0.5">Erscheine für 24h ganz oben auf der ersten Seite</p>
+              <p v-if="stats.pushedAt" class="text-xs text-gray-400 mt-0.5">Zuletzt gepusht: {{ stats.pushedAt }}</p>
+            </div>
+          </div>
+          <form @submit.prevent="push">
+            <button type="submit" :disabled="pushing"
+              class="shrink-0 bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+              {{ pushing ? 'Weiterleitung…' : 'CHF 5.00 pushen' }}
+            </button>
+          </form>
         </div>
 
         <!-- Statistiken -->
@@ -74,8 +93,8 @@
 </template>
 
 <script setup>
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
@@ -89,6 +108,12 @@ const statCards = computed(() => props.stats ? [
   { label: 'Medien',         value: props.stats.mediaCount },
   { label: 'Status',         value: props.stats.isActive ? 'Aktiv' : 'Inaktiv' },
 ] : []);
+
+const pushing = ref(false);
+function push() {
+  pushing.value = true;
+  router.post(route('inserat.push'), {}, { onFinish: () => { pushing.value = false; } });
+}
 
 const quickActions = [
   { icon: '✏️', label: 'Profil bearbeiten', desc: 'Texte und Angaben ändern', href: route('inserat.profile.edit') },

@@ -12,7 +12,8 @@ class HomeController extends Controller
         $profiles = Profile::with(['city', 'category', 'publicMedia'])
             ->where('status', 'active')
             ->where('listing_expires_at', '>', now())
-            ->latest()
+            ->orderByDesc('pushed_at')
+            ->orderByDesc('created_at')
             ->paginate(20);
 
         return inertia('Home/Index', [
@@ -28,7 +29,8 @@ class HomeController extends Controller
             ->where('city_id', $city->id)
             ->where('status', 'active')
             ->where('listing_expires_at', '>', now())
-            ->latest()
+            ->orderByDesc('pushed_at')
+            ->orderByDesc('created_at')
             ->paginate(20);
 
         return inertia('Home/Index', [
@@ -45,7 +47,8 @@ class HomeController extends Controller
             ->where('category_id', $category->id)
             ->where('status', 'active')
             ->where('listing_expires_at', '>', now())
-            ->latest()
+            ->orderByDesc('pushed_at')
+            ->orderByDesc('created_at')
             ->paginate(20);
 
         return inertia('Home/Index', [

@@ -115,4 +115,42 @@ class ListingController extends Controller
 
         return redirect($stripeSession->url);
     }
+
+    public function push(Request $request)
+    {
+        $user    = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile || !$profile->isActive()) {
+            return back()->with('error', 'Dein Inserat muss aktiv sein, um es zu pushen.');
+        }
+
+        Stripe::setApiKey(config('cashier.secret'));
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'mode'                 => 'payment',
+            'line_items'           => [[
+                'price_data' => [
+                    'currency'     => 'chf',
+                    'unit_amount'  => 500,
+                    'product_data' => [
+                        'name'        => 'Inserat pushen – 24h Top-Platzierung',
+                        'description' => "\"{ $profile->display_name}\" wird auf die erste Seite gepusht.",
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'metadata' => [
+                'type'       => 'push',
+                'profile_id' => $profile->id,
+                'user_id'    => $user->id,
+            ],
+            'customer_email' => $user->email,
+            'success_url'    => route('inserat.dashboard') . '?pushed=1',
+            'cancel_url'     => route('inserat.dashboard'),
+        ]);
+
+        return redirect($session->url);
+    }
 }

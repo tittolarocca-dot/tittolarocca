@@ -60,6 +60,8 @@ class StripeWebhookController extends Controller
 
         if ($type === 'subscription') {
             $this->activatePlatformSubscription($session);
+        } elseif ($type === 'push') {
+            $this->handlePushPayment($session);
         } else {
             $this->activateListingOrder($session);
         }
@@ -132,6 +134,17 @@ class StripeWebhookController extends Controller
         }
 
         Log::info("Platform subscription created for user {$userId} → profile {$profileId}");
+    }
+
+    // ── Push-Zahlung: Inserat auf erste Seite pushen ─────────────────────
+
+    private function handlePushPayment(object $session): void
+    {
+        $profileId = $session->metadata->profile_id ?? null;
+        if (!$profileId) return;
+
+        Profile::where('id', $profileId)->update(['pushed_at' => now()]);
+        Log::info("Profile {$profileId} pushed to top.");
     }
 
     // ── Abo: monatliche Erneuerung ────────────────────────────────────────

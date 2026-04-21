@@ -174,6 +174,9 @@
             <div v-if="profile.age" class="flex justify-between text-gray-600">
               <span>🎂 Alter</span><span class="text-gray-900">{{ profile.age }} Jahre</span>
             </div>
+            <div class="flex justify-between text-gray-600">
+              <span>📅 Inseriert</span><span class="text-gray-900">{{ profile.created_at }}</span>
+            </div>
           </div>
         </div>
 

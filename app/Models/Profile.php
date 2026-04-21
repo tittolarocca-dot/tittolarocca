@@ -10,7 +10,7 @@ class Profile extends Model
         'user_id', 'slug', 'display_name', 'description',
         'city_id', 'category_id', 'age',
         'whatsapp_number_encrypted', 'subscription_price_chf',
-        'status', 'listing_expires_at', 'featured_until',
+        'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
         'total_subscribers', 'total_views',
     ];
@@ -18,6 +18,7 @@ class Profile extends Model
     protected $casts = [
         'listing_expires_at' => 'datetime',
         'featured_until'     => 'datetime',
+        'pushed_at'          => 'datetime',
         'subscription_price_chf' => 'decimal:2',
     ];
 

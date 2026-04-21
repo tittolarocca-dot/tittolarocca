@@ -66,6 +66,7 @@ class ProfileController extends Controller
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
                 'whatsapp_number'        => $profile->whatsapp_number,
+                'created_at'             => $profile->created_at->format('d.m.Y'),
             ],
             'publicMedia'         => $publicMedia,
             'privateMedia'        => $privateMedia,

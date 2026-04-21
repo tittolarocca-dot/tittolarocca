@@ -95,6 +95,7 @@
               <div class="flex flex-wrap gap-3 text-xs">
                 <span v-if="profiles.data[0].category" class="text-[#e91e8c]">🏷 {{ profiles.data[0].category?.name }}</span>
                 <span v-if="profiles.data[0].city" class="text-gray-500">📍 {{ profiles.data[0].city?.name }}</span>
+                <span class="text-gray-400">📅 {{ formatDate(profiles.data[0].created_at) }}</span>
                 <span class="ml-auto text-[#e91e8c] font-bold text-sm">CHF {{ profiles.data[0].subscription_price_chf }}/Mo</span>
               </div>
             </div>
@@ -124,6 +125,7 @@
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
                 <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
                 <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
+                <span class="ml-auto">📅 {{ formatDate(profile.created_at) }}</span>
               </div>
             </div>
           </a>
@@ -160,6 +162,12 @@ const filters = ref({
   category: props.activeCategory?.slug ?? '',
   search:   '',
 });
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
 
 function applyFilters() {
   if (filters.value.city) {

@@ -28,6 +28,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::put('/profil',      [\App\Http\Controllers\Inserent\ProfileController::class, 'update'])->name('profile.update');
     Route::get('/paket',       [\App\Http\Controllers\Inserent\ListingController::class, 'selectPackage'])->name('package.select');
     Route::post('/paket/pay',  [\App\Http\Controllers\Inserent\ListingController::class, 'checkout'])->name('package.checkout');
+    Route::post('/pushen',     [\App\Http\Controllers\Inserent\ListingController::class, 'push'])->name('push');
     Route::get('/medien',      [\App\Http\Controllers\Inserent\MediaController::class, 'index'])->name('media.index');
     Route::post('/medien',     [\App\Http\Controllers\Inserent\MediaController::class, 'store'])->name('media.store');
     Route::delete('/medien/{media}', [\App\Http\Controllers\Inserent\MediaController::class, 'destroy'])->name('media.destroy');
