@@ -116,10 +116,10 @@
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Kontakt & Preis</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InputField id="whatsapp_number" label="WhatsApp-Nummer"
+            <InputField id="whatsapp_number" label="Telefon / WhatsApp"
               v-model="form.whatsapp_number" type="tel"
               placeholder="+41 79 123 45 67" :error="form.errors.whatsapp_number"
-              hint="Nur für Abonnenten sichtbar – verschlüsselt gespeichert" />
+              hint="Für alle Besucher sichtbar – wird als WhatsApp-Link angezeigt" />
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">

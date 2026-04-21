@@ -54,8 +54,7 @@ class ProfileController extends Controller
                 'subscription_price_chf' => $profile->subscription_price_chf,
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
-                // Only reveal to owner/subscriber
-                'whatsapp_number'        => ($isOwner || $subscribed) ? $profile->whatsapp_number : null,
+                'whatsapp_number'        => $profile->whatsapp_number,
             ],
             'publicMedia'        => $publicMedia,
             'privateMedia'       => $privateMedia,
