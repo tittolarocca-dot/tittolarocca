@@ -36,6 +36,41 @@ class SubscriptionController extends Controller
         return Inertia::render('Member/Subscriptions', compact('subscriptions'));
     }
 
+    public function trial(Request $request, Profile $profile)
+    {
+        $user = $request->user();
+
+        if (!$profile->isActive()) {
+            return back()->with('error', 'Dieses Profil ist nicht mehr aktiv.');
+        }
+
+        // Already has any subscription record for this profile?
+        $existing = $user->platformSubscriptions()
+            ->where('profile_id', $profile->id)
+            ->first();
+
+        if ($existing) {
+            if ($existing->status === 'trialing' && $existing->current_period_end?->isFuture()) {
+                return back()->with('error', 'Du hast bereits einen laufenden Gratis-Test.');
+            }
+            return back()->with('error', 'Du hast den Gratis-Test für dieses Profil bereits genutzt.');
+        }
+
+        PlatformSubscription::create([
+            'subscriber_user_id'   => $user->id,
+            'profile_id'           => $profile->id,
+            'amount_chf'           => 0,
+            'status'               => 'trialing',
+            'current_period_start' => now(),
+            'current_period_end'   => now()->addDays(7),
+        ]);
+
+        $profile->increment('total_subscribers');
+
+        return redirect()->route('profile.show', $profile->slug)
+            ->with('success', 'Gratis-Test aktiviert! Du hast 7 Tage Zugang zu allen privaten Inhalten.');
+    }
+
     public function subscribe(Request $request, Profile $profile)
     {
         $user = $request->user();
@@ -104,11 +139,18 @@ class SubscriptionController extends Controller
 
         $subscription = $user->platformSubscriptions()
             ->where('profile_id', $profile->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'trialing'])
             ->first();
 
         if (!$subscription) {
             return back()->with('error', 'Kein aktives Abonnement gefunden.');
+        }
+
+        // Trial: cancel immediately (no Stripe involved)
+        if ($subscription->status === 'trialing') {
+            $subscription->update(['status' => 'cancelled', 'cancelled_at' => now()]);
+            $profile->decrement('total_subscribers');
+            return back()->with('success', 'Gratis-Test beendet.');
         }
 
         $stripe = new StripeClient(config('services.stripe.secret'));

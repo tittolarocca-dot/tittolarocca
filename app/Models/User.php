@@ -43,7 +43,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->platformSubscriptions()
             ->where('profile_id', $profile->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'trialing'])
             ->where('current_period_end', '>', now())
             ->exists();
     }

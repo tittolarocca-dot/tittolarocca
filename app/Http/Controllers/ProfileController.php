@@ -21,6 +21,16 @@ class ProfileController extends Controller
         $profile->loadMissing(['city', 'category', 'tags', 'approvedReviews.user']);
         $profile->increment('total_views');
 
+        $trialSub = $user ? $user->platformSubscriptions()
+            ->where('profile_id', $profile->id)
+            ->where('status', 'trialing')
+            ->where('current_period_end', '>', now())
+            ->first() : null;
+
+        $hasTrialed = $user ? $user->platformSubscriptions()
+            ->where('profile_id', $profile->id)
+            ->exists() : false;
+
         $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility']);
 
         $privateMedia = ($isOwner || $subscribed)
@@ -61,6 +71,10 @@ class ProfileController extends Controller
             'reviews'            => $reviews,
             'isOwner'             => $isOwner,
             'isSubscribed'        => $subscribed,
+            'isTrialing'          => (bool) $trialSub,
+            'trialEndsAt'         => $trialSub?->current_period_end?->format('d.m.Y'),
+            'trialDaysLeft'       => $trialSub ? max(0, (int) now()->diffInDays($trialSub->current_period_end, false)) : 0,
+            'hasTrialed'          => $hasTrialed,
             'hasSubscriptionOffer'=> $profile->subscription_price_chf > 0,
             'hasReviewed'         => $user ? \App\Models\Review::where('reviewer_user_id', $user->id)->where('profile_id', $profile->id)->exists() : false,
             'subscribed'          => $request->query('subscribed') === '1',

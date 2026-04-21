@@ -49,6 +49,8 @@
 
           <!-- Subscribe / Owner CTA -->
           <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+
+            <!-- Owner -->
             <template v-if="isOwner">
               <Link :href="route('inserat.profile.edit')"
                 class="block w-full text-center bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-gray-200 transition mb-2">
@@ -59,6 +61,32 @@
                 🖼️ Medien verwalten
               </Link>
             </template>
+
+            <!-- Aktiver Trial -->
+            <template v-else-if="isTrialing">
+              <div class="text-center mb-4">
+                <span class="inline-block bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full mb-2">
+                  🎁 Gratis-Test aktiv
+                </span>
+                <p class="text-2xl font-black text-gray-900">{{ trialDaysLeft }} Tage</p>
+                <p class="text-xs text-gray-500 mt-0.5">noch bis {{ trialEndsAt }}</p>
+              </div>
+              <div class="bg-purple-50 rounded-lg p-3 mb-3 text-xs text-purple-700 text-center">
+                Privater Zugang bis {{ trialEndsAt }} kostenlos
+              </div>
+              <p class="text-xs text-gray-500 text-center mb-3">Danach für CHF {{ profile.subscription_price_chf }}/Monat weiter</p>
+              <form @submit.prevent="subscribe" class="mb-2">
+                <button type="submit" :disabled="subscribing"
+                  class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-2.5 rounded-lg transition text-sm">
+                  {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
+                </button>
+              </form>
+              <button @click="cancelSub" class="w-full text-xs text-gray-400 hover:text-red-500 transition">
+                Test beenden
+              </button>
+            </template>
+
+            <!-- Aktives bezahltes Abo -->
             <template v-else-if="isSubscribed">
               <div class="text-center mb-3">
                 <p class="text-green-700 text-sm font-semibold">✅ Abonniert</p>
@@ -68,23 +96,64 @@
                 Abonnement kündigen
               </button>
             </template>
-            <template v-else-if="hasSubscriptionOffer">
+
+            <!-- Nicht eingeloggt -->
+            <template v-else-if="!$page.props.auth.user">
+              <div class="text-center mb-4">
+                <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
+                  <p class="text-purple-700 font-bold text-sm">🎁 7 Tage gratis testen</p>
+                  <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
+                </div>
+              </div>
+              <Link :href="route('register')"
+                class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition text-sm mb-2">
+                Kostenlos registrieren & testen
+              </Link>
+              <Link :href="route('login')"
+                class="block w-full text-center border border-gray-200 text-gray-600 text-sm font-semibold py-2.5 rounded-lg hover:border-gray-300 transition">
+                Bereits registriert? Anmelden
+              </Link>
+            </template>
+
+            <!-- Eingeloggt, Trial verfügbar -->
+            <template v-else-if="hasSubscriptionOffer && !hasTrialed">
+              <div class="text-center mb-4">
+                <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
+                  <p class="text-purple-700 font-bold text-sm">🎁 7 Tage gratis testen</p>
+                  <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
+                </div>
+              </div>
+              <form @submit.prevent="startTrial" class="mb-2">
+                <button type="submit" :disabled="trialing"
+                  class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
+                  {{ trialing ? 'Wird aktiviert…' : '7 Tage gratis testen' }}
+                </button>
+              </form>
+              <form @submit.prevent="subscribe">
+                <button type="submit" :disabled="subscribing"
+                  class="w-full border border-[#e91e8c] text-[#e91e8c] font-semibold py-2.5 rounded-lg hover:bg-[#e91e8c]/10 transition text-sm">
+                  {{ subscribing ? 'Weiterleitung…' : `Direkt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
+                </button>
+              </form>
+            </template>
+
+            <!-- Eingeloggt, Trial bereits genutzt -->
+            <template v-else-if="hasSubscriptionOffer && hasTrialed">
               <div class="text-center mb-3">
                 <p class="text-gray-500 text-xs uppercase tracking-wide mb-1">Privater Zugang</p>
                 <p class="text-3xl font-black text-gray-900">CHF {{ profile.subscription_price_chf }}</p>
                 <p class="text-xs text-gray-500">/ Monat</p>
               </div>
-              <form v-if="$page.props.auth.user" @submit.prevent="subscribe">
+              <form @submit.prevent="subscribe">
                 <button type="submit" :disabled="subscribing"
                   class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
                   {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
                 </button>
               </form>
-              <Link v-else :href="route('register')"
-                class="block w-full text-center bg-[#e91e8c] hover:bg-[#c91478] text-white font-bold py-3 rounded-lg transition text-sm">
-                Registrieren & Abonnieren
-              </Link>
             </template>
+
           </div>
 
           <!-- Stats -->
@@ -240,6 +309,10 @@ const props = defineProps({
   reviews:             { type: Array,  default: () => [] },
   isOwner:             { type: Boolean, default: false },
   isSubscribed:        { type: Boolean, default: false },
+  isTrialing:          { type: Boolean, default: false },
+  trialEndsAt:         { type: String,  default: null },
+  trialDaysLeft:       { type: Number,  default: 0 },
+  hasTrialed:          { type: Boolean, default: false },
   hasSubscriptionOffer:{ type: Boolean, default: false },
   hasReviewed:         { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
@@ -248,6 +321,7 @@ const props = defineProps({
 const activeTab        = ref('public');
 const lightboxItem     = ref(null);
 const subscribing      = ref(false);
+const trialing         = ref(false);
 const submittingReview = ref(false);
 const reviewForm       = ref({ stars: 0, comment: '' });
 const replyTarget      = ref(null);
@@ -264,6 +338,13 @@ const avgRating = computed(() => {
 });
 
 function openLightbox(item) { lightboxItem.value = item; }
+
+function startTrial() {
+  trialing.value = true;
+  router.post(route('konto.trial', props.profile.slug), {}, {
+    onFinish: () => { trialing.value = false; },
+  });
+}
 
 function subscribe() {
   subscribing.value = true;

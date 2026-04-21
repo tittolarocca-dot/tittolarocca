@@ -24,12 +24,25 @@
           </div>
 
           <div class="text-right">
-            <p class="font-bold text-gray-900">CHF {{ sub.amount_chf }}<span class="text-xs text-gray-500 font-normal">/Monat</span></p>
+            <p class="font-bold text-gray-900">
+              <template v-if="sub.status === 'trialing'">
+                <span class="text-purple-600">GRATIS</span>
+              </template>
+              <template v-else>
+                CHF {{ sub.amount_chf }}<span class="text-xs text-gray-500 font-normal">/Monat</span>
+              </template>
+            </p>
             <p class="text-xs mt-0.5"
-              :class="sub.status === 'active' ? 'text-green-600' : 'text-yellow-600'">
+              :class="{
+                'text-green-600':  sub.status === 'active',
+                'text-purple-600': sub.status === 'trialing',
+                'text-yellow-600': !['active','trialing'].includes(sub.status),
+              }">
               {{ statusLabel(sub.status) }}
             </p>
-            <p v-if="sub.renews_at" class="text-xs text-gray-400">Verlängert am {{ sub.renews_at }}</p>
+            <p v-if="sub.renews_at" class="text-xs text-gray-400">
+              {{ sub.status === 'trialing' ? 'Gratis bis' : 'Verlängert am' }} {{ sub.renews_at }}
+            </p>
           </div>
 
           <Link :href="route('profile.show', sub.profile.slug)"
@@ -49,6 +62,11 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 defineProps({ subscriptions: { type: Array, default: () => [] } });
 
 function statusLabel(s) {
-  return { active: 'Aktiv', cancelled: 'Gekündigt', past_due: 'Zahlung ausstehend' }[s] ?? s;
+  return {
+    active:    'Aktiv',
+    trialing:  '🎁 Gratis-Test',
+    cancelled: 'Gekündigt',
+    past_due:  'Zahlung ausstehend',
+  }[s] ?? s;
 }
 </script>
