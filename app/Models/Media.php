@@ -11,11 +11,18 @@ class Media extends Model
         'filesize_bytes', 'duration_seconds',
     ];
 
+    protected $appends = ['url'];
+
     protected $casts = [
         'sort_order'      => 'integer',
         'filesize_bytes'  => 'integer',
         'duration_seconds'=> 'integer',
     ];
+
+    public function getUrlAttribute(): string
+    {
+        return route('media.stream', $this->id);
+    }
 
     public function profile()   { return $this->belongsTo(Profile::class); }
     public function isPublic()  { return $this->visibility === 'public'; }

@@ -21,22 +21,10 @@ class ProfileController extends Controller
         $profile->loadMissing(['city', 'category', 'tags', 'approvedReviews.user']);
         $profile->increment('total_views');
 
-        $publicMedia = $profile->publicMedia()
-            ->get()
-            ->map(fn($m) => [
-                'id'   => $m->id,
-                'type' => $m->type,
-                'url'  => route('media.stream', $m->id),
-            ]);
+        $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility']);
 
         $privateMedia = ($isOwner || $subscribed)
-            ? $profile->privateMedia()
-                ->get()
-                ->map(fn($m) => [
-                    'id'   => $m->id,
-                    'type' => $m->type,
-                    'url'  => route('media.stream', $m->id),
-                ])
+            ? $profile->privateMedia()->get(['id', 'type', 'visibility'])
             : collect([]);
 
         $reviews = $profile->approvedReviews()
