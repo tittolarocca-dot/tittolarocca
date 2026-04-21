@@ -6,10 +6,10 @@
 
       <!-- Header -->
       <div class="mb-6">
-        <h1 class="text-2xl font-bold text-white">
+        <h1 class="text-2xl font-bold text-gray-900">
           {{ profile ? 'Profil bearbeiten' : 'Profil erstellen' }}
         </h1>
-        <p class="text-gray-400 text-sm mt-1">
+        <p class="text-gray-500 text-sm mt-1">
           {{ profile ? 'Ändere deine Angaben – Änderungen sind sofort sichtbar.' : 'Fülle alle Pflichtfelder aus. Du wählst danach ein Paket.' }}
         </p>
       </div>
@@ -19,20 +19,20 @@
         <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-0 flex-1 last:flex-none">
           <div :class="[
             'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-            i === 0 ? 'bg-[#e91e8c] text-white' : 'bg-[#2a2a2a] text-gray-500',
+            i === 0 ? 'bg-[#e91e8c] text-white' : 'bg-gray-200 text-gray-500',
           ]">{{ i + 1 }}</div>
-          <span class="ml-1.5 text-xs font-medium" :class="i === 0 ? 'text-[#e91e8c]' : 'text-gray-500'">
+          <span class="ml-1.5 text-xs font-medium" :class="i === 0 ? 'text-[#e91e8c]' : 'text-gray-400'">
             {{ step }}
           </span>
-          <div v-if="i < steps.length - 1" class="flex-1 h-px bg-[#2a2a2a] mx-3"></div>
+          <div v-if="i < steps.length - 1" class="flex-1 h-px bg-gray-200 mx-3"></div>
         </div>
       </div>
 
       <form @submit.prevent="submit" class="space-y-6">
 
         <!-- Basisdaten -->
-        <div class="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 space-y-4">
-          <h2 class="font-semibold text-gray-400 text-xs uppercase tracking-wide">Basisdaten</h2>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Basisdaten</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField id="display_name" label="Name / Pseudonym"
@@ -46,65 +46,65 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Stadt -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
                 Stadt <span class="text-[#e91e8c]">*</span>
               </label>
               <select v-model="form.city_id"
-                :class="['w-full px-3 py-2 border rounded-md text-sm bg-[#111111] text-white focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
-                  form.errors.city_id ? 'border-red-500' : 'border-[#2a2a2a]']">
+                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                  form.errors.city_id ? 'border-red-500' : 'border-gray-300']">
                 <option value="">Stadt wählen…</option>
                 <option v-for="city in cities" :key="city.id" :value="city.id">
                   {{ city.name }} ({{ city.canton }})
                 </option>
               </select>
-              <p v-if="form.errors.city_id" class="mt-1 text-xs text-red-400">{{ form.errors.city_id }}</p>
+              <p v-if="form.errors.city_id" class="mt-1 text-xs text-red-600">{{ form.errors.city_id }}</p>
             </div>
 
             <!-- Kategorie -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
                 Kategorie <span class="text-[#e91e8c]">*</span>
               </label>
               <select v-model="form.category_id"
-                :class="['w-full px-3 py-2 border rounded-md text-sm bg-[#111111] text-white focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
-                  form.errors.category_id ? 'border-red-500' : 'border-[#2a2a2a]']">
+                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                  form.errors.category_id ? 'border-red-500' : 'border-gray-300']">
                 <option value="">Kategorie wählen…</option>
                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                   {{ cat.name }}
                 </option>
               </select>
-              <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-400">{{ form.errors.category_id }}</p>
+              <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-600">{{ form.errors.category_id }}</p>
             </div>
           </div>
         </div>
 
         <!-- Beschreibung -->
-        <div class="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 space-y-3">
-          <h2 class="font-semibold text-gray-400 text-xs uppercase tracking-wide">Beschreibung</h2>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Beschreibung</h2>
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
               Über mich
-              <span class="text-gray-500 font-normal ml-1">({{ form.description?.length ?? 0 }}/2000)</span>
+              <span class="text-gray-400 font-normal ml-1">({{ form.description?.length ?? 0 }}/2000)</span>
             </label>
             <textarea v-model="form.description" rows="5" maxlength="2000"
               placeholder="Beschreibe dich, deine Angebote und was Besucher erwarten können…"
-              :class="['w-full px-3 py-2 border rounded-md text-sm bg-[#111111] text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition resize-none',
-                form.errors.description ? 'border-red-500' : 'border-[#2a2a2a]']"
+              :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition resize-none',
+                form.errors.description ? 'border-red-500' : 'border-gray-300']"
             />
-            <p v-if="form.errors.description" class="mt-1 text-xs text-red-400">{{ form.errors.description }}</p>
+            <p v-if="form.errors.description" class="mt-1 text-xs text-red-600">{{ form.errors.description }}</p>
           </div>
         </div>
 
         <!-- Tags -->
-        <div class="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 space-y-3">
-          <h2 class="font-semibold text-gray-400 text-xs uppercase tracking-wide">Angebote / Tags</h2>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Angebote / Tags</h2>
           <div class="flex flex-wrap gap-2">
             <button v-for="tag in tags" :key="tag.id" type="button" @click="toggleTag(tag.id)"
               :class="[
                 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
                 form.tag_ids.includes(tag.id)
                   ? 'bg-[#e91e8c] text-white border-[#e91e8c]'
-                  : 'bg-transparent text-gray-400 border-[#2a2a2a] hover:border-[#e91e8c]/50',
+                  : 'bg-transparent text-gray-600 border-gray-200 hover:border-[#e91e8c]/50',
               ]">
               {{ tag.name }}
             </button>
@@ -112,8 +112,8 @@
         </div>
 
         <!-- Kontakt & Preise -->
-        <div class="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-5 space-y-4">
-          <h2 class="font-semibold text-gray-400 text-xs uppercase tracking-wide">Kontakt & Preis</h2>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Kontakt & Preis</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InputField id="whatsapp_number" label="WhatsApp-Nummer"
@@ -122,16 +122,16 @@
               hint="Nur für Abonnenten sichtbar – verschlüsselt gespeichert" />
 
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
                 Abo-Preis (CHF/Monat) <span class="text-[#e91e8c]">*</span>
               </label>
               <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">CHF</span>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">CHF</span>
                 <input v-model="form.subscription_price_chf" type="number" min="9" max="999" step="1"
-                  :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-[#111111] text-white focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
-                    form.errors.subscription_price_chf ? 'border-red-500' : 'border-[#2a2a2a]']" />
+                  :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                    form.errors.subscription_price_chf ? 'border-red-500' : 'border-gray-300']" />
               </div>
-              <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-400">{{ form.errors.subscription_price_chf }}</p>
+              <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
               <p class="mt-1 text-xs text-gray-500">Abonnenten zahlen diesen Betrag monatlich für Zugriff auf deine privaten Medien.</p>
 
               <!-- Verdienst-Rechner -->
@@ -147,7 +147,7 @@
         <!-- Actions -->
         <div class="flex items-center gap-3 justify-end">
           <Link v-if="profile" :href="route('inserat.dashboard')"
-            class="px-4 py-2 text-sm text-gray-500 hover:text-white transition">
+            class="px-4 py-2 text-sm text-gray-500 hover:text-gray-900 transition">
             Abbrechen
           </Link>
           <PrimaryButton type="submit" :loading="form.processing">

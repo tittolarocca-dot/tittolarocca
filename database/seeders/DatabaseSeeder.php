@@ -55,10 +55,11 @@ class DatabaseSeeder extends Seeder
 
         // Listing-Pakete
         ListingPackage::insert([
-            ['name' => 'Starter',    'duration_days' => 7,  'price_chf' => 19.00, 'features' => json_encode(['3 öffentliche Fotos', '7 Tage Laufzeit']),           'sort_order' => 0, 'is_active' => 1],
-            ['name' => 'Standard',   'duration_days' => 30, 'price_chf' => 49.00, 'features' => json_encode(['5 öffentliche Fotos', '30 Tage Laufzeit']),          'sort_order' => 1, 'is_active' => 1],
-            ['name' => 'Pro',        'duration_days' => 30, 'price_chf' => 79.00, 'features' => json_encode(['10 Fotos', 'VIP-Badge', '30 Tage Laufzeit']),        'sort_order' => 2, 'is_active' => 1],
-            ['name' => 'Premium',    'duration_days' => 90, 'price_chf' => 149.00,'features' => json_encode(['Unbegrenzte Fotos', 'Top-Platzierung', '90 Tage']), 'sort_order' => 3, 'is_active' => 1],
+            ['name' => 'Gratis Test', 'duration_days' => 14, 'price_chf' => 0.00,  'features' => json_encode(['3 öffentliche Fotos', '14 Tage Laufzeit', 'Testmodus – kein Stripe']), 'sort_order' => 0, 'is_active' => 1],
+            ['name' => 'Starter',    'duration_days' => 7,  'price_chf' => 19.00, 'features' => json_encode(['3 öffentliche Fotos', '7 Tage Laufzeit']),                            'sort_order' => 1, 'is_active' => 1],
+            ['name' => 'Standard',   'duration_days' => 30, 'price_chf' => 49.00, 'features' => json_encode(['5 öffentliche Fotos', '30 Tage Laufzeit']),                           'sort_order' => 2, 'is_active' => 1],
+            ['name' => 'Pro',        'duration_days' => 30, 'price_chf' => 79.00, 'features' => json_encode(['10 Fotos', 'VIP-Badge', '30 Tage Laufzeit']),                         'sort_order' => 3, 'is_active' => 1],
+            ['name' => 'Premium',    'duration_days' => 90, 'price_chf' => 149.00,'features' => json_encode(['Unbegrenzte Fotos', 'Top-Platzierung', '90 Tage']),                  'sort_order' => 4, 'is_active' => 1],
         ]);
 
         // Admin-User

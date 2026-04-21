@@ -4,29 +4,29 @@
     <div class="max-w-4xl mx-auto px-4 py-8 flex gap-4 h-[calc(100vh-120px)]">
 
       <!-- Conversation List -->
-      <div class="w-72 shrink-0 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] flex flex-col overflow-hidden">
-        <div class="px-4 py-3 border-b border-[#2a2a2a] flex items-center justify-between">
-          <h2 class="font-semibold text-white">Nachrichten</h2>
+      <div class="w-72 shrink-0 bg-white rounded-xl border border-gray-200 flex flex-col overflow-hidden shadow-sm">
+        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <h2 class="font-semibold text-gray-900">Nachrichten</h2>
           <span v-if="unreadCount" class="bg-[#e91e8c] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
             {{ unreadCount }}
           </span>
         </div>
         <div class="flex-1 overflow-y-auto">
-          <div v-if="conversations.length === 0" class="text-center py-10 text-gray-500 text-sm px-4">
+          <div v-if="conversations.length === 0" class="text-center py-10 text-gray-400 text-sm px-4">
             Noch keine Nachrichten.
           </div>
           <button
             v-for="conv in conversations" :key="conv.user_id"
             @click="openConversation(conv)"
-            class="w-full text-left px-4 py-3 border-b border-[#222] hover:bg-[#222] transition"
-            :class="activeConv?.user_id === conv.user_id ? 'bg-[#222]' : ''"
+            class="w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition"
+            :class="activeConv?.user_id === conv.user_id ? 'bg-gray-50' : ''"
           >
             <div class="flex items-center justify-between mb-0.5">
-              <span class="font-semibold text-sm text-white">{{ conv.name }}</span>
-              <span class="text-xs text-gray-500">{{ conv.last_at }}</span>
+              <span class="font-semibold text-sm text-gray-900">{{ conv.name }}</span>
+              <span class="text-xs text-gray-400">{{ conv.last_at }}</span>
             </div>
             <p class="text-xs text-gray-500 truncate">{{ conv.last_message }}</p>
-            <span v-if="conv.unread" class="inline-block mt-1 bg-[#e91e8c]/20 text-[#e91e8c] text-xs px-1.5 rounded">
+            <span v-if="conv.unread" class="inline-block mt-1 bg-[#e91e8c]/10 text-[#e91e8c] text-xs px-1.5 rounded">
               {{ conv.unread }} neu
             </span>
           </button>
@@ -34,34 +34,34 @@
       </div>
 
       <!-- Chat Panel -->
-      <div class="flex-1 bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] flex flex-col overflow-hidden">
-        <div v-if="!activeConv" class="flex-1 flex items-center justify-center text-gray-500">
+      <div class="flex-1 bg-white rounded-xl border border-gray-200 flex flex-col overflow-hidden shadow-sm">
+        <div v-if="!activeConv" class="flex-1 flex items-center justify-center text-gray-400">
           <div class="text-center">
             <div class="text-5xl mb-3">💬</div>
             <p>Wähle eine Konversation aus.</p>
           </div>
         </div>
         <template v-else>
-          <div class="px-4 py-3 border-b border-[#2a2a2a] font-semibold text-white">
+          <div class="px-4 py-3 border-b border-gray-200 font-semibold text-gray-900">
             {{ activeConv.name }}
           </div>
           <div ref="chatBox" class="flex-1 overflow-y-auto p-4 space-y-3">
-            <div v-if="chatLoading" class="text-center text-gray-500 py-8">Lädt…</div>
+            <div v-if="chatLoading" class="text-center text-gray-400 py-8">Lädt…</div>
             <template v-else>
               <div v-for="msg in chatMessages" :key="msg.id" class="flex"
                 :class="msg.from_me ? 'justify-end' : 'justify-start'">
                 <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
-                  :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-[#2a2a2a] text-gray-200'">
+                  :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
                   {{ msg.body }}
                   <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
                 </div>
               </div>
             </template>
           </div>
-          <div class="px-4 py-3 border-t border-[#2a2a2a]">
+          <div class="px-4 py-3 border-t border-gray-200">
             <form @submit.prevent="sendReply" class="flex gap-2">
               <input v-model="replyText" type="text" placeholder="Nachricht schreiben…"
-                class="flex-1 border border-[#2a2a2a] bg-[#111111] text-white rounded-lg px-3 py-2 text-sm placeholder-gray-600 focus:outline-none focus:border-[#e91e8c]"
+                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]"
                 :disabled="sending" />
               <button type="submit" :disabled="!replyText.trim() || sending"
                 class="bg-[#e91e8c] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">

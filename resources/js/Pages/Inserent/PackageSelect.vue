@@ -9,20 +9,20 @@
         <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-0 flex-1 last:flex-none">
           <div :class="[
             'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-            i <= 1 ? 'bg-[#e91e8c] text-white' : 'bg-[#2a2a2a] text-gray-500',
+            i <= 1 ? 'bg-[#e91e8c] text-white' : 'bg-gray-200 text-gray-500',
           ]">{{ i < 1 ? '✓' : i + 1 }}</div>
           <span class="ml-1.5 text-xs font-medium"
-            :class="i === 1 ? 'text-[#e91e8c]' : i < 1 ? 'text-green-500' : 'text-gray-500'">
+            :class="i === 1 ? 'text-[#e91e8c]' : i < 1 ? 'text-green-600' : 'text-gray-400'">
             {{ step }}
           </span>
           <div v-if="i < steps.length - 1" class="flex-1 h-px mx-3"
-            :class="i < 1 ? 'bg-[#e91e8c]/40' : 'bg-[#2a2a2a]'"></div>
+            :class="i < 1 ? 'bg-[#e91e8c]/40' : 'bg-gray-200'"></div>
         </div>
       </div>
 
-      <h1 class="text-2xl font-bold text-white mb-2">Paket wählen</h1>
-      <p class="text-gray-400 text-sm mb-8">
-        Wähle ein Laufzeit-Paket für <strong class="text-white">„{{ profile.display_name }}"</strong>.
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Paket wählen</h1>
+      <p class="text-gray-500 text-sm mb-8">
+        Wähle ein Laufzeit-Paket für <strong class="text-gray-900">„{{ profile.display_name }}"</strong>.
         Nach erfolgreicher Zahlung ist dein Inserat <span class="text-[#e91e8c] font-semibold">sofort aktiv</span>.
       </p>
 
@@ -33,8 +33,8 @@
           :class="[
             'relative border-2 rounded-2xl p-5 cursor-pointer transition-all',
             selectedId === pkg.id
-              ? 'border-[#e91e8c] bg-[#e91e8c]/10'
-              : 'border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#e91e8c]/40',
+              ? 'border-[#e91e8c] bg-[#e91e8c]/5'
+              : 'border-gray-200 bg-white hover:border-[#e91e8c]/40 shadow-sm',
           ]">
 
           <!-- Badge -->
@@ -50,21 +50,21 @@
           <!-- Auswahl-Indikator -->
           <div :class="[
             'w-5 h-5 rounded-full border-2 mb-3 flex items-center justify-center',
-            selectedId === pkg.id ? 'border-[#e91e8c] bg-[#e91e8c]' : 'border-[#3a3a3a]',
+            selectedId === pkg.id ? 'border-[#e91e8c] bg-[#e91e8c]' : 'border-gray-300',
           ]">
             <div v-if="selectedId === pkg.id" class="w-2 h-2 rounded-full bg-white"></div>
           </div>
 
-          <h3 class="font-bold text-white text-lg">{{ pkg.name }}</h3>
+          <h3 class="font-bold text-gray-900 text-lg">{{ pkg.name }}</h3>
           <div class="mt-1 mb-3">
-            <span v-if="pkg.price_chf == 0" class="text-2xl font-extrabold text-green-500">GRATIS</span>
+            <span v-if="pkg.price_chf == 0" class="text-2xl font-extrabold text-green-600">GRATIS</span>
             <span v-else class="text-2xl font-extrabold text-[#e91e8c]">CHF {{ pkg.price_chf }}</span>
-            <span class="text-gray-500 text-sm ml-1">/ {{ pkg.duration_days }} Tage</span>
+            <span class="text-gray-400 text-sm ml-1">/ {{ pkg.duration_days }} Tage</span>
           </div>
 
           <ul class="space-y-1.5 mt-3">
-            <li v-for="f in pkg.features" :key="f" class="flex items-start gap-1.5 text-xs text-gray-400">
-              <span class="text-green-500 shrink-0 mt-0.5">✓</span>
+            <li v-for="f in pkg.features" :key="f" class="flex items-start gap-1.5 text-xs text-gray-600">
+              <span class="text-green-600 shrink-0 mt-0.5">✓</span>
               <span>{{ f }}</span>
             </li>
           </ul>
@@ -75,26 +75,26 @@
       <div v-if="selected" :class="[
         'rounded-2xl border p-6',
         selected.price_chf == 0
-          ? 'bg-green-900/10 border-green-700/30'
-          : 'bg-[#1a1a1a] border-[#2a2a2a]'
+          ? 'bg-green-50 border-green-200'
+          : 'bg-white border-gray-200 shadow-sm'
       ]">
         <div class="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <p class="font-semibold text-white">{{ selected.name }}-Paket</p>
-            <p class="text-sm text-gray-400">{{ selected.duration_days }} Tage Laufzeit · automatisch deaktiviert nach Ablauf</p>
-            <p v-if="selected.price_chf == 0" class="text-xs text-green-500 mt-1">✓ Testmodus – keine Zahlung erforderlich</p>
-            <p v-else class="text-xs text-gray-500 mt-1">Sichere Zahlung via Stripe · Kreditkarte, TWINT (bald)</p>
+            <p class="font-semibold text-gray-900">{{ selected.name }}-Paket</p>
+            <p class="text-sm text-gray-500">{{ selected.duration_days }} Tage Laufzeit · automatisch deaktiviert nach Ablauf</p>
+            <p v-if="selected.price_chf == 0" class="text-xs text-green-700 mt-1">✓ Testmodus – keine Zahlung erforderlich</p>
+            <p v-else class="text-xs text-gray-400 mt-1">Sichere Zahlung via Stripe · Kreditkarte, TWINT (bald)</p>
           </div>
           <div class="text-right">
-            <p v-if="selected.price_chf == 0" class="text-3xl font-extrabold text-green-500">GRATIS</p>
+            <p v-if="selected.price_chf == 0" class="text-3xl font-extrabold text-green-600">GRATIS</p>
             <p v-else class="text-3xl font-extrabold text-[#e91e8c]">CHF {{ selected.price_chf }}</p>
-            <p class="text-xs text-gray-500">{{ selected.price_chf == 0 ? '14 Tage kostenlos' : 'inkl. MwSt.' }}</p>
+            <p class="text-xs text-gray-400">{{ selected.price_chf == 0 ? '14 Tage kostenlos' : 'inkl. MwSt.' }}</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3 mt-5 pt-5 border-t border-[#2a2a2a]">
+        <div class="flex items-center gap-3 mt-5 pt-5 border-t border-gray-200">
           <Link :href="route('inserat.profile.edit')"
-            class="px-4 py-2 text-sm text-gray-500 hover:text-white transition">
+            class="px-4 py-2 text-sm text-gray-400 hover:text-gray-900 transition">
             ← Zurück
           </Link>
           <form @submit.prevent="pay" class="ml-auto">
@@ -113,7 +113,7 @@
       </div>
 
       <!-- Sicherheits-Hinweise -->
-      <div class="flex flex-wrap gap-6 mt-6 justify-center text-xs text-gray-500">
+      <div class="flex flex-wrap gap-6 mt-6 justify-center text-xs text-gray-400">
         <span class="flex items-center gap-1.5">🔒 SSL-verschlüsselt</span>
         <span class="flex items-center gap-1.5">✅ Sofortige Aktivierung</span>
         <span v-if="selected?.price_chf != 0" class="flex items-center gap-1.5">💳 Stripe – sicher & zuverlässig</span>

@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-[#0f0f0f] flex flex-col justify-center py-12 px-4">
+  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4">
     <FlashMessage />
 
     <!-- Logo -->
     <div class="text-center mb-8">
       <Link href="/" class="inline-block">
-        <span class="text-white font-black text-3xl tracking-tight">
+        <span class="text-gray-900 font-black text-3xl tracking-tight">
           inserate<span class="text-[#e91e8c]">®</span>
         </span>
         <p class="text-gray-500 text-sm mt-1">Schweizer Erotik-Inserate · 18+</p>
@@ -13,11 +13,11 @@
     </div>
 
     <!-- Card -->
-    <div class="mx-auto w-full max-w-md bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl shadow-2xl overflow-hidden">
+    <div class="mx-auto w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
       <!-- Header stripe -->
-      <div class="bg-[#111111] border-b border-[#2a2a2a] px-6 py-4">
-        <h1 class="text-white font-semibold text-lg">{{ title }}</h1>
-        <p v-if="subtitle" class="text-gray-400 text-sm mt-0.5">{{ subtitle }}</p>
+      <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+        <h1 class="text-gray-900 font-semibold text-lg">{{ title }}</h1>
+        <p v-if="subtitle" class="text-gray-500 text-sm mt-0.5">{{ subtitle }}</p>
       </div>
       <div class="px-6 py-6">
         <slot />
@@ -26,7 +26,7 @@
 
     <!-- Back link -->
     <div class="text-center mt-6">
-      <Link href="/" class="text-gray-500 text-sm hover:text-white transition">← Zurück zur Startseite</Link>
+      <Link href="/" class="text-gray-500 text-sm hover:text-gray-900 transition">← Zurück zur Startseite</Link>
     </div>
   </div>
 </template>
