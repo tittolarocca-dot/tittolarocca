@@ -5,8 +5,9 @@
     <!-- Navbar -->
     <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 flex items-center h-14 gap-6">
-        <Link href="/" class="text-2xl font-black shrink-0">
-          <span class="text-gray-900">inserate</span><span class="text-[#e91e8c]">®</span>
+        <Link href="/" class="flex items-center gap-2.5 shrink-0">
+          <img src="/images/logo.png" alt="Logo" class="h-9 w-9 rounded-xl object-cover" />
+          <span class="text-xl font-black text-gray-900">inserate<span class="text-[#FF4DA6]">®</span></span>
         </Link>
         <nav class="hidden md:flex items-center gap-5 text-sm text-gray-500">
           <Link v-for="city in cities.slice(0,6)" :key="city.id"
@@ -31,7 +32,7 @@
               Anmelden
             </Link>
             <Link :href="route('register')"
-              class="bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-4 py-2 rounded transition">
+              class="bg-[#FF4DA6] hover:bg-[#e6389a] text-white text-sm font-bold px-4 py-2 rounded transition">
               Inserat aufgeben
             </Link>
           </template>
@@ -42,39 +43,39 @@
     <main><slot /></main>
 
     <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-200 mt-16 py-10">
-      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-600">
+    <footer class="mt-16 py-10" style="background-color: #FF4DA6;">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-white/80">
         <div>
-          <h5 class="text-gray-800 font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e91e8c] transition">Über uns</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Kontakt</a>
+            <a href="#" class="block hover:text-white transition">Über uns</a>
+            <a href="#" class="block hover:text-white transition">Kontakt</a>
           </div>
         </div>
         <div>
-          <h5 class="text-gray-800 font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
           <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-[#e91e8c] transition">Inserat erstellen</Link>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Preise</a>
+            <Link :href="route('register')" class="block hover:text-white transition">Inserat erstellen</Link>
+            <a href="#" class="block hover:text-white transition">Preise</a>
           </div>
         </div>
         <div>
-          <h5 class="text-gray-800 font-semibold mb-3 uppercase text-xs tracking-wide">Städte</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Städte</h5>
           <div class="space-y-1">
             <Link v-for="city in cities.slice(0,6)" :key="city.id" :href="route('city', city.slug)"
-              class="block hover:text-[#e91e8c] transition">{{ city.name }}</Link>
+              class="block hover:text-white transition">{{ city.name }}</Link>
           </div>
         </div>
         <div>
-          <h5 class="text-gray-800 font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e91e8c] transition">Impressum</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Datenschutz</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">AGB</a>
+            <a href="#" class="block hover:text-white transition">Impressum</a>
+            <a href="#" class="block hover:text-white transition">Datenschutz</a>
+            <a href="#" class="block hover:text-white transition">AGB</a>
           </div>
         </div>
       </div>
-      <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-gray-200 text-xs text-center text-gray-500">
+      <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-white/20 text-xs text-center text-white/60">
         © {{ new Date().getFullYear() }} Inserate Plattform – Nur für Erwachsene ab 18 Jahren.
       </div>
     </footer>

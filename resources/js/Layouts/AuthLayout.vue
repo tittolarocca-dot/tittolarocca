@@ -6,7 +6,7 @@
     <div class="text-center mb-8">
       <Link href="/" class="inline-block">
         <span class="text-gray-900 font-black text-3xl tracking-tight">
-          inserate<span class="text-[#e91e8c]">®</span>
+          inserate<span class="text-[#FF4DA6]">®</span>
         </span>
         <p class="text-gray-500 text-sm mt-1">Schweizer Erotik-Inserate · 18+</p>
       </Link>
