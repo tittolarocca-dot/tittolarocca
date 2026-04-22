@@ -4,58 +4,58 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\Profile;
+use App\Models\Tag;
 
 class HomeController extends Controller
 {
-    public function index()
+    private function sharedData(): array
     {
-        $profiles = Profile::with(['city', 'category', 'publicMedia'])
+        return [
+            'cities'     => City::where('is_active', true)->orderBy('sort_order')->get(),
+            'categories' => Category::where('is_active', true)->orderBy('sort_order')->get(),
+            'services'   => Tag::orderBy('name')->get(['id', 'name', 'slug']),
+        ];
+    }
+
+    private function baseQuery()
+    {
+        return Profile::with(['city', 'category', 'publicMedia'])
             ->where('status', 'active')
             ->where('listing_expires_at', '>', now())
             ->orderByDesc('pushed_at')
-            ->orderByDesc('created_at')
-            ->paginate(20);
+            ->orderByDesc('created_at');
+    }
 
-        return inertia('Home/Index', [
-            'profiles'   => $profiles,
-            'cities'     => City::where('is_active', true)->orderBy('sort_order')->get(),
-            'categories' => Category::where('is_active', true)->orderBy('sort_order')->get(),
-        ]);
+    public function index()
+    {
+        return inertia('Home/Index', array_merge($this->sharedData(), [
+            'profiles' => $this->baseQuery()->paginate(20),
+        ]));
     }
 
     public function city(City $city)
     {
-        $profiles = Profile::with(['city', 'category', 'publicMedia'])
-            ->where('city_id', $city->id)
-            ->where('status', 'active')
-            ->where('listing_expires_at', '>', now())
-            ->orderByDesc('pushed_at')
-            ->orderByDesc('created_at')
-            ->paginate(20);
-
-        return inertia('Home/Index', [
-            'profiles'      => $profiles,
-            'cities'        => City::where('is_active', true)->orderBy('sort_order')->get(),
-            'categories'    => Category::where('is_active', true)->orderBy('sort_order')->get(),
-            'activeCity'    => $city,
-        ]);
+        return inertia('Home/Index', array_merge($this->sharedData(), [
+            'profiles'   => $this->baseQuery()->where('city_id', $city->id)->paginate(20),
+            'activeCity' => $city,
+        ]));
     }
 
     public function category(Category $category)
     {
-        $profiles = Profile::with(['city', 'category', 'publicMedia'])
-            ->where('category_id', $category->id)
-            ->where('status', 'active')
-            ->where('listing_expires_at', '>', now())
-            ->orderByDesc('pushed_at')
-            ->orderByDesc('created_at')
-            ->paginate(20);
+        return inertia('Home/Index', array_merge($this->sharedData(), [
+            'profiles'       => $this->baseQuery()->where('category_id', $category->id)->paginate(20),
+            'activeCategory' => $category,
+        ]));
+    }
 
-        return inertia('Home/Index', [
-            'profiles'        => $profiles,
-            'cities'          => City::where('is_active', true)->orderBy('sort_order')->get(),
-            'categories'      => Category::where('is_active', true)->orderBy('sort_order')->get(),
-            'activeCategory'  => $category,
-        ]);
+    public function service(Tag $tag)
+    {
+        return inertia('Home/Index', array_merge($this->sharedData(), [
+            'profiles'      => $this->baseQuery()
+                ->whereHas('tags', fn($q) => $q->where('tags.id', $tag->id))
+                ->paginate(20),
+            'activeService' => $tag,
+        ]));
     }
 }

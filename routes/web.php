@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/stadt/{city:slug}', [HomeController::class, 'city'])->name('city');
 Route::get('/kategorie/{category:slug}', [HomeController::class, 'category'])->name('category');
+Route::get('/service/{tag:slug}', [HomeController::class, 'service'])->name('service');
 Route::get('/profil/{profile:slug}', [ProfileController::class, 'show'])->name('profile.show');
 
 // Auth

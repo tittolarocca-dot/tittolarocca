@@ -31,7 +31,7 @@
         <div class="flex flex-wrap gap-3 mb-3">
           <div class="relative">
             <select v-model="filters.city"
-              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[150px]">
+              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
               <option value="">Region</option>
               <option v-for="c in cities" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
@@ -39,13 +39,21 @@
           </div>
           <div class="relative">
             <select v-model="filters.category"
-              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[150px]">
+              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
               <option value="">Rubrik</option>
               <option v-for="c in categories" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
-          <div class="relative flex-1 min-w-[200px]">
+          <div class="relative">
+            <select v-model="filters.service"
+              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
+              <option value="">Service</option>
+              <option v-for="s in services" :key="s.id" :value="s.slug">{{ s.name }}</option>
+            </select>
+            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          <div class="relative flex-1 min-w-[180px]">
             <input v-model="filters.search" type="text" placeholder="Suchen..."
               @keyup.enter="applyFilters"
               class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-10 focus:outline-none focus:border-[#e91e8c] placeholder-gray-400" />
@@ -60,7 +68,8 @@
           <div class="flex gap-3">
             <span v-if="activeCity" class="text-[#e91e8c]">📍 {{ activeCity.name }}</span>
             <span v-if="activeCategory" class="text-[#e91e8c]">🏷 {{ activeCategory.name }}</span>
-            <Link v-if="activeCity || activeCategory" :href="route('home')" class="text-gray-400 hover:text-gray-900 transition">✕ Filter zurücksetzen</Link>
+            <span v-if="activeService" class="text-[#e91e8c]">✨ {{ activeService.name }}</span>
+            <Link v-if="activeCity || activeCategory || activeService" :href="route('home')" class="text-gray-400 hover:text-gray-900 transition">✕ Filter zurücksetzen</Link>
           </div>
           <span>{{ profiles.total }} Inserate</span>
         </div>
@@ -153,13 +162,16 @@ const props = defineProps({
   profiles:       Object,
   cities:         Array,
   categories:     Array,
+  services:       Array,
   activeCity:     Object,
   activeCategory: Object,
+  activeService:  Object,
 });
 
 const filters = ref({
   city:     props.activeCity?.slug ?? '',
   category: props.activeCategory?.slug ?? '',
+  service:  props.activeService?.slug ?? '',
   search:   '',
 });
 
@@ -170,7 +182,9 @@ function formatDate(iso) {
 }
 
 function applyFilters() {
-  if (filters.value.city) {
+  if (filters.value.service) {
+    router.get(route('service', filters.value.service));
+  } else if (filters.value.city) {
     router.get(route('city', filters.value.city));
   } else if (filters.value.category) {
     router.get(route('category', filters.value.category));
