@@ -10,7 +10,7 @@
     <!-- Photo Grid -->
     <div class="bg-gray-50 border-b border-gray-200">
       <div class="max-w-7xl mx-auto">
-        <div v-if="publicMedia.length" class="flex overflow-x-auto h-64 md:h-80">
+        <div v-if="publicMedia.length" class="flex overflow-x-auto h-52 sm:h-64 md:h-80">
           <div v-for="(item, i) in publicMedia.slice(0,4)" :key="item.id"
             class="shrink-0 cursor-pointer relative"
             :class="i === 0 ? 'w-1/2' : 'w-1/4'"
@@ -22,15 +22,15 @@
             </div>
           </div>
         </div>
-        <div v-else class="h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-5xl">👤</div>
+        <div v-else class="h-40 sm:h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-5xl">👤</div>
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 py-6">
-      <div class="flex flex-col md:flex-row gap-6">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <div class="flex flex-col md:flex-row gap-4 md:gap-6">
 
         <!-- LEFT: Contact Sidebar -->
-        <div class="md:w-72 shrink-0 space-y-4">
+        <div class="md:w-72 shrink-0 space-y-3 md:space-y-4">
 
           <!-- WhatsApp Kontakt (für alle sichtbar) -->
           <div v-if="profile.whatsapp_number" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
@@ -217,7 +217,7 @@
               <!-- Public Media -->
               <div v-if="activeTab === 'public'">
                 <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine Fotos.</div>
-                <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                   <div v-for="item in publicMedia" :key="item.id"
                     class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
                     <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
@@ -229,7 +229,7 @@
                 <!-- Subscriber / Owner: full access -->
                 <template v-if="isOwner || isSubscribed">
                   <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
-                  <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                  <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                     <div v-for="item in privateMedia" :key="item.id"
                       class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
                       <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
@@ -241,7 +241,7 @@
                 <!-- Non-subscriber: blurred preview grid -->
                 <template v-else-if="privateMediaCount > 0">
                   <div class="relative">
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                       <div v-for="i in Math.min(privateMediaCount, 10)" :key="i"
                         class="aspect-square rounded-lg overflow-hidden relative select-none">
                         <!-- Gradient background that mimics a blurred photo -->

@@ -3,35 +3,35 @@
     <Head title="Startseite" />
 
     <!-- Hero -->
-    <div class="bg-white border-b border-gray-200 pt-8 pb-4 px-4">
+    <div class="bg-white border-b border-gray-200 pt-5 pb-4 px-4">
       <div class="max-w-7xl mx-auto">
-        <h1 class="text-3xl md:text-4xl font-black text-gray-900 mb-6">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 mb-4">
           Sex und Erotik Inserate in der Schweiz
         </h1>
 
         <!-- Featured Profiles Carousel -->
-        <div v-if="profiles.data.length" class="relative mb-6">
-          <div class="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
+        <div v-if="profiles.data.length" class="relative mb-4">
+          <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
               :href="route('profile.show', profile.slug)"
-              class="flex flex-col items-center shrink-0 w-20 cursor-pointer group">
-              <div class="w-[72px] h-[72px] rounded-full overflow-hidden ring-2 ring-[#e91e8c] ring-offset-2 ring-offset-white group-hover:ring-[#c91478] transition">
+              class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden ring-2 ring-[#e91e8c] ring-offset-2 ring-offset-white group-hover:ring-[#c91478] transition">
                 <img v-if="profile.public_media?.[0]"
                   :src="profile.public_media[0].url"
                   :alt="profile.display_name"
                   class="w-full h-full object-cover" />
-                <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-2xl">👤</div>
+                <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-xl">👤</div>
               </div>
-              <span class="text-xs text-gray-600 mt-1.5 text-center truncate w-full">{{ profile.display_name }}</span>
+              <span class="text-xs text-gray-600 mt-1 text-center truncate w-full">{{ profile.display_name }}</span>
             </a>
           </div>
         </div>
 
-        <!-- Filter Bar -->
-        <div class="flex flex-wrap gap-3 mb-3">
+        <!-- Filter Bar — 2×2 grid on mobile, flex row on desktop -->
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 mb-3">
           <div class="relative">
             <select v-model="filters.city"
-              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
+              class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition sm:min-w-[130px]">
               <option value="">Region</option>
               <option v-for="c in cities" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
@@ -39,7 +39,7 @@
           </div>
           <div class="relative">
             <select v-model="filters.category"
-              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
+              class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition sm:min-w-[130px]">
               <option value="">Rubrik</option>
               <option v-for="c in categories" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
@@ -47,37 +47,40 @@
           </div>
           <div class="relative">
             <select v-model="filters.service"
-              class="bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition min-w-[140px]">
+              class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e91e8c] transition sm:min-w-[130px]">
               <option value="">Service</option>
               <option v-for="s in services" :key="s.id" :value="s.slug">{{ s.name }}</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
-          <div class="relative flex-1 min-w-[180px]">
+          <button @click="applyFilters" class="bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-4 py-2.5 rounded transition sm:hidden">
+            Suchen
+          </button>
+          <div class="relative col-span-2 sm:col-span-1 sm:flex-1">
             <input v-model="filters.search" type="text" placeholder="Suchen..."
               @keyup.enter="applyFilters"
               class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded px-4 py-2.5 pr-10 focus:outline-none focus:border-[#e91e8c] placeholder-gray-400" />
             <svg class="absolute right-3 top-3 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
-          <button @click="applyFilters" class="bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-5 py-2.5 rounded transition">
+          <button @click="applyFilters" class="hidden sm:block bg-[#e91e8c] hover:bg-[#c91478] text-white text-sm font-bold px-5 py-2.5 rounded transition">
             Suchen
           </button>
         </div>
 
-        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
-          <div class="flex gap-3">
+        <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+          <div class="flex flex-wrap gap-2">
             <span v-if="activeCity" class="text-[#e91e8c]">📍 {{ activeCity.name }}</span>
             <span v-if="activeCategory" class="text-[#e91e8c]">🏷 {{ activeCategory.name }}</span>
             <span v-if="activeService" class="text-[#e91e8c]">✨ {{ activeService.name }}</span>
-            <Link v-if="activeCity || activeCategory || activeService" :href="route('home')" class="text-gray-400 hover:text-gray-900 transition">✕ Filter zurücksetzen</Link>
+            <Link v-if="activeCity || activeCategory || activeService" :href="route('home')" class="text-gray-400 hover:text-gray-900 transition">✕ Zurücksetzen</Link>
           </div>
-          <span>{{ profiles.total }} Inserate</span>
+          <span class="shrink-0 ml-2">{{ profiles.total }} Inserate</span>
         </div>
       </div>
     </div>
 
     <!-- Listings -->
-    <div class="max-w-7xl mx-auto px-4 pb-12 pt-6">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 pb-12 pt-4 sm:pt-6">
       <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-400">
         <div class="text-5xl mb-4">🔍</div>
         <p class="text-lg">Keine Inserate gefunden.</p>
@@ -88,7 +91,7 @@
         <a v-if="profiles.data[0]" :href="route('profile.show', profiles.data[0].slug)"
           class="block bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#e91e8c] transition group shadow-sm">
           <div class="flex">
-            <div class="relative w-64 shrink-0 h-52">
+            <div class="relative w-28 sm:w-44 md:w-64 shrink-0 h-36 sm:h-44 md:h-52">
               <img v-if="profiles.data[0].public_media?.[0]"
                 :src="profiles.data[0].public_media[0].url"
                 :alt="profiles.data[0].display_name"
@@ -96,27 +99,28 @@
               <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-5xl">👤</div>
               <span class="absolute bottom-2 left-2 bg-[#e91e8c] text-white text-xs font-bold px-2 py-0.5 rounded">TOP AD</span>
             </div>
-            <div class="p-5 flex-1">
-              <h2 class="text-xl font-bold text-gray-900 group-hover:text-[#e91e8c] transition mb-2">
+            <div class="p-3 sm:p-5 flex-1 min-w-0">
+              <h2 class="text-base sm:text-xl font-bold text-gray-900 group-hover:text-[#e91e8c] transition mb-1 sm:mb-2 truncate">
                 {{ profiles.data[0].display_name }}
               </h2>
-              <p class="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-4">{{ profiles.data[0].description }}</p>
-              <div class="flex flex-wrap gap-3 text-xs">
+              <p class="text-gray-500 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 mb-2 sm:mb-4">{{ profiles.data[0].description }}</p>
+              <div class="flex flex-wrap gap-2 text-xs">
                 <span v-if="profiles.data[0].category" class="text-[#e91e8c]">🏷 {{ profiles.data[0].category?.name }}</span>
                 <span v-if="profiles.data[0].city" class="text-gray-500">📍 {{ profiles.data[0].city?.name }}</span>
-                <span class="text-gray-400">📅 {{ formatDate(profiles.data[0].created_at) }}</span>
-                <span class="ml-auto text-[#e91e8c] font-bold text-sm">CHF {{ profiles.data[0].subscription_price_chf }}/Mo</span>
+                <span class="hidden sm:inline text-gray-400">📅 {{ formatDate(profiles.data[0].created_at) }}</span>
+                <span class="sm:ml-auto text-[#e91e8c] font-bold text-xs sm:text-sm">CHF {{ profiles.data[0].subscription_price_chf }}/Mo</span>
               </div>
             </div>
           </div>
         </a>
 
         <!-- PREMIUM Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
-            class="flex bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#e91e8c] transition group h-36 shadow-sm">
-            <div class="w-32 shrink-0">
+            class="flex bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#e91e8c] transition group shadow-sm"
+            style="min-height: 110px;">
+            <div class="w-24 sm:w-32 shrink-0">
               <img v-if="profile.public_media?.[0]"
                 :src="profile.public_media[0].url"
                 :alt="profile.display_name"
@@ -131,10 +135,10 @@
                 {{ profile.display_name }}
               </h3>
               <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{{ profile.description }}</p>
-              <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+              <div class="flex items-center gap-2 mt-1.5 text-xs text-gray-400 flex-wrap">
                 <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
                 <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
-                <span class="ml-auto">📅 {{ formatDate(profile.created_at) }}</span>
+                <span class="hidden sm:inline ml-auto">📅 {{ formatDate(profile.created_at) }}</span>
               </div>
             </div>
           </a>
@@ -142,7 +146,7 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="profiles.last_page > 1" class="flex justify-center gap-2 mt-8">
+      <div v-if="profiles.last_page > 1" class="flex justify-center flex-wrap gap-2 mt-8">
         <Link v-for="link in profiles.links" :key="link.label"
           :href="link.url || '#'"
           v-html="link.label"
