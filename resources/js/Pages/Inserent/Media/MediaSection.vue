@@ -5,23 +5,31 @@
       <span class="text-sm font-normal text-gray-400 ml-2">({{ items.length }})</span>
     </h3>
     <div v-if="items.length === 0" class="text-sm text-gray-400 italic py-4">Keine Medien in dieser Kategorie.</div>
-    <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       <div
         v-for="item in items"
         :key="item.id"
-        class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-100"
+        class="relative group rounded-lg overflow-hidden border border-gray-200 bg-gray-100"
       >
         <!-- Image -->
         <img
           v-if="item.type === 'image'"
           :src="item.url"
           :alt="`Media ${item.id}`"
-          class="w-full h-full object-cover"
+          class="w-full aspect-square object-cover"
           loading="lazy"
         />
-        <!-- Video thumbnail -->
-        <div v-else class="w-full h-full flex items-center justify-center bg-gray-800 text-white text-3xl">
-          ▶
+
+        <!-- Video -->
+        <div v-else class="relative">
+          <video
+            :src="item.url"
+            class="w-full aspect-video bg-black"
+            preload="metadata"
+            controls
+            playsinline
+            controlsList="nodownload"
+          />
         </div>
 
         <!-- Status badge -->
@@ -38,14 +46,14 @@
           </span>
         </div>
 
-        <!-- Delete button (hover) -->
+        <!-- Delete button -->
         <button
           @click="$emit('delete', item)"
           class="absolute top-1.5 right-1.5 w-6 h-6 bg-black/60 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-600"
           title="Löschen"
         >✕</button>
 
-        <!-- Rejection reason tooltip -->
+        <!-- Rejection reason -->
         <div v-if="item.status === 'rejected' && item.rejection_reason"
           class="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-xs p-1 text-center truncate"
           :title="item.rejection_reason"

@@ -231,9 +231,18 @@
                   <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
                   <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                     <div v-for="item in privateMedia" :key="item.id"
-                      class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                      class="rounded-lg overflow-hidden cursor-pointer group"
+                      :class="item.type === 'image' ? 'aspect-square' : ''"
+                      @click="openLightbox(item)">
                       <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
-                      <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-700 text-4xl">▶</div>
+                      <div v-else class="relative bg-black aspect-video flex items-center justify-center">
+                        <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
+                          <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow">
+                            <svg class="w-5 h-5 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -338,9 +347,19 @@
     </div>
 
     <!-- Lightbox -->
-    <div v-if="lightboxItem" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50" @click.self="lightboxItem = null">
-      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center" @click="lightboxItem = null">✕</button>
-      <img v-if="lightboxItem.type === 'image'" :src="lightboxItem.url" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
+    <div v-if="lightboxItem" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4" @click.self="lightboxItem = null">
+      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center z-10" @click="lightboxItem = null">✕</button>
+      <img v-if="lightboxItem.type === 'image'"
+        :src="lightboxItem.url"
+        class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
+      <video v-else
+        :src="lightboxItem.url"
+        class="max-h-[90vh] max-w-[90vw] rounded"
+        controls
+        autoplay
+        playsinline
+        controlsList="nodownload"
+        @click.stop />
     </div>
   </AppLayout>
 </template>
