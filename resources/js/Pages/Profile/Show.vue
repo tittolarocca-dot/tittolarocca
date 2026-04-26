@@ -102,7 +102,7 @@
               <div class="text-center mb-4">
                 <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
                 <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
-                  <p class="text-purple-700 font-bold text-sm">🎁 7 Tage gratis testen</p>
+                  <p class="text-purple-700 font-bold text-sm">🎁 3 Tage gratis testen</p>
                   <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
                 </div>
               </div>
@@ -121,14 +121,14 @@
               <div class="text-center mb-4">
                 <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
                 <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
-                  <p class="text-purple-700 font-bold text-sm">🎁 7 Tage gratis testen</p>
+                  <p class="text-purple-700 font-bold text-sm">🎁 3 Tage gratis testen</p>
                   <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
                 </div>
               </div>
               <form @submit.prevent="startTrial" class="mb-2">
                 <button type="submit" :disabled="trialing"
                   class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
-                  {{ trialing ? 'Wird aktiviert…' : '7 Tage gratis testen' }}
+                  {{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}
                 </button>
               </form>
               <form @submit.prevent="subscribe">
@@ -266,13 +266,13 @@
                       <template v-if="!$page.props.auth.user">
                         <Link :href="route('register')"
                           class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          Kostenlos testen – 7 Tage gratis
+                          Kostenlos testen – 3 Tage gratis
                         </Link>
                       </template>
                       <template v-else-if="!hasTrialed">
                         <button @click="startTrial" :disabled="trialing"
                           class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          {{ trialing ? 'Wird aktiviert…' : '7 Tage gratis testen' }}
+                          {{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}
                         </button>
                       </template>
                       <template v-else>

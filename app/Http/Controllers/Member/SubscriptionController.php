@@ -62,13 +62,13 @@ class SubscriptionController extends Controller
             'amount_chf'           => 0,
             'status'               => 'trialing',
             'current_period_start' => now(),
-            'current_period_end'   => now()->addDays(7),
+            'current_period_end'   => now()->addDays(3),
         ]);
 
         $profile->increment('total_subscribers');
 
         return redirect()->route('profile.show', $profile->slug)
-            ->with('success', 'Gratis-Test aktiviert! Du hast 7 Tage Zugang zu allen privaten Inhalten.');
+            ->with('success', 'Gratis-Test aktiviert! Du hast 3 Tage Zugang zu allen privaten Inhalten.');
     }
 
     public function subscribe(Request $request, Profile $profile)
