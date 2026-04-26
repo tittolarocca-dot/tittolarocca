@@ -87,8 +87,68 @@
             </div>
           </Link>
         </div>
+
+        <!-- Gefahrenzone -->
+        <div class="border border-red-200 rounded-xl overflow-hidden">
+          <div class="bg-red-50 px-5 py-3 border-b border-red-200">
+            <h2 class="text-sm font-semibold text-red-700">Gefahrenzone</h2>
+          </div>
+          <div class="bg-white px-5 py-4 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Profil löschen</p>
+              <p class="text-xs text-gray-500 mt-0.5">Löscht dein Profil, alle Medien und beendet aktive Abonnements. Nicht rückgängig zu machen.</p>
+            </div>
+            <button @click="showDeleteConfirm = true"
+              class="shrink-0 border border-red-300 text-red-600 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition whitespace-nowrap">
+              Profil löschen
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
+
+    <!-- Lösch-Bestätigungsmodal -->
+    <Teleport to="body">
+      <div v-if="showDeleteConfirm"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+        @click.self="showDeleteConfirm = false">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Profil wirklich löschen?</h3>
+          </div>
+
+          <p class="text-sm text-gray-600 mb-3">Folgendes wird <strong>unwiderruflich</strong> gelöscht:</p>
+          <ul class="text-sm text-gray-600 space-y-1 mb-5 ml-4 list-disc">
+            <li>Dein Profil und alle Profilinformationen</li>
+            <li>Alle hochgeladenen Fotos und Medien</li>
+            <li>Alle aktiven Abonnements deiner Kunden</li>
+            <li>Alle Bewertungen und Nachrichten</li>
+          </ul>
+
+          <p class="text-sm text-gray-700 mb-2 font-medium">Gib zur Bestätigung <span class="font-bold text-red-600">LÖSCHEN</span> ein:</p>
+          <input v-model="deleteConfirmText" type="text" placeholder="LÖSCHEN"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:border-red-400" />
+
+          <div class="flex gap-3">
+            <button @click="showDeleteConfirm = false; deleteConfirmText = ''"
+              class="flex-1 border border-gray-200 text-gray-600 text-sm font-semibold py-2.5 rounded-lg hover:bg-gray-50 transition">
+              Abbrechen
+            </button>
+            <button @click="deleteProfile"
+              :disabled="deleteConfirmText !== 'LÖSCHEN' || deleting"
+              class="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold py-2.5 rounded-lg transition">
+              {{ deleting ? 'Wird gelöscht…' : 'Endgültig löschen' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </AppLayout>
 </template>
 
@@ -113,6 +173,18 @@ const pushing = ref(false);
 function push() {
   pushing.value = true;
   router.post(route('inserat.push'), {}, { onFinish: () => { pushing.value = false; } });
+}
+
+const showDeleteConfirm = ref(false);
+const deleteConfirmText = ref('');
+const deleting          = ref(false);
+
+function deleteProfile() {
+  if (deleteConfirmText.value !== 'LÖSCHEN') return;
+  deleting.value = true;
+  router.delete(route('inserat.profile.destroy'), {
+    onFinish: () => { deleting.value = false; },
+  });
 }
 
 const quickActions = [

@@ -6,7 +6,10 @@ use App\Models\City;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Stripe\StripeClient;
 
 class ProfileController extends Controller
 {
@@ -104,6 +107,45 @@ class ProfileController extends Controller
 
         return redirect()->route('inserat.dashboard')
             ->with('success', 'Profil erfolgreich aktualisiert.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $user    = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            return redirect()->route('inserat.dashboard');
+        }
+
+        // Cancel active Stripe subscriptions for all subscribers
+        $activeSubs = $profile->subscriptions()
+            ->whereNotNull('stripe_subscription_id')
+            ->whereIn('status', ['active'])
+            ->get();
+
+        if ($activeSubs->isNotEmpty()) {
+            $stripe = new StripeClient(config('cashier.secret'));
+            foreach ($activeSubs as $sub) {
+                try {
+                    $stripe->subscriptions->cancel($sub->stripe_subscription_id);
+                } catch (\Exception $e) {
+                    Log::warning("Could not cancel Stripe sub {$sub->stripe_subscription_id}: " . $e->getMessage());
+                }
+            }
+        }
+
+        // Delete all media files from storage
+        Storage::disk('local')->deleteDirectory("media/{$profile->id}");
+
+        // Delete profile — DB cascades handle media, subscriptions, reviews, payouts
+        $profile->delete();
+
+        // Reset user role back to member
+        $user->update(['role' => 'member']);
+
+        return redirect()->route('home')
+            ->with('success', 'Dein Profil wurde erfolgreich gelöscht.');
     }
 
     private function validateProfile(Request $request): array

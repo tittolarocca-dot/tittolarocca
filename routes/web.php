@@ -27,6 +27,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/profil',      [\App\Http\Controllers\Inserent\ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profil',     [\App\Http\Controllers\Inserent\ProfileController::class, 'store'])->name('profile.store');
     Route::put('/profil',      [\App\Http\Controllers\Inserent\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profil',   [\App\Http\Controllers\Inserent\ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/paket',       [\App\Http\Controllers\Inserent\ListingController::class, 'selectPackage'])->name('package.select');
     Route::post('/paket/pay',  [\App\Http\Controllers\Inserent\ListingController::class, 'checkout'])->name('package.checkout');
     Route::post('/pushen',     [\App\Http\Controllers\Inserent\ListingController::class, 'push'])->name('push');
