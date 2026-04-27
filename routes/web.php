@@ -38,11 +38,9 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/nachrichten',           [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{userId}', [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
-    Route::get('/auszahlungen',                    [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
-    Route::post('/auszahlungen/bankdaten',         [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
-    Route::post('/auszahlungen/aktivieren',        [\App\Http\Controllers\Inserent\PayoutController::class, 'onboard'])->name('payouts.onboard');
-    Route::get('/auszahlungen/onboarding-refresh', [\App\Http\Controllers\Inserent\PayoutController::class, 'refresh'])->name('payouts.onboard.refresh');
-    Route::post('/bewertung/{review}/antworten',   [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
+    Route::get('/auszahlungen',          [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
+    Route::post('/auszahlungen/bankdaten', [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
+    Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
 });
 
 // Mitglieder-Bereich

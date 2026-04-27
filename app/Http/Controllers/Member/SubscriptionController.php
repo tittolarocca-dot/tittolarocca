@@ -108,36 +108,26 @@ class SubscriptionController extends Controller
             $user->update(['stripe_id' => $customer->id]);
         }
 
-        $subscriptionData = [
-            'metadata' => [
-                'profile_id' => $profile->id,
-                'user_id'    => $user->id,
-            ],
-        ];
-
-        // Automatic fee split via Stripe Connect when creator has completed onboarding
-        if ($profile->payouts_enabled && $profile->stripe_account_id) {
-            $subscriptionData['application_fee_percent'] = 20;
-            $subscriptionData['transfer_data']           = [
-                'destination' => $profile->stripe_account_id,
-            ];
-        }
-
         $session = $stripe->checkout->sessions->create([
-            'customer'          => $user->stripe_id,
-            'mode'              => 'subscription',
-            'line_items'        => [[
+            'customer'   => $user->stripe_id,
+            'mode'       => 'subscription',
+            'line_items' => [[
                 'price'    => $priceId,
                 'quantity' => 1,
             ]],
-            'success_url'       => route('profile.show', $profile->slug) . '?subscribed=1',
-            'cancel_url'        => route('profile.show', $profile->slug),
-            'metadata'          => [
+            'success_url' => route('profile.show', $profile->slug) . '?subscribed=1',
+            'cancel_url'  => route('profile.show', $profile->slug),
+            'metadata'    => [
                 'type'       => 'subscription',
                 'profile_id' => $profile->id,
                 'user_id'    => $user->id,
             ],
-            'subscription_data' => $subscriptionData,
+            'subscription_data' => [
+                'metadata' => [
+                    'profile_id' => $profile->id,
+                    'user_id'    => $user->id,
+                ],
+            ],
         ]);
 
         return redirect($session->url);

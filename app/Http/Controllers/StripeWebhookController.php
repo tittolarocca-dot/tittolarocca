@@ -6,7 +6,6 @@ use App\Mail\ProfileApprovedMail;
 use App\Models\ListingOrder;
 use App\Models\PlatformSubscription;
 use App\Models\Profile;
-use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -38,20 +37,14 @@ class StripeWebhookController extends Controller
         Log::info('Stripe webhook received', ['type' => $event->type]);
 
         match ($event->type) {
-            // ── Listing / Abo checkout ────────────────────────────────────
+            // ── Listing-Zahlung erfolgreich ───────────────────────────────
             'checkout.session.completed'    => $this->handleCheckoutCompleted($event->data->object),
 
             // ── Abo-Zahlungen ─────────────────────────────────────────────
             'invoice.paid'                  => $this->handleInvoicePaid($event->data->object),
-            'invoice.payment_succeeded'     => $this->handleInvoicePaid($event->data->object),
             'invoice.payment_failed'        => $this->handleInvoicePaymentFailed($event->data->object),
-            'customer.subscription.created' => $this->handleSubscriptionUpdated($event->data->object),
-            'customer.subscription.updated' => $this->handleSubscriptionUpdated($event->data->object),
             'customer.subscription.deleted' => $this->handleSubscriptionDeleted($event->data->object),
-
-            // ── Stripe Connect: Creator-Konto aktualisiert ────────────────
-            // Requires "Events from connected accounts" enabled in Stripe Dashboard
-            'account.updated'               => $this->handleConnectAccountUpdated($event->data->object),
+            'customer.subscription.updated' => $this->handleSubscriptionUpdated($event->data->object),
 
             default => null,
         };
@@ -93,6 +86,7 @@ class StripeWebhookController extends Controller
             'listing_expires_at' => $expiresAt,
         ]);
 
+        // Notify inserent their profile is now active
         try {
             Mail::to($profile->user->email)->send(new ProfileApprovedMail($profile));
         } catch (\Exception $e) {
@@ -104,12 +98,13 @@ class StripeWebhookController extends Controller
 
     private function activatePlatformSubscription(object $session): void
     {
-        $profileId   = $session->metadata->profile_id ?? null;
-        $userId      = $session->metadata->user_id ?? null;
+        $profileId = $session->metadata->profile_id ?? null;
+        $userId    = $session->metadata->user_id ?? null;
         $stripeSubId = $session->subscription ?? null;
 
         if (! $profileId || ! $userId || ! $stripeSubId) return;
 
+        // Idempotency check
         if (PlatformSubscription::where('stripe_subscription_id', $stripeSubId)->exists()) return;
 
         $profile = Profile::find($profileId);
@@ -129,6 +124,7 @@ class StripeWebhookController extends Controller
 
         $this->refreshSubscriberCount($profileId);
 
+        // Notify inserent about new subscriber
         try {
             Mail::to($profile->user->email)->send(
                 new NewSubscriptionMail($profile, $user, $profile->subscription_price_chf)
@@ -140,7 +136,7 @@ class StripeWebhookController extends Controller
         Log::info("Platform subscription created for user {$userId} → profile {$profileId}");
     }
 
-    // ── Push-Zahlung ─────────────────────────────────────────────────────
+    // ── Push-Zahlung: Inserat auf erste Seite pushen ─────────────────────
 
     private function handlePushPayment(object $session): void
     {
@@ -167,32 +163,8 @@ class StripeWebhookController extends Controller
             'current_period_end'   => now()->addMonth(),
         ]);
 
+        // Abonnenten-Zähler im Profil aktuell halten
         $this->refreshSubscriberCount($sub->profile_id);
-
-        // Record transaction (idempotent via stripe_invoice_id unique index)
-        $amountPaid = $invoice->amount_paid ?? 0;
-        if ($amountPaid > 0 && $invoice->id ?? null) {
-            $gross    = round($amountPaid / 100, 2);
-            $fee      = round($gross * 0.20, 2);
-            $net      = round($gross - $fee, 2);
-            $currency = strtoupper($invoice->currency ?? 'chf');
-
-            Transaction::updateOrCreate(
-                ['stripe_invoice_id' => $invoice->id],
-                [
-                    'fan_user_id'              => $sub->subscriber_user_id,
-                    'profile_id'               => $sub->profile_id,
-                    'stripe_subscription_id'   => $stripeSubId,
-                    'stripe_payment_intent_id' => $invoice->payment_intent ?? null,
-                    'type'                     => 'subscription',
-                    'gross_amount_chf'         => $gross,
-                    'platform_fee_chf'         => $fee,
-                    'creator_net_chf'          => $net,
-                    'currency'                 => $currency,
-                    'status'                   => 'paid',
-                ]
-            );
-        }
 
         Log::info("Subscription {$sub->id} renewed for profile {$sub->profile_id}");
     }
@@ -225,20 +197,6 @@ class StripeWebhookController extends Controller
         if (! $sub) return;
 
         $sub->update(['status' => $stripeSub->status]);
-    }
-
-    // ── Stripe Connect: Creator-Onboarding abgeschlossen ─────────────────
-
-    private function handleConnectAccountUpdated(object $account): void
-    {
-        $payoutsEnabled = $account->payouts_enabled ?? false;
-        $chargesEnabled = $account->charges_enabled ?? false;
-
-        Profile::where('stripe_account_id', $account->id)->update([
-            'payouts_enabled' => $payoutsEnabled && $chargesEnabled,
-        ]);
-
-        Log::info("Connect account {$account->id} updated: payouts={$payoutsEnabled} charges={$chargesEnabled}");
     }
 
     private function refreshSubscriberCount(int $profileId): void

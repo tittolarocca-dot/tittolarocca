@@ -12,16 +12,14 @@ class Profile extends Model
         'whatsapp_number_encrypted', 'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
-        'stripe_account_id', 'payouts_enabled',
         'total_subscribers', 'total_views',
     ];
 
     protected $casts = [
-        'listing_expires_at'      => 'datetime',
-        'featured_until'          => 'datetime',
-        'pushed_at'               => 'datetime',
-        'subscription_price_chf'  => 'decimal:2',
-        'payouts_enabled'         => 'boolean',
+        'listing_expires_at' => 'datetime',
+        'featured_until'     => 'datetime',
+        'pushed_at'          => 'datetime',
+        'subscription_price_chf' => 'decimal:2',
     ];
 
     // Encrypted WhatsApp getter/setter
@@ -51,5 +49,4 @@ class Profile extends Model
     public function reviews()      { return $this->hasMany(Review::class); }
     public function approvedReviews() { return $this->hasMany(Review::class)->where('status', 'approved'); }
     public function listingOrders(){ return $this->hasMany(ListingOrder::class); }
-    public function transactions() { return $this->hasMany(Transaction::class); }
 }
