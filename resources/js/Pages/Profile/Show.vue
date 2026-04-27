@@ -15,7 +15,7 @@
             class="shrink-0 cursor-pointer relative"
             :class="i === 0 ? 'w-1/2' : 'w-1/4'"
             @click="openLightbox(item)">
-            <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover border-r border-gray-100" />
+            <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top border-r border-gray-100" />
             <div v-if="i === 3 && publicMedia.length > 4"
               class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-xl">
               +{{ publicMedia.length - 4 }}
@@ -220,21 +220,21 @@
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                   <div v-for="item in publicMedia" :key="item.id"
                     class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                    <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
+                    <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-200" />
                   </div>
                 </div>
               </div>
               <!-- Private Media -->
               <div v-if="activeTab === 'private'">
-                <!-- Subscriber / Owner: full access -->
-                <template v-if="isOwner || isSubscribed">
+                <!-- Subscriber / Owner / Trialing: full access -->
+                <template v-if="isOwner || isSubscribed || isTrialing">
                   <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
                   <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                     <div v-for="item in privateMedia" :key="item.id"
                       class="rounded-lg overflow-hidden cursor-pointer group"
                       :class="item.type === 'image' ? 'aspect-square' : ''"
                       @click="openLightbox(item)">
-                      <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" />
+                      <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-200" />
                       <div v-else class="relative bg-black aspect-video flex items-center justify-center">
                         <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
                         <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
@@ -266,7 +266,7 @@
                     </div>
 
                     <!-- Fade + subscribe CTA overlay at bottom -->
-                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-white via-white/95 to-transparent flex flex-col items-center pb-4">
+                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-white via-white/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
                       <svg class="w-10 h-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                       </svg>
@@ -274,19 +274,19 @@
                       <p class="text-xs text-gray-500 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
                       <template v-if="!$page.props.auth.user">
                         <Link :href="route('register')"
-                          class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          class="pointer-events-auto bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
                           Kostenlos testen – 3 Tage gratis
                         </Link>
                       </template>
                       <template v-else-if="!hasTrialed">
                         <button @click="startTrial" :disabled="trialing"
-                          class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          class="pointer-events-auto bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
                           {{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}
                         </button>
                       </template>
                       <template v-else>
                         <button @click="subscribe" :disabled="subscribing"
-                          class="bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          class="pointer-events-auto bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
                           {{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
                         </button>
                       </template>
