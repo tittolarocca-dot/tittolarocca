@@ -34,7 +34,7 @@ class ProfileController extends Controller
         $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility']);
 
         $privateMediaCount = $profile->privateMedia()->count();
-        $privateMedia = ($isOwner || $subscribed)
+        $privateMedia = ($isOwner || $subscribed || $trialSub)
             ? $profile->privateMedia()->get(['id', 'type', 'visibility'])
             : collect([]);
 
@@ -66,6 +66,8 @@ class ProfileController extends Controller
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
                 'whatsapp_number'        => $profile->whatsapp_number,
+                'telegram_username'      => $profile->telegram_username,
+                'address'                => $profile->address,
                 'created_at'             => $profile->created_at->format('d.m.Y'),
             ],
             'publicMedia'         => $publicMedia,

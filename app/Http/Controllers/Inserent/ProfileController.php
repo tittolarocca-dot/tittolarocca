@@ -27,6 +27,8 @@ class ProfileController extends Controller
                 'category_id'            => $profile->category_id,
                 'age'                    => $profile->age,
                 'whatsapp_number'        => $profile->whatsapp_number,
+                'telegram_username'      => $profile->telegram_username,
+                'address'                => $profile->address,
                 'subscription_price_chf' => $profile->subscription_price_chf,
                 'tag_ids'                => $profile->tags->pluck('id'),
                 'status'                 => $profile->status,
@@ -56,6 +58,8 @@ class ProfileController extends Controller
             'category_id'            => $data['category_id'],
             'age'                    => $data['age'],
             'subscription_price_chf' => $data['subscription_price_chf'],
+            'telegram_username'      => $data['telegram_username'] ?? null,
+            'address'                => $data['address'] ?? null,
             'status'                 => 'draft',
         ]);
 
@@ -94,6 +98,8 @@ class ProfileController extends Controller
             'category_id'            => $data['category_id'],
             'age'                    => $data['age'],
             'subscription_price_chf' => $data['subscription_price_chf'],
+            'telegram_username'      => $data['telegram_username'] ?? null,
+            'address'                => $data['address'] ?? null,
         ]);
 
         if (isset($data['whatsapp_number'])) {
@@ -157,6 +163,8 @@ class ProfileController extends Controller
             'category_id'            => ['required', 'exists:categories,id'],
             'age'                    => ['required', 'integer', 'min:18', 'max:99'],
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
+            'telegram_username'      => ['nullable', 'string', 'max:100'],
+            'address'                => ['nullable', 'string', 'max:255'],
             'subscription_price_chf' => ['required', 'numeric', 'min:9', 'max:999'],
             'tag_ids'                => ['nullable', 'array'],
             'tag_ids.*'              => ['exists:tags,id'],

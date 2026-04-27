@@ -121,25 +121,35 @@
               placeholder="+41 79 123 45 67" :error="form.errors.whatsapp_number"
               hint="Für alle Besucher sichtbar – wird als WhatsApp-Link angezeigt" />
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Abo-Preis (CHF/Monat) <span class="text-[#e91e8c]">*</span>
-              </label>
-              <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">CHF</span>
-                <input v-model="form.subscription_price_chf" type="number" min="9" max="999" step="1"
-                  :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
-                    form.errors.subscription_price_chf ? 'border-red-500' : 'border-gray-300']" />
-              </div>
-              <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
-              <p class="mt-1 text-xs text-gray-500">Abonnenten zahlen diesen Betrag monatlich für Zugriff auf deine privaten Medien.</p>
+            <InputField id="telegram_username" label="Telegram"
+              v-model="form.telegram_username"
+              placeholder="@deinusername" :error="form.errors.telegram_username"
+              hint="Ohne @ eingeben ist auch OK – z.B. deinusername" />
+          </div>
 
-              <!-- Verdienst-Rechner -->
-              <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-[#e91e8c]/10 border border-[#e91e8c]/20 rounded-lg px-3 py-2 text-xs text-[#e91e8c]">
-                Bei 10 Abonnenten: <strong>CHF {{ earnings(10) }}/Mo</strong> ·
-                Bei 50: <strong>CHF {{ earnings(50) }}/Mo</strong>
-                <span class="text-[#e91e8c]/60 block mt-0.5">(nach 20% Plattform-Provision)</span>
-              </div>
+          <InputField id="address" label="Adresse / Standort"
+            v-model="form.address"
+            placeholder="z.B. Bahnhofstrasse 12, 8001 Zürich" :error="form.errors.address"
+            hint="Wird auf Google Maps verlinkt – nur eingeben wenn du Besucherinnen empfängst" />
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Abo-Preis (CHF/Monat) <span class="text-[#e91e8c]">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">CHF</span>
+              <input v-model="form.subscription_price_chf" type="number" min="9" max="999" step="1"
+                :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                  form.errors.subscription_price_chf ? 'border-red-500' : 'border-gray-300']" />
+            </div>
+            <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
+            <p class="mt-1 text-xs text-gray-500">Abonnenten zahlen diesen Betrag monatlich für Zugriff auf deine privaten Medien.</p>
+
+            <!-- Verdienst-Rechner -->
+            <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-[#e91e8c]/10 border border-[#e91e8c]/20 rounded-lg px-3 py-2 text-xs text-[#e91e8c]">
+              Bei 10 Abonnenten: <strong>CHF {{ earnings(10) }}/Mo</strong> ·
+              Bei 50: <strong>CHF {{ earnings(50) }}/Mo</strong>
+              <span class="text-[#e91e8c]/60 block mt-0.5">(nach 20% Plattform-Provision)</span>
             </div>
           </div>
         </div>
@@ -182,6 +192,8 @@ const form = useForm({
   category_id:            props.profile?.category_id            ?? '',
   age:                    props.profile?.age                    ?? '',
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
+  telegram_username:      props.profile?.telegram_username      ?? '',
+  address:                props.profile?.address                ?? '',
   subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
   tag_ids:                props.profile?.tag_ids                ?? [],
 });
