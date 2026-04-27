@@ -61,7 +61,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-Cyt4ACnr.css",
+    "file": "assets/app-T-H7Eyc6.css",
     "name": "app",
     "names": [
       "app.css"
@@ -182,7 +182,7 @@
     ]
   },
   "resources/js/Pages/Inserent/Payouts.vue": {
-    "file": "assets/Payouts-oOpTKgJr.js",
+    "file": "assets/Payouts-DpGVUDZw.js",
     "name": "Payouts",
     "src": "resources/js/Pages/Inserent/Payouts.vue",
     "isDynamicEntry": true,
@@ -277,7 +277,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BNhsukY4.js",
+    "file": "assets/app-DGeQETd8.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
