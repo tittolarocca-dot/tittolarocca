@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\Profile;
+use App\Models\PpvPurchase;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Stripe\StripeClient;
 
 class MessageController extends Controller
 {
@@ -14,27 +16,25 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        // Group conversations by the other user
         $messages = Message::where('from_user_id', $user->id)
             ->orWhere('to_user_id', $user->id)
             ->with(['from:id,name', 'to:id,name', 'profile:id,display_name,slug'])
             ->orderByDesc('created_at')
             ->get();
 
-        // Build conversation list: keyed by other user
         $conversations = [];
         foreach ($messages as $msg) {
-            $otherId    = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
-            $otherName  = $msg->from_user_id === $user->id ? $msg->to->name : $msg->from->name;
+            $otherId   = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
+            $otherName = $msg->from_user_id === $user->id ? $msg->to->name : $msg->from->name;
             if (!isset($conversations[$otherId])) {
                 $conversations[$otherId] = [
-                    'user_id'    => $otherId,
-                    'name'       => $otherName,
-                    'profile'    => $msg->profile ? [
+                    'user_id'      => $otherId,
+                    'name'         => $otherName,
+                    'profile'      => $msg->profile ? [
                         'display_name' => $msg->profile->display_name,
                         'slug'         => $msg->profile->slug,
                     ] : null,
-                    'last_message' => $msg->body,
+                    'last_message' => $msg->previewText(),
                     'last_at'      => $msg->created_at->format('d.m.Y H:i'),
                     'unread'       => 0,
                 ];
@@ -46,6 +46,7 @@ class MessageController extends Controller
 
         return Inertia::render('Member/Messages', [
             'conversations' => array_values($conversations),
+            'ppvSuccess'    => $request->query('ppv_success') === '1',
         ]);
     }
 
@@ -55,7 +56,6 @@ class MessageController extends Controller
 
         $user = $request->user();
 
-        // Only active subscribers can message
         if (!$user->isSubscribedTo($profile)) {
             return back()->with('error', 'Nur Abonnenten können Nachrichten senden.');
         }
@@ -81,21 +81,110 @@ class MessageController extends Controller
         })
         ->with(['from:id,name'])
         ->orderBy('created_at')
-        ->get()
-        ->map(fn($m) => [
-            'id'        => $m->id,
-            'body'      => $m->body,
-            'from_me'   => $m->from_user_id === $user->id,
-            'sender'    => $m->from->name,
-            'created_at'=> $m->created_at->format('d.m.Y H:i'),
-        ]);
+        ->get();
 
-        // Mark as read
+        // Batch-load paid PPV purchases for this user
+        $messageIds = $messages->pluck('id');
+        $paidIds = PpvPurchase::whereIn('message_id', $messageIds)
+            ->where('buyer_user_id', $user->id)
+            ->where('status', 'paid')
+            ->pluck('message_id')
+            ->flip();
+
+        $mapped = $messages->map(function ($m) use ($user, $paidIds) {
+            $isPpv      = $m->isPpv();
+            $purchased  = $isPpv && $paidIds->has($m->id);
+            $fromMe     = $m->from_user_id === $user->id;
+
+            return [
+                'id'             => $m->id,
+                'body'           => $m->body,
+                'from_me'        => $fromMe,
+                'sender'         => $m->from->name,
+                'created_at'     => $m->created_at->format('d.m.Y H:i'),
+                'ppv_media_type' => $m->ppv_media_type,
+                'ppv_price_chf'  => $m->ppv_price_chf,
+                'ppv_purchased'  => $purchased,
+                'ppv_media_url'  => ($isPpv && $purchased) ? route('media.ppv', $m->id) : null,
+            ];
+        });
+
         Message::where('from_user_id', $userId)
             ->where('to_user_id', $user->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return response()->json(['messages' => $messages]);
+        return response()->json(['messages' => $mapped]);
+    }
+
+    public function ppvCheckout(Request $request, Message $message)
+    {
+        $user = $request->user();
+
+        if (!$message->isPpv()) {
+            return back()->with('error', 'Diese Nachricht enthält keinen bezahlten Inhalt.');
+        }
+
+        // Must be subscribed to the creator
+        $profile = $message->profile;
+        if (!$profile || !$user->isSubscribedTo($profile)) {
+            return back()->with('error', 'Nur Abonnenten können Inhalte freischalten.');
+        }
+
+        // Already purchased?
+        $existing = PpvPurchase::where('message_id', $message->id)
+            ->where('buyer_user_id', $user->id)
+            ->where('status', 'paid')
+            ->first();
+
+        if ($existing) {
+            return back()->with('success', 'Du hast diesen Inhalt bereits freigeschaltet.');
+        }
+
+        $stripe = new StripeClient(config('services.stripe.secret'));
+
+        // Ensure Stripe customer
+        if (!$user->stripe_id) {
+            $customer = $stripe->customers->create([
+                'email'    => $user->email,
+                'name'     => $user->name,
+                'metadata' => ['user_id' => $user->id],
+            ]);
+            $user->update(['stripe_id' => $customer->id]);
+        }
+
+        $session = $stripe->checkout->sessions->create([
+            'customer'   => $user->stripe_id,
+            'mode'       => 'payment',
+            'line_items' => [[
+                'price_data' => [
+                    'currency'     => 'chf',
+                    'product_data' => [
+                        'name' => 'Privater Inhalt: ' . ($profile->display_name ?? 'Creator'),
+                    ],
+                    'unit_amount' => (int) ($message->ppv_price_chf * 100),
+                ],
+                'quantity' => 1,
+            ]],
+            'success_url' => route('konto.messages') . '?ppv_success=1',
+            'cancel_url'  => route('konto.messages'),
+            'metadata'    => [
+                'type'       => 'ppv',
+                'message_id' => $message->id,
+                'user_id'    => $user->id,
+            ],
+        ]);
+
+        // Create pending purchase record
+        PpvPurchase::updateOrCreate(
+            ['message_id' => $message->id, 'buyer_user_id' => $user->id],
+            [
+                'amount_chf'       => $message->ppv_price_chf,
+                'status'           => 'pending',
+                'stripe_session_id'=> $session->id,
+            ]
+        );
+
+        return redirect($session->url);
     }
 }

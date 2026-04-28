@@ -45,29 +45,107 @@
           <div class="px-4 py-3 border-b border-gray-200 font-semibold text-gray-900">
             {{ activeConv.name }}
           </div>
+
+          <!-- Messages -->
           <div ref="chatBox" class="flex-1 overflow-y-auto p-4 space-y-3">
             <div v-if="chatLoading" class="text-center text-gray-400 py-8">Lädt…</div>
             <template v-else>
               <div v-for="msg in chatMessages" :key="msg.id" class="flex"
                 :class="msg.from_me ? 'justify-end' : 'justify-start'">
-                <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
-                  :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
-                  {{ msg.body }}
-                  <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
-                </div>
+
+                <!-- PPV message (sent by inserent) -->
+                <template v-if="msg.ppv_media_type">
+                  <div class="max-w-xs rounded-xl overflow-hidden border border-[#e91e8c]/30 shadow-sm">
+                    <div class="bg-[#e91e8c]/10 px-3 py-2 flex items-center gap-2">
+                      <span class="text-lg">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</span>
+                      <div>
+                        <p class="text-xs font-semibold text-[#e91e8c]">Bezahlter Inhalt</p>
+                        <p class="text-xs text-gray-500">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</p>
+                      </div>
+                      <span class="ml-auto text-xs text-green-600 font-medium">
+                        {{ msg.ppv_purchase_count ?? 0 }}× gekauft
+                      </span>
+                    </div>
+                    <div class="p-2">
+                      <!-- Inline preview for inserent -->
+                      <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url"
+                        class="w-full rounded object-cover max-h-48" />
+                      <video v-else :src="msg.ppv_media_url" controls class="w-full rounded max-h-48" />
+                    </div>
+                    <div v-if="msg.body" class="px-3 pb-2 text-xs text-gray-600">{{ msg.body }}</div>
+                    <div class="px-3 pb-2 text-xs text-gray-400">{{ msg.created_at }}</div>
+                  </div>
+                </template>
+
+                <!-- Regular text message -->
+                <template v-else>
+                  <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
+                    :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
+                    {{ msg.body }}
+                    <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
+                  </div>
+                </template>
+
               </div>
             </template>
           </div>
-          <div class="px-4 py-3 border-t border-gray-200">
-            <form @submit.prevent="sendReply" class="flex gap-2">
+
+          <!-- Input Area -->
+          <div class="px-4 py-3 border-t border-gray-200 space-y-2">
+
+            <!-- PPV send form (shown when ppvMode is active) -->
+            <div v-if="ppvMode" class="bg-[#e91e8c]/5 border border-[#e91e8c]/20 rounded-xl p-3 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-[#e91e8c]">🔒 Bezahlter Inhalt senden</span>
+                <button @click="cancelPpv" class="text-gray-400 hover:text-gray-600 text-xs">✕ Abbrechen</button>
+              </div>
+
+              <div v-if="ppvPreview" class="relative">
+                <img v-if="ppvFileType === 'image'" :src="ppvPreview" class="w-full rounded-lg object-cover max-h-40" />
+                <video v-else :src="ppvPreview" class="w-full rounded-lg max-h-40" />
+                <button @click="clearPpvFile" class="absolute top-1 right-1 bg-black/50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-black/70">✕</button>
+              </div>
+
+              <div v-if="!ppvPreview">
+                <label class="block w-full border-2 border-dashed border-[#e91e8c]/30 rounded-lg p-4 text-center cursor-pointer hover:border-[#e91e8c]/60 transition">
+                  <span class="text-gray-400 text-sm">Bild oder Video auswählen…</span>
+                  <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm"
+                    class="hidden" @change="onPpvFileChange" ref="ppvFileInput" />
+                </label>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div class="relative flex-shrink-0 w-28">
+                  <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">CHF</span>
+                  <input v-model="ppvPrice" type="number" min="1" max="999" step="1" placeholder="9"
+                    class="w-full pl-8 pr-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#e91e8c]" />
+                </div>
+                <input v-model="ppvText" type="text" placeholder="Optionaler Text…"
+                  class="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#e91e8c]" />
+              </div>
+
+              <button @click="sendPpv"
+                :disabled="!ppvFile || !ppvPrice || sending"
+                class="w-full bg-[#e91e8c] text-white py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
+                {{ sending ? 'Wird gesendet…' : 'PPV senden' }}
+              </button>
+            </div>
+
+            <!-- Normal reply form -->
+            <form v-else @submit.prevent="sendReply" class="flex gap-2">
               <input v-model="replyText" type="text" placeholder="Nachricht schreiben…"
                 class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]"
                 :disabled="sending" />
+              <button type="button" @click="ppvMode = true" title="Bezahlten Inhalt senden"
+                class="border border-gray-200 text-gray-500 hover:text-[#e91e8c] hover:border-[#e91e8c]/40 px-3 py-2 rounded-lg text-sm transition">
+                🔒
+              </button>
               <button type="submit" :disabled="!replyText.trim() || sending"
                 class="bg-[#e91e8c] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
                 Senden
               </button>
             </form>
+
           </div>
         </template>
       </div>
@@ -92,10 +170,20 @@ const replyText    = ref('');
 const sending      = ref(false);
 const chatBox      = ref(null);
 
+// PPV state
+const ppvMode      = ref(false);
+const ppvFile      = ref(null);
+const ppvPreview   = ref(null);
+const ppvFileType  = ref('image');
+const ppvPrice     = ref('');
+const ppvText      = ref('');
+const ppvFileInput = ref(null);
+
 async function openConversation(conv) {
   activeConv.value   = conv;
   chatLoading.value  = true;
   chatMessages.value = [];
+  cancelPpv();
   try {
     const res = await fetch(route('inserat.messages.conversation', conv.user_id), {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -118,6 +206,48 @@ function sendReply() {
     preserveScroll: true,
     onSuccess: () => {
       replyText.value = '';
+      openConversation(activeConv.value);
+    },
+    onFinish: () => { sending.value = false; },
+  });
+}
+
+function onPpvFileChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  ppvFile.value = file;
+  ppvFileType.value = file.type.startsWith('video/') ? 'video' : 'image';
+  ppvPreview.value = URL.createObjectURL(file);
+}
+
+function clearPpvFile() {
+  ppvFile.value    = null;
+  ppvPreview.value = null;
+  if (ppvFileInput.value) ppvFileInput.value.value = '';
+}
+
+function cancelPpv() {
+  ppvMode.value  = false;
+  ppvPrice.value = '';
+  ppvText.value  = '';
+  clearPpvFile();
+}
+
+function sendPpv() {
+  if (!ppvFile.value || !ppvPrice.value || sending.value) return;
+  sending.value = true;
+
+  const formData = new FormData();
+  formData.append('media', ppvFile.value);
+  formData.append('price', ppvPrice.value);
+  if (ppvText.value) formData.append('body', ppvText.value);
+  formData.append('_method', 'POST');
+
+  router.post(route('inserat.messages.ppv', activeConv.value.user_id), formData, {
+    forceFormData: true,
+    preserveScroll: true,
+    onSuccess: () => {
+      cancelPpv();
       openConversation(activeConv.value);
     },
     onFinish: () => { sending.value = false; },

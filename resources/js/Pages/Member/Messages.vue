@@ -1,6 +1,14 @@
 <template>
   <AppLayout>
     <Head title="Nachrichten" />
+
+    <!-- PPV success toast -->
+    <div v-if="ppvSuccessToast"
+      class="fixed top-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+      ✅ Inhalt freigeschaltet! Öffne die Konversation um ihn anzuschauen.
+      <button @click="ppvSuccessToast = false" class="ml-2 opacity-70 hover:opacity-100">✕</button>
+    </div>
+
     <div class="max-w-4xl mx-auto px-4 py-8 flex gap-4 h-[calc(100vh-120px)]">
 
       <!-- Conversation List -->
@@ -44,19 +52,74 @@
           <div class="px-4 py-3 border-b border-gray-200 font-semibold text-gray-900">
             {{ activeConv.profile?.display_name ?? activeConv.name }}
           </div>
+
+          <!-- Messages -->
           <div ref="chatBox" class="flex-1 overflow-y-auto p-4 space-y-3">
             <div v-if="chatLoading" class="text-center text-gray-400 py-8">Lädt…</div>
             <template v-else>
               <div v-for="msg in chatMessages" :key="msg.id" class="flex"
                 :class="msg.from_me ? 'justify-end' : 'justify-start'">
-                <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
-                  :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
-                  {{ msg.body }}
-                  <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
-                </div>
+
+                <!-- PPV message from creator -->
+                <template v-if="msg.ppv_media_type && !msg.from_me">
+
+                  <!-- Purchased: show media -->
+                  <div v-if="msg.ppv_purchased" class="max-w-xs rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                    <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url"
+                      class="w-full object-cover" />
+                    <video v-else :src="msg.ppv_media_url" controls class="w-full max-h-64" />
+                    <div v-if="msg.body" class="px-3 py-2 text-xs text-gray-600">{{ msg.body }}</div>
+                    <div class="px-3 pb-2 text-xs text-gray-400">{{ msg.created_at }}</div>
+                  </div>
+
+                  <!-- Not purchased: blurred lock card -->
+                  <div v-else class="max-w-xs rounded-xl overflow-hidden border border-[#e91e8c]/30 shadow-sm">
+                    <div class="relative bg-gray-100 h-40 flex flex-col items-center justify-center gap-2 overflow-hidden">
+                      <!-- Decorative blur background -->
+                      <div class="absolute inset-0 bg-gradient-to-br from-[#e91e8c]/20 to-purple-200/40 backdrop-blur-sm"></div>
+                      <div class="relative z-10 text-center">
+                        <div class="text-4xl mb-1">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</div>
+                        <div class="text-xs text-gray-600 font-medium">
+                          {{ msg.ppv_media_type === 'video' ? 'Privates Video' : 'Privates Foto' }}
+                        </div>
+                        <div class="text-lg font-bold text-[#e91e8c] mt-1">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</div>
+                      </div>
+                    </div>
+                    <div v-if="msg.body" class="px-3 pt-2 text-xs text-gray-600">{{ msg.body }}</div>
+                    <div class="px-3 py-2 flex items-center justify-between">
+                      <span class="text-xs text-gray-400">{{ msg.created_at }}</span>
+                      <button @click="buyPpv(msg)"
+                        :disabled="buyingId === msg.id"
+                        class="bg-[#e91e8c] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#c91478] disabled:opacity-60 transition">
+                        {{ buyingId === msg.id ? '…' : `🔓 CHF ${Number(msg.ppv_price_chf).toFixed(2)} freischalten` }}
+                      </button>
+                    </div>
+                  </div>
+
+                </template>
+
+                <!-- Own PPV message (member sent none, but just in case) -->
+                <template v-else-if="msg.ppv_media_type && msg.from_me">
+                  <div class="max-w-xs px-3 py-2 rounded-xl text-sm bg-[#e91e8c] text-white">
+                    {{ msg.body || '🔒 PPV-Inhalt' }}
+                    <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
+                  </div>
+                </template>
+
+                <!-- Regular text message -->
+                <template v-else>
+                  <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
+                    :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
+                    {{ msg.body }}
+                    <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
+                  </div>
+                </template>
+
               </div>
             </template>
           </div>
+
+          <!-- Input Area -->
           <div class="px-4 py-3 border-t border-gray-200">
             <form @submit.prevent="sendMessage" class="flex gap-2">
               <input v-model="replyText" type="text" placeholder="Nachricht schreiben…"
@@ -75,20 +138,30 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
   conversations: { type: Array, default: () => [] },
+  ppvSuccess:    { type: Boolean, default: false },
 });
 
-const activeConv   = ref(null);
-const chatMessages = ref([]);
-const chatLoading  = ref(false);
-const replyText    = ref('');
-const sending      = ref(false);
-const chatBox      = ref(null);
+const activeConv      = ref(null);
+const chatMessages    = ref([]);
+const chatLoading     = ref(false);
+const replyText       = ref('');
+const sending         = ref(false);
+const chatBox         = ref(null);
+const buyingId        = ref(null);
+const ppvSuccessToast = ref(false);
+
+onMounted(() => {
+  if (props.ppvSuccess) {
+    ppvSuccessToast.value = true;
+    setTimeout(() => { ppvSuccessToast.value = false; }, 5000);
+  }
+});
 
 async function openConversation(conv) {
   activeConv.value   = conv;
@@ -119,6 +192,14 @@ function sendMessage() {
       openConversation(activeConv.value);
     },
     onFinish: () => { sending.value = false; },
+  });
+}
+
+function buyPpv(msg) {
+  if (buyingId.value) return;
+  buyingId.value = msg.id;
+  router.post(route('konto.messages.ppv.checkout', msg.id), {}, {
+    onFinish: () => { buyingId.value = null; },
   });
 }
 </script>

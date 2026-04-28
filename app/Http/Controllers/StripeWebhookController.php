@@ -5,6 +5,7 @@ use App\Mail\NewSubscriptionMail;
 use App\Mail\ProfileApprovedMail;
 use App\Models\ListingOrder;
 use App\Models\PlatformSubscription;
+use App\Models\PpvPurchase;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -60,6 +61,8 @@ class StripeWebhookController extends Controller
 
         if ($type === 'subscription') {
             $this->activatePlatformSubscription($session);
+        } elseif ($type === 'ppv') {
+            $this->handlePpvPayment($session);
         } elseif ($type === 'push') {
             $this->handlePushPayment($session);
         } else {
@@ -134,6 +137,23 @@ class StripeWebhookController extends Controller
         }
 
         Log::info("Platform subscription created for user {$userId} → profile {$profileId}");
+    }
+
+    // ── PPV-Zahlung: bezahlter Medieninhalt im Chat ───────────────────────
+
+    private function handlePpvPayment(object $session): void
+    {
+        $messageId = $session->metadata->message_id ?? null;
+        $userId    = $session->metadata->user_id ?? null;
+
+        if (!$messageId || !$userId) return;
+
+        PpvPurchase::where('message_id', $messageId)
+            ->where('buyer_user_id', $userId)
+            ->where('stripe_session_id', $session->id)
+            ->update(['status' => 'paid', 'paid_at' => now()]);
+
+        Log::info("PPV purchase unlocked: message {$messageId} by user {$userId}");
     }
 
     // ── Push-Zahlung: Inserat auf erste Seite pushen ─────────────────────

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use App\Models\Message;
+use App\Models\PpvPurchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,8 +27,40 @@ class MediaStreamController extends Controller
             }
         }
 
+        return $this->streamFile($request, $media->storage_path);
+    }
+
+    public function ppv(Request $request, Message $message)
+    {
+        if (!$message->isPpv()) {
+            abort(404);
+        }
+
+        $user = $request->user();
+        if (!$user) {
+            abort(403);
+        }
+
+        // Creator (inserent) can always view their own PPV media
+        $isCreator = $message->from_user_id === $user->id;
+
+        if (!$isCreator) {
+            $purchased = PpvPurchase::where('message_id', $message->id)
+                ->where('buyer_user_id', $user->id)
+                ->where('status', 'paid')
+                ->exists();
+
+            if (!$purchased) {
+                abort(403, 'Kauf erforderlich.');
+            }
+        }
+
+        return $this->streamFile($request, $message->ppv_media_path);
+    }
+
+    private function streamFile(Request $request, string $path)
+    {
         $disk = Storage::disk('local');
-        $path = $media->storage_path;
 
         if (!$disk->exists($path)) {
             abort(404);
@@ -45,7 +79,6 @@ class MediaStreamController extends Controller
 
         $size = $disk->size($path);
 
-        // Range request (required for video seeking and Safari)
         if ($request->hasHeader('Range')) {
             return $this->streamRange($disk, $path, $size, $mimeType, $request->header('Range'));
         }

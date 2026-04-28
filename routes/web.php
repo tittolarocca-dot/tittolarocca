@@ -35,9 +35,10 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/medien',     [\App\Http\Controllers\Inserent\MediaController::class, 'store'])->name('media.store');
     Route::delete('/medien/{media}', [\App\Http\Controllers\Inserent\MediaController::class, 'destroy'])->name('media.destroy');
     Route::post('/medien/reihenfolge', [\App\Http\Controllers\Inserent\MediaController::class, 'reorder'])->name('media.reorder');
-    Route::get('/nachrichten',           [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
-    Route::post('/nachrichten/{userId}', [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
-    Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::get('/nachrichten',                      [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
+    Route::post('/nachrichten/{userId}',            [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
+    Route::post('/nachrichten/{userId}/ppv',        [\App\Http\Controllers\Inserent\MessageController::class, 'sendPpv'])->name('messages.ppv');
+    Route::get('/nachrichten/{userId}/verlauf',     [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::get('/auszahlungen',          [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
     Route::post('/auszahlungen/bankdaten', [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
@@ -50,9 +51,10 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::post('/abonnieren/{profile:slug}', [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/gratis-test/{profile:slug}',[\App\Http\Controllers\Member\SubscriptionController::class, 'trial'])->name('trial');
     Route::post('/kuendigen/{profile:slug}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
-    Route::get('/nachrichten',                        [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
-    Route::post('/nachrichten/{profile:slug}',         [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
-    Route::get('/nachrichten/{userId}/verlauf',        [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::get('/nachrichten',                              [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
+    Route::post('/nachrichten/{profile:slug}',             [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/nachrichten/{userId}/verlauf',            [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::post('/nachrichten/{message}/ppv-kaufen',       [\App\Http\Controllers\Member\MessageController::class, 'ppvCheckout'])->name('messages.ppv.checkout');
     Route::post('/bewertung/{profile:slug}',           [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
 });
 
@@ -64,6 +66,11 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
 // Medien – public/approved ohne Auth; private benötigt aktives Abo
 Route::get('/media/{media}', [\App\Http\Controllers\MediaStreamController::class, 'show'])
     ->name('media.stream');
+
+// PPV-Chat-Medien – nur für Käufer / Creator
+Route::get('/media/ppv/{message}', [\App\Http\Controllers\MediaStreamController::class, 'ppv'])
+    ->middleware('auth')
+    ->name('media.ppv');
 
 // Zahlung Bestätigung
 Route::get('/zahlung/erfolg',      fn() => inertia('Payment/Success'))->name('payment.success');

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Inserent;
 
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Models\PpvPurchase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -19,7 +21,6 @@ class MessageController extends Controller
                 ->with('error', 'Kein Profil gefunden.');
         }
 
-        // All messages to/from this inserent, grouped by conversation partner
         $messages = Message::where('to_user_id', $user->id)
             ->orWhere('from_user_id', $user->id)
             ->with(['from:id,name', 'to:id,name'])
@@ -34,7 +35,7 @@ class MessageController extends Controller
                 $conversations[$otherId] = [
                     'user_id'      => $otherId,
                     'name'         => $otherName,
-                    'last_message' => $msg->body,
+                    'last_message' => $msg->previewText(),
                     'last_at'      => $msg->created_at->format('d.m.Y H:i'),
                     'unread'       => 0,
                 ];
@@ -66,6 +67,37 @@ class MessageController extends Controller
         return back()->with('success', 'Antwort gesendet.');
     }
 
+    public function sendPpv(Request $request, int $toUserId)
+    {
+        $request->validate([
+            'media'     => ['required', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,webm', 'max:102400'],
+            'price'     => ['required', 'numeric', 'min:1', 'max:999'],
+            'body'      => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $user = $request->user();
+
+        $file      = $request->file('media');
+        $ext       = $file->getClientOriginalExtension();
+        $mediaType = in_array(strtolower($ext), ['mp4', 'mov', 'webm']) ? 'video' : 'image';
+
+        // Create message first to get ID, then store file
+        $message = Message::create([
+            'from_user_id'  => $user->id,
+            'to_user_id'    => $toUserId,
+            'profile_id'    => $user->profile?->id,
+            'body'          => $request->input('body') ?: null,
+            'ppv_media_type'=> $mediaType,
+            'ppv_price_chf' => $request->input('price'),
+            'ppv_media_path'=> 'placeholder', // updated below
+        ]);
+
+        $path = $file->storeAs("ppv/{$message->id}", "media.{$ext}", 'local');
+        $message->update(['ppv_media_path' => $path]);
+
+        return back()->with('success', 'PPV-Inhalt gesendet.');
+    }
+
     public function conversation(Request $request, int $userId)
     {
         $user = $request->user();
@@ -77,20 +109,35 @@ class MessageController extends Controller
         })
         ->with(['from:id,name'])
         ->orderBy('created_at')
-        ->get()
-        ->map(fn($m) => [
-            'id'         => $m->id,
-            'body'       => $m->body,
-            'from_me'    => $m->from_user_id === $user->id,
-            'sender'     => $m->from->name,
-            'created_at' => $m->created_at->format('d.m.Y H:i'),
-        ]);
+        ->get();
+
+        // For PPV messages sent by inserent, count paid purchases
+        $ppvMessageIds = $messages->filter(fn($m) => $m->isPpv())->pluck('id');
+        $purchaseCounts = PpvPurchase::whereIn('message_id', $ppvMessageIds)
+            ->where('status', 'paid')
+            ->selectRaw('message_id, count(*) as cnt')
+            ->groupBy('message_id')
+            ->pluck('cnt', 'message_id');
+
+        $mapped = $messages->map(function ($m) use ($user, $purchaseCounts) {
+            return [
+                'id'                 => $m->id,
+                'body'               => $m->body,
+                'from_me'            => $m->from_user_id === $user->id,
+                'sender'             => $m->from->name,
+                'created_at'         => $m->created_at->format('d.m.Y H:i'),
+                'ppv_media_type'     => $m->ppv_media_type,
+                'ppv_price_chf'      => $m->ppv_price_chf,
+                'ppv_media_url'      => $m->isPpv() ? route('media.ppv', $m->id) : null,
+                'ppv_purchase_count' => $m->isPpv() ? ($purchaseCounts[$m->id] ?? 0) : null,
+            ];
+        });
 
         Message::where('from_user_id', $userId)
             ->where('to_user_id', $user->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return response()->json(['messages' => $messages]);
+        return response()->json(['messages' => $mapped]);
     }
 }
