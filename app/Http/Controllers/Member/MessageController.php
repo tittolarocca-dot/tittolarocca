@@ -44,8 +44,21 @@ class MessageController extends Controller
             }
         }
 
+        // Active subscriptions – used to populate the sidebar even before any message exists
+        $subscriptions = $user->platformSubscriptions()
+            ->with(['profile:id,display_name,slug,user_id'])
+            ->whereIn('status', ['active', 'trialing'])
+            ->where('current_period_end', '>', now())
+            ->get()
+            ->map(fn($s) => [
+                'creator_user_id' => $s->profile->user_id,
+                'display_name'    => $s->profile->display_name,
+                'slug'            => $s->profile->slug,
+            ]);
+
         return Inertia::render('Member/Messages', [
             'conversations' => array_values($conversations),
+            'subscriptions' => $subscriptions,
             'ppvSuccess'    => $request->query('ppv_success') === '1',
         ]);
     }
