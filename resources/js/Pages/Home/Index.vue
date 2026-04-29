@@ -17,9 +17,11 @@
               class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
               <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden ring-2 ring-[#e91e8c] ring-offset-2 ring-offset-white group-hover:ring-[#c91478] transition">
                 <img v-if="profile.public_media?.[0]"
-                  :src="profile.public_media[0].url"
+                  class="lazyload w-full h-full object-cover"
+                  :data-src="profile.public_media[0].url"
+                  src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                   :alt="profile.display_name"
-                  class="w-full h-full object-cover" />
+                  width="72" height="72" />
                 <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-xl">👤</div>
               </div>
               <span class="text-xs text-gray-600 mt-1 text-center truncate w-full">{{ profile.display_name }}</span>
@@ -92,10 +94,14 @@
           class="block bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#e91e8c] transition group shadow-sm">
           <div class="flex">
             <div class="relative w-28 sm:w-44 md:w-64 shrink-0 h-36 sm:h-44 md:h-52">
+              <!-- Top ad: above fold → eager + high priority -->
               <img v-if="profiles.data[0].public_media?.[0]"
                 :src="profiles.data[0].public_media[0].url"
                 :alt="profiles.data[0].display_name"
-                class="w-full h-full object-cover" />
+                class="w-full h-full object-cover"
+                loading="eager"
+                fetchpriority="high"
+                width="256" height="208" />
               <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-5xl">👤</div>
               <span class="absolute bottom-2 left-2 bg-[#e91e8c] text-white text-xs font-bold px-2 py-0.5 rounded">TOP AD</span>
             </div>
@@ -122,9 +128,11 @@
             style="min-height: 110px;">
             <div class="w-24 sm:w-32 shrink-0">
               <img v-if="profile.public_media?.[0]"
-                :src="profile.public_media[0].url"
+                class="lazyload w-full h-full object-cover"
+                :data-src="profile.public_media[0].url"
+                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 :alt="profile.display_name"
-                class="w-full h-full object-cover" />
+                width="128" height="110" />
               <div v-else class="w-full h-full bg-gray-100 flex items-center justify-center text-3xl">👤</div>
             </div>
             <div class="p-3 flex-1 min-w-0">

@@ -14,10 +14,11 @@
         <!-- Image -->
         <img
           v-if="item.type === 'image'"
-          :src="item.url"
+          class="lazyload w-full aspect-square object-cover"
+          :data-src="item.url"
+          src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
           :alt="`Media ${item.id}`"
-          class="w-full aspect-square object-cover"
-          loading="lazy"
+          width="200" height="200"
         />
 
         <!-- Video -->

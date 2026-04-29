@@ -15,7 +15,20 @@
             class="shrink-0 cursor-pointer relative"
             :class="i === 0 ? 'w-1/2' : 'w-1/4'"
             @click="openLightbox(item)">
-            <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top border-r border-gray-100" />
+            <!-- i===0: first/biggest image → eager priority; others → lazyload -->
+            <img v-if="i === 0"
+              :src="item.url"
+              :alt="profile.display_name"
+              class="w-full h-full object-cover object-top border-r border-gray-100"
+              loading="eager"
+              fetchpriority="high"
+              width="640" height="320" />
+            <img v-else
+              class="lazyload w-full h-full object-cover object-top border-r border-gray-100"
+              :data-src="item.url"
+              src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+              :alt="profile.display_name"
+              width="320" height="320" />
             <div v-if="i === 3 && publicMedia.length > 4"
               class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-xl">
               +{{ publicMedia.length - 4 }}
@@ -247,7 +260,12 @@
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                   <div v-for="item in publicMedia" :key="item.id"
                     class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                    <img :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-200" />
+                    <img
+                      class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-200"
+                      :data-src="item.url"
+                      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                      :alt="profile.display_name"
+                      width="200" height="200" />
                   </div>
                 </div>
               </div>
@@ -261,7 +279,12 @@
                       class="rounded-lg overflow-hidden cursor-pointer group"
                       :class="item.type === 'image' ? 'aspect-square' : ''"
                       @click="openLightbox(item)">
-                      <img v-if="item.type === 'image'" :src="item.url" :alt="profile.display_name" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-200" />
+                      <img v-if="item.type === 'image'"
+                        class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-200"
+                        :data-src="item.url"
+                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                        :alt="profile.display_name"
+                        width="200" height="200" />
                       <div v-else class="relative bg-black aspect-video flex items-center justify-center">
                         <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
                         <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
