@@ -8,7 +8,7 @@
     </div>
 
     <!-- Photo Grid -->
-    <div class="bg-gray-50 border-b border-gray-200">
+    <div class="bg-[#0f0f0f] border-b border-white/5">
       <div class="max-w-7xl mx-auto">
         <div v-if="publicMedia.length" class="flex overflow-x-auto h-52 sm:h-64 md:h-80">
           <div v-for="(item, i) in publicMedia.slice(0,4)" :key="item.id"
@@ -19,12 +19,12 @@
             <img v-if="i === 0"
               :src="item.url"
               :alt="profile.display_name"
-              class="w-full h-full object-cover object-top border-r border-gray-100"
+              class="w-full h-full object-cover object-top border-r border-white/5"
               loading="eager"
               fetchpriority="high"
               width="640" height="320" />
             <img v-else
-              class="lazyload w-full h-full object-cover object-top border-r border-gray-100"
+              class="lazyload w-full h-full object-cover object-top border-r border-white/5"
               :data-src="item.url"
               src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
               :alt="profile.display_name"
@@ -35,7 +35,7 @@
             </div>
           </div>
         </div>
-        <div v-else class="h-40 sm:h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-5xl">👤</div>
+        <div v-else class="h-40 sm:h-48 bg-white/5 flex items-center justify-center text-gray-500 text-5xl">👤</div>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
         <div class="md:w-72 shrink-0 space-y-3 md:space-y-4">
 
           <!-- Kontakt (WhatsApp + Telegram) -->
-          <div v-if="profile.whatsapp_number || profile.telegram_username" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-2">
+          <div v-if="profile.whatsapp_number || profile.telegram_username" class="bg-[#1a1a1a] border border-white/8 rounded-xl p-4 space-y-2">
             <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Kontakt</p>
 
             <!-- WhatsApp -->
@@ -69,17 +69,17 @@
           </div>
 
           <!-- Adresse mit Google Maps -->
-          <div v-if="profile.address" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+          <div v-if="profile.address" class="bg-[#1a1a1a] border border-white/8 rounded-xl p-4">
             <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Standort</p>
             <div class="flex items-start gap-2 mb-3">
               <svg class="w-4 h-4 text-[#e91e8c] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
               </svg>
-              <span class="text-sm text-gray-700 leading-snug">{{ profile.address }}</span>
+              <span class="text-sm text-gray-300 leading-snug">{{ profile.address }}</span>
             </div>
             <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`"
               target="_blank" rel="noopener"
-              class="flex items-center justify-center gap-2 w-full border border-gray-200 text-gray-600 text-sm font-semibold px-4 py-2.5 rounded-lg hover:border-[#e91e8c] hover:text-[#e91e8c] transition">
+              class="flex items-center justify-center gap-2 w-full border border-white/10 text-gray-400 text-sm font-semibold px-4 py-2.5 rounded-lg hover:border-[#e91e8c] hover:text-[#e91e8c] transition">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
               </svg>
@@ -88,12 +88,12 @@
           </div>
 
           <!-- Subscribe / Owner CTA -->
-          <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-xl p-4">
 
             <!-- Owner -->
             <template v-if="isOwner">
               <Link :href="route('inserat.profile.edit')"
-                class="block w-full text-center bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-gray-200 transition mb-2">
+                class="block w-full text-center bg-white/5 text-gray-300 text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-white/10 transition mb-2">
                 ✏️ Profil bearbeiten
               </Link>
               <Link :href="route('inserat.media.index')"
@@ -105,23 +105,23 @@
             <!-- Aktiver Trial -->
             <template v-else-if="isTrialing">
               <div class="text-center mb-4">
-                <span class="inline-block bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full mb-2">
+                <span class="inline-block bg-purple-900/30 text-purple-300 text-xs font-bold px-3 py-1 rounded-full mb-2">
                   🎁 Gratis-Test aktiv
                 </span>
-                <p class="text-2xl font-black text-gray-900">{{ trialDaysLeft }} Tage</p>
-                <p class="text-xs text-gray-500 mt-0.5">noch bis {{ trialEndsAt }}</p>
+                <p class="text-2xl font-black text-white">{{ trialDaysLeft }} Tage</p>
+                <p class="text-xs text-gray-400 mt-0.5">noch bis {{ trialEndsAt }}</p>
               </div>
-              <div class="bg-purple-50 rounded-lg p-3 mb-3 text-xs text-purple-700 text-center">
+              <div class="bg-purple-900/20 rounded-lg p-3 mb-3 text-xs text-purple-300 text-center">
                 Privater Zugang bis {{ trialEndsAt }} kostenlos
               </div>
-              <p class="text-xs text-gray-500 text-center mb-3">Danach für CHF {{ profile.subscription_price_chf }}/Monat weiter</p>
+              <p class="text-xs text-gray-400 text-center mb-3">Danach für CHF {{ profile.subscription_price_chf }}/Monat weiter</p>
               <form @submit.prevent="subscribe" class="mb-2">
                 <button type="submit" :disabled="subscribing"
                   class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-2.5 rounded-lg transition text-sm">
                   {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
                 </button>
               </form>
-              <button @click="cancelSub" class="w-full text-xs text-gray-400 hover:text-red-500 transition">
+              <button @click="cancelSub" class="w-full text-xs text-gray-500 hover:text-red-400 transition">
                 Test beenden
               </button>
             </template>
@@ -129,10 +129,10 @@
             <!-- Aktives bezahltes Abo -->
             <template v-else-if="isSubscribed">
               <div class="text-center mb-3">
-                <p class="text-green-700 text-sm font-semibold">✅ Abonniert</p>
-                <p class="text-xs text-gray-500 mt-0.5">Privater Zugang aktiv</p>
+                <p class="text-green-400 text-sm font-semibold">✅ Abonniert</p>
+                <p class="text-xs text-gray-400 mt-0.5">Privater Zugang aktiv</p>
               </div>
-              <button @click="cancelSub" class="w-full text-xs text-gray-400 hover:text-red-500 transition">
+              <button @click="cancelSub" class="w-full text-xs text-gray-500 hover:text-red-400 transition">
                 Abonnement kündigen
               </button>
             </template>
@@ -140,10 +140,10 @@
             <!-- Nicht eingeloggt -->
             <template v-else-if="!$page.props.auth.user">
               <div class="text-center mb-4">
-                <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
-                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
-                  <p class="text-purple-700 font-bold text-sm">🎁 3 Tage gratis testen</p>
-                  <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
+                <p class="text-gray-400 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
+                <div class="bg-purple-900/20 border border-purple-700/30 rounded-lg p-3 mb-3">
+                  <p class="text-purple-300 font-bold text-sm">🎁 3 Tage gratis testen</p>
+                  <p class="text-xs text-purple-400 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
                 </div>
               </div>
               <Link :href="route('register')"
@@ -151,7 +151,7 @@
                 Kostenlos registrieren & testen
               </Link>
               <Link :href="route('login')"
-                class="block w-full text-center border border-gray-200 text-gray-600 text-sm font-semibold py-2.5 rounded-lg hover:border-gray-300 transition">
+                class="block w-full text-center border border-white/10 text-gray-400 text-sm font-semibold py-2.5 rounded-lg hover:border-white/20 transition">
                 Bereits registriert? Anmelden
               </Link>
             </template>
@@ -159,10 +159,10 @@
             <!-- Eingeloggt, Trial verfügbar -->
             <template v-else-if="hasSubscriptionOffer && !hasTrialed">
               <div class="text-center mb-4">
-                <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
-                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
-                  <p class="text-purple-700 font-bold text-sm">🎁 3 Tage gratis testen</p>
-                  <p class="text-xs text-purple-600 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
+                <p class="text-gray-400 text-xs uppercase tracking-wide mb-2">Privater Zugang</p>
+                <div class="bg-purple-900/20 border border-purple-700/30 rounded-lg p-3 mb-3">
+                  <p class="text-purple-300 font-bold text-sm">🎁 3 Tage gratis testen</p>
+                  <p class="text-xs text-purple-400 mt-0.5">Danach CHF {{ profile.subscription_price_chf }}/Monat</p>
                 </div>
               </div>
               <form @submit.prevent="startTrial" class="mb-2">
@@ -182,9 +182,9 @@
             <!-- Eingeloggt, Trial bereits genutzt -->
             <template v-else-if="hasSubscriptionOffer && hasTrialed">
               <div class="text-center mb-3">
-                <p class="text-gray-500 text-xs uppercase tracking-wide mb-1">Privater Zugang</p>
-                <p class="text-3xl font-black text-gray-900">CHF {{ profile.subscription_price_chf }}</p>
-                <p class="text-xs text-gray-500">/ Monat</p>
+                <p class="text-gray-400 text-xs uppercase tracking-wide mb-1">Privater Zugang</p>
+                <p class="text-3xl font-black text-white">CHF {{ profile.subscription_price_chf }}</p>
+                <p class="text-xs text-gray-400">/ Monat</p>
               </div>
               <form @submit.prevent="subscribe">
                 <button type="submit" :disabled="subscribing"
@@ -197,25 +197,25 @@
           </div>
 
           <!-- Stats -->
-          <div class="bg-white border border-gray-200 rounded-xl p-4 space-y-2 text-sm shadow-sm">
-            <div class="flex justify-between text-gray-600">
-              <span>👁 Aufrufe</span><span class="text-gray-900 font-semibold">{{ profile.total_views }}</span>
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-xl p-4 space-y-2 text-sm">
+            <div class="flex justify-between text-gray-400">
+              <span>👁 Aufrufe</span><span class="text-white font-semibold">{{ profile.total_views }}</span>
             </div>
-            <div class="flex justify-between text-gray-600">
-              <span>❤️ Abonnenten</span><span class="text-gray-900 font-semibold">{{ profile.total_subscribers }}</span>
+            <div class="flex justify-between text-gray-400">
+              <span>❤️ Abonnenten</span><span class="text-white font-semibold">{{ profile.total_subscribers }}</span>
             </div>
-            <div v-if="reviews.length" class="flex justify-between text-gray-600">
+            <div v-if="reviews.length" class="flex justify-between text-gray-400">
               <span>⭐ Bewertung</span>
-              <span class="text-gray-900 font-semibold">{{ avgRating.toFixed(1) }} ({{ reviews.length }})</span>
+              <span class="text-white font-semibold">{{ avgRating.toFixed(1) }} ({{ reviews.length }})</span>
             </div>
-            <div v-if="profile.city" class="flex justify-between text-gray-600">
-              <span>📍 Stadt</span><span class="text-gray-900">{{ profile.city }}</span>
+            <div v-if="profile.city" class="flex justify-between text-gray-400">
+              <span>📍 Stadt</span><span class="text-gray-300">{{ profile.city }}</span>
             </div>
-            <div v-if="profile.age" class="flex justify-between text-gray-600">
-              <span>🎂 Alter</span><span class="text-gray-900">{{ profile.age }} Jahre</span>
+            <div v-if="profile.age" class="flex justify-between text-gray-400">
+              <span>🎂 Alter</span><span class="text-gray-300">{{ profile.age }} Jahre</span>
             </div>
-            <div class="flex justify-between text-gray-600">
-              <span>📅 Inseriert</span><span class="text-gray-900">{{ profile.created_at }}</span>
+            <div class="flex justify-between text-gray-400">
+              <span>📅 Inseriert</span><span class="text-gray-300">{{ profile.created_at }}</span>
             </div>
           </div>
         </div>
@@ -226,37 +226,37 @@
           <!-- Header -->
           <div>
             <div class="flex flex-wrap items-center gap-3 mb-2">
-              <h1 class="text-2xl font-black text-gray-900">{{ profile.display_name }}</h1>
+              <h1 class="text-2xl font-black text-white">{{ profile.display_name }}</h1>
               <span v-if="profile.category" class="text-xs bg-[#e91e8c]/10 text-[#e91e8c] border border-[#e91e8c]/30 px-2.5 py-0.5 rounded-full">
                 {{ profile.category }}
               </span>
             </div>
             <div class="flex flex-wrap gap-2">
               <span v-for="tag in profile.tags" :key="tag"
-                class="text-xs bg-gray-100 text-gray-600 border border-gray-200 px-2.5 py-1 rounded-full">
+                class="text-xs bg-white/5 text-gray-400 border border-white/10 px-2.5 py-1 rounded-full">
                 {{ tag }}
               </span>
             </div>
           </div>
 
           <!-- Description -->
-          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-xl p-5">
+            <p class="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
           </div>
 
           <!-- Media Tabs -->
-          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-            <div class="flex border-b border-gray-200">
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden">
+            <div class="flex border-b border-white/8">
               <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
                 class="px-5 py-3 text-sm font-semibold transition border-b-2 -mb-px"
-                :class="activeTab === tab.key ? 'border-[#e91e8c] text-[#e91e8c]' : 'border-transparent text-gray-500 hover:text-gray-700'">
+                :class="activeTab === tab.key ? 'border-[#e91e8c] text-[#e91e8c]' : 'border-transparent text-gray-500 hover:text-gray-300'">
                 {{ tab.label }} ({{ tab.count }})
               </button>
             </div>
             <div class="p-4">
               <!-- Public Media -->
               <div v-if="activeTab === 'public'">
-                <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine Fotos.</div>
+                <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine Fotos.</div>
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                   <div v-for="item in publicMedia" :key="item.id"
                     class="aspect-square rounded-lg overflow-hidden cursor-pointer group" @click="openLightbox(item)">
@@ -273,7 +273,7 @@
               <div v-if="activeTab === 'private'">
                 <!-- Subscriber / Owner / Trialing: full access -->
                 <template v-if="isOwner || isSubscribed || isTrialing">
-                  <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
+                  <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
                   <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                     <div v-for="item in privateMedia" :key="item.id"
                       class="rounded-lg overflow-hidden cursor-pointer group"
@@ -316,12 +316,12 @@
                     </div>
 
                     <!-- Fade + subscribe CTA overlay at bottom -->
-                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-white via-white/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
-                      <svg class="w-10 h-10 text-gray-400 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
+                      <svg class="w-10 h-10 text-gray-500 mb-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                       </svg>
-                      <p class="font-bold text-gray-800 text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
-                      <p class="text-xs text-gray-500 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
+                      <p class="font-bold text-white text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
+                      <p class="text-xs text-gray-400 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
                       <template v-if="!$page.props.auth.user">
                         <Link :href="route('register')"
                           class="pointer-events-auto bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
@@ -344,21 +344,21 @@
                   </div>
                 </template>
 
-                <div v-else class="text-center py-10 text-gray-400">Noch keine privaten Inhalte.</div>
+                <div v-else class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
               </div>
             </div>
           </div>
 
           <!-- Review Form -->
-          <div v-if="isSubscribed && !hasReviewed" class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <h2 class="font-semibold text-gray-900 mb-4">Bewertung abgeben</h2>
+          <div v-if="isSubscribed && !hasReviewed" class="bg-[#1a1a1a] border border-white/8 rounded-xl p-5">
+            <h2 class="font-semibold text-white mb-4">Bewertung abgeben</h2>
             <form @submit.prevent="submitReview" class="space-y-4">
               <div class="flex gap-1">
                 <button v-for="n in 5" :key="n" type="button" @click="reviewForm.stars = n"
-                  class="text-3xl transition" :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-300'">★</button>
+                  class="text-3xl transition" :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-600'">★</button>
               </div>
               <textarea v-model="reviewForm.comment" rows="3" maxlength="1000" placeholder="Deine Erfahrung…"
-                class="w-full bg-white border border-gray-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e91e8c] resize-none placeholder-gray-400" />
+                class="w-full bg-[#111] border border-white/10 text-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e91e8c] resize-none placeholder-gray-600" />
               <button type="submit" :disabled="!reviewForm.stars || submittingReview"
                 class="bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">
                 {{ submittingReview ? 'Einreichen…' : 'Bewertung einreichen' }}
@@ -367,17 +367,17 @@
           </div>
 
           <!-- Reviews -->
-          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <h2 class="font-semibold text-gray-900 mb-4">Bewertungen ({{ reviews.length }})</h2>
-            <div v-if="!reviews.length" class="text-center py-6 text-gray-400 text-sm">Noch keine Bewertungen.</div>
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-xl p-5">
+            <h2 class="font-semibold text-white mb-4">Bewertungen ({{ reviews.length }})</h2>
+            <div v-if="!reviews.length" class="text-center py-6 text-gray-500 text-sm">Noch keine Bewertungen.</div>
             <div v-else class="space-y-4">
-              <div v-for="r in reviews" :key="r.id" class="border-b border-gray-100 pb-4 last:border-0">
+              <div v-for="r in reviews" :key="r.id" class="border-b border-white/5 pb-4 last:border-0">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="text-yellow-400 text-sm">{{ '★'.repeat(r.stars) }}{{ '☆'.repeat(5 - r.stars) }}</span>
-                  <span class="text-sm font-semibold text-gray-700">{{ r.author }}</span>
-                  <span class="text-xs text-gray-400 ml-auto">{{ r.created_at }}</span>
+                  <span class="text-sm font-semibold text-gray-300">{{ r.author }}</span>
+                  <span class="text-xs text-gray-500 ml-auto">{{ r.created_at }}</span>
                 </div>
-                <p class="text-sm text-gray-600">{{ r.comment }}</p>
+                <p class="text-sm text-gray-400">{{ r.comment }}</p>
                 <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-[#e91e8c]/40 text-sm text-gray-500 italic">
                   <span class="font-semibold text-[#e91e8c]">Antwort: </span>{{ r.reply }}
                 </div>
@@ -385,7 +385,7 @@
                   <button @click="replyTarget = replyTarget === r.id ? null : r.id" class="text-xs text-[#e91e8c] hover:underline">Antworten</button>
                   <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
                     <input v-model="replyText" type="text" placeholder="Deine Antwort…" maxlength="500"
-                      class="flex-1 bg-white border border-gray-300 text-gray-700 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e91e8c]" />
+                      class="flex-1 bg-[#111] border border-white/10 text-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e91e8c]" />
                     <button @click="submitReply(r.id)" class="bg-[#e91e8c] text-white text-xs px-3 py-1 rounded hover:bg-[#c91478]">Senden</button>
                   </div>
                 </div>
