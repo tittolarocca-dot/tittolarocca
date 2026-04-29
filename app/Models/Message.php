@@ -9,7 +9,7 @@ class Message extends Model
 {
     protected $fillable = [
         'from_user_id', 'to_user_id', 'profile_id',
-        'body_encrypted', 'read_at',
+        'body', 'read_at',
         'ppv_media_path', 'ppv_media_type', 'ppv_price_chf',
     ];
 

@@ -53,6 +53,7 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::post('/kuendigen/{profile:slug}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'cancel'])->name('cancel');
     Route::get('/nachrichten',                              [\App\Http\Controllers\Member\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{profile:slug}',             [\App\Http\Controllers\Member\MessageController::class, 'send'])->name('messages.send');
+    Route::post('/nachrichten/{profile:slug}/bild',        [\App\Http\Controllers\Member\MessageController::class, 'sendMedia'])->name('messages.send.media');
     Route::get('/nachrichten/{userId}/verlauf',            [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::post('/nachrichten/{message}/ppv-kaufen',       [\App\Http\Controllers\Member\MessageController::class, 'ppvCheckout'])->name('messages.ppv.checkout');
     Route::post('/bewertung/{profile:slug}',           [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');

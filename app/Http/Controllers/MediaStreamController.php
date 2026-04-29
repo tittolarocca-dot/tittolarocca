@@ -32,7 +32,7 @@ class MediaStreamController extends Controller
 
     public function ppv(Request $request, Message $message)
     {
-        if (!$message->isPpv()) {
+        if (!$message->ppv_media_path) {
             abort(404);
         }
 
@@ -41,9 +41,20 @@ class MediaStreamController extends Controller
             abort(403);
         }
 
-        // Creator (inserent) can always view their own PPV media
-        $isCreator = $message->from_user_id === $user->id;
+        $isParticipant = $message->from_user_id === $user->id
+                      || $message->to_user_id   === $user->id;
 
+        if (!$isParticipant) {
+            abort(403);
+        }
+
+        // Regular (non-PPV) chat media → both parties can view
+        if (!$message->isPpv()) {
+            return $this->streamFile($request, $message->ppv_media_path);
+        }
+
+        // PPV media → sender (creator) always; receiver needs paid purchase
+        $isCreator = $message->from_user_id === $user->id;
         if (!$isCreator) {
             $purchased = PpvPurchase::where('message_id', $message->id)
                 ->where('buyer_user_id', $user->id)

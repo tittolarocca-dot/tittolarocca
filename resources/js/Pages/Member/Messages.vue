@@ -18,7 +18,6 @@
         </div>
         <div class="flex-1 overflow-y-auto">
 
-          <!-- Existing conversations -->
           <template v-if="conversations.length">
             <button v-for="conv in conversations" :key="'conv-' + conv.user_id"
               @click="openConversation(conv)"
@@ -26,9 +25,7 @@
               :class="activeConv?.user_id === conv.user_id && !activeConv?.isNew ? 'bg-gray-50' : ''"
             >
               <div class="flex items-center justify-between mb-0.5">
-                <span class="font-semibold text-sm text-gray-900">
-                  {{ conv.profile?.display_name ?? conv.name }}
-                </span>
+                <span class="font-semibold text-sm text-gray-900">{{ conv.profile?.display_name ?? conv.name }}</span>
                 <span class="text-xs text-gray-400">{{ conv.last_at }}</span>
               </div>
               <p class="text-xs text-gray-500 truncate">{{ conv.last_message }}</p>
@@ -38,7 +35,6 @@
             </button>
           </template>
 
-          <!-- Subscriptions without a conversation yet -->
           <template v-if="newSubscriptions.length">
             <div v-if="conversations.length" class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-100">
               Abonnements
@@ -56,13 +52,10 @@
             </button>
           </template>
 
-          <!-- No subscriptions at all -->
           <div v-if="!conversations.length && !newSubscriptions.length"
             class="text-center py-10 text-gray-400 text-sm px-4">
-            Noch keine Nachrichten.<br>
-            Abonniere ein Profil und sende eine Nachricht.
+            Noch keine Nachrichten.<br>Abonniere ein Profil und sende eine Nachricht.
           </div>
-
         </div>
       </div>
 
@@ -89,8 +82,17 @@
               <div v-for="msg in chatMessages" :key="msg.id" class="flex"
                 :class="msg.from_me ? 'justify-end' : 'justify-start'">
 
-                <!-- PPV message from creator (locked) -->
-                <template v-if="msg.ppv_media_type && !msg.from_me">
+                <!-- Regular free chat image (no price) -->
+                <template v-if="msg.ppv_media_type && !msg.is_ppv">
+                  <div class="max-w-xs rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                    <img :src="msg.ppv_media_url" class="w-full object-cover max-h-64 rounded-t-xl" />
+                    <div v-if="msg.body" class="px-3 py-1.5 text-xs text-gray-600">{{ msg.body }}</div>
+                    <div class="px-3 pb-2 text-xs text-gray-400">{{ msg.created_at }}</div>
+                  </div>
+                </template>
+
+                <!-- PPV locked content -->
+                <template v-else-if="msg.ppv_media_type && msg.is_ppv && !msg.from_me">
                   <div v-if="msg.ppv_purchased" class="max-w-xs rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                     <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" class="w-full object-cover" />
                     <video v-else :src="msg.ppv_media_url" controls class="w-full max-h-64" />
@@ -123,7 +125,7 @@
                 <template v-else>
                   <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
                     :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
-                    {{ msg.body }}
+                    <span class="break-words whitespace-pre-wrap">{{ msg.body }}</span>
                     <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
                   </div>
                 </template>
@@ -132,17 +134,57 @@
             </template>
           </div>
 
-          <!-- Input -->
-          <div class="px-4 py-3 border-t border-gray-200">
-            <form @submit.prevent="sendMessage" class="flex gap-2">
-              <input v-model="replyText" type="text" placeholder="Nachricht schreiben…"
-                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]"
+          <!-- Input Area -->
+          <div class="border-t border-gray-200">
+
+            <!-- Emoji Picker -->
+            <div v-if="showEmoji" class="px-4 pt-3 pb-1">
+              <div class="bg-white border border-gray-200 rounded-xl p-2 shadow-md">
+                <div class="flex flex-wrap gap-1">
+                  <button v-for="e in emojis" :key="e" @click="insertEmoji(e)"
+                    class="text-xl hover:bg-gray-100 rounded px-1 py-0.5 transition">{{ e }}</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image preview (pending upload) -->
+            <div v-if="pendingImage" class="px-4 pt-2">
+              <div class="relative inline-block">
+                <img :src="pendingImagePreview" class="h-20 rounded-lg object-cover border border-gray-200" />
+                <button @click="clearImage"
+                  class="absolute -top-1.5 -right-1.5 bg-gray-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-gray-900">✕</button>
+              </div>
+            </div>
+
+            <div class="px-4 py-3 flex items-end gap-2">
+              <!-- Image upload button -->
+              <label class="shrink-0 cursor-pointer text-gray-400 hover:text-[#e91e8c] transition p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <input type="file" accept="image/*" class="hidden" @change="onImageSelect" ref="imageInput" />
+              </label>
+
+              <!-- Emoji button -->
+              <button type="button" @click="showEmoji = !showEmoji"
+                class="shrink-0 text-gray-400 hover:text-[#e91e8c] transition p-1 text-xl leading-none"
+                :class="showEmoji ? 'text-[#e91e8c]' : ''">😊</button>
+
+              <!-- Text input -->
+              <textarea v-model="replyText" rows="1" ref="textInput"
+                placeholder="Nachricht schreiben…"
+                @keydown.enter.exact.prevent="sendOrUpload"
+                @input="autoResize"
+                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-xl px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c] resize-none overflow-hidden leading-5 max-h-32"
                 :disabled="sending" />
-              <button type="submit" :disabled="!replyText.trim() || sending"
-                class="bg-[#e91e8c] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
+
+              <!-- Send button -->
+              <button @click="sendOrUpload"
+                :disabled="(!replyText.trim() && !pendingImage) || sending"
+                class="shrink-0 bg-[#e91e8c] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
                 {{ sending ? '…' : 'Senden' }}
               </button>
-            </form>
+            </div>
           </div>
         </template>
       </div>
@@ -161,21 +203,32 @@ const props = defineProps({
   ppvSuccess:    { type: Boolean, default: false },
 });
 
-// Subscriptions that have no existing conversation yet
 const newSubscriptions = computed(() =>
   props.subscriptions.filter(sub =>
     !props.conversations.some(c => c.user_id === sub.creator_user_id)
   )
 );
 
-const activeConv      = ref(null);
-const chatMessages    = ref([]);
-const chatLoading     = ref(false);
-const replyText       = ref('');
-const sending         = ref(false);
-const chatBox         = ref(null);
-const buyingId        = ref(null);
-const ppvSuccessToast = ref(false);
+const activeConv         = ref(null);
+const chatMessages       = ref([]);
+const chatLoading        = ref(false);
+const replyText          = ref('');
+const sending            = ref(false);
+const chatBox            = ref(null);
+const textInput          = ref(null);
+const imageInput         = ref(null);
+const buyingId           = ref(null);
+const ppvSuccessToast    = ref(false);
+const showEmoji          = ref(false);
+const pendingImage       = ref(null);
+const pendingImagePreview= ref(null);
+
+const emojis = [
+  '😀','😘','😍','🥰','😏','😈','🔥','❤️','💋','💦',
+  '🥵','😋','🤤','👅','💎','🌹','🍑','💄','🫦','✨',
+  '🙈','😜','🤩','💪','👄','🎉','💌','😻','🦋','🌸',
+  '❤️‍🔥','🥂','🍾','🌙','⭐','💰','🎁','📸','🎬','👑',
+];
 
 onMounted(() => {
   if (props.ppvSuccess) {
@@ -188,6 +241,7 @@ async function openConversation(conv) {
   activeConv.value   = { ...conv, isNew: false };
   chatLoading.value  = true;
   chatMessages.value = [];
+  showEmoji.value    = false;
   try {
     const res = await fetch(route('konto.messages.conversation', conv.user_id), {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -210,22 +264,100 @@ function openNewConversation(sub) {
   };
   chatMessages.value = [];
   chatLoading.value  = false;
+  showEmoji.value    = false;
 }
 
-function sendMessage() {
-  if (!replyText.value.trim() || !activeConv.value?.profile?.slug) return;
+function autoResize(e) {
+  const el = e.target;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 128) + 'px';
+}
+
+function insertEmoji(emoji) {
+  replyText.value += emoji;
+  showEmoji.value  = false;
+  nextTick(() => textInput.value?.focus());
+}
+
+function onImageSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingImage.value        = file;
+  pendingImagePreview.value = URL.createObjectURL(file);
+}
+
+function clearImage() {
+  pendingImage.value        = null;
+  pendingImagePreview.value = null;
+  if (imageInput.value) imageInput.value.value = '';
+}
+
+async function sendOrUpload() {
+  if (sending.value || !activeConv.value?.profile?.slug) return;
+
+  if (pendingImage.value) {
+    await uploadImage();
+  } else if (replyText.value.trim()) {
+    await sendText();
+  }
+}
+
+async function sendText() {
   sending.value = true;
-  router.post(route('konto.messages.send', activeConv.value.profile.slug), {
-    body: replyText.value,
-  }, {
-    preserveScroll: true,
-    onSuccess: () => {
+  try {
+    const res = await fetch(route('konto.messages.send', activeConv.value.profile.slug), {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': getCsrf(),
+      },
+      body: JSON.stringify({ body: replyText.value }),
+    });
+    if (res.ok) {
       replyText.value = '';
-      // After first message, refetch as a real conversation
-      openConversation({ ...activeConv.value, isNew: false });
-    },
-    onFinish: () => { sending.value = false; },
+      if (textInput.value) { textInput.value.style.height = 'auto'; }
+      await refreshConversation();
+    }
+  } finally {
+    sending.value = false;
+  }
+}
+
+async function uploadImage() {
+  sending.value = true;
+  try {
+    const fd = new FormData();
+    fd.append('media', pendingImage.value);
+    if (replyText.value.trim()) fd.append('body', replyText.value);
+
+    const res = await fetch(route('konto.messages.send.media', activeConv.value.profile.slug), {
+      method:  'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': getCsrf(),
+      },
+      body: fd,
+    });
+    if (res.ok) {
+      replyText.value = '';
+      clearImage();
+      await refreshConversation();
+    }
+  } finally {
+    sending.value = false;
+  }
+}
+
+async function refreshConversation() {
+  if (!activeConv.value) return;
+  const res = await fetch(route('konto.messages.conversation', activeConv.value.user_id), {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
   });
+  const data = await res.json();
+  chatMessages.value = data.messages;
+  await nextTick();
+  if (chatBox.value) chatBox.value.scrollTop = chatBox.value.scrollHeight;
 }
 
 function buyPpv(msg) {
@@ -234,5 +366,10 @@ function buyPpv(msg) {
   router.post(route('konto.messages.ppv.checkout', msg.id), {}, {
     onFinish: () => { buyingId.value = null; },
   });
+}
+
+function getCsrf() {
+  return decodeURIComponent(document.cookie.split('; ')
+    .find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '');
 }
 </script>

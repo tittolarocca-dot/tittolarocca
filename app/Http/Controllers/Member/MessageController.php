@@ -80,7 +80,35 @@ class MessageController extends Controller
             'body'         => $request->input('body'),
         ]);
 
-        return back()->with('success', 'Nachricht gesendet.');
+        return response()->json(['ok' => true]);
+    }
+
+    public function sendMedia(Request $request, Profile $profile)
+    {
+        $request->validate([
+            'media' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:20480'],
+        ]);
+
+        $user = $request->user();
+
+        if (!$user->isSubscribedTo($profile)) {
+            return response()->json(['error' => 'Nur Abonnenten können Bilder senden.'], 403);
+        }
+
+        $file    = $request->file('media');
+        $ext     = $file->getClientOriginalExtension();
+
+        $message = Message::create([
+            'from_user_id'   => $user->id,
+            'to_user_id'     => $profile->user_id,
+            'profile_id'     => $profile->id,
+            'ppv_media_type' => 'image',
+        ]);
+
+        $path = $file->storeAs("chat/{$message->id}", "img.{$ext}", 'local');
+        $message->update(['ppv_media_path' => $path]);
+
+        return response()->json(['ok' => true]);
     }
 
     public function conversation(Request $request, int $userId)
@@ -106,8 +134,17 @@ class MessageController extends Controller
 
         $mapped = $messages->map(function ($m) use ($user, $paidIds) {
             $isPpv      = $m->isPpv();
+            $hasMedia   = $m->ppv_media_type !== null;
             $purchased  = $isPpv && $paidIds->has($m->id);
             $fromMe     = $m->from_user_id === $user->id;
+
+            // Regular (free) media is visible to both parties; PPV only if purchased
+            $mediaUrl = match(true) {
+                !$hasMedia        => null,
+                !$isPpv           => route('media.ppv', $m->id), // regular chat image
+                $purchased        => route('media.ppv', $m->id), // paid PPV
+                default           => null,
+            };
 
             return [
                 'id'             => $m->id,
@@ -118,7 +155,8 @@ class MessageController extends Controller
                 'ppv_media_type' => $m->ppv_media_type,
                 'ppv_price_chf'  => $m->ppv_price_chf,
                 'ppv_purchased'  => $purchased,
-                'ppv_media_url'  => ($isPpv && $purchased) ? route('media.ppv', $m->id) : null,
+                'ppv_media_url'  => $mediaUrl,
+                'is_ppv'         => $isPpv,
             ];
         });
 
