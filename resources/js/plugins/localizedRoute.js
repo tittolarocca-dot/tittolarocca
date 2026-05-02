@@ -1,25 +1,33 @@
 import { route as ziggyRoute } from '../../../vendor/tightenco/ziggy';
 
 /**
- * Wraps Ziggy's route() to auto-inject the current locale for routes
- * that define a {locale} parameter (i.e. the SEO-prefixed public routes).
+ * Locale-aware wrapper around Ziggy's route().
+ * Auto-injects the current locale for any route whose URI starts with {locale}.
+ * Handles string, number, array, and object params correctly.
  */
 export function localizedRoute(name, params = {}, absolute = false) {
-    try {
-        // Check if the named route requires {locale} by attempting a test resolve
-        const config = window.Ziggy ?? {};
-        const definition = config?.routes?.[name];
-        const needsLocale = definition?.uri?.startsWith('{locale}');
+    const config     = window.Ziggy ?? {};
+    const definition = config?.routes?.[name];
+    const needsLocale = definition?.uri?.startsWith('{locale}');
 
-        if (needsLocale) {
-            const locale = window.__inertia_locale__ ?? 'de';
-            params = typeof params === 'object' && !Array.isArray(params)
-                ? { locale, ...params }
-                : params;
+    if (needsLocale) {
+        const locale = window.__inertia_locale__ ?? 'de';
+
+        if (typeof params === 'string' || typeof params === 'number') {
+            // Positional string/number: map to the first non-locale parameter
+            const routeParams = definition.parameters ?? [];
+            const firstNonLocale = routeParams.find(p => p !== 'locale');
+            params = firstNonLocale
+                ? { locale, [firstNonLocale]: params }
+                : { locale };
+        } else if (Array.isArray(params)) {
+            // Array: prepend the locale value
+            params = [locale, ...params];
+        } else {
+            // Object: merge locale in (existing locale key wins)
+            params = { locale, ...params };
         }
-
-        return ziggyRoute(name, params, absolute);
-    } catch {
-        return ziggyRoute(name, params, absolute);
     }
+
+    return ziggyRoute(name, params, absolute);
 }
