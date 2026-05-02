@@ -9,21 +9,21 @@
         <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-0 flex-1 last:flex-none">
           <div :class="[
             'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-            i <= 1 ? 'bg-[#e91e8c] text-white' : 'bg-gray-200 text-gray-500',
+            i <= 1 ? 'bg-[#e35d8f] text-white' : 'bg-gray-200 text-gray-500',
           ]">{{ i < 1 ? '✓' : i + 1 }}</div>
           <span class="ml-1.5 text-xs font-medium"
-            :class="i === 1 ? 'text-[#e91e8c]' : i < 1 ? 'text-green-600' : 'text-gray-400'">
+            :class="i === 1 ? 'text-[#e35d8f]' : i < 1 ? 'text-green-600' : 'text-gray-400'">
             {{ step }}
           </span>
           <div v-if="i < steps.length - 1" class="flex-1 h-px mx-3"
-            :class="i < 1 ? 'bg-[#e91e8c]/40' : 'bg-gray-200'"></div>
+            :class="i < 1 ? 'bg-[#e35d8f]/40' : 'bg-gray-200'"></div>
         </div>
       </div>
 
       <h1 class="text-2xl font-bold text-gray-900 mb-2">Paket wählen</h1>
       <p class="text-gray-500 text-sm mb-8">
         Wähle ein Laufzeit-Paket für <strong class="text-gray-900">„{{ profile.display_name }}"</strong>.
-        Nach erfolgreicher Zahlung ist dein Inserat <span class="text-[#e91e8c] font-semibold">sofort aktiv</span>.
+        Nach erfolgreicher Zahlung ist dein Inserat <span class="text-[#e35d8f] font-semibold">sofort aktiv</span>.
       </p>
 
       <!-- Pakete -->
@@ -33,8 +33,8 @@
           :class="[
             'relative border-2 rounded-2xl p-5 cursor-pointer transition-all',
             selectedId === pkg.id
-              ? 'border-[#e91e8c] bg-[#e91e8c]/5'
-              : 'border-gray-200 bg-white hover:border-[#e91e8c]/40 shadow-sm',
+              ? 'border-[#e35d8f] bg-[#e35d8f]/5'
+              : 'border-gray-200 bg-white hover:border-[#e35d8f]/40 shadow-sm',
           ]">
 
           <!-- Badge -->
@@ -43,14 +43,14 @@
             Testmodus
           </div>
           <div v-else-if="pkg.name === 'Standard'"
-            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#e91e8c] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#e35d8f] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
             Beliebteste Wahl
           </div>
 
           <!-- Auswahl-Indikator -->
           <div :class="[
             'w-5 h-5 rounded-full border-2 mb-3 flex items-center justify-center',
-            selectedId === pkg.id ? 'border-[#e91e8c] bg-[#e91e8c]' : 'border-gray-300',
+            selectedId === pkg.id ? 'border-[#e35d8f] bg-[#e35d8f]' : 'border-gray-300',
           ]">
             <div v-if="selectedId === pkg.id" class="w-2 h-2 rounded-full bg-white"></div>
           </div>
@@ -58,7 +58,7 @@
           <h3 class="font-bold text-gray-900 text-lg">{{ pkg.name }}</h3>
           <div class="mt-1 mb-3">
             <span v-if="pkg.price_chf == 0" class="text-2xl font-extrabold text-green-600">GRATIS</span>
-            <span v-else class="text-2xl font-extrabold text-[#e91e8c]">CHF {{ pkg.price_chf }}</span>
+            <span v-else class="text-2xl font-extrabold text-[#e35d8f]">CHF {{ pkg.price_chf }}</span>
             <span class="text-gray-400 text-sm ml-1">/ {{ pkg.duration_days }} Tage</span>
           </div>
 
@@ -87,7 +87,7 @@
           </div>
           <div class="text-right">
             <p v-if="selected.price_chf == 0" class="text-3xl font-extrabold text-green-600">GRATIS</p>
-            <p v-else class="text-3xl font-extrabold text-[#e91e8c]">CHF {{ selected.price_chf }}</p>
+            <p v-else class="text-3xl font-extrabold text-[#e35d8f]">CHF {{ selected.price_chf }}</p>
             <p class="text-xs text-gray-400">{{ selected.price_chf == 0 ? '14 Tage kostenlos' : 'inkl. MwSt.' }}</p>
           </div>
         </div>
@@ -103,7 +103,7 @@
                 'px-8 py-2.5 rounded-md text-sm font-bold transition',
                 selected.price_chf == 0
                   ? 'bg-green-600 hover:bg-green-700 text-white'
-                  : 'bg-[#e91e8c] hover:bg-[#c91478] text-white',
+                  : 'bg-[#e35d8f] hover:bg-[#c44a7a] text-white',
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               ]">
               {{ selected.price_chf == 0 ? 'Gratis aktivieren' : `Jetzt bezahlen · CHF ${selected.price_chf}` }}

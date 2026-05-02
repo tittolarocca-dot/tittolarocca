@@ -32,7 +32,7 @@
 
         <div class="flex flex-col sm:flex-row gap-3">
           <Link :href="route('inserat.media.index')"
-            class="flex-1 bg-[#e91e8c] text-white rounded-lg px-4 py-2.5 text-sm font-bold hover:bg-[#c91478] transition text-center">
+            class="flex-1 bg-[#e35d8f] text-white rounded-lg px-4 py-2.5 text-sm font-bold hover:bg-[#c44a7a] transition text-center">
             Fotos hochladen
           </Link>
           <Link :href="route('inserat.dashboard')"

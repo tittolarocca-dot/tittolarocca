@@ -3,7 +3,7 @@
     <Head :title="profile.display_name" />
 
     <!-- Success banner -->
-    <div v-if="subscribed" class="bg-[#e91e8c] text-white text-center py-3 text-sm font-semibold">
+    <div v-if="subscribed" class="bg-[#e35d8f] text-white text-center py-3 text-sm font-semibold">
       🎉 Abonnement erfolgreich! Du hast jetzt Zugang zu allen privaten Inhalten.
     </div>
 
@@ -72,14 +72,14 @@
           <div v-if="profile.address" class="bg-[#1a1a1a] border border-white/8 rounded-xl p-4">
             <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Standort</p>
             <div class="flex items-start gap-2 mb-3">
-              <svg class="w-4 h-4 text-[#e91e8c] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-4 h-4 text-[#e35d8f] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
               </svg>
               <span class="text-sm text-gray-300 leading-snug">{{ profile.address }}</span>
             </div>
             <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`"
               target="_blank" rel="noopener"
-              class="flex items-center justify-center gap-2 w-full border border-white/10 text-gray-400 text-sm font-semibold px-4 py-2.5 rounded-lg hover:border-[#e91e8c] hover:text-[#e91e8c] transition">
+              class="flex items-center justify-center gap-2 w-full border border-white/10 text-gray-400 text-sm font-semibold px-4 py-2.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
               </svg>
@@ -97,7 +97,7 @@
                 ✏️ Profil bearbeiten
               </Link>
               <Link :href="route('inserat.media.index')"
-                class="block w-full text-center border border-[#e91e8c] text-[#e91e8c] text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#e91e8c]/10 transition">
+                class="block w-full text-center border border-[#e35d8f] text-[#e35d8f] text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#e35d8f]/10 transition">
                 🖼️ Medien verwalten
               </Link>
             </template>
@@ -117,7 +117,7 @@
               <p class="text-xs text-gray-400 text-center mb-3">Danach für CHF {{ profile.subscription_price_chf }}/Monat weiter</p>
               <form @submit.prevent="subscribe" class="mb-2">
                 <button type="submit" :disabled="subscribing"
-                  class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-2.5 rounded-lg transition text-sm">
+                  class="w-full bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white font-bold py-2.5 rounded-lg transition text-sm">
                   {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
                 </button>
               </form>
@@ -173,7 +173,7 @@
               </form>
               <form @submit.prevent="subscribe">
                 <button type="submit" :disabled="subscribing"
-                  class="w-full border border-[#e91e8c] text-[#e91e8c] font-semibold py-2.5 rounded-lg hover:bg-[#e91e8c]/10 transition text-sm">
+                  class="w-full border border-[#e35d8f] text-[#e35d8f] font-semibold py-2.5 rounded-lg hover:bg-[#e35d8f]/10 transition text-sm">
                   {{ subscribing ? 'Weiterleitung…' : `Direkt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
                 </button>
               </form>
@@ -188,7 +188,7 @@
               </div>
               <form @submit.prevent="subscribe">
                 <button type="submit" :disabled="subscribing"
-                  class="w-full bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
+                  class="w-full bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white font-bold py-3 rounded-lg transition text-sm">
                   {{ subscribing ? 'Weiterleitung…' : 'Jetzt abonnieren' }}
                 </button>
               </form>
@@ -227,7 +227,7 @@
           <div>
             <div class="flex flex-wrap items-center gap-3 mb-2">
               <h1 class="text-2xl font-black text-white">{{ profile.display_name }}</h1>
-              <span v-if="profile.category" class="text-xs bg-[#e91e8c]/10 text-[#e91e8c] border border-[#e91e8c]/30 px-2.5 py-0.5 rounded-full">
+              <span v-if="profile.category" class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-2.5 py-0.5 rounded-full">
                 {{ profile.category }}
               </span>
             </div>
@@ -249,7 +249,7 @@
             <div class="flex border-b border-white/8">
               <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
                 class="px-5 py-3 text-sm font-semibold transition border-b-2 -mb-px"
-                :class="activeTab === tab.key ? 'border-[#e91e8c] text-[#e91e8c]' : 'border-transparent text-gray-500 hover:text-gray-300'">
+                :class="activeTab === tab.key ? 'border-[#e35d8f] text-[#e35d8f]' : 'border-transparent text-gray-500 hover:text-gray-300'">
                 {{ tab.label }} ({{ tab.count }})
               </button>
             </div>
@@ -336,7 +336,7 @@
                       </template>
                       <template v-else>
                         <button @click="subscribe" :disabled="subscribing"
-                          class="pointer-events-auto bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          class="pointer-events-auto bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
                           {{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
                         </button>
                       </template>
@@ -358,9 +358,9 @@
                   class="text-3xl transition" :class="n <= reviewForm.stars ? 'text-yellow-400' : 'text-gray-600'">★</button>
               </div>
               <textarea v-model="reviewForm.comment" rows="3" maxlength="1000" placeholder="Deine Erfahrung…"
-                class="w-full bg-[#111] border border-white/10 text-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e91e8c] resize-none placeholder-gray-600" />
+                class="w-full bg-[#111] border border-white/10 text-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e35d8f] resize-none placeholder-gray-600" />
               <button type="submit" :disabled="!reviewForm.stars || submittingReview"
-                class="bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">
+                class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">
                 {{ submittingReview ? 'Einreichen…' : 'Bewertung einreichen' }}
               </button>
             </form>
@@ -378,15 +378,15 @@
                   <span class="text-xs text-gray-500 ml-auto">{{ r.created_at }}</span>
                 </div>
                 <p class="text-sm text-gray-400">{{ r.comment }}</p>
-                <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-[#e91e8c]/40 text-sm text-gray-500 italic">
-                  <span class="font-semibold text-[#e91e8c]">Antwort: </span>{{ r.reply }}
+                <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-[#e35d8f]/40 text-sm text-gray-500 italic">
+                  <span class="font-semibold text-[#e35d8f]">Antwort: </span>{{ r.reply }}
                 </div>
                 <div v-if="isOwner && !r.reply" class="mt-2">
-                  <button @click="replyTarget = replyTarget === r.id ? null : r.id" class="text-xs text-[#e91e8c] hover:underline">Antworten</button>
+                  <button @click="replyTarget = replyTarget === r.id ? null : r.id" class="text-xs text-[#e35d8f] hover:underline">Antworten</button>
                   <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
                     <input v-model="replyText" type="text" placeholder="Deine Antwort…" maxlength="500"
-                      class="flex-1 bg-[#111] border border-white/10 text-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e91e8c]" />
-                    <button @click="submitReply(r.id)" class="bg-[#e91e8c] text-white text-xs px-3 py-1 rounded hover:bg-[#c91478]">Senden</button>
+                      class="flex-1 bg-[#111] border border-white/10 text-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e35d8f]" />
+                    <button @click="submitReply(r.id)" class="bg-[#e35d8f] text-white text-xs px-3 py-1 rounded hover:bg-[#c44a7a]">Senden</button>
                   </div>
                 </div>
               </div>
@@ -451,7 +451,7 @@ const blurGradients = [
   'linear-gradient(135deg, #f7971e, #ffd200)',
   'linear-gradient(135deg, #a18cd1, #fbc2eb)',
   'linear-gradient(135deg, #84fab0, #8fd3f4)',
-  'linear-gradient(135deg, #fd7043, #e91e8c)',
+  'linear-gradient(135deg, #fd7043, #e35d8f)',
   'linear-gradient(135deg, #30cfd0, #330867)',
   'linear-gradient(135deg, #f6d365, #fda085)',
 ];

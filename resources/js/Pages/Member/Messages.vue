@@ -29,7 +29,7 @@
                 <span class="text-xs text-gray-400">{{ conv.last_at }}</span>
               </div>
               <p class="text-xs text-gray-500 truncate">{{ conv.last_message }}</p>
-              <span v-if="conv.unread" class="inline-block mt-1 bg-[#e91e8c]/10 text-[#e91e8c] text-xs px-1.5 rounded">
+              <span v-if="conv.unread" class="inline-block mt-1 bg-[#e35d8f]/10 text-[#e35d8f] text-xs px-1.5 rounded">
                 {{ conv.unread }} neu
               </span>
             </button>
@@ -45,7 +45,7 @@
               :class="activeConv?.user_id === sub.creator_user_id && activeConv?.isNew ? 'bg-gray-50' : ''"
             >
               <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-[#e91e8c] shrink-0"></span>
+                <span class="w-2 h-2 rounded-full bg-[#e35d8f] shrink-0"></span>
                 <span class="font-semibold text-sm text-gray-900">{{ sub.display_name }}</span>
               </div>
               <p class="text-xs text-gray-400 mt-0.5 pl-4">Neue Konversation starten</p>
@@ -99,22 +99,22 @@
                     <div v-if="msg.body" class="px-3 py-2 text-xs text-gray-600">{{ msg.body }}</div>
                     <div class="px-3 pb-2 text-xs text-gray-400">{{ msg.created_at }}</div>
                   </div>
-                  <div v-else class="max-w-xs rounded-xl overflow-hidden border border-[#e91e8c]/30 shadow-sm">
+                  <div v-else class="max-w-xs rounded-xl overflow-hidden border border-[#e35d8f]/30 shadow-sm">
                     <div class="relative bg-gray-100 h-40 flex flex-col items-center justify-center gap-2">
-                      <div class="absolute inset-0 bg-gradient-to-br from-[#e91e8c]/20 to-purple-200/40"></div>
+                      <div class="absolute inset-0 bg-gradient-to-br from-[#e35d8f]/20 to-purple-200/40"></div>
                       <div class="relative z-10 text-center">
                         <div class="text-4xl mb-1">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</div>
                         <div class="text-xs text-gray-600 font-medium">
                           {{ msg.ppv_media_type === 'video' ? 'Privates Video' : 'Privates Foto' }}
                         </div>
-                        <div class="text-lg font-bold text-[#e91e8c] mt-1">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</div>
+                        <div class="text-lg font-bold text-[#e35d8f] mt-1">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</div>
                       </div>
                     </div>
                     <div v-if="msg.body" class="px-3 pt-2 text-xs text-gray-600">{{ msg.body }}</div>
                     <div class="px-3 py-2 flex items-center justify-between">
                       <span class="text-xs text-gray-400">{{ msg.created_at }}</span>
                       <button @click="buyPpv(msg)" :disabled="buyingId === msg.id"
-                        class="bg-[#e91e8c] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#c91478] disabled:opacity-60 transition">
+                        class="bg-[#e35d8f] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#c44a7a] disabled:opacity-60 transition">
                         {{ buyingId === msg.id ? '…' : `🔓 CHF ${Number(msg.ppv_price_chf).toFixed(2)} freischalten` }}
                       </button>
                     </div>
@@ -124,7 +124,7 @@
                 <!-- Regular text message -->
                 <template v-else>
                   <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
-                    :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
+                    :class="msg.from_me ? 'bg-[#e35d8f] text-white' : 'bg-gray-100 text-gray-800'">
                     <span class="break-words whitespace-pre-wrap">{{ msg.body }}</span>
                     <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
                   </div>
@@ -158,7 +158,7 @@
 
             <div class="px-4 py-3 flex items-end gap-2">
               <!-- Image upload button -->
-              <label class="shrink-0 cursor-pointer text-gray-400 hover:text-[#e91e8c] transition p-1">
+              <label class="shrink-0 cursor-pointer text-gray-400 hover:text-[#e35d8f] transition p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -167,21 +167,21 @@
 
               <!-- Emoji button -->
               <button type="button" @click="showEmoji = !showEmoji"
-                class="shrink-0 text-gray-400 hover:text-[#e91e8c] transition p-1 text-xl leading-none"
-                :class="showEmoji ? 'text-[#e91e8c]' : ''">😊</button>
+                class="shrink-0 text-gray-400 hover:text-[#e35d8f] transition p-1 text-xl leading-none"
+                :class="showEmoji ? 'text-[#e35d8f]' : ''">😊</button>
 
               <!-- Text input -->
               <textarea v-model="replyText" rows="1" ref="textInput"
                 placeholder="Nachricht schreiben…"
                 @keydown.enter.exact.prevent="sendOrUpload"
                 @input="autoResize"
-                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-xl px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c] resize-none overflow-hidden leading-5 max-h-32"
+                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-xl px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e35d8f] resize-none overflow-hidden leading-5 max-h-32"
                 :disabled="sending" />
 
               <!-- Send button -->
               <button @click="sendOrUpload"
                 :disabled="(!replyText.trim() && !pendingImage) || sending"
-                class="shrink-0 bg-[#e91e8c] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
+                class="shrink-0 bg-[#e35d8f] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#c44a7a] disabled:opacity-40 transition">
                 {{ sending ? '…' : 'Senden' }}
               </button>
             </div>

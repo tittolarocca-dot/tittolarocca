@@ -19,9 +19,9 @@
         <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-0 flex-1 last:flex-none">
           <div :class="[
             'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-            i === 0 ? 'bg-[#e91e8c] text-white' : 'bg-gray-200 text-gray-500',
+            i === 0 ? 'bg-[#e35d8f] text-white' : 'bg-gray-200 text-gray-500',
           ]">{{ i + 1 }}</div>
-          <span class="ml-1.5 text-xs font-medium" :class="i === 0 ? 'text-[#e91e8c]' : 'text-gray-400'">
+          <span class="ml-1.5 text-xs font-medium" :class="i === 0 ? 'text-[#e35d8f]' : 'text-gray-400'">
             {{ step }}
           </span>
           <div v-if="i < steps.length - 1" class="flex-1 h-px bg-gray-200 mx-3"></div>
@@ -47,10 +47,10 @@
             <!-- Stadt -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Stadt <span class="text-[#e91e8c]">*</span>
+                Stadt <span class="text-[#e35d8f]">*</span>
               </label>
               <select v-model="form.city_id"
-                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition',
                   form.errors.city_id ? 'border-red-500' : 'border-gray-300']">
                 <option value="">Stadt wählen…</option>
                 <option v-for="city in cities" :key="city.id" :value="city.id">
@@ -63,10 +63,10 @@
             <!-- Kategorie -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Kategorie <span class="text-[#e91e8c]">*</span>
+                Kategorie <span class="text-[#e35d8f]">*</span>
               </label>
               <select v-model="form.category_id"
-                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition',
                   form.errors.category_id ? 'border-red-500' : 'border-gray-300']">
                 <option value="">Kategorie wählen…</option>
                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -88,7 +88,7 @@
             </label>
             <textarea v-model="form.description" rows="5" maxlength="2000"
               placeholder="Beschreibe dich, deine Angebote und was Besucher erwarten können…"
-              :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition resize-none',
+              :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition resize-none',
                 form.errors.description ? 'border-red-500' : 'border-gray-300']"
             />
             <p v-if="form.errors.description" class="mt-1 text-xs text-red-600">{{ form.errors.description }}</p>
@@ -103,8 +103,8 @@
               :class="[
                 'px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
                 form.tag_ids.includes(tag.id)
-                  ? 'bg-[#e91e8c] text-white border-[#e91e8c]'
-                  : 'bg-transparent text-gray-600 border-gray-200 hover:border-[#e91e8c]/50',
+                  ? 'bg-[#e35d8f] text-white border-[#e35d8f]'
+                  : 'bg-transparent text-gray-600 border-gray-200 hover:border-[#e35d8f]/50',
               ]">
               {{ tag.name }}
             </button>
@@ -134,22 +134,22 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Abo-Preis (CHF/Monat) <span class="text-[#e91e8c]">*</span>
+              Abo-Preis (CHF/Monat) <span class="text-[#e35d8f]">*</span>
             </label>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">CHF</span>
               <input v-model="form.subscription_price_chf" type="number" min="9" max="999" step="1"
-                :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] transition',
+                :class="['w-full pl-12 pr-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition',
                   form.errors.subscription_price_chf ? 'border-red-500' : 'border-gray-300']" />
             </div>
             <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
             <p class="mt-1 text-xs text-gray-500">Abonnenten zahlen diesen Betrag monatlich für Zugriff auf deine privaten Medien.</p>
 
             <!-- Verdienst-Rechner -->
-            <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-[#e91e8c]/10 border border-[#e91e8c]/20 rounded-lg px-3 py-2 text-xs text-[#e91e8c]">
+            <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-[#e35d8f]/10 border border-[#e35d8f]/20 rounded-lg px-3 py-2 text-xs text-[#e35d8f]">
               Bei 10 Abonnenten: <strong>CHF {{ earnings(10) }}/Mo</strong> ·
               Bei 50: <strong>CHF {{ earnings(50) }}/Mo</strong>
-              <span class="text-[#e91e8c]/60 block mt-0.5">(nach 20% Plattform-Provision)</span>
+              <span class="text-[#e35d8f]/60 block mt-0.5">(nach 20% Plattform-Provision)</span>
             </div>
           </div>
         </div>

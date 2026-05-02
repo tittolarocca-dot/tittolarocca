@@ -7,7 +7,7 @@
           <h1 class="text-2xl font-bold text-gray-900">Auszahlungen</h1>
           <p class="text-sm text-gray-500 mt-1">Deine monatlichen Einnahmen (80% nach 20% Provision)</p>
         </div>
-        <Link :href="route('inserat.dashboard')" class="text-sm text-[#e91e8c] hover:underline">← Dashboard</Link>
+        <Link :href="route('inserat.dashboard')" class="text-sm text-[#e35d8f] hover:underline">← Dashboard</Link>
       </div>
 
       <!-- Pending Total -->
@@ -18,7 +18,7 @@
             <p class="text-3xl font-bold text-gray-900 mt-1">CHF {{ Number(pendingTotal).toFixed(2) }}</p>
           </div>
           <button @click="showBankForm = !showBankForm"
-            class="bg-[#e91e8c] text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-[#c91478] transition">
+            class="bg-[#e35d8f] text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-[#c44a7a] transition">
             Bankdaten hinterlegen
           </button>
         </div>
@@ -31,18 +31,18 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">IBAN</label>
             <input v-model="bankForm.iban" type="text" placeholder="CH56 0483 5012 3456 7800 9"
-              class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]" />
+              class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e35d8f]" />
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Bank</label>
               <input v-model="bankForm.bank_name" type="text" placeholder="UBS, Raiffeisen, …"
-                class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]" />
+                class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e35d8f]" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Kontoinhaber</label>
               <input v-model="bankForm.account_holder" type="text" placeholder="Max Mustermann"
-                class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]" />
+                class="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e35d8f]" />
             </div>
           </div>
           <PrimaryButton type="submit" :loading="saving">Bankdaten speichern</PrimaryButton>

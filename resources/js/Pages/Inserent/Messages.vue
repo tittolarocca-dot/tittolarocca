@@ -7,7 +7,7 @@
       <div class="w-72 shrink-0 bg-white rounded-xl border border-gray-200 flex flex-col overflow-hidden shadow-sm">
         <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
           <h2 class="font-semibold text-gray-900">Nachrichten</h2>
-          <span v-if="unreadCount" class="bg-[#e91e8c] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+          <span v-if="unreadCount" class="bg-[#e35d8f] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
             {{ unreadCount }}
           </span>
         </div>
@@ -26,7 +26,7 @@
               <span class="text-xs text-gray-400">{{ conv.last_at }}</span>
             </div>
             <p class="text-xs text-gray-500 truncate">{{ conv.last_message }}</p>
-            <span v-if="conv.unread" class="inline-block mt-1 bg-[#e91e8c]/10 text-[#e91e8c] text-xs px-1.5 rounded">
+            <span v-if="conv.unread" class="inline-block mt-1 bg-[#e35d8f]/10 text-[#e35d8f] text-xs px-1.5 rounded">
               {{ conv.unread }} neu
             </span>
           </button>
@@ -55,11 +55,11 @@
 
                 <!-- PPV message (sent by inserent) -->
                 <template v-if="msg.ppv_media_type">
-                  <div class="max-w-xs rounded-xl overflow-hidden border border-[#e91e8c]/30 shadow-sm">
-                    <div class="bg-[#e91e8c]/10 px-3 py-2 flex items-center gap-2">
+                  <div class="max-w-xs rounded-xl overflow-hidden border border-[#e35d8f]/30 shadow-sm">
+                    <div class="bg-[#e35d8f]/10 px-3 py-2 flex items-center gap-2">
                       <span class="text-lg">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</span>
                       <div>
-                        <p class="text-xs font-semibold text-[#e91e8c]">Bezahlter Inhalt</p>
+                        <p class="text-xs font-semibold text-[#e35d8f]">Bezahlter Inhalt</p>
                         <p class="text-xs text-gray-500">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</p>
                       </div>
                       <span class="ml-auto text-xs text-green-600 font-medium">
@@ -80,7 +80,7 @@
                 <!-- Regular text message -->
                 <template v-else>
                   <div class="max-w-xs px-3 py-2 rounded-xl text-sm"
-                    :class="msg.from_me ? 'bg-[#e91e8c] text-white' : 'bg-gray-100 text-gray-800'">
+                    :class="msg.from_me ? 'bg-[#e35d8f] text-white' : 'bg-gray-100 text-gray-800'">
                     {{ msg.body }}
                     <div class="text-xs mt-1 opacity-60">{{ msg.created_at }}</div>
                   </div>
@@ -94,9 +94,9 @@
           <div class="px-4 py-3 border-t border-gray-200 space-y-2">
 
             <!-- PPV send form (shown when ppvMode is active) -->
-            <div v-if="ppvMode" class="bg-[#e91e8c]/5 border border-[#e91e8c]/20 rounded-xl p-3 space-y-2">
+            <div v-if="ppvMode" class="bg-[#e35d8f]/5 border border-[#e35d8f]/20 rounded-xl p-3 space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-[#e91e8c]">🔒 Bezahlter Inhalt senden</span>
+                <span class="text-xs font-semibold text-[#e35d8f]">🔒 Bezahlter Inhalt senden</span>
                 <button @click="cancelPpv" class="text-gray-400 hover:text-gray-600 text-xs">✕ Abbrechen</button>
               </div>
 
@@ -107,7 +107,7 @@
               </div>
 
               <div v-if="!ppvPreview">
-                <label class="block w-full border-2 border-dashed border-[#e91e8c]/30 rounded-lg p-4 text-center cursor-pointer hover:border-[#e91e8c]/60 transition">
+                <label class="block w-full border-2 border-dashed border-[#e35d8f]/30 rounded-lg p-4 text-center cursor-pointer hover:border-[#e35d8f]/60 transition">
                   <span class="text-gray-400 text-sm">Bild oder Video auswählen…</span>
                   <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm"
                     class="hidden" @change="onPpvFileChange" ref="ppvFileInput" />
@@ -118,15 +118,15 @@
                 <div class="relative flex-shrink-0 w-28">
                   <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">CHF</span>
                   <input v-model="ppvPrice" type="number" min="1" max="999" step="1" placeholder="9"
-                    class="w-full pl-8 pr-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#e91e8c]" />
+                    class="w-full pl-8 pr-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#e35d8f]" />
                 </div>
                 <input v-model="ppvText" type="text" placeholder="Optionaler Text…"
-                  class="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#e91e8c]" />
+                  class="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#e35d8f]" />
               </div>
 
               <button @click="sendPpv"
                 :disabled="!ppvFile || !ppvPrice || sending"
-                class="w-full bg-[#e91e8c] text-white py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
+                class="w-full bg-[#e35d8f] text-white py-2 rounded-lg text-sm font-bold hover:bg-[#c44a7a] disabled:opacity-40 transition">
                 {{ sending ? 'Wird gesendet…' : 'PPV senden' }}
               </button>
             </div>
@@ -134,14 +134,14 @@
             <!-- Normal reply form -->
             <form v-else @submit.prevent="sendReply" class="flex gap-2">
               <input v-model="replyText" type="text" placeholder="Nachricht schreiben…"
-                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e91e8c]"
+                class="flex-1 border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-[#e35d8f]"
                 :disabled="sending" />
               <button type="button" @click="ppvMode = true" title="Bezahlten Inhalt senden"
-                class="border border-gray-200 text-gray-500 hover:text-[#e91e8c] hover:border-[#e91e8c]/40 px-3 py-2 rounded-lg text-sm transition">
+                class="border border-gray-200 text-gray-500 hover:text-[#e35d8f] hover:border-[#e35d8f]/40 px-3 py-2 rounded-lg text-sm transition">
                 🔒
               </button>
               <button type="submit" :disabled="!replyText.trim() || sending"
-                class="bg-[#e91e8c] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c91478] disabled:opacity-40 transition">
+                class="bg-[#e35d8f] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c44a7a] disabled:opacity-40 transition">
                 Senden
               </button>
             </form>

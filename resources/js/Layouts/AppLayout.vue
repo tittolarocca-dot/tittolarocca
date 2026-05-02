@@ -3,7 +3,7 @@
     <FlashMessage />
 
     <!-- Navbar (pink bar like fgirl.ch) -->
-    <header class="bg-[#e91e8c] sticky top-0 z-50 shadow-lg">
+    <header class="bg-[#e35d8f] sticky top-0 z-50 shadow-lg">
       <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-4">
 
         <!-- Logo -->
@@ -42,7 +42,7 @@
               Anmelden
             </Link>
             <Link :href="route('register')"
-              class="bg-white text-[#e91e8c] text-sm font-bold px-4 py-1.5 rounded-full hover:bg-white/90 transition">
+              class="bg-white text-[#e35d8f] text-sm font-bold px-4 py-1.5 rounded-full hover:bg-white/90 transition">
               Inserat aufgeben
             </Link>
           </template>
@@ -52,7 +52,7 @@
         <div class="flex items-center gap-2 ml-auto md:hidden">
           <template v-if="!$page.props.auth.user">
             <Link :href="route('register')"
-              class="bg-white text-[#e91e8c] text-xs font-bold px-3 py-1.5 rounded-full transition">
+              class="bg-white text-[#e35d8f] text-xs font-bold px-3 py-1.5 rounded-full transition">
               Inserieren
             </Link>
           </template>
@@ -75,14 +75,14 @@
           <Link v-for="city in cities.slice(0,6)" :key="city.id"
             :href="route('city', city.slug)"
             @click="mobileMenu = false"
-            class="text-sm text-center py-2 px-1 rounded-lg bg-white/5 hover:bg-[#e91e8c]/20 hover:text-[#e91e8c] transition text-gray-300 font-medium">
+            class="text-sm text-center py-2 px-1 rounded-lg bg-white/5 hover:bg-[#e35d8f]/20 hover:text-[#e35d8f] transition text-gray-300 font-medium">
             {{ city.name }}
           </Link>
         </div>
         <div class="border-t border-white/10 pt-3 space-y-1">
           <template v-if="$page.props.auth.user">
             <Link :href="dashboardRoute" @click="mobileMenu = false"
-              class="flex items-center gap-3 py-2.5 px-1 text-sm font-semibold text-gray-200 hover:text-[#e91e8c] transition">
+              class="flex items-center gap-3 py-2.5 px-1 text-sm font-semibold text-gray-200 hover:text-[#e35d8f] transition">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
@@ -98,7 +98,7 @@
           </template>
           <template v-else>
             <Link :href="route('login')" @click="mobileMenu = false"
-              class="flex items-center gap-3 py-2.5 px-1 text-sm font-semibold text-gray-200 hover:text-[#e91e8c] transition">
+              class="flex items-center gap-3 py-2.5 px-1 text-sm font-semibold text-gray-200 hover:text-[#e35d8f] transition">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
@@ -117,30 +117,30 @@
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e91e8c] transition">Über uns</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Kontakt</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">Über uns</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">Kontakt</a>
           </div>
         </div>
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
           <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-[#e91e8c] transition">Inserat erstellen</Link>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Preise</a>
+            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">Inserat erstellen</Link>
+            <a href="#" class="block hover:text-[#e35d8f] transition">Preise</a>
           </div>
         </div>
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Städte</h5>
           <div class="space-y-1">
             <Link v-for="city in cities.slice(0,6)" :key="city.id" :href="route('city', city.slug)"
-              class="block hover:text-[#e91e8c] transition">{{ city.name }}</Link>
+              class="block hover:text-[#e35d8f] transition">{{ city.name }}</Link>
           </div>
         </div>
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e91e8c] transition">Impressum</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">Datenschutz</a>
-            <a href="#" class="block hover:text-[#e91e8c] transition">AGB</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">Impressum</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">Datenschutz</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">AGB</a>
           </div>
         </div>
       </div>

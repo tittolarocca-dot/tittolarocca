@@ -11,10 +11,10 @@
       <!-- Schnellzugriff -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <Link v-for="action in actions" :key="action.label" :href="action.href"
-          class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 hover:border-[#e91e8c]/40 transition group shadow-sm">
+          class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 hover:border-[#e35d8f]/40 transition group shadow-sm">
           <span class="text-3xl">{{ action.icon }}</span>
           <div>
-            <p class="text-sm font-semibold text-gray-800 group-hover:text-[#e91e8c] transition">{{ action.label }}</p>
+            <p class="text-sm font-semibold text-gray-800 group-hover:text-[#e35d8f] transition">{{ action.label }}</p>
             <p class="text-xs text-gray-500 mt-0.5">{{ action.desc }}</p>
           </div>
         </Link>
@@ -24,13 +24,13 @@
       <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-semibold text-gray-900">Meine Abonnements</h2>
-          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e91e8c] hover:underline">Alle anzeigen →</Link>
+          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
         </div>
 
         <div v-if="subscriptions.length === 0" class="text-center py-10 text-gray-400">
           <div class="text-4xl mb-3">💫</div>
           <p class="text-sm">Du hast noch keine Abonnements.</p>
-          <Link :href="route('home')" class="text-[#e91e8c] text-sm hover:underline mt-2 inline-block">
+          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-2 inline-block">
             Jetzt Profile entdecken →
           </Link>
         </div>
@@ -39,7 +39,7 @@
           <div v-for="sub in subscriptions.slice(0,3)" :key="sub.id"
             class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
             <Link :href="route('profile.show', sub.profile.slug)"
-              class="font-semibold text-gray-900 hover:text-[#e91e8c] transition text-sm">
+              class="font-semibold text-gray-900 hover:text-[#e35d8f] transition text-sm">
               {{ sub.profile.display_name }}
             </Link>
             <div class="text-right">

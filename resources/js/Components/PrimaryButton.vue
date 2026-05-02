@@ -5,8 +5,8 @@
     :class="[
       'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white',
       disabled || loading
-        ? 'bg-[#e91e8c]/40 cursor-not-allowed text-white/60'
-        : 'bg-[#e91e8c] hover:bg-[#c91478] text-white focus:ring-[#e91e8c]',
+        ? 'bg-[#e35d8f]/40 cursor-not-allowed text-white/60'
+        : 'bg-[#e35d8f] hover:bg-[#c44a7a] text-white focus:ring-[#e35d8f]',
       fullWidth ? 'w-full' : '',
     ]"
   >

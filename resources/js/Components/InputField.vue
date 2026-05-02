@@ -1,7 +1,7 @@
 <template>
   <div>
     <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
-      {{ label }} <span v-if="required" class="text-[#e91e8c]">*</span>
+      {{ label }} <span v-if="required" class="text-[#e35d8f]">*</span>
     </label>
     <input
       :id="id"
@@ -9,7 +9,7 @@
       :value="modelValue"
       :type="type"
       :class="[
-        'w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] focus:border-[#e91e8c] transition',
+        'w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] focus:border-[#e35d8f] transition',
         error ? 'border-red-500 bg-red-50' : 'border-gray-300',
       ]"
       @input="$emit('update:modelValue', $event.target.value)"

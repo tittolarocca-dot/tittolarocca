@@ -7,7 +7,7 @@
       <div v-if="subscriptions.length === 0" class="text-center py-16 text-gray-400">
         <div class="text-5xl mb-3">💫</div>
         <p>Du hast noch keine Abonnements.</p>
-        <Link :href="route('home')" class="text-[#e91e8c] hover:underline text-sm mt-2 block">
+        <Link :href="route('home')" class="text-[#e35d8f] hover:underline text-sm mt-2 block">
           Profile entdecken →
         </Link>
       </div>
@@ -17,7 +17,7 @@
           class="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-between gap-4 shadow-sm">
           <div>
             <Link :href="route('profile.show', sub.profile.slug)"
-              class="font-semibold text-gray-900 hover:text-[#e91e8c] transition">
+              class="font-semibold text-gray-900 hover:text-[#e35d8f] transition">
               {{ sub.profile.display_name }}
             </Link>
             <p class="text-sm text-gray-500">{{ sub.profile.city }}</p>
@@ -46,7 +46,7 @@
           </div>
 
           <Link :href="route('profile.show', sub.profile.slug)"
-            class="shrink-0 border border-gray-200 text-gray-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:border-[#e91e8c]/50 hover:text-[#e91e8c] transition">
+            class="shrink-0 border border-gray-200 text-gray-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:border-[#e35d8f]/50 hover:text-[#e35d8f] transition">
             Zum Profil
           </Link>
         </div>

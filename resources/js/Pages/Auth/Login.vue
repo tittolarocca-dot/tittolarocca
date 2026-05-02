@@ -19,9 +19,9 @@
       <div>
         <div class="flex justify-between items-baseline mb-1">
           <label for="password" class="block text-sm font-medium text-gray-700">
-            Passwort <span class="text-[#e91e8c]">*</span>
+            Passwort <span class="text-[#e35d8f]">*</span>
           </label>
-          <a href="#" class="text-xs text-[#e91e8c] hover:underline">Passwort vergessen?</a>
+          <a href="#" class="text-xs text-[#e35d8f] hover:underline">Passwort vergessen?</a>
         </div>
         <input
           id="password"
@@ -29,7 +29,7 @@
           type="password"
           autocomplete="current-password"
           :class="[
-            'w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e91e8c] focus:border-[#e91e8c] transition',
+            'w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] focus:border-[#e35d8f] transition',
             form.errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300',
           ]"
         />
@@ -39,7 +39,7 @@
       <!-- Remember me -->
       <label class="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" v-model="form.remember"
-          class="w-4 h-4 rounded border-gray-300 bg-white text-[#e91e8c] focus:ring-[#e91e8c]" />
+          class="w-4 h-4 rounded border-gray-300 bg-white text-[#e35d8f] focus:ring-[#e35d8f]" />
         <span class="text-sm text-gray-600">Angemeldet bleiben</span>
       </label>
 
@@ -55,7 +55,7 @@
 
       <p class="text-center text-sm text-gray-500 pt-1">
         Noch kein Konto?
-        <Link :href="route('register')" class="text-[#e91e8c] font-semibold hover:underline">Jetzt registrieren</Link>
+        <Link :href="route('register')" class="text-[#e35d8f] font-semibold hover:underline">Jetzt registrieren</Link>
       </p>
     </form>
   </AuthLayout>

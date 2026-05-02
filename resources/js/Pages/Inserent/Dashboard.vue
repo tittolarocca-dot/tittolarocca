@@ -6,12 +6,12 @@
       <h1 class="text-2xl font-bold text-gray-900 mb-6">Mein Inserat</h1>
 
       <!-- Kein Profil -->
-      <div v-if="!profile" class="bg-white rounded-xl border border-dashed border-[#e91e8c]/40 p-10 text-center shadow-sm">
+      <div v-if="!profile" class="bg-white rounded-xl border border-dashed border-[#e35d8f]/40 p-10 text-center shadow-sm">
         <div class="text-5xl mb-4">📋</div>
         <h2 class="text-lg font-semibold text-gray-900 mb-2">Noch kein Inserat erstellt</h2>
         <p class="text-gray-500 text-sm mb-6">Erstelle dein Profil und wähle ein Paket, um sichtbar zu werden.</p>
         <Link :href="route('inserat.profile.edit')"
-          class="inline-flex items-center gap-2 bg-[#e91e8c] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#c91478] transition">
+          class="inline-flex items-center gap-2 bg-[#e35d8f] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#c44a7a] transition">
           Profil erstellen →
         </Link>
       </div>
@@ -39,7 +39,7 @@
             </div>
           </div>
           <Link v-if="!stats.isActive" :href="route('inserat.package.select')"
-            class="shrink-0 bg-[#e91e8c] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#c91478] transition">
+            class="shrink-0 bg-[#e35d8f] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#c44a7a] transition">
             Paket kaufen
           </Link>
           <Link v-else :href="route('inserat.package.select')"
@@ -60,7 +60,7 @@
           </div>
           <form @submit.prevent="push">
             <button type="submit" :disabled="pushing"
-              class="shrink-0 bg-[#e91e8c] hover:bg-[#c91478] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+              class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
               {{ pushing ? 'Weiterleitung…' : 'CHF 5.00 pushen' }}
             </button>
           </form>
@@ -70,7 +70,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div v-for="stat in statCards" :key="stat.label"
             class="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-sm">
-            <div class="text-2xl font-bold text-[#e91e8c]">{{ stat.value }}</div>
+            <div class="text-2xl font-bold text-[#e35d8f]">{{ stat.value }}</div>
             <div class="text-xs text-gray-500 mt-1">{{ stat.label }}</div>
           </div>
         </div>
@@ -79,10 +79,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link v-for="action in quickActions" :key="action.label"
             :href="action.href"
-            class="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3 hover:border-[#e91e8c]/40 transition group shadow-sm">
+            class="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3 hover:border-[#e35d8f]/40 transition group shadow-sm">
             <span class="text-2xl">{{ action.icon }}</span>
             <div>
-              <p class="text-sm font-semibold text-gray-800 group-hover:text-[#e91e8c] transition">{{ action.label }}</p>
+              <p class="text-sm font-semibold text-gray-800 group-hover:text-[#e35d8f] transition">{{ action.label }}</p>
               <p class="text-xs text-gray-500">{{ action.desc }}</p>
             </div>
           </Link>
