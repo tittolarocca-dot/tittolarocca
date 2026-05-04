@@ -120,28 +120,31 @@
         </a>
 
         <!-- Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
-            class="flex flex-col bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-lg">
-            <!-- Portrait image 251×335 ratio -->
-            <div class="w-full aspect-[251/335] shrink-0 overflow-hidden">
+            class="flex bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-lg">
+            <div class="w-[251px] h-[335px] shrink-0">
               <img v-if="profile.public_media?.[0]"
-                class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                class="lazyload w-full h-full object-cover object-top"
                 :data-src="profile.public_media[0].url"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 :alt="profile.display_name"
                 width="251" height="335" />
-              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-4xl">👤</div>
+              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
             </div>
-            <div class="p-2.5 flex-1 min-w-0">
+            <div class="p-3 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[#e35d8f] text-xs font-bold uppercase tracking-wide">Premium</span>
+              </div>
               <h3 class="text-white text-sm font-bold group-hover:text-[#e35d8f] transition truncate mb-1">
                 {{ profile.display_name }}
               </h3>
               <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{{ profile.description }}</p>
-              <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-600 flex-wrap">
-                <span v-if="profile.city" class="truncate">📍 {{ profile.city?.name }}</span>
-                <span class="ml-auto text-[#e35d8f] font-bold shrink-0">CHF {{ profile.subscription_price_chf }}</span>
+              <div class="flex items-center gap-2 mt-1.5 text-xs text-gray-600 flex-wrap">
+                <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
+                <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
+                <span class="hidden sm:inline ml-auto">📅 {{ formatDate(profile.created_at) }}</span>
               </div>
             </div>
           </a>
