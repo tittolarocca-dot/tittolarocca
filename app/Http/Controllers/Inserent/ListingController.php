@@ -148,6 +148,8 @@ class ListingController extends Controller
 
         return back()->with('success', 'Dein Inserat ist jetzt wieder für 7 Tage aktiv!');
     }
+
+    public function push(Request $request)
     {
         $user    = $request->user();
         $profile = $user->profile;
