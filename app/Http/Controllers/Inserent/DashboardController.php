@@ -11,16 +11,21 @@ class DashboardController extends Controller
         $user    = $request->user();
         $profile = $user->profile()->with(['city', 'category', 'publicMedia', 'privateMedia'])->first();
 
+        $isFreeProfile = $profile
+            ? $profile->listingOrders()->where('amount_chf', '>', 0)->doesntExist()
+            : false;
+
         return inertia('Inserent/Dashboard', [
             'profile'      => $profile,
             'stats' => $profile ? [
-                'views'        => $profile->total_views,
-                'subscribers'  => $profile->total_subscribers,
-                'mediaCount'   => $profile->media()->count(),
-                'isActive'     => $profile->isActive(),
-                'expiresAt'    => $profile->listing_expires_at?->format('d.m.Y'),
-                'createdAt'    => $profile->created_at->format('d.m.Y'),
-                'pushedAt'     => $profile->pushed_at?->format('d.m.Y H:i'),
+                'views'         => $profile->total_views,
+                'subscribers'   => $profile->total_subscribers,
+                'mediaCount'    => $profile->media()->count(),
+                'isActive'      => $profile->isActive(),
+                'expiresAt'     => $profile->listing_expires_at?->format('d.m.Y'),
+                'createdAt'     => $profile->created_at->format('d.m.Y'),
+                'pushedAt'      => $profile->pushed_at?->format('d.m.Y H:i'),
+                'isFreeProfile' => $isFreeProfile,
             ] : null,
         ]);
     }

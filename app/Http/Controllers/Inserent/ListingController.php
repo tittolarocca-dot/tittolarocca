@@ -116,7 +116,38 @@ class ListingController extends Controller
         return redirect($stripeSession->url);
     }
 
-    public function push(Request $request)
+    public function reactivate(Request $request)
+    {
+        $user    = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            return back()->with('error', 'Kein Profil gefunden.');
+        }
+
+        // Only allow free reactivation if the profile has never had a paid order
+        if ($profile->listingOrders()->where('amount_chf', '>', 0)->exists()) {
+            return back()->with('error', 'Gratis-Reaktivierung nur für kostenlose Inserate möglich.');
+        }
+
+        $profile->update([
+            'status'             => 'active',
+            'listing_expires_at' => now()->addDays(7),
+        ]);
+
+        ListingOrder::create([
+            'profile_id'         => $profile->id,
+            'listing_package_id' => ListingPackage::where('price_chf', 0)->value('id'),
+            'user_id'            => $user->id,
+            'amount_chf'         => 0,
+            'currency'           => 'CHF',
+            'status'             => 'paid',
+            'paid_at'            => now(),
+            'expires_at'         => now()->addDays(7),
+        ]);
+
+        return back()->with('success', 'Dein Inserat ist jetzt wieder für 7 Tage aktiv!');
+    }
     {
         $user    = $request->user();
         $profile = $user->profile;

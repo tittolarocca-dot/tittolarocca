@@ -55,7 +55,8 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/auszahlungen',             [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
     Route::post('/auszahlungen/bankdaten',  [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
-    Route::post('/verifikation', [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
+    Route::post('/verifikation',  [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
+    Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
 });
 
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────

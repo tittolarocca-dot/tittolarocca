@@ -30,21 +30,34 @@
             <span class="text-2xl">{{ stats.isActive ? '✅' : '⚠️' }}</span>
             <div>
               <p class="font-semibold text-sm" :class="stats.isActive ? 'text-green-400' : 'text-yellow-400'">
-                {{ stats.isActive ? 'Inserat aktiv' : 'Inserat inaktiv' }}
+                {{ stats.isActive ? 'Inserat aktiv' : 'Inserat abgelaufen' }}
               </p>
               <p class="text-xs mt-0.5" :class="stats.isActive ? 'text-green-500' : 'text-yellow-500'">
-                {{ stats.isActive ? `Läuft bis ${stats.expiresAt}` : 'Kaufe ein Paket, um sichtbar zu werden.' }}
+                {{ stats.isActive
+                  ? `Läuft bis ${stats.expiresAt}`
+                  : stats.isFreeProfile
+                    ? 'Dein kostenloses Inserat ist abgelaufen. Reaktiviere es gratis für 7 weitere Tage.'
+                    : 'Kaufe ein Paket, um wieder sichtbar zu werden.' }}
               </p>
               <p class="text-xs text-gray-500 mt-0.5">Inseriert am {{ stats.createdAt }}</p>
             </div>
           </div>
-          <Link v-if="!stats.isActive" :href="route('inserat.package.select')"
-            class="shrink-0 bg-[#e35d8f] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#c44a7a] transition">
-            Paket kaufen
-          </Link>
-          <Link v-else :href="route('inserat.package.select')"
+          <!-- Aktiv: Verlängern -->
+          <Link v-if="stats.isActive" :href="route('inserat.package.select')"
             class="shrink-0 border border-green-600 text-green-400 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-green-900/30 transition">
             Verlängern
+          </Link>
+          <!-- Abgelaufen + kostenlos: gratis reaktivieren -->
+          <form v-else-if="stats.isFreeProfile" @submit.prevent="reactivate">
+            <button type="submit" :disabled="reactivating"
+              class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-xs font-bold px-4 py-2 rounded-lg transition whitespace-nowrap">
+              {{ reactivating ? 'Wird aktiviert…' : 'Gratis reaktivieren (7 Tage)' }}
+            </button>
+          </form>
+          <!-- Abgelaufen + bezahlt: Paket kaufen -->
+          <Link v-else :href="route('inserat.package.select')"
+            class="shrink-0 bg-[#e35d8f] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#c44a7a] transition">
+            Paket kaufen
           </Link>
         </div>
 
@@ -294,6 +307,13 @@ const statCards = computed(() => props.stats ? [
   { label: 'Medien',         value: props.stats.mediaCount },
   { label: 'Status',         value: props.stats.isActive ? 'Aktiv' : 'Inaktiv' },
 ] : []);
+
+// ── Reactivate (free listings) ────────────────────────────────────────────────
+const reactivating = ref(false);
+function reactivate() {
+  reactivating.value = true;
+  router.post(route('inserat.reactivate'), {}, { onFinish: () => { reactivating.value = false; } });
+}
 
 // ── Push ──────────────────────────────────────────────────────────────────────
 const pushing = ref(false);
