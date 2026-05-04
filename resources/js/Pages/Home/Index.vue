@@ -134,7 +134,7 @@
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
             </div>
             <div class="p-3 flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
+              <div v-if="profile.listing_orders?.[0]?.amount_chf > 0" class="flex items-center gap-2 mb-1">
                 <span class="text-[#e35d8f] text-xs font-bold uppercase tracking-wide">Premium</span>
               </div>
               <h3 class="text-white text-sm font-bold group-hover:text-[#e35d8f] transition truncate mb-1">
