@@ -11,7 +11,7 @@
 
         <!-- Featured Profiles Carousel -->
         <div v-if="profiles.data.length" class="relative mb-4">
-          <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div class="flex gap-3 overflow-x-auto pt-1 pb-2 scrollbar-hide">
             <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
               :href="route('profile.show', profile.slug)"
               class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
