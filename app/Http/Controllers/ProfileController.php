@@ -69,6 +69,7 @@ class ProfileController extends Controller
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
                 'created_at'             => $profile->created_at->format('d.m.Y'),
+                'verification_status'    => $profile->verification_status,
             ],
             'publicMedia'         => $publicMedia,
             'privateMedia'        => $privateMedia,
