@@ -14,13 +14,18 @@ class Profile extends Model
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
         'total_subscribers', 'total_views',
+        'verification_status', 'verification_photo',
+        'verification_rejected_reason',
+        'verification_submitted_at', 'verification_reviewed_at',
     ];
 
     protected $casts = [
-        'listing_expires_at' => 'datetime',
-        'featured_until'     => 'datetime',
-        'pushed_at'          => 'datetime',
-        'subscription_price_chf' => 'decimal:2',
+        'listing_expires_at'        => 'datetime',
+        'featured_until'            => 'datetime',
+        'pushed_at'                 => 'datetime',
+        'verification_submitted_at' => 'datetime',
+        'verification_reviewed_at'  => 'datetime',
+        'subscription_price_chf'    => 'decimal:2',
     ];
 
     // Encrypted WhatsApp getter/setter

@@ -227,6 +227,10 @@
           <div>
             <div class="flex flex-wrap items-center gap-3 mb-2">
               <h1 class="text-2xl font-black text-white">{{ profile.display_name }}</h1>
+              <span v-if="profile.verification_status === 'approved'"
+                class="inline-flex items-center gap-1 text-xs bg-green-900/40 text-green-400 border border-green-700/40 px-2.5 py-0.5 rounded-full font-semibold">
+                ✓ Verifiziert
+              </span>
               <span v-if="profile.category" class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-2.5 py-0.5 rounded-full">
                 {{ profile.category }}
               </span>

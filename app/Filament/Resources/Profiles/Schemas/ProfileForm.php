@@ -24,6 +24,14 @@ class ProfileForm
                         'blocked' => 'Gesperrt',
                     ])
                     ->required(),
+                Select::make('verification_status')
+                    ->label('Verifikationsstatus')
+                    ->options([
+                        'unverified' => 'Nicht beantragt',
+                        'pending'    => 'Ausstehend',
+                        'approved'   => 'Verifiziert',
+                        'rejected'   => 'Abgelehnt',
+                    ]),
                 DateTimePicker::make('listing_expires_at')->label('Läuft ab'),
                 Select::make('city_id')
                     ->label('Stadt')
@@ -36,6 +44,10 @@ class ProfileForm
                 TextInput::make('age')->numeric(),
                 TextInput::make('subscription_price_chf')->label('Abo-Preis (CHF)')->numeric(),
                 Textarea::make('description')->label('Beschreibung')->columnSpanFull(),
+                Textarea::make('verification_rejected_reason')
+                    ->label('Ablehnungsgrund')
+                    ->columnSpanFull()
+                    ->rows(2),
             ]);
     }
 }

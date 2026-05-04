@@ -27,6 +27,13 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout')->middleware('auth');
 
+// ── Admin: Verifikationsfoto streamen (nur für Admins) ────────────────────────
+Route::get('/admin/verification-photo/{profile}', function (\App\Models\Profile $profile) {
+    abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
+    abort_unless($profile->verification_photo && \Illuminate\Support\Facades\Storage::disk('local')->exists($profile->verification_photo), 404);
+    return response()->file(storage_path('app/' . $profile->verification_photo));
+})->middleware('auth')->name('admin.verification.photo');
+
 // ── Inserent-Bereich ──────────────────────────────────────────────────────────
 Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function () {
     Route::get('/dashboard',   [\App\Http\Controllers\Inserent\DashboardController::class,  'index'])->name('dashboard');
@@ -48,6 +55,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/auszahlungen',             [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
     Route::post('/auszahlungen/bankdaten',  [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
+    Route::post('/verifikation', [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
 });
 
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────
