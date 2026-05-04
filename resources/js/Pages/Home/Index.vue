@@ -178,13 +178,14 @@ const props = defineProps({
   activeCity:     Object,
   activeCategory: Object,
   activeService:  Object,
+  activeSearch:   String,
 });
 
 const filters = ref({
   city:     props.activeCity?.slug ?? '',
   category: props.activeCategory?.slug ?? '',
   service:  props.activeService?.slug ?? '',
-  search:   '',
+  search:   props.activeSearch ?? '',
 });
 
 function formatDate(iso) {
@@ -194,14 +195,16 @@ function formatDate(iso) {
 }
 
 function applyFilters() {
+  const query = filters.value.search ? { search: filters.value.search } : {};
+
   if (filters.value.service) {
-    router.get(route('service', filters.value.service));
+    router.get(route('service', filters.value.service), query);
   } else if (filters.value.city) {
-    router.get(route('city', filters.value.city));
+    router.get(route('city', filters.value.city), query);
   } else if (filters.value.category) {
-    router.get(route('category', filters.value.category));
+    router.get(route('category', filters.value.category), query);
   } else {
-    router.get(route('home'));
+    router.get(route('home'), query);
   }
 }
 </script>
