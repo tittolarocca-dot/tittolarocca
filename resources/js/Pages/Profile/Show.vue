@@ -9,7 +9,7 @@
 
     <!-- ── PROFILE HEADER ───────────────────────────────────────────────────── -->
     <div class="bg-[#111] border-b border-white/5">
-      <div class="max-w-5xl mx-auto px-4 py-5">
+      <div class="max-w-5xl mx-auto px-6 py-5">
         <!-- Breadcrumb -->
         <nav class="flex items-center gap-1.5 text-xs text-gray-500 mb-4 flex-wrap">
           <Link :href="route('home')" class="hover:text-[#e35d8f] transition">Startseite</Link>
@@ -64,9 +64,9 @@
     </div>
 
     <!-- ── HERO GALLERY ─────────────────────────────────────────────────────── -->
-    <div class="bg-[#0f0f0f]">
-      <div class="max-w-7xl mx-auto">
-        <div v-if="publicMedia.length" class="flex gap-1 h-[340px] sm:h-[420px] md:h-[500px] overflow-hidden">
+    <div class="bg-[#0f0f0f] pb-4">
+      <div class="max-w-5xl mx-auto px-6">
+        <div v-if="publicMedia.length" class="flex gap-1 h-[300px] sm:h-[380px] md:h-[440px] overflow-hidden rounded-2xl">
           <!-- Main large image -->
           <div class="relative flex-[2] min-w-0 cursor-pointer group" @click="openLightbox(publicMedia[0])">
             <img
@@ -106,7 +106,7 @@
     </div>
 
     <!-- ── MAIN CONTENT ─────────────────────────────────────────────────────── -->
-    <div class="max-w-5xl mx-auto px-4 py-6 space-y-5">
+    <div class="max-w-5xl mx-auto px-6 py-6 space-y-5">
       <div class="flex flex-col lg:flex-row gap-5 items-start">
 
         <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────── -->
