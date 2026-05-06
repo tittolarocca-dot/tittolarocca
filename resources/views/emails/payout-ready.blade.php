@@ -15,5 +15,5 @@ Der Betrag wird innerhalb von 3–5 Werktagen auf dein IBAN überwiesen.
 Auszahlungen ansehen
 </x-mail::button>
 
-Inserate Plattform
+bookbunny
 </x-mail::message>

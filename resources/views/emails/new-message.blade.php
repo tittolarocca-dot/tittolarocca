@@ -9,5 +9,5 @@
 Nachricht lesen
 </x-mail::button>
 
-Inserate Plattform
+bookbunny
 </x-mail::message>

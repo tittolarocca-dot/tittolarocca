@@ -9,5 +9,5 @@ Profil ansehen
 
 Tipp: Lade Fotos hoch um mehr Abonnenten zu gewinnen!
 
-Inserate Plattform
+bookbunny
 </x-mail::message>

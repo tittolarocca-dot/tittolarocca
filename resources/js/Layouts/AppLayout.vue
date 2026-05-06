@@ -9,7 +9,7 @@
         <!-- Logo -->
         <Link :href="route('home')" class="flex items-center gap-2.5 shrink-0">
           <img src="/images/logo.png" alt="Logo" class="h-8 w-8 rounded-xl object-cover" />
-          <span class="text-lg font-black text-white">inserate<span class="text-white/70">®</span></span>
+          <span class="text-lg font-black text-white">bookbunny<span class="text-white/70">®</span></span>
         </Link>
 
         <!-- Desktop city nav -->
@@ -188,7 +188,7 @@
         </div>
       </div>
       <div class="max-w-5xl mx-auto px-6 mt-8 pt-6 border-t border-white/10 text-xs text-center text-gray-600">
-        © {{ new Date().getFullYear() }} Inserate Plattform – Nur für Erwachsene ab 18 Jahren.
+        © {{ new Date().getFullYear() }} bookbunny – Nur für Erwachsene ab 18 Jahren.
       </div>
     </footer>
   </div>

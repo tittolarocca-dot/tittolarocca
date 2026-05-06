@@ -141,7 +141,7 @@
                 <li>Nimm ein gut belichtetes <strong class="text-amber-300">Selfie</strong> von dir</li>
                 <li>Halte ein handgeschriebenes Schild mit:
                   <ul class="ml-5 mt-1 list-disc text-xs space-y-0.5 text-amber-400/70">
-                    <li><strong class="text-amber-300">inserate.ch</strong></li>
+                    <li><strong class="text-amber-300">bookbunny.ch</strong></li>
                     <li>Dein Profilname: <strong class="text-amber-300">{{ profile.display_name }}</strong></li>
                     <li>Das heutige Datum</li>
                   </ul>
