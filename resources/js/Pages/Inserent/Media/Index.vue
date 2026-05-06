@@ -52,6 +52,38 @@
       </div>
 
       <template v-else>
+        <!-- Hauptfoto -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+          <h2 class="font-semibold text-gray-800 mb-1">Hauptfoto</h2>
+          <p class="text-xs text-gray-500 mb-4">Wird gross nach dem Profilnamen angezeigt. Nur öffentliche Fotos wählbar.</p>
+
+          <div v-if="mainPhoto" class="flex items-center gap-4 mb-4">
+            <img :src="mainPhoto.url" class="w-24 h-24 object-cover rounded-xl border border-gray-200" />
+            <div>
+              <p class="text-sm font-semibold text-gray-700 mb-1">Aktuelles Hauptfoto</p>
+              <button @click="confirmDelete(mainPhoto)"
+                class="text-xs text-red-500 hover:underline">Löschen</button>
+            </div>
+          </div>
+          <div v-else class="text-sm text-gray-400 mb-4 italic">Kein Hauptfoto gesetzt.</div>
+
+          <div v-if="publicPhotos.length" class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+            <div v-for="item in publicPhotos" :key="item.id" class="relative group">
+              <img :src="item.url" class="w-full aspect-square object-cover rounded-lg border-2 transition"
+                :class="item.is_main ? 'border-pink-500' : 'border-transparent hover:border-pink-300'" />
+              <button v-if="!item.is_main"
+                @click="setMain(item)"
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-lg flex items-center justify-center text-white text-xs font-bold">
+                Als Hauptfoto
+              </button>
+              <div v-else class="absolute top-1 right-1 bg-pink-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                Haupt
+              </div>
+            </div>
+          </div>
+          <p v-else class="text-xs text-gray-400">Lade zuerst öffentliche Fotos hoch.</p>
+        </div>
+
         <MediaSection
           title="Öffentliche Fotos"
           :items="publicMedia"
@@ -99,6 +131,8 @@ const props = defineProps({
 
 const publicMedia  = computed(() => props.media.filter(m => m.visibility === 'public'));
 const privateMedia = computed(() => props.media.filter(m => m.visibility === 'private'));
+const publicPhotos = computed(() => publicMedia.value.filter(m => m.type === 'image'));
+const mainPhoto    = computed(() => publicPhotos.value.find(m => m.is_main) ?? null);
 
 const deleteTarget = ref(null);
 const deleting     = ref(false);
@@ -112,6 +146,10 @@ function doDelete() {
   router.delete(route('inserat.media.destroy', deleteTarget.value.id), {
     onFinish: () => { deleting.value = false; deleteTarget.value = null; },
   });
+}
+
+function setMain(item) {
+  router.post(route('inserat.media.setMain', item.id), {}, { preserveScroll: true });
 }
 
 function upload(file, visibility) {

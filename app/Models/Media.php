@@ -7,16 +7,17 @@ class Media extends Model
 {
     protected $fillable = [
         'profile_id', 'type', 'storage_path', 'thumbnail_path',
-        'visibility', 'status', 'rejection_reason', 'sort_order',
+        'visibility', 'status', 'rejection_reason', 'sort_order', 'is_main',
         'filesize_bytes', 'duration_seconds',
     ];
 
     protected $appends = ['url'];
 
     protected $casts = [
-        'sort_order'      => 'integer',
-        'filesize_bytes'  => 'integer',
-        'duration_seconds'=> 'integer',
+        'sort_order'       => 'integer',
+        'filesize_bytes'   => 'integer',
+        'duration_seconds' => 'integer',
+        'is_main'          => 'boolean',
     ];
 
     public function getUrlAttribute(): string

@@ -31,7 +31,11 @@ class ProfileController extends Controller
             ->where('profile_id', $profile->id)
             ->exists() : false;
 
-        $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility']);
+        $allPublicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility', 'is_main']);
+        $mainMedia  = $allPublicMedia->firstWhere('is_main', true);
+        $publicMedia = $mainMedia
+            ? $allPublicMedia->where('id', '!=', $mainMedia->id)->values()
+            : $allPublicMedia;
 
         $privateMediaCount = $profile->privateMedia()->count();
         $privateMedia = ($isOwner || $subscribed || $trialSub)
@@ -74,6 +78,7 @@ class ProfileController extends Controller
                 'created_at'             => $profile->created_at->format('d.m.Y'),
                 'verification_status'    => $profile->verification_status,
             ],
+            'mainMedia'           => $mainMedia ? ['id' => $mainMedia->id, 'type' => $mainMedia->type, 'url' => route('media.stream', $mainMedia->id)] : null,
             'publicMedia'         => $publicMedia,
             'privateMedia'        => $privateMedia,
             'privateMediaCount'   => $privateMediaCount,

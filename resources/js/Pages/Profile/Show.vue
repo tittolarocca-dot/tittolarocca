@@ -66,33 +66,37 @@
     <!-- ── HERO GALLERY ─────────────────────────────────────────────────────── -->
     <div class="bg-[#0f0f0f] pb-4">
       <div class="max-w-5xl mx-auto px-6">
-        <div v-if="publicMedia.length" class="flex gap-1 h-[300px] sm:h-[380px] md:h-[440px] overflow-hidden rounded-2xl">
-          <!-- Main large image -->
+        <!-- Hauptfoto -->
+        <div v-if="mainMedia"
+          class="h-[300px] sm:h-[380px] md:h-[440px] overflow-hidden rounded-2xl cursor-pointer group"
+          @click="openLightbox(mainMedia)">
+          <img
+            :src="mainMedia.url"
+            :alt="profile.display_name"
+            class="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
+            loading="eager"
+            fetchpriority="high"
+            width="900" height="440" />
+        </div>
+        <!-- Fallback: kein Hauptfoto gesetzt -->
+        <div v-else-if="publicMedia.length"
+          class="flex gap-1 h-[300px] sm:h-[380px] md:h-[440px] overflow-hidden rounded-2xl">
           <div class="relative flex-[2] min-w-0 cursor-pointer group" @click="openLightbox(publicMedia[0])">
             <img
               :src="publicMedia[0].url"
               :alt="profile.display_name"
               class="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
-              loading="eager"
-              fetchpriority="high"
-              width="800" height="500" />
-            <!-- gradient overlay at bottom for name readout -->
-            <div class="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+              loading="eager" fetchpriority="high" width="800" height="440" />
           </div>
-          <!-- Side column: up to 3 more images -->
           <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div
-              v-for="(item, i) in publicMedia.slice(1, 4)"
-              :key="item.id"
+            <div v-for="(item, i) in publicMedia.slice(1, 4)" :key="item.id"
               class="relative flex-1 cursor-pointer group overflow-hidden"
               @click="openLightbox(item)">
               <img
                 class="lazyload w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
                 :data-src="item.url"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                :alt="profile.display_name"
-                width="300" height="200" />
-              <!-- "+N more" overlay on last visible cell -->
+                :alt="profile.display_name" width="300" height="200" />
               <div v-if="i === 2 && publicMedia.length > 4"
                 class="absolute inset-0 bg-black/55 flex flex-col items-center justify-center text-white font-bold">
                 <span class="text-2xl">+{{ publicMedia.length - 4 }}</span>
@@ -101,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div v-else class="h-48 bg-white/5 flex items-center justify-center text-gray-500 text-6xl">👤</div>
+        <div v-else class="h-48 bg-white/5 flex items-center justify-center text-gray-500 text-6xl rounded-2xl">👤</div>
       </div>
     </div>
 
@@ -484,6 +488,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
   profile:             { type: Object, required: true },
+  mainMedia:           { type: Object, default: null },
   publicMedia:         { type: Array,  default: () => [] },
   privateMedia:        { type: Array,  default: () => [] },
   reviews:             { type: Array,  default: () => [] },

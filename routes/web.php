@@ -48,7 +48,8 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/medien',      [\App\Http\Controllers\Inserent\MediaController::class,      'index'])->name('media.index');
     Route::post('/medien',     [\App\Http\Controllers\Inserent\MediaController::class,      'store'])->name('media.store');
     Route::delete('/medien/{media}',        [\App\Http\Controllers\Inserent\MediaController::class, 'destroy'])->name('media.destroy');
-    Route::post('/medien/reihenfolge',      [\App\Http\Controllers\Inserent\MediaController::class, 'reorder'])->name('media.reorder');
+    Route::post('/medien/reihenfolge',             [\App\Http\Controllers\Inserent\MediaController::class, 'reorder'])->name('media.reorder');
+    Route::post('/medien/{media}/hauptfoto',       [\App\Http\Controllers\Inserent\MediaController::class, 'setMain'])->name('media.setMain');
     Route::get('/nachrichten',              [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{userId}',    [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
     Route::post('/nachrichten/{userId}/ppv',[\App\Http\Controllers\Inserent\MessageController::class, 'sendPpv'])->name('messages.ppv');

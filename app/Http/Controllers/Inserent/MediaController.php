@@ -29,6 +29,7 @@ class MediaController extends Controller
                 'type'       => $m->type,
                 'visibility' => $m->visibility,
                 'status'     => $m->status,
+                'is_main'    => (bool) $m->is_main,
                 'rejection_reason' => $m->rejection_reason,
                 'sort_order' => $m->sort_order,
                 'url'        => route('media.stream', $m->id),
@@ -107,6 +108,25 @@ class MediaController extends Controller
         $media->delete();
 
         return back()->with('success', 'Datei gelöscht.');
+    }
+
+    public function setMain(Request $request, Media $media)
+    {
+        $profile = $request->user()->profile;
+
+        if (!$profile || $media->profile_id !== $profile->id) {
+            abort(403);
+        }
+
+        if ($media->type !== 'image' || $media->visibility !== 'public') {
+            return back()->with('error', 'Nur öffentliche Fotos können als Hauptfoto gesetzt werden.');
+        }
+
+        // Clear current main, then set new one
+        $profile->media()->update(['is_main' => false]);
+        $media->update(['is_main' => true]);
+
+        return back()->with('success', 'Hauptfoto gesetzt.');
     }
 
     public function reorder(Request $request)
