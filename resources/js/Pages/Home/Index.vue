@@ -3,8 +3,8 @@
     <Head title="Startseite" />
 
     <!-- Hero + Filters -->
-    <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4">
-      <div class="max-w-7xl mx-auto">
+    <div class="bg-[#111] border-b border-white/5 pt-5 pb-4">
+      <div class="max-w-5xl mx-auto px-6">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
           Sex und Erotik Inserate in der Schweiz
         </h1>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Listings -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 pb-12 pt-4 sm:pt-6">
+    <div class="max-w-5xl mx-auto px-6 pb-12 pt-4 sm:pt-6">
       <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-600">
         <div class="text-5xl mb-4">🔍</div>
         <p class="text-lg">Keine Inserate gefunden.</p>
