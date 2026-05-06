@@ -68,6 +68,7 @@ class ProfileController extends Controller
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
                 'whatsapp_number'        => $profile->whatsapp_number,
+                'phone_number'           => $profile->phone_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
                 'created_at'             => $profile->created_at->format('d.m.Y'),

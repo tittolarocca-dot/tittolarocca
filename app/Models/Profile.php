@@ -9,7 +9,7 @@ class Profile extends Model
     protected $fillable = [
         'user_id', 'slug', 'display_name', 'description',
         'city_id', 'category_id', 'age',
-        'whatsapp_number_encrypted', 'telegram_username', 'address',
+        'whatsapp_number_encrypted', 'phone_number_encrypted', 'telegram_username', 'address',
         'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
@@ -38,6 +38,19 @@ class Profile extends Model
     {
         return $this->attributes['whatsapp_number_encrypted']
             ? Crypt::decryptString($this->attributes['whatsapp_number_encrypted'])
+            : null;
+    }
+
+    // Encrypted Phone getter/setter
+    public function setPhoneNumberAttribute(?string $value): void
+    {
+        $this->attributes['phone_number_encrypted'] = $value ? Crypt::encryptString($value) : null;
+    }
+
+    public function getPhoneNumberAttribute(): ?string
+    {
+        return $this->attributes['phone_number_encrypted']
+            ? Crypt::decryptString($this->attributes['phone_number_encrypted'])
             : null;
     }
 

@@ -27,6 +27,7 @@ class ProfileController extends Controller
                 'category_id'            => $profile->category_id,
                 'age'                    => $profile->age,
                 'whatsapp_number'        => $profile->whatsapp_number,
+                'phone_number'           => $profile->phone_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
                 'subscription_price_chf' => $profile->subscription_price_chf,
@@ -68,6 +69,11 @@ class ProfileController extends Controller
             $profile->save();
         }
 
+        if (isset($data['phone_number'])) {
+            $profile->phone_number = $data['phone_number'];
+            $profile->save();
+        }
+
         if (! empty($data['tag_ids'])) {
             $profile->tags()->sync($data['tag_ids']);
         }
@@ -104,6 +110,11 @@ class ProfileController extends Controller
 
         if (isset($data['whatsapp_number'])) {
             $profile->whatsapp_number = $data['whatsapp_number'];
+            $profile->save();
+        }
+
+        if (isset($data['phone_number'])) {
+            $profile->phone_number = $data['phone_number'];
             $profile->save();
         }
 
@@ -177,6 +188,7 @@ class ProfileController extends Controller
             'category_id'            => ['required', 'exists:categories,id'],
             'age'                    => ['required', 'integer', 'min:18', 'max:99'],
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
+            'phone_number'           => ['nullable', 'string', 'max:20'],
             'telegram_username'      => ['nullable', 'string', 'max:100'],
             'address'                => ['nullable', 'string', 'max:255'],
             'subscription_price_chf' => ['required', 'numeric', 'min:9', 'max:999'],

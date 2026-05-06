@@ -116,10 +116,15 @@
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Kontakt & Preis</h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InputField id="whatsapp_number" label="Telefon / WhatsApp"
+            <InputField id="whatsapp_number" label="WhatsApp"
               v-model="form.whatsapp_number" type="tel"
               placeholder="+41 79 123 45 67" :error="form.errors.whatsapp_number"
-              hint="Für alle Besucher sichtbar – wird als WhatsApp-Link angezeigt" />
+              hint="Wird als WhatsApp-Link angezeigt" />
+
+            <InputField id="phone_number" label="Telefon"
+              v-model="form.phone_number" type="tel"
+              placeholder="+41 79 123 45 67" :error="form.errors.phone_number"
+              hint="Wird als anrufbarer Telefonlink angezeigt" />
 
             <InputField id="telegram_username" label="Telegram"
               v-model="form.telegram_username"
@@ -192,6 +197,7 @@ const form = useForm({
   category_id:            props.profile?.category_id            ?? '',
   age:                    props.profile?.age                    ?? '',
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
+  phone_number:           props.profile?.phone_number           ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',
   address:                props.profile?.address                ?? '',
   subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
