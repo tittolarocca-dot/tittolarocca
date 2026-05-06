@@ -172,6 +172,21 @@
           <div class="bg-red-950/30 px-5 py-3 border-b border-red-900/40">
             <h2 class="text-sm font-semibold text-red-400">Gefahrenzone</h2>
           </div>
+
+          <!-- Profil deaktivieren -->
+          <div class="bg-[#1a1a1a] px-5 py-4 flex items-center justify-between gap-4 border-b border-red-900/20">
+            <div>
+              <p class="text-sm font-semibold text-white">Profil deaktivieren</p>
+              <p class="text-xs text-gray-500 mt-0.5">Dein Profil wird sofort aus der öffentlichen Suche entfernt. Du kannst es jederzeit wieder aktivieren.</p>
+            </div>
+            <button @click="deactivateProfile"
+              :disabled="deactivating || !stats.isActive"
+              class="shrink-0 border border-orange-700/50 text-orange-400 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-orange-950/40 disabled:opacity-40 disabled:cursor-not-allowed transition whitespace-nowrap">
+              {{ deactivating ? 'Wird deaktiviert…' : stats.isActive ? 'Profil deaktivieren' : 'Bereits inaktiv' }}
+            </button>
+          </div>
+
+          <!-- Profil löschen -->
           <div class="bg-[#1a1a1a] px-5 py-4 flex items-center justify-between gap-4">
             <div>
               <p class="text-sm font-semibold text-white">Profil löschen</p>
@@ -320,6 +335,13 @@ const pushing = ref(false);
 function push() {
   pushing.value = true;
   router.post(route('inserat.push'), {}, { onFinish: () => { pushing.value = false; } });
+}
+
+// ── Deactivate ────────────────────────────────────────────────────────────────
+const deactivating = ref(false);
+function deactivateProfile() {
+  deactivating.value = true;
+  router.post(route('inserat.profile.deactivate'), {}, { onFinish: () => { deactivating.value = false; } });
 }
 
 // ── Delete ────────────────────────────────────────────────────────────────────

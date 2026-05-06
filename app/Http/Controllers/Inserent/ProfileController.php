@@ -115,6 +115,20 @@ class ProfileController extends Controller
             ->with('success', 'Profil erfolgreich aktualisiert.');
     }
 
+    public function deactivate(Request $request)
+    {
+        $profile = $request->user()->profile;
+
+        if (!$profile) {
+            return redirect()->route('inserat.dashboard');
+        }
+
+        $profile->update(['status' => 'draft']);
+
+        return redirect()->route('inserat.dashboard')
+            ->with('success', 'Profil deaktiviert. Es ist nicht mehr öffentlich sichtbar.');
+    }
+
     public function destroy(Request $request)
     {
         $user    = $request->user();
