@@ -4,7 +4,7 @@
 
     <!-- Navbar -->
     <header class="bg-[#e35d8f] sticky top-0 z-50 shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-4">
+      <div class="max-w-5xl mx-auto px-6 flex items-center h-13 gap-4">
 
         <!-- Logo -->
         <Link :href="route('home')" class="flex items-center gap-2.5 shrink-0">
@@ -155,7 +155,7 @@
 
     <!-- Footer -->
     <footer class="mt-16 py-10 bg-[#1a1a1a] border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-400">
+      <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-400">
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
           <div class="space-y-2">
@@ -187,7 +187,7 @@
           </div>
         </div>
       </div>
-      <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-white/10 text-xs text-center text-gray-600">
+      <div class="max-w-5xl mx-auto px-6 mt-8 pt-6 border-t border-white/10 text-xs text-center text-gray-600">
         © {{ new Date().getFullYear() }} Inserate Plattform – Nur für Erwachsene ab 18 Jahren.
       </div>
     </footer>
