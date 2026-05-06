@@ -7,48 +7,6 @@
       🎉 Abonnement erfolgreich! Du hast jetzt Zugang zu allen privaten Inhalten.
     </div>
 
-    <!-- ── HERO GALLERY ─────────────────────────────────────────────────────── -->
-    <div class="bg-[#0f0f0f]">
-      <div class="max-w-7xl mx-auto">
-        <div v-if="publicMedia.length" class="flex gap-1 h-[340px] sm:h-[420px] md:h-[500px] overflow-hidden">
-          <!-- Main large image -->
-          <div class="relative flex-[2] min-w-0 cursor-pointer group" @click="openLightbox(publicMedia[0])">
-            <img
-              :src="publicMedia[0].url"
-              :alt="profile.display_name"
-              class="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
-              loading="eager"
-              fetchpriority="high"
-              width="800" height="500" />
-            <!-- gradient overlay at bottom for name readout -->
-            <div class="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
-          </div>
-          <!-- Side column: up to 3 more images -->
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div
-              v-for="(item, i) in publicMedia.slice(1, 4)"
-              :key="item.id"
-              class="relative flex-1 cursor-pointer group overflow-hidden"
-              @click="openLightbox(item)">
-              <img
-                class="lazyload w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
-                :data-src="item.url"
-                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                :alt="profile.display_name"
-                width="300" height="200" />
-              <!-- "+N more" overlay on last visible cell -->
-              <div v-if="i === 2 && publicMedia.length > 4"
-                class="absolute inset-0 bg-black/55 flex flex-col items-center justify-center text-white font-bold">
-                <span class="text-2xl">+{{ publicMedia.length - 4 }}</span>
-                <span class="text-xs mt-1 font-normal opacity-80">weitere</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else class="h-48 bg-white/5 flex items-center justify-center text-gray-500 text-6xl">👤</div>
-      </div>
-    </div>
-
     <!-- ── PROFILE HEADER ───────────────────────────────────────────────────── -->
     <div class="bg-[#111] border-b border-white/5">
       <div class="max-w-5xl mx-auto px-4 py-5">
@@ -102,6 +60,48 @@
             {{ profile.total_subscribers }} Abonnenten
           </span>
         </div>
+      </div>
+    </div>
+
+    <!-- ── HERO GALLERY ─────────────────────────────────────────────────────── -->
+    <div class="bg-[#0f0f0f]">
+      <div class="max-w-7xl mx-auto">
+        <div v-if="publicMedia.length" class="flex gap-1 h-[340px] sm:h-[420px] md:h-[500px] overflow-hidden">
+          <!-- Main large image -->
+          <div class="relative flex-[2] min-w-0 cursor-pointer group" @click="openLightbox(publicMedia[0])">
+            <img
+              :src="publicMedia[0].url"
+              :alt="profile.display_name"
+              class="w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
+              loading="eager"
+              fetchpriority="high"
+              width="800" height="500" />
+            <!-- gradient overlay at bottom for name readout -->
+            <div class="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+          </div>
+          <!-- Side column: up to 3 more images -->
+          <div class="flex flex-col gap-1 flex-1 min-w-0">
+            <div
+              v-for="(item, i) in publicMedia.slice(1, 4)"
+              :key="item.id"
+              class="relative flex-1 cursor-pointer group overflow-hidden"
+              @click="openLightbox(item)">
+              <img
+                class="lazyload w-full h-full object-cover object-top transition duration-300 group-hover:scale-105"
+                :data-src="item.url"
+                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                :alt="profile.display_name"
+                width="300" height="200" />
+              <!-- "+N more" overlay on last visible cell -->
+              <div v-if="i === 2 && publicMedia.length > 4"
+                class="absolute inset-0 bg-black/55 flex flex-col items-center justify-center text-white font-bold">
+                <span class="text-2xl">+{{ publicMedia.length - 4 }}</span>
+                <span class="text-xs mt-1 font-normal opacity-80">weitere</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="h-48 bg-white/5 flex items-center justify-center text-gray-500 text-6xl">👤</div>
       </div>
     </div>
 
