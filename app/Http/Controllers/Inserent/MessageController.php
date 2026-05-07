@@ -124,7 +124,7 @@ class MessageController extends Controller
                 'id'                 => $m->id,
                 'body'               => $m->body,
                 'from_me'            => $m->from_user_id === $user->id,
-                'sender'             => $m->from->name,
+                'sender'             => $m->from?->name ?? '',
                 'created_at'         => $m->created_at->format('d.m.Y H:i'),
                 'ppv_media_type'     => $m->ppv_media_type,
                 'ppv_price_chf'      => $m->ppv_price_chf,

@@ -381,14 +381,22 @@ async function refreshConversation() {
     const res = await fetch(route('konto.messages.conversation', activeConv.value.user_id), {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     });
+    if (!res.ok) {
+      console.error('[Chat] conversation endpoint error:', res.status);
+      sendError.value = `Nachrichten konnten nicht geladen werden (${res.status}).`;
+      return;
+    }
     const data = await res.json();
     if (Array.isArray(data.messages)) {
       chatMessages.value = data.messages;
       await nextTick();
       if (chatBox.value) chatBox.value.scrollTop = chatBox.value.scrollHeight;
+    } else {
+      console.error('[Chat] unexpected response format:', data);
     }
   } catch (e) {
-    // Silent fail — messages stay as-is
+    console.error('[Chat] refreshConversation error:', e);
+    sendError.value = 'Verbindungsfehler beim Laden der Nachrichten.';
   }
 }
 
@@ -401,7 +409,9 @@ function buyPpv(msg) {
 }
 
 function getCsrf() {
-  return decodeURIComponent(document.cookie.split('; ')
-    .find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '');
+  const raw = document.cookie.split('; ')
+    .find(r => r.startsWith('XSRF-TOKEN='))
+    ?.slice('XSRF-TOKEN='.length) ?? '';
+  return decodeURIComponent(raw);
 }
 </script>

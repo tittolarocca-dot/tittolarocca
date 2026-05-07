@@ -29,9 +29,14 @@ class Message extends Model
 
     public function getBodyAttribute(): ?string
     {
-        return isset($this->attributes['body_encrypted']) && $this->attributes['body_encrypted']
-            ? Crypt::decryptString($this->attributes['body_encrypted'])
-            : null;
+        if (!isset($this->attributes['body_encrypted']) || !$this->attributes['body_encrypted']) {
+            return null;
+        }
+        try {
+            return Crypt::decryptString($this->attributes['body_encrypted']);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function isPpv(): bool
