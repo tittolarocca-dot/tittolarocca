@@ -137,6 +137,14 @@
           <!-- Input Area -->
           <div class="border-t border-gray-200">
 
+            <!-- Send error -->
+            <div v-if="sendError" class="px-4 pt-3 pb-0">
+              <p class="text-xs text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                {{ sendError }}
+                <button @click="sendError = ''" class="ml-2 font-bold hover:text-red-700">✕</button>
+              </p>
+            </div>
+
             <!-- Emoji Picker -->
             <div v-if="showEmoji" class="px-4 pt-3 pb-1">
               <div class="bg-white border border-gray-200 rounded-xl p-2 shadow-md">
@@ -214,6 +222,7 @@ const chatMessages       = ref([]);
 const chatLoading        = ref(false);
 const replyText          = ref('');
 const sending            = ref(false);
+const sendError          = ref('');
 const chatBox            = ref(null);
 const textInput          = ref(null);
 const imageInput         = ref(null);
@@ -242,6 +251,7 @@ async function openConversation(conv) {
   chatLoading.value  = true;
   chatMessages.value = [];
   showEmoji.value    = false;
+  sendError.value    = '';
   try {
     const res = await fetch(route('konto.messages.conversation', conv.user_id), {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -265,6 +275,7 @@ function openNewConversation(sub) {
   chatMessages.value = [];
   chatLoading.value  = false;
   showEmoji.value    = false;
+  sendError.value    = '';
 }
 
 function autoResize(e) {
@@ -293,8 +304,13 @@ function clearImage() {
 }
 
 async function sendOrUpload() {
-  if (sending.value || !activeConv.value?.profile?.slug) return;
+  if (sending.value) return;
+  if (!activeConv.value?.profile?.slug) {
+    sendError.value = 'Konversation nicht gefunden. Bitte Seite neu laden.';
+    return;
+  }
 
+  sendError.value = '';
   if (pendingImage.value) {
     await uploadImage();
   } else if (replyText.value.trim()) {
@@ -314,11 +330,16 @@ async function sendText() {
       },
       body: JSON.stringify({ body: replyText.value }),
     });
-    if (res.ok) {
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok) {
       replyText.value = '';
       if (textInput.value) { textInput.value.style.height = 'auto'; }
       await refreshConversation();
+    } else {
+      sendError.value = data.error ?? 'Nachricht konnte nicht gesendet werden.';
     }
+  } catch (e) {
+    sendError.value = 'Netzwerkfehler. Bitte versuche es erneut.';
   } finally {
     sending.value = false;
   }
@@ -339,11 +360,16 @@ async function uploadImage() {
       },
       body: fd,
     });
-    if (res.ok) {
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok) {
       replyText.value = '';
       clearImage();
       await refreshConversation();
+    } else {
+      sendError.value = data.error ?? 'Bild konnte nicht gesendet werden.';
     }
+  } catch (e) {
+    sendError.value = 'Netzwerkfehler. Bitte versuche es erneut.';
   } finally {
     sending.value = false;
   }
@@ -351,13 +377,19 @@ async function uploadImage() {
 
 async function refreshConversation() {
   if (!activeConv.value) return;
-  const res = await fetch(route('konto.messages.conversation', activeConv.value.user_id), {
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  });
-  const data = await res.json();
-  chatMessages.value = data.messages;
-  await nextTick();
-  if (chatBox.value) chatBox.value.scrollTop = chatBox.value.scrollHeight;
+  try {
+    const res = await fetch(route('konto.messages.conversation', activeConv.value.user_id), {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    });
+    const data = await res.json();
+    if (Array.isArray(data.messages)) {
+      chatMessages.value = data.messages;
+      await nextTick();
+      if (chatBox.value) chatBox.value.scrollTop = chatBox.value.scrollHeight;
+    }
+  } catch (e) {
+    // Silent fail — messages stay as-is
+  }
 }
 
 function buyPpv(msg) {

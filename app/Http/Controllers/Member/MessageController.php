@@ -38,6 +38,11 @@ class MessageController extends Controller
                     'last_at'      => $msg->created_at->format('d.m.Y H:i'),
                     'unread'       => 0,
                 ];
+            } elseif (!$conversations[$otherId]['profile'] && $msg->profile) {
+                $conversations[$otherId]['profile'] = [
+                    'display_name' => $msg->profile->display_name,
+                    'slug'         => $msg->profile->slug,
+                ];
             }
             if ($msg->to_user_id === $user->id && !$msg->read_at) {
                 $conversations[$otherId]['unread']++;
@@ -70,7 +75,7 @@ class MessageController extends Controller
         $user = $request->user();
 
         if (!$user->isSubscribedTo($profile)) {
-            return back()->with('error', 'Nur Abonnenten können Nachrichten senden.');
+            return response()->json(['error' => 'Nur Abonnenten können Nachrichten senden.'], 403);
         }
 
         Message::create([
