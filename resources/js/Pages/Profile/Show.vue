@@ -67,17 +67,13 @@
     <div class="bg-[#0f0f0f] pb-4">
       <div class="max-w-5xl mx-auto px-6">
         <!-- Hauptfoto -->
-        <div v-if="mainMedia"
-          class="overflow-hidden rounded-2xl bg-black flex items-center justify-center"
-          style="max-height: 480px;">
+        <div v-if="mainMedia" class="rounded-2xl overflow-hidden bg-black cursor-pointer" @click="openLightbox(mainMedia)">
           <img
             :src="mainMedia.url"
             :alt="profile.display_name"
-            class="w-full h-auto max-h-[480px] object-contain cursor-pointer"
+            class="block w-full h-auto"
             loading="eager"
-            fetchpriority="high"
-            @click="openLightbox(mainMedia)"
-            width="900" height="480" />
+            fetchpriority="high" />
         </div>
         <!-- Fallback: kein Hauptfoto gesetzt -->
         <div v-else-if="publicMedia.length"
