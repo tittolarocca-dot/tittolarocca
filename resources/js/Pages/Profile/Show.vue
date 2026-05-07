@@ -67,11 +67,13 @@
     <div class="bg-[#0f0f0f] pb-4">
       <div class="max-w-5xl mx-auto px-6">
         <!-- Hauptfoto -->
-        <div v-if="mainMedia" class="rounded-2xl overflow-hidden bg-black cursor-pointer" @click="openLightbox(mainMedia)">
+        <div v-if="mainMedia"
+          class="rounded-2xl overflow-hidden bg-black cursor-pointer flex justify-center"
+          @click="openLightbox(mainMedia)">
           <img
             :src="mainMedia.url"
             :alt="profile.display_name"
-            class="block w-full h-auto"
+            class="block max-h-[560px] w-auto max-w-full h-auto"
             loading="eager"
             fetchpriority="high" />
         </div>
