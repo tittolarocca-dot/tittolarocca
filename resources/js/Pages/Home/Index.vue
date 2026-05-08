@@ -93,7 +93,7 @@
         <a v-if="profiles.data[0]" :href="route('profile.show', profiles.data[0].slug)"
           class="block bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-xl">
           <div class="flex">
-            <div class="relative w-28 sm:w-44 md:w-64 shrink-0 h-36 sm:h-44 md:h-52">
+            <div class="relative w-[101px] sm:w-[158px] md:w-[230px] shrink-0 h-[130px] sm:h-[158px] md:h-[187px]">
               <img v-if="profiles.data[0].public_media?.[0]"
                 :src="profiles.data[0].public_media[0].url"
                 :alt="profiles.data[0].display_name"
@@ -124,7 +124,7 @@
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
             class="flex bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-lg">
-            <div class="w-[251px] h-[335px] shrink-0">
+            <div class="w-[226px] h-[302px] shrink-0">
               <img v-if="profile.public_media?.[0]"
                 class="lazyload w-full h-full object-cover object-top"
                 :data-src="profile.public_media[0].url"
