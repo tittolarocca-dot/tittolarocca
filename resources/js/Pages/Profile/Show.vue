@@ -129,7 +129,7 @@
               :href="`tel:${profile.phone_number.replace(/\s/g,'')}`"
               class="flex items-center justify-center gap-2.5 w-full bg-[#6c757d] hover:bg-[#5a6268] text-white text-sm font-bold px-4 py-3.5 rounded-xl transition shadow-lg shadow-black/10">
               <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-              Telefon anrufen
+              {{ profile.phone_number }}
             </a>
             <a v-if="profile.telegram_username"
               :href="`https://t.me/${profile.telegram_username.replace('@','')}`"
