@@ -130,7 +130,7 @@
                 :data-src="profile.public_media[0].url"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 :alt="profile.display_name"
-                width="251" height="335" />
+                width="226" height="302" />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
             </div>
             <div class="p-3 flex-1 min-w-0">
