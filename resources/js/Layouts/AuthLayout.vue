@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#1e2427] flex flex-col justify-center py-12 px-4">
+  <div class="min-h-screen bg-[#242323] flex flex-col justify-center py-12 px-4">
     <FlashMessage />
 
     <!-- Logo -->

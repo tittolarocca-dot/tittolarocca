@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#1e2427] text-white">
+  <div class="min-h-screen bg-[#242323] text-white">
     <FlashMessage />
 
     <!-- Navbar -->
