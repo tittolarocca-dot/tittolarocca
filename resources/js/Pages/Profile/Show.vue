@@ -395,7 +395,7 @@
           <!-- Über mich / Beschreibung -->
           <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Über {{ profile.display_name }}</h2>
-            <p class="text-white text-sm leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
+            <p class="text-white text-base leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
           </div>
 
           <!-- Angebote & Services -->
