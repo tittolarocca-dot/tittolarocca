@@ -166,7 +166,7 @@
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
           <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">Inserat erstellen</Link>
+            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">Gratis Inserat erstellen</Link>
             <a href="#" class="block hover:text-[#e35d8f] transition">Preise</a>
           </div>
         </div>
