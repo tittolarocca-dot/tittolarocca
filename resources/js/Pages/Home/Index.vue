@@ -3,7 +3,7 @@
     <Head title="Startseite" />
 
     <!-- Hero + Filters -->
-    <div class="bg-[#111] border-b border-white/5 pt-5 pb-4">
+    <div class="bg-[#242323] border-b border-white/5 pt-5 pb-4">
       <div class="max-w-5xl mx-auto px-6">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
           Sex und Erotik Inserate in der Schweiz
