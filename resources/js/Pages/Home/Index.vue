@@ -108,7 +108,7 @@
               <h2 class="text-base sm:text-xl font-bold text-white group-hover:text-[#e35d8f] transition mb-1 sm:mb-2 truncate">
                 {{ profiles.data[0].display_name }}
               </h2>
-              <p class="text-gray-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 mb-2 sm:mb-4">{{ profiles.data[0].description }}</p>
+              <p class="text-white text-base leading-relaxed line-clamp-2 sm:line-clamp-3 mb-2 sm:mb-4">{{ profiles.data[0].description }}</p>
               <div class="flex flex-wrap gap-2 text-xs">
                 <span v-if="profiles.data[0].category" class="text-[#e35d8f]">🏷 {{ profiles.data[0].category?.name }}</span>
                 <span v-if="profiles.data[0].city" class="text-gray-500">📍 {{ profiles.data[0].city?.name }}</span>
@@ -140,7 +140,7 @@
               <h3 class="text-white text-sm font-bold group-hover:text-[#e35d8f] transition truncate mb-1">
                 {{ profile.display_name }}
               </h3>
-              <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{{ profile.description }}</p>
+              <p class="text-white text-base line-clamp-2 leading-relaxed">{{ profile.description }}</p>
               <div class="flex items-center gap-2 mt-1.5 text-xs text-gray-600 flex-wrap">
                 <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
                 <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
