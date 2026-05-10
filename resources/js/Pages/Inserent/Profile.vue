@@ -78,6 +78,71 @@
           </div>
         </div>
 
+        <!-- Persönliche Angaben -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Persönliche Angaben</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Geschlecht -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Geschlecht</label>
+              <select v-model="form.gender"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">– keine Angabe –</option>
+                <option>Frau</option>
+                <option>Mann</option>
+                <option>Transgender</option>
+                <option>Divers</option>
+              </select>
+            </div>
+            <!-- Sexualität -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Sexualität</label>
+              <select v-model="form.sexuality"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">– keine Angabe –</option>
+                <option>Heterosexuell</option>
+                <option>Bisexuell</option>
+                <option>Homosexuell</option>
+              </select>
+            </div>
+            <!-- Körpertyp -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Körpertyp</label>
+              <select v-model="form.body_type"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">– keine Angabe –</option>
+                <option>Schlank</option>
+                <option>Sportlich</option>
+                <option>Kurvig</option>
+                <option>Mollig</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Grösse -->
+            <InputField id="height_cm" label="Körpergrösse (cm)" v-model="form.height_cm"
+              type="number" min="140" max="220" :error="form.errors.height_cm"
+              placeholder="z.B. 168" />
+            <!-- Gewicht -->
+            <InputField id="weight_kg" label="Gewicht (kg)" v-model="form.weight_kg"
+              type="number" min="40" max="200" :error="form.errors.weight_kg"
+              placeholder="z.B. 58" />
+            <!-- Raucherstatus -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Raucherstatus</label>
+              <select v-model="form.smoker"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">– keine Angabe –</option>
+                <option>Nichtraucher*in</option>
+                <option>Raucher*in</option>
+                <option>Gelegenheitsraucher*in</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <!-- Beschreibung -->
         <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Beschreibung</h2>
@@ -196,6 +261,12 @@ const form = useForm({
   city_id:                props.profile?.city_id                ?? '',
   category_id:            props.profile?.category_id            ?? '',
   age:                    props.profile?.age                    ?? '',
+  gender:                 props.profile?.gender                 ?? '',
+  sexuality:              props.profile?.sexuality               ?? '',
+  body_type:              props.profile?.body_type              ?? '',
+  height_cm:              props.profile?.height_cm              ?? '',
+  weight_kg:              props.profile?.weight_kg              ?? '',
+  smoker:                 props.profile?.smoker                 ?? '',
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
   phone_number:           props.profile?.phone_number           ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',

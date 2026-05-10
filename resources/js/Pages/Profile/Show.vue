@@ -411,6 +411,49 @@
             </div>
           </div>
 
+          <!-- Persönliche Angaben -->
+          <div v-if="profile.gender || profile.sexuality || profile.body_type || profile.height_cm || profile.weight_kg || profile.age || profile.smoker"
+            class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Persönliche Angaben</h2>
+            <div class="space-y-2.5">
+              <div v-if="profile.age" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">🎂</span>
+                <span class="text-gray-400 w-28 shrink-0">Alter</span>
+                <span class="text-white font-medium">{{ profile.age }} Jahre</span>
+              </div>
+              <div v-if="profile.gender" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">⚧</span>
+                <span class="text-gray-400 w-28 shrink-0">Geschlecht</span>
+                <span class="text-white font-medium">{{ profile.gender }}</span>
+              </div>
+              <div v-if="profile.sexuality" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">🏳️‍🌈</span>
+                <span class="text-gray-400 w-28 shrink-0">Sexualität</span>
+                <span class="text-white font-medium">{{ profile.sexuality }}</span>
+              </div>
+              <div v-if="profile.body_type" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">🏃</span>
+                <span class="text-gray-400 w-28 shrink-0">Körpertyp</span>
+                <span class="text-white font-medium">{{ profile.body_type }}</span>
+              </div>
+              <div v-if="profile.height_cm" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">📏</span>
+                <span class="text-gray-400 w-28 shrink-0">Grösse</span>
+                <span class="text-white font-medium">{{ profile.height_cm }} cm</span>
+              </div>
+              <div v-if="profile.weight_kg" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">⚖️</span>
+                <span class="text-gray-400 w-28 shrink-0">Gewicht</span>
+                <span class="text-white font-medium">{{ profile.weight_kg }} kg</span>
+              </div>
+              <div v-if="profile.smoker" class="flex items-center gap-3 text-sm">
+                <span class="text-lg w-6 text-center">🚬</span>
+                <span class="text-gray-400 w-28 shrink-0">Rauchen</span>
+                <span class="text-white font-medium">{{ profile.smoker }}</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Review Form -->
           <div v-if="isSubscribed && !hasReviewed" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="font-semibold text-white mb-4">Bewertung abgeben</h2>
