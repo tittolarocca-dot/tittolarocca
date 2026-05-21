@@ -87,7 +87,8 @@
             <span v-if="activeCity" class="text-[#e35d8f]">📍 {{ activeCity.name }}</span>
             <span v-if="activeCategory" class="text-[#e35d8f]">🏷 {{ activeCategory.name }}</span>
             <span v-if="activeService" class="text-[#e35d8f]">✨ {{ activeService.name }}</span>
-            <Link v-if="activeCity || activeCategory || activeService" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ Zurücksetzen</Link>
+            <span v-if="activeAge" class="text-[#e35d8f]">🎂 Alter {{ activeAge }}</span>
+            <Link v-if="activeCity || activeCategory || activeService || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ Zurücksetzen</Link>
           </div>
           <span class="shrink-0 ml-2 text-gray-500">{{ profiles.total }} Inserate</span>
         </div>
@@ -192,13 +193,14 @@ const props = defineProps({
   activeCategory: Object,
   activeService:  Object,
   activeSearch:   String,
+  activeAge:      String,
 });
 
 const filters = ref({
   city:     props.activeCity?.slug ?? '',
   category: props.activeCategory?.slug ?? '',
   service:  props.activeService?.slug ?? '',
-  age:      '',
+  age:      props.activeAge ?? '',
   search:   props.activeSearch ?? '',
 });
 

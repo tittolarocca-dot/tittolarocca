@@ -18,7 +18,7 @@ class HomeController extends Controller
         ];
     }
 
-    private function baseQuery(?string $search = null)
+    private function baseQuery(?string $search = null, ?string $age = null)
     {
         $q = Profile::with(['city', 'category', 'publicMedia',
             'listingOrders' => fn ($q) => $q
@@ -36,47 +36,67 @@ class HomeController extends Controller
             });
         }
 
+        if ($age) {
+            if ($age === '60+') {
+                $q->where('age', '>=', 60);
+            } elseif (preg_match('/^(\d+)-(\d+)$/', $age, $m)) {
+                $q->whereBetween('age', [(int) $m[1], (int) $m[2]]);
+            }
+        }
+
         return $q->orderByDesc('pushed_at')->orderByDesc('created_at');
+    }
+
+    private function ageAndSearch(Request $request): array
+    {
+        return [
+            trim($request->query('search', '')) ?: null,
+            trim($request->query('age', '')) ?: null,
+        ];
     }
 
     public function index(Request $request)
     {
-        $search = trim($request->query('search', '')) ?: null;
+        [$search, $age] = $this->ageAndSearch($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'     => $this->baseQuery($search)->paginate(20)->withQueryString(),
+            'profiles'     => $this->baseQuery($search, $age)->paginate(20)->withQueryString(),
             'activeSearch' => $search,
+            'activeAge'    => $age,
         ]));
     }
 
     public function city(City $city, Request $request)
     {
-        $search = trim($request->query('search', '')) ?: null;
+        [$search, $age] = $this->ageAndSearch($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'     => $this->baseQuery($search)->where('city_id', $city->id)->paginate(20)->withQueryString(),
+            'profiles'     => $this->baseQuery($search, $age)->where('city_id', $city->id)->paginate(20)->withQueryString(),
             'activeCity'   => $city,
             'activeSearch' => $search,
+            'activeAge'    => $age,
         ]));
     }
 
     public function category(Category $category, Request $request)
     {
-        $search = trim($request->query('search', '')) ?: null;
+        [$search, $age] = $this->ageAndSearch($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'       => $this->baseQuery($search)->where('category_id', $category->id)->paginate(20)->withQueryString(),
+            'profiles'       => $this->baseQuery($search, $age)->where('category_id', $category->id)->paginate(20)->withQueryString(),
             'activeCategory' => $category,
             'activeSearch'   => $search,
+            'activeAge'      => $age,
         ]));
     }
 
     public function service(Tag $tag, Request $request)
     {
-        $search = trim($request->query('search', '')) ?: null;
+        [$search, $age] = $this->ageAndSearch($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'      => $this->baseQuery($search)
+            'profiles'      => $this->baseQuery($search, $age)
                 ->whereHas('tags', fn ($q) => $q->where('tags.id', $tag->id))
                 ->paginate(20)->withQueryString(),
             'activeService' => $tag,
             'activeSearch'  => $search,
+            'activeAge'     => $age,
         ]));
     }
 }
