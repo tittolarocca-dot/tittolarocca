@@ -40,6 +40,19 @@
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
           <div class="relative">
+            <select v-model="filters.age"
+              class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
+              <option value="">Alter</option>
+              <option value="18-22">Alter 18-22</option>
+              <option value="23-29">Alter 23-29</option>
+              <option value="30-39">Alter 30-39</option>
+              <option value="40-49">Alter 40-49</option>
+              <option value="50-59">Alter 50-59</option>
+              <option value="60+">Alter 60+</option>
+            </select>
+            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          <div class="relative">
             <select v-model="filters.category"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
               <option value="">Rubrik</option>
@@ -185,6 +198,7 @@ const filters = ref({
   city:     props.activeCity?.slug ?? '',
   category: props.activeCategory?.slug ?? '',
   service:  props.activeService?.slug ?? '',
+  age:      '',
   search:   props.activeSearch ?? '',
 });
 
@@ -195,7 +209,9 @@ function formatDate(iso) {
 }
 
 function applyFilters() {
-  const query = filters.value.search ? { search: filters.value.search } : {};
+  const query = {};
+  if (filters.value.search) query.search = filters.value.search;
+  if (filters.value.age)    query.age    = filters.value.age;
 
   if (filters.value.service) {
     router.get(route('service', filters.value.service), query);
