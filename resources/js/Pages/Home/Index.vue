@@ -138,7 +138,7 @@
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
             class="flex bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-lg">
-            <div class="w-[370px] h-[335px] shrink-0">
+            <div class="w-[309px] h-[335px] shrink-0">
               <img v-if="profile.public_media?.[0]"
                 class="lazyload w-full h-full object-cover object-top"
                 :data-src="profile.public_media[0].url"
