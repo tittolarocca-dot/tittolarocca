@@ -51,7 +51,7 @@
 
     <!-- ── PROFILE HEADER ───────────────────────────────────────────────────── -->
     <div class="bg-[#111] border-b border-white/5">
-      <div class="max-w-5xl mx-auto px-4 py-5">
+      <div class="max-w-7xl mx-auto px-4 py-5">
         <!-- Breadcrumb -->
         <nav class="flex items-center gap-1.5 text-xs text-gray-500 mb-4 flex-wrap">
           <Link :href="route('home')" class="hover:text-[#e35d8f] transition">Startseite</Link>
@@ -106,11 +106,11 @@
     </div>
 
     <!-- ── MAIN CONTENT ─────────────────────────────────────────────────────── -->
-    <div class="max-w-5xl mx-auto px-4 py-6 space-y-5">
+    <div class="max-w-7xl mx-auto px-4 py-6 space-y-5">
       <div class="flex flex-col lg:flex-row gap-5">
 
-        <!-- ── LEFT COLUMN ───────────────────────────────────────────────── -->
-        <div class="flex-1 min-w-0 space-y-5">
+        <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────── -->
+        <div class="lg:w-72 shrink-0 space-y-4 lg:order-first">
 
           <!-- Über mich / Beschreibung -->
           <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
@@ -278,8 +278,8 @@
           </div>
         </div>
 
-        <!-- ── RIGHT SIDEBAR ─────────────────────────────────────────────── -->
-        <div class="lg:w-72 shrink-0 space-y-4">
+        <!-- ── RIGHT COLUMN ──────────────────────────────────────────────── -->
+        <div class="flex-1 min-w-0 space-y-5">
 
           <!-- Subscribe / Owner CTA (sticky) -->
           <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 lg:sticky lg:top-4">
