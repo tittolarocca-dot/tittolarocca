@@ -109,8 +109,8 @@
     <div class="max-w-7xl mx-auto px-4 py-6 space-y-5">
       <div class="flex flex-col lg:flex-row gap-5">
 
-        <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────── -->
-        <div class="lg:w-72 shrink-0 space-y-4 lg:order-first">
+        <!-- ── MAIN CONTENT ──────────────────────────────────────────────── -->
+        <div class="flex-1 min-w-0 space-y-5 lg:order-2">
 
           <!-- Über mich / Beschreibung -->
           <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
@@ -278,8 +278,8 @@
           </div>
         </div>
 
-        <!-- ── RIGHT COLUMN ──────────────────────────────────────────────── -->
-        <div class="flex-1 min-w-0 space-y-5">
+        <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────── -->
+        <div class="lg:w-72 shrink-0 space-y-4 lg:order-1">
 
           <!-- Subscribe / Owner CTA (sticky) -->
           <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 lg:sticky lg:top-4">
