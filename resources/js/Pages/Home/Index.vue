@@ -6,7 +6,7 @@
     <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
-          Sex und Erotik Inserate in der Schweiz
+          Anschauen oder treffen – du entscheidest - Schweizweit
         </h1>
 
         <!-- Featured Profiles Carousel -->
