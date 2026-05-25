@@ -17,6 +17,7 @@ Route::get('/stadt/{city:slug}',         [HomeController::class,   'city'])->nam
 Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])->name('category');
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
+Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
