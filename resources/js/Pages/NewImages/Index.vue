@@ -16,17 +16,17 @@
       </div>
 
       <!-- Grid -->
-      <div v-if="images.data.length" class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-2 space-y-2">
+      <div v-if="images.data.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
         <a
           v-for="image in images.data"
           :key="image.id"
           :href="route('profile.show', image.profile.slug)"
-          class="relative block overflow-hidden rounded-xl break-inside-avoid group mb-2"
+          class="relative block overflow-hidden rounded-xl group aspect-[3/4]"
         >
           <img
             :src="image.url"
             :alt="image.profile.display_name"
-            class="w-full h-auto object-cover transition duration-300 group-hover:scale-105"
+            class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
             loading="lazy"
           />
 
