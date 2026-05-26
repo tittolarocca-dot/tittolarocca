@@ -549,25 +549,45 @@
     </div>
 
     <!-- ── LIGHTBOX ──────────────────────────────────────────────────────────── -->
-    <div v-if="lightboxItem" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4" @click.self="lightboxItem = null">
-      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center z-10" @click="lightboxItem = null">✕</button>
+    <div v-if="lightboxItem" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4" @click.self="lightboxIndex = null">
+
+      <!-- Close -->
+      <button class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center z-10" @click="lightboxIndex = null">✕</button>
+
+      <!-- Counter -->
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 text-white/50 text-sm tabular-nums z-10">
+        {{ lightboxIndex + 1 }} / {{ allMedia.length }}
+      </div>
+
+      <!-- Prev arrow -->
+      <button v-if="lightboxIndex > 0"
+        class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full flex items-center justify-center text-white transition z-10"
+        @click.stop="lightboxPrev">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <!-- Next arrow -->
+      <button v-if="lightboxIndex < allMedia.length - 1"
+        class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full flex items-center justify-center text-white transition z-10"
+        @click.stop="lightboxNext">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Media -->
       <img v-if="lightboxItem.type === 'image'"
         :src="lightboxItem.url"
         class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
       <video v-else
         :src="lightboxItem.url"
         class="max-h-[90vh] max-w-[90vw] rounded-lg"
-        controls
-        autoplay
-        playsinline
-        controlsList="nodownload"
+        controls autoplay playsinline controlsList="nodownload"
         @click.stop />
     </div>
   </AppLayout>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
@@ -578,6 +598,46 @@ function onCarouselScroll(e) {
   const el = e.target;
   activeCarouselIndex.value = Math.round(el.scrollLeft / el.offsetWidth);
 }
+
+// ── Lightbox ────────────────────────────────────────────────────────────────
+const lightboxIndex = ref(null);
+
+const allMedia = computed(() => {
+  const media = [...props.publicMedia];
+  if (props.isOwner || props.isSubscribed || props.isTrialing) {
+    media.push(...props.privateMedia);
+  }
+  return media;
+});
+
+const lightboxItem = computed(() =>
+  lightboxIndex.value !== null ? allMedia.value[lightboxIndex.value] ?? null : null
+);
+
+function openLightbox(item) {
+  const idx = allMedia.value.findIndex(m => m.id === item.id);
+  lightboxIndex.value = idx >= 0 ? idx : 0;
+}
+
+function lightboxNext() {
+  if (lightboxIndex.value !== null && lightboxIndex.value < allMedia.value.length - 1)
+    lightboxIndex.value++;
+}
+
+function lightboxPrev() {
+  if (lightboxIndex.value !== null && lightboxIndex.value > 0)
+    lightboxIndex.value--;
+}
+
+function onKeydown(e) {
+  if (lightboxIndex.value === null) return;
+  if (e.key === 'ArrowRight') lightboxNext();
+  if (e.key === 'ArrowLeft')  lightboxPrev();
+  if (e.key === 'Escape')     lightboxIndex.value = null;
+}
+
+onMounted(()   => window.addEventListener('keydown', onKeydown));
+onUnmounted(() => window.removeEventListener('keydown', onKeydown));
 
 const props = defineProps({
   profile:             { type: Object, required: true },
@@ -597,7 +657,6 @@ const props = defineProps({
 });
 
 const activeTab        = ref('public');
-const lightboxItem     = ref(null);
 const subscribing      = ref(false);
 const trialing         = ref(false);
 const submittingReview = ref(false);
@@ -625,8 +684,6 @@ const avgRating = computed(() => {
   if (!props.reviews.length) return 0;
   return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
 });
-
-function openLightbox(item) { lightboxItem.value = item; }
 
 function startTrial() {
   trialing.value = true;
