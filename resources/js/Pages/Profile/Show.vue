@@ -677,7 +677,7 @@ const blurGradients = [
 
 const tabs = computed(() => [
   { key: 'public',  label: 'Öffentlich', count: props.publicMedia.length },
-  { key: 'private', label: 'Privat 🔒',  count: props.privateMediaCount || props.privateMedia.length },
+  { key: 'private', label: 'Private Bilder/Videos freischalten 🔒',  count: props.privateMediaCount || props.privateMedia.length },
 ]);
 
 const avgRating = computed(() => {
