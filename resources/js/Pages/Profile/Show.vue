@@ -7,6 +7,95 @@
       🎉 Abonnement erfolgreich! Du hast jetzt Zugang zu allen privaten Inhalten.
     </div>
 
+    <!-- ── MEDIA TABS ──────────────────────────────────────────────────────────── -->
+    <div class="bg-[#0f0f0f] border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl overflow-hidden">
+          <div class="flex border-b border-white/8 px-2 pt-2">
+            <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
+              class="px-5 py-3 text-sm font-semibold transition rounded-t-lg border-b-2 -mb-px"
+              :class="activeTab === tab.key ? 'border-[#e35d8f] text-[#e35d8f] bg-white/3' : 'border-transparent text-gray-500 hover:text-gray-300'">
+              {{ tab.label }} ({{ tab.count }})
+            </button>
+          </div>
+          <div class="p-4">
+            <!-- Public Media -->
+            <div v-if="activeTab === 'public'">
+              <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine Fotos.</div>
+              <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div v-for="item in publicMedia" :key="item.id"
+                  class="aspect-square rounded-xl overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                  <img
+                    class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-200"
+                    :data-src="item.url"
+                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                    :alt="profile.display_name"
+                    width="200" height="200" />
+                </div>
+              </div>
+            </div>
+            <!-- Private Media -->
+            <div v-if="activeTab === 'private'">
+              <template v-if="isOwner || isSubscribed || isTrialing">
+                <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
+                <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                  <div v-for="item in privateMedia" :key="item.id"
+                    class="rounded-xl overflow-hidden cursor-pointer group"
+                    :class="item.type === 'image' ? 'aspect-square' : ''"
+                    @click="openLightbox(item)">
+                    <img v-if="item.type === 'image'"
+                      class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-200"
+                      :data-src="item.url"
+                      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                      :alt="profile.display_name"
+                      width="200" height="200" />
+                    <div v-else class="relative bg-black aspect-video flex items-center justify-center">
+                      <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
+                      <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
+                        <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow">
+                          <svg class="w-5 h-5 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template v-else-if="privateMediaCount > 0">
+                <div class="relative">
+                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                    <div v-for="i in Math.min(privateMediaCount, 12)" :key="i"
+                      class="aspect-square rounded-xl overflow-hidden relative select-none">
+                      <div class="absolute inset-0 scale-110"
+                        :style="`background: ${blurGradients[(i - 1) % blurGradients.length]}; filter: blur(10px) brightness(0.65);`" />
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
+                    <p class="font-bold text-white text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
+                    <p class="text-xs text-gray-400 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
+                    <template v-if="!$page.props.auth.user">
+                      <Link :href="route('register')" class="pointer-events-auto bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">Kostenlos testen – 3 Tage gratis</Link>
+                    </template>
+                    <template v-else-if="!hasTrialed">
+                      <button @click="startTrial" :disabled="trialing" class="pointer-events-auto bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}</button>
+                    </template>
+                    <template v-else>
+                      <button @click="subscribe" :disabled="subscribing" class="pointer-events-auto bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}</button>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <div v-else class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── HERO GALLERY ─────────────────────────────────────────────────────── -->
     <div class="bg-[#0f0f0f]">
       <div class="max-w-7xl mx-auto">
@@ -223,104 +312,6 @@
                   <svg class="w-3 h-3 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                 </span>
                 <span class="text-sm text-gray-300">{{ tag }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Media Tabs -->
-          <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl overflow-hidden">
-            <div class="flex border-b border-white/8 px-2 pt-2">
-              <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
-                class="px-5 py-3 text-sm font-semibold transition rounded-t-lg border-b-2 -mb-px"
-                :class="activeTab === tab.key ? 'border-[#e35d8f] text-[#e35d8f] bg-white/3' : 'border-transparent text-gray-500 hover:text-gray-300'">
-                {{ tab.label }} ({{ tab.count }})
-              </button>
-            </div>
-            <div class="p-4">
-              <!-- Public Media -->
-              <div v-if="activeTab === 'public'">
-                <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine Fotos.</div>
-                <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                  <div v-for="item in publicMedia" :key="item.id"
-                    class="aspect-square rounded-xl overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                    <img
-                      class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-200"
-                      :data-src="item.url"
-                      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                      :alt="profile.display_name"
-                      width="200" height="200" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Private Media -->
-              <div v-if="activeTab === 'private'">
-                <template v-if="isOwner || isSubscribed || isTrialing">
-                  <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
-                  <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    <div v-for="item in privateMedia" :key="item.id"
-                      class="rounded-xl overflow-hidden cursor-pointer group"
-                      :class="item.type === 'image' ? 'aspect-square' : ''"
-                      @click="openLightbox(item)">
-                      <img v-if="item.type === 'image'"
-                        class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-200"
-                        :data-src="item.url"
-                        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                        :alt="profile.display_name"
-                        width="200" height="200" />
-                      <div v-else class="relative bg-black aspect-video flex items-center justify-center">
-                        <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
-                          <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow">
-                            <svg class="w-5 h-5 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-
-                <!-- Non-subscriber: blurred preview -->
-                <template v-else-if="privateMediaCount > 0">
-                  <div class="relative">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                      <div v-for="i in Math.min(privateMediaCount, 8)" :key="i"
-                        class="aspect-square rounded-xl overflow-hidden relative select-none">
-                        <div class="absolute inset-0 scale-110"
-                          :style="`background: ${blurGradients[(i - 1) % blurGradients.length]}; filter: blur(10px) brightness(0.65);`" />
-                        <div class="absolute inset-0 flex items-center justify-center">
-                          <svg class="w-7 h-7 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
-                      <p class="font-bold text-white text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
-                      <p class="text-xs text-gray-400 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
-                      <template v-if="!$page.props.auth.user">
-                        <Link :href="route('register')"
-                          class="pointer-events-auto bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          Kostenlos testen – 3 Tage gratis
-                        </Link>
-                      </template>
-                      <template v-else-if="!hasTrialed">
-                        <button @click="startTrial" :disabled="trialing"
-                          class="pointer-events-auto bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          {{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}
-                        </button>
-                      </template>
-                      <template v-else>
-                        <button @click="subscribe" :disabled="subscribing"
-                          class="pointer-events-auto bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          {{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}
-                        </button>
-                      </template>
-                    </div>
-                  </div>
-                </template>
-
-                <div v-else class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
               </div>
             </div>
           </div>
