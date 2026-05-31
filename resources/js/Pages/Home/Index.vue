@@ -172,7 +172,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
-            class="flex rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
+            class="flex h-[220px] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
 
             <!-- Photo -->
             <div class="relative w-[50%] shrink-0 overflow-hidden">
