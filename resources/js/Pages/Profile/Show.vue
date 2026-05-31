@@ -22,69 +22,154 @@
             <!-- Public Media -->
             <div v-if="activeTab === 'public'">
               <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine Fotos.</div>
-              <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                <div v-for="item in publicMedia" :key="item.id"
-                  class="aspect-square rounded-xl overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                  <img
-                    class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-200"
-                    :data-src="item.url"
-                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                    :alt="profile.display_name"
-                    width="200" height="200" />
+              <template v-else>
+                <!-- 1 Bild -->
+                <div v-if="publicMedia.length === 1"
+                  class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
+                  @click="openLightbox(publicMedia[0])">
+                  <img :src="publicMedia[0].url" :alt="profile.display_name"
+                    class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
                 </div>
-              </div>
-            </div>
-            <!-- Private Media -->
-            <div v-if="activeTab === 'private'">
-              <template v-if="isOwner || isSubscribed || isTrialing">
-                <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
-                <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                  <div v-for="item in privateMedia" :key="item.id"
-                    class="rounded-xl overflow-hidden cursor-pointer group"
-                    :class="item.type === 'image' ? 'aspect-square' : ''"
-                    @click="openLightbox(item)">
-                    <img v-if="item.type === 'image'"
-                      class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-200"
-                      :data-src="item.url"
-                      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                      :alt="profile.display_name"
-                      width="200" height="200" />
-                    <div v-else class="relative bg-black aspect-video flex items-center justify-center">
-                      <video :src="item.url" class="w-full h-full object-contain" preload="metadata" />
-                      <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
-                        <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow">
-                          <svg class="w-5 h-5 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
+                <!-- 2 Bilder -->
+                <div v-else-if="publicMedia.length === 2"
+                  class="grid grid-cols-2 gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                  <div v-for="(item, i) in publicMedia.slice(0,2)" :key="item.id"
+                    class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                    <img :src="i===0 ? item.url : undefined" :data-src="i>0 ? item.url : undefined"
+                      :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', i>0?'lazyload':'']"
+                      :alt="profile.display_name" />
+                  </div>
+                </div>
+                <!-- 3–4 Bilder -->
+                <div v-else-if="publicMedia.length <= 4"
+                  class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                  <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(publicMedia[0])">
+                    <img :src="publicMedia[0].url" :alt="profile.display_name"
+                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
+                  </div>
+                  <div class="flex flex-col gap-1 flex-1">
+                    <div v-for="item in publicMedia.slice(1)" :key="item.id"
+                      class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                      <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
+                        :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                    </div>
+                  </div>
+                </div>
+                <!-- 5+ Bilder -->
+                <div v-else class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                  <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(publicMedia[0])">
+                    <img :src="publicMedia[0].url" :alt="profile.display_name"
+                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
+                  </div>
+                  <div class="grid grid-cols-2 gap-1" style="flex:2">
+                    <div v-for="(item, i) in publicMedia.slice(1,5)" :key="item.id"
+                      class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                      <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
+                        :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                      <div v-if="i === 3 && publicMedia.length > 5"
+                        class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
+                        <span class="text-3xl font-black">+{{ publicMedia.length - 5 }}</span>
+                        <span class="text-xs mt-1 opacity-80">weitere</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </template>
+            </div>
+
+            <!-- Private Media -->
+            <div v-if="activeTab === 'private'">
+              <template v-if="isOwner || isSubscribed || isTrialing">
+                <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
+                <template v-else>
+                  <!-- 1 Bild -->
+                  <div v-if="privateMedia.length === 1"
+                    class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
+                    @click="openLightbox(privateMedia[0])">
+                    <img :src="privateMedia[0].url" :alt="profile.display_name"
+                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                  </div>
+                  <!-- 2 Bilder -->
+                  <div v-else-if="privateMedia.length === 2"
+                    class="grid grid-cols-2 gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                    <div v-for="(item, i) in privateMedia.slice(0,2)" :key="item.id"
+                      class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                      <img :src="i===0 ? item.url : undefined" :data-src="i>0 ? item.url : undefined"
+                        :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', i>0?'lazyload':'']"
+                        :alt="profile.display_name" />
+                    </div>
+                  </div>
+                  <!-- 3–4 Bilder -->
+                  <div v-else-if="privateMedia.length <= 4"
+                    class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                    <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(privateMedia[0])">
+                      <img :src="privateMedia[0].url" :alt="profile.display_name"
+                        class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                    </div>
+                    <div class="flex flex-col gap-1 flex-1">
+                      <div v-for="item in privateMedia.slice(1)" :key="item.id"
+                        class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                        <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
+                          :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 5+ Bilder -->
+                  <div v-else class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                    <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(privateMedia[0])">
+                      <img :src="privateMedia[0].url" :alt="profile.display_name"
+                        class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-1" style="flex:2">
+                      <div v-for="(item, i) in privateMedia.slice(1,5)" :key="item.id"
+                        class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
+                        <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
+                          :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                        <div v-if="i === 3 && privateMedia.length > 5"
+                          class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
+                          <span class="text-3xl font-black">+{{ privateMedia.length - 5 }}</span>
+                          <span class="text-xs mt-1 opacity-80">weitere</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </template>
               <template v-else-if="privateMediaCount > 0">
-                <div class="relative">
-                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                    <div v-for="i in Math.min(privateMediaCount, 12)" :key="i"
-                      class="aspect-square rounded-xl overflow-hidden relative select-none">
+                <div class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
+                  <div class="flex gap-1 h-full">
+                    <div class="relative overflow-hidden" style="flex:3">
                       <div class="absolute inset-0 scale-110"
-                        :style="`background: ${blurGradients[(i - 1) % blurGradients.length]}; filter: blur(10px) brightness(0.65);`" />
+                        :style="`background: ${blurGradients[0]}; filter: blur(16px) brightness(0.5);`" />
                       <div class="absolute inset-0 flex items-center justify-center">
-                        <svg class="w-7 h-7 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-10 h-10 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                         </svg>
                       </div>
                     </div>
+                    <div class="grid grid-cols-2 gap-1" style="flex:2">
+                      <div v-for="i in Math.min(privateMediaCount, 4)" :key="i" class="relative overflow-hidden">
+                        <div class="absolute inset-0 scale-110"
+                          :style="`background: ${blurGradients[i % blurGradients.length]}; filter: blur(16px) brightness(0.5);`" />
+                        <div class="absolute inset-0 flex items-center justify-center">
+                          <svg class="w-7 h-7 text-white/60" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="absolute inset-x-0 bottom-0 pt-24 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent flex flex-col items-center pb-4 pointer-events-none">
-                    <p class="font-bold text-white text-sm mb-0.5">{{ privateMediaCount }} private Inhalte</p>
-                    <p class="text-xs text-gray-400 mb-3">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                    <p class="font-bold text-white text-base mb-1">{{ privateMediaCount }} private Inhalte</p>
+                    <p class="text-xs text-gray-300 mb-4">Freischalten für CHF {{ profile.subscription_price_chf }}/Monat</p>
                     <template v-if="!$page.props.auth.user">
-                      <Link :href="route('register')" class="pointer-events-auto bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">Kostenlos testen – 3 Tage gratis</Link>
+                      <Link :href="route('register')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">Kostenlos testen – 3 Tage gratis</Link>
                     </template>
                     <template v-else-if="!hasTrialed">
-                      <button @click="startTrial" :disabled="trialing" class="pointer-events-auto bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}</button>
+                      <button @click="startTrial" :disabled="trialing" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? 'Wird aktiviert…' : '3 Tage gratis testen' }}</button>
                     </template>
                     <template v-else>
-                      <button @click="subscribe" :disabled="subscribing" class="pointer-events-auto bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}</button>
+                      <button @click="subscribe" :disabled="subscribing" class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? 'Weiterleitung…' : `Jetzt abonnieren · CHF ${profile.subscription_price_chf}/Mo` }}</button>
                     </template>
                   </div>
                 </div>
