@@ -162,9 +162,9 @@
         <div class="flex flex-wrap items-center gap-3">
           <h1 class="text-3xl font-black text-white">{{ profile.display_name }}</h1>
           <span v-if="profile.verification_status === 'approved'"
-            class="inline-flex items-center gap-1.5 text-xs bg-green-900/30 text-green-400 border border-green-700/40 px-3 py-1 rounded-full font-semibold">
-            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            Verifiziert
+            class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-500 shrink-0"
+            title="Verifiziert">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           </span>
           <span v-if="profile.category"
             class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-3 py-1 rounded-full font-semibold">
