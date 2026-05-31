@@ -172,22 +172,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
-            class="block rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
+            class="flex rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
 
             <!-- Photo -->
-            <div class="relative aspect-[4/3] overflow-hidden">
+            <div class="relative w-[140px] sm:w-[180px] shrink-0 overflow-hidden">
               <img v-if="profile.public_media?.[0]"
                 class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                 :data-src="profile.public_media[0].url"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 :alt="profile.display_name" />
-              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-4xl">👤</div>
-
-              <!-- Gradient overlay -->
-              <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
+              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
 
               <!-- Badges top-left -->
-              <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+              <div class="absolute top-2 left-2 flex flex-col gap-1">
                 <span v-if="profile.listing_orders?.[0]?.amount_chf > 0"
                   class="bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
                 <span v-if="profile.is_verified"
@@ -198,31 +195,36 @@
                 <span v-if="isNew(profile.created_at)"
                   class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">✦ Neu</span>
               </div>
-
-              <!-- Private badge top-right -->
-              <span v-if="profile.private_media_count > 0"
-                class="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">🔒 Privat</span>
-
-              <!-- Name + age over gradient -->
-              <div class="absolute bottom-0 left-0 right-0 px-3 pb-3">
-                <div class="flex items-end justify-between gap-2">
-                  <h3 class="text-white font-black text-base sm:text-lg group-hover:text-[#e35d8f] transition truncate leading-tight">
-                    {{ profile.display_name }}
-                  </h3>
-                  <span v-if="profile.age" class="shrink-0 text-white/70 text-sm font-medium">{{ profile.age }} J.</span>
-                </div>
-              </div>
             </div>
 
-            <!-- Info strip -->
-            <div class="px-3 py-2.5">
-              <div class="flex items-center gap-2 text-xs text-gray-400 mb-1.5 flex-wrap">
-                <span v-if="profile.city" class="flex items-center gap-1">📍 {{ profile.city?.name }}</span>
-                <span v-if="profile.category" class="text-[#e35d8f] font-medium">{{ profile.category?.name }}</span>
+            <!-- Text rechts -->
+            <div class="p-3 flex-1 min-w-0 flex flex-col justify-between">
+              <div>
+                <!-- Name + Alter -->
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 class="text-white font-bold text-sm sm:text-base group-hover:text-[#e35d8f] transition truncate">
+                    {{ profile.display_name }}
+                  </h3>
+                  <span v-if="profile.age" class="shrink-0 text-gray-400 text-xs">{{ profile.age }} J.</span>
+                </div>
+
+                <!-- Stadt + Kategorie -->
+                <div class="flex items-center gap-2 text-xs mb-2 flex-wrap">
+                  <span v-if="profile.city" class="text-gray-400">📍 {{ profile.city?.name }}</span>
+                  <span v-if="profile.category" class="text-[#e35d8f] font-medium">{{ profile.category?.name }}</span>
+                </div>
+
+                <!-- Teaser -->
+                <p v-if="profile.description" class="text-gray-300 text-xs line-clamp-2 leading-relaxed">
+                  {{ profile.description }}
+                </p>
               </div>
-              <p v-if="profile.description" class="text-gray-300 text-xs line-clamp-1 leading-relaxed">
-                {{ profile.description }}
-              </p>
+
+              <!-- Badges unten -->
+              <div class="flex flex-wrap gap-1 mt-2">
+                <span v-if="profile.private_media_count > 0"
+                  class="bg-white/5 text-gray-400 text-[10px] px-2 py-0.5 rounded-full">🔒 Privat</span>
+              </div>
             </div>
 
           </a>
