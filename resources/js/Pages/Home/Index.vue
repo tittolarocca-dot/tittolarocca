@@ -111,65 +111,120 @@
         <p class="text-lg">Keine Inserate gefunden.</p>
       </div>
 
-      <div v-else class="space-y-3">
-        <!-- TOP AD -->
+      <div v-else class="space-y-4">
+
+        <!-- ── TOP AD ──────────────────────────────────────────────────────── -->
         <a v-if="profiles.data[0]" :href="route('profile.show', profiles.data[0].slug)"
-          class="block bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-xl">
-          <div class="flex">
-            <div class="relative w-28 sm:w-44 md:w-64 shrink-0 h-36 sm:h-44 md:h-52">
+          class="block rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
+          <div class="flex h-[200px] sm:h-[260px] md:h-[300px]">
+
+            <!-- Photo -->
+            <div class="relative w-[160px] sm:w-[220px] md:w-[300px] shrink-0 overflow-hidden">
               <img v-if="profiles.data[0].public_media?.[0]"
                 :src="profiles.data[0].public_media[0].url"
                 :alt="profiles.data[0].display_name"
-                class="w-full h-full object-cover object-top"
-                loading="eager"
-                fetchpriority="high"
-                width="256" height="208" />
+                class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
+                loading="eager" fetchpriority="high" />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-5xl">👤</div>
-              <span class="absolute bottom-2 left-2 bg-[#e35d8f] text-white text-xs font-bold px-2 py-0.5 rounded">TOP AD</span>
+              <span class="absolute top-2 left-2 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
             </div>
-            <div class="p-3 sm:p-5 flex-1 min-w-0">
-              <h2 class="text-base sm:text-xl font-bold text-white group-hover:text-[#e35d8f] transition mb-1 sm:mb-2 truncate">
-                {{ profiles.data[0].display_name }}
-              </h2>
-              <p class="text-white text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3 mb-2 sm:mb-4">{{ profiles.data[0].description }}</p>
-              <div class="flex flex-wrap gap-2 text-xs">
-                <span v-if="profiles.data[0].category" class="text-[#e35d8f]">🏷 {{ profiles.data[0].category?.name }}</span>
-                <span v-if="profiles.data[0].city" class="text-gray-500">📍 {{ profiles.data[0].city?.name }}</span>
-                <span class="hidden sm:inline text-gray-600">📅 {{ formatDate(profiles.data[0].created_at) }}</span>
-                <span class="sm:ml-auto text-[#e35d8f] font-bold text-xs sm:text-sm">CHF {{ profiles.data[0].subscription_price_chf }}/Mo</span>
+
+            <!-- Info -->
+            <div class="p-4 sm:p-6 flex flex-col justify-between flex-1 min-w-0">
+              <div>
+                <!-- Name + Verified -->
+                <div class="flex items-center gap-2 flex-wrap mb-1.5">
+                  <h2 class="text-white font-black text-lg sm:text-2xl group-hover:text-[#e35d8f] transition truncate">
+                    {{ profiles.data[0].display_name }}
+                  </h2>
+                  <span v-if="profiles.data[0].is_verified"
+                    class="flex items-center gap-1 text-green-400 text-xs font-bold bg-green-400/10 px-2 py-0.5 rounded-full">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    Verifiziert
+                  </span>
+                </div>
+
+                <!-- Meta -->
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400 mb-3">
+                  <span v-if="profiles.data[0].age" class="text-white/70">{{ profiles.data[0].age }} J.</span>
+                  <span v-if="profiles.data[0].city">📍 {{ profiles.data[0].city?.name }}</span>
+                  <span v-if="profiles.data[0].category" class="text-[#e35d8f] font-medium">{{ profiles.data[0].category?.name }}</span>
+                </div>
+
+                <!-- Teaser -->
+                <p v-if="profiles.data[0].description" class="text-gray-300 text-sm line-clamp-2 leading-relaxed">
+                  {{ profiles.data[0].description }}
+                </p>
+              </div>
+
+              <!-- Badges -->
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                <span v-if="isNew(profiles.data[0].created_at)"
+                  class="bg-blue-500/15 text-blue-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">✦ Neu</span>
+                <span v-if="profiles.data[0].private_media_count > 0"
+                  class="bg-white/5 text-gray-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">🔒 Private Galerie</span>
               </div>
             </div>
           </div>
         </a>
 
-        <!-- Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- ── GRID: 2 Spalten Desktop, 1 Spalte Mobile ───────────────────── -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a v-for="profile in profiles.data.slice(1)" :key="profile.id"
             :href="route('profile.show', profile.slug)"
-            class="flex bg-[#1a1a1a] border border-white/8 rounded-xl overflow-hidden hover:border-[#e35d8f]/60 transition group shadow-lg">
-            <div class="w-[130px] h-[175px] sm:w-[309px] sm:h-[335px] shrink-0">
+            class="block rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
+
+            <!-- Photo -->
+            <div class="relative aspect-[4/3] overflow-hidden">
               <img v-if="profile.public_media?.[0]"
-                class="lazyload w-full h-full object-cover object-top"
+                class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                 :data-src="profile.public_media[0].url"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                :alt="profile.display_name"
-                width="251" height="335" />
-              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
-            </div>
-            <div class="p-3 flex-1 min-w-0">
-              <div v-if="profile.listing_orders?.[0]?.amount_chf > 0" class="flex items-center gap-2 mb-1">
-                <span class="text-[#e35d8f] text-xs font-bold uppercase tracking-wide">Premium</span>
+                :alt="profile.display_name" />
+              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-4xl">👤</div>
+
+              <!-- Gradient overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
+
+              <!-- Badges top-left -->
+              <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+                <span v-if="profile.listing_orders?.[0]?.amount_chf > 0"
+                  class="bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
+                <span v-if="profile.is_verified"
+                  class="flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  Verifiziert
+                </span>
+                <span v-if="isNew(profile.created_at)"
+                  class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">✦ Neu</span>
               </div>
-              <h3 class="text-white text-sm font-bold group-hover:text-[#e35d8f] transition truncate mb-1">
-                {{ profile.display_name }}
-              </h3>
-              <p class="text-white text-sm line-clamp-2 leading-relaxed">{{ profile.description }}</p>
-              <div class="flex items-center gap-2 mt-1.5 text-xs text-gray-600 flex-wrap">
-                <span v-if="profile.category">🏷 {{ profile.category?.name }}</span>
-                <span v-if="profile.city">📍 {{ profile.city?.name }}</span>
-                <span class="hidden sm:inline ml-auto">📅 {{ formatDate(profile.created_at) }}</span>
+
+              <!-- Private badge top-right -->
+              <span v-if="profile.private_media_count > 0"
+                class="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">🔒 Privat</span>
+
+              <!-- Name + age over gradient -->
+              <div class="absolute bottom-0 left-0 right-0 px-3 pb-3">
+                <div class="flex items-end justify-between gap-2">
+                  <h3 class="text-white font-black text-base sm:text-lg group-hover:text-[#e35d8f] transition truncate leading-tight">
+                    {{ profile.display_name }}
+                  </h3>
+                  <span v-if="profile.age" class="shrink-0 text-white/70 text-sm font-medium">{{ profile.age }} J.</span>
+                </div>
               </div>
             </div>
+
+            <!-- Info strip -->
+            <div class="px-3 py-2.5">
+              <div class="flex items-center gap-2 text-xs text-gray-400 mb-1.5 flex-wrap">
+                <span v-if="profile.city" class="flex items-center gap-1">📍 {{ profile.city?.name }}</span>
+                <span v-if="profile.category" class="text-[#e35d8f] font-medium">{{ profile.category?.name }}</span>
+              </div>
+              <p v-if="profile.description" class="text-gray-300 text-xs line-clamp-1 leading-relaxed">
+                {{ profile.description }}
+              </p>
+            </div>
+
           </a>
         </div>
       </div>
@@ -213,10 +268,9 @@ const filters = ref({
   search:   props.activeSearch ?? '',
 });
 
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+function isNew(iso) {
+  if (!iso) return false;
+  return (Date.now() - new Date(iso).getTime()) < 14 * 24 * 60 * 60 * 1000;
 }
 
 function applyFilters() {
