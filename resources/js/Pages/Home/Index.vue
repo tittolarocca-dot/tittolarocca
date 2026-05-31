@@ -175,7 +175,7 @@
             class="flex rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8 hover:border-[#e35d8f]/50 hover:shadow-xl hover:shadow-[#e35d8f]/10 transition-all duration-300 group">
 
             <!-- Photo -->
-            <div class="relative w-[140px] sm:w-[180px] shrink-0 overflow-hidden">
+            <div class="relative w-[50%] shrink-0 overflow-hidden">
               <img v-if="profile.public_media?.[0]"
                 class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                 :data-src="profile.public_media[0].url"
