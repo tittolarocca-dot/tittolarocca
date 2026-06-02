@@ -450,13 +450,29 @@
           </div>
 
           <!-- Profil teilen -->
-          <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+          <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 space-y-2">
             <button @click="shareProfile"
               class="flex items-center justify-center gap-2.5 w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#e35d8f]/50 text-white text-sm font-bold px-4 py-3.5 rounded-xl transition">
               <svg class="w-5 h-5 shrink-0 text-[#e35d8f]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
               Profil teilen
             </button>
             <p v-if="shareCopied" class="text-center text-xs text-green-400 mt-2">✓ Link kopiert!</p>
+
+            <!-- Favorit -->
+            <template v-if="$page.props.auth.user">
+              <form :action="route('konto.favorites.toggle', profile.slug)" method="POST" @submit.prevent="toggleFavorite">
+                <button type="submit"
+                  class="flex items-center justify-center gap-2.5 w-full border text-sm font-bold px-4 py-3.5 rounded-xl transition"
+                  :class="favorited
+                    ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
+                    : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
+                  <svg class="w-5 h-5 shrink-0" :fill="favorited ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
+                  </svg>
+                  {{ favorited ? 'Gespeichert' : 'Als Favorit speichern' }}
+                </button>
+              </form>
+            </template>
           </div>
 
           <!-- Address -->
@@ -608,11 +624,13 @@ const props = defineProps({
   hasTrialed:          { type: Boolean, default: false },
   hasSubscriptionOffer:{ type: Boolean, default: false },
   hasReviewed:         { type: Boolean, default: false },
+  isFavorited:         { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
   privateMediaCount:   { type: Number,  default: 0 },
 });
 
 const activeTab        = ref('public');
+const favorited        = ref(props.isFavorited);
 const subscribing      = ref(false);
 const trialing         = ref(false);
 const submittingReview = ref(false);
@@ -675,6 +693,13 @@ function submitReply(reviewId) {
   router.post(route('inserat.review.reply', reviewId), { reply: replyText.value }, {
     preserveScroll: true,
     onSuccess: () => { replyTarget.value = null; replyText.value = ''; },
+  });
+}
+
+function toggleFavorite() {
+  router.post(route('konto.favorites.toggle', props.profile.slug), {}, {
+    preserveScroll: true,
+    onSuccess: () => { favorited.value = !favorited.value; },
   });
 }
 

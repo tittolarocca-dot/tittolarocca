@@ -52,6 +52,34 @@
         </div>
       </div>
 
+      <!-- Meine Favoriten -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
+            </svg>
+            <h2 class="font-semibold text-gray-900">Meine Favoriten</h2>
+            <span v-if="favoritesCount > 0" class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] font-bold px-2 py-0.5 rounded-full">{{ favoritesCount }}</span>
+          </div>
+          <Link :href="route('konto.favorites')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
+        </div>
+
+        <div v-if="favoritesCount === 0" class="text-center py-8 text-gray-400">
+          <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
+          </svg>
+          <p class="text-sm">Noch keine Favoriten gespeichert.</p>
+          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
+            Jetzt Profile entdecken →
+          </Link>
+        </div>
+        <div v-else class="text-sm text-gray-500">
+          Du hast <span class="font-semibold text-gray-800">{{ favoritesCount }}</span> {{ favoritesCount === 1 ? 'Inserat' : 'Inserate' }} als Favorit gespeichert.
+          <Link :href="route('konto.favorites')" class="text-[#e35d8f] hover:underline ml-1">Alle anzeigen →</Link>
+        </div>
+      </div>
+
       <!-- Hinweis: Wie funktioniert es? -->
       <div class="mt-6 bg-gray-50 rounded-xl border border-gray-200 p-5">
         <h3 class="font-semibold text-gray-900 text-sm mb-3">So funktioniert es</h3>
@@ -88,11 +116,15 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
-defineProps({ subscriptions: { type: Array, default: () => [] } });
+const props = defineProps({
+  subscriptions:  { type: Array,  default: () => [] },
+  favoritesCount: { type: Number, default: 0 },
+});
 
 const actions = [
   { icon: '🔍', label: 'Profile entdecken', desc: 'Kostenlos stöbern',        href: route('home') },
   { icon: '💫', label: 'Meine Abonnements', desc: 'Aktive Abos verwalten',     href: route('konto.subscriptions') },
   { icon: '💬', label: 'Nachrichten',        desc: 'Konversationen ansehen',    href: route('konto.messages') },
+  { icon: '❤️', label: 'Meine Favoriten',    desc: 'Gespeicherte Inserate',     href: route('konto.favorites') },
 ];
 </script>

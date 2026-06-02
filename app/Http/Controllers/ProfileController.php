@@ -85,6 +85,7 @@ class ProfileController extends Controller
             'hasTrialed'          => $hasTrialed,
             'hasSubscriptionOffer'=> $profile->subscription_price_chf > 0,
             'hasReviewed'         => $user ? \App\Models\Review::where('reviewer_user_id', $user->id)->where('profile_id', $profile->id)->exists() : false,
+            'isFavorited'         => $user ? $user->favorites()->where('profile_id', $profile->id)->exists() : false,
             'subscribed'          => $request->query('subscribed') === '1',
         ]);
     }

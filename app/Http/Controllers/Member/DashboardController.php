@@ -26,8 +26,11 @@ class DashboardController extends Controller
                 ],
             ]);
 
+        $favoritesCount = $user->favorites()->count();
+
         return inertia('Member/Dashboard', [
-            'subscriptions' => $subscriptions,
+            'subscriptions'  => $subscriptions,
+            'favoritesCount' => $favoritesCount,
         ]);
     }
 }

@@ -74,6 +74,8 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::get('/nachrichten/{userId}/verlauf',            [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::post('/nachrichten/{message}/ppv-kaufen',       [\App\Http\Controllers\Member\MessageController::class, 'ppvCheckout'])->name('messages.ppv.checkout');
     Route::post('/bewertung/{profile:slug}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
+    Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
 });
 
 // ── Stripe Webhooks ───────────────────────────────────────────────────────────
