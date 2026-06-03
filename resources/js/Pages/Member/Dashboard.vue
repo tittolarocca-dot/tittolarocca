@@ -9,64 +9,65 @@
       </div>
 
       <!-- Schnellzugriff -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         <Link v-for="action in actions" :key="action.label" :href="action.href"
-          class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 hover:border-[#e35d8f]/40 transition group shadow-sm">
-          <span class="text-3xl">{{ action.icon }}</span>
+          class="bg-[#1a1a1a] rounded-xl border border-white/8 p-4 flex items-center gap-3 hover:border-[#e35d8f]/40 transition group">
+          <span class="text-2xl">{{ action.icon }}</span>
           <div>
-            <p class="text-sm font-semibold text-gray-800 group-hover:text-[#e35d8f] transition">{{ action.label }}</p>
+            <p class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition">{{ action.label }}</p>
             <p class="text-xs text-gray-500 mt-0.5">{{ action.desc }}</p>
           </div>
         </Link>
       </div>
 
-      <!-- Aktive Abonnements Vorschau -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <!-- Meine Abonnements -->
+      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6 mb-5">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-semibold text-gray-900">Meine Abonnements</h2>
+          <h2 class="font-semibold text-white">Meine Abonnements</h2>
           <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
         </div>
 
-        <div v-if="subscriptions.length === 0" class="text-center py-10 text-gray-400">
-          <div class="text-4xl mb-3">💫</div>
+        <div v-if="subscriptions.length === 0" class="text-center py-8 text-gray-500">
+          <div class="text-3xl mb-2">💫</div>
           <p class="text-sm">Du hast noch keine Abonnements.</p>
-          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-2 inline-block">
+          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
             Jetzt Profile entdecken →
           </Link>
         </div>
 
-        <div v-else class="space-y-3">
-          <div v-for="sub in subscriptions.slice(0,3)" :key="sub.id"
-            class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-            <Link :href="route('profile.show', sub.profile.slug)"
-              class="font-semibold text-gray-900 hover:text-[#e35d8f] transition text-sm">
-              {{ sub.profile.display_name }}
-            </Link>
-            <div class="text-right">
-              <p class="text-xs font-bold text-gray-900">CHF {{ sub.amount_chf }}/Mo</p>
-              <span class="text-xs" :class="sub.status === 'active' ? 'text-green-600' : 'text-yellow-600'">
-                {{ sub.status === 'active' ? 'Aktiv' : 'Inaktiv' }}
-              </span>
+        <div v-else class="space-y-2">
+          <Link v-for="sub in subscriptions.slice(0,5)" :key="sub.id"
+            :href="route('profile.show', sub.profile.slug)"
+            class="flex items-center justify-between px-4 py-3 rounded-xl bg-white/4 hover:bg-white/7 border border-white/6 hover:border-[#e35d8f]/30 transition group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {{ sub.profile.display_name.charAt(0).toUpperCase() }}
+              </div>
+              <span class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition">{{ sub.profile.display_name }}</span>
             </div>
-          </div>
+            <div class="text-right">
+              <p class="text-xs font-bold text-gray-300">CHF {{ sub.amount_chf }}/Mo</p>
+              <span class="text-xs text-green-400">Aktiv</span>
+            </div>
+          </Link>
         </div>
       </div>
 
       <!-- Meine Favoriten -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mt-6">
+      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
             </svg>
             <h2 class="font-semibold text-white">Meine Favoriten</h2>
-            <span v-if="favoritesCount > 0" class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] font-bold px-2 py-0.5 rounded-full">{{ favoritesCount }}</span>
+            <span v-if="favoritesCount > 0" class="text-xs bg-[#e35d8f]/15 text-[#e35d8f] font-bold px-2 py-0.5 rounded-full">{{ favoritesCount }}</span>
           </div>
           <Link :href="route('konto.favorites')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
         </div>
 
-        <div v-if="favoritesCount === 0" class="text-center py-8 text-gray-400">
-          <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <div v-if="favoritesPreview.length === 0" class="text-center py-8 text-gray-500">
+          <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
           </svg>
           <p class="text-sm">Noch keine Favoriten gespeichert.</p>
@@ -74,37 +75,34 @@
             Jetzt Profile entdecken →
           </Link>
         </div>
-        <div v-else class="text-sm text-gray-500">
-          Du hast <span class="font-semibold text-gray-800">{{ favoritesCount }}</span> {{ favoritesCount === 1 ? 'Inserat' : 'Inserate' }} als Favorit gespeichert.
-          <Link :href="route('konto.favorites')" class="text-[#e35d8f] hover:underline ml-1">Alle anzeigen →</Link>
-        </div>
-      </div>
 
-      <!-- Hinweis: Wie funktioniert es? -->
-      <div class="mt-6 bg-gray-50 rounded-xl border border-gray-200 p-5">
-        <h3 class="font-semibold text-gray-900 text-sm mb-3">So funktioniert es</h3>
-        <div class="grid sm:grid-cols-3 gap-4 text-xs text-gray-600">
-          <div class="flex gap-3">
-            <span class="text-xl shrink-0">🔍</span>
-            <div>
-              <p class="font-semibold text-gray-800 mb-0.5">Profile kostenlos ansehen</p>
-              <p>Alle öffentlichen Inserate sind gratis zugänglich – ohne Abo.</p>
+        <div v-else class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Link v-for="item in favoritesPreview" :key="item.slug"
+            :href="route('profile.show', item.slug)"
+            class="group block rounded-xl overflow-hidden border border-white/8 hover:border-[#e35d8f]/40 transition">
+            <div class="aspect-[3/4] relative overflow-hidden bg-[#111]">
+              <img v-if="item.cover_url" :src="item.cover_url" :alt="item.display_name"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
+              <div v-else class="w-full h-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="flex gap-3">
-            <span class="text-xl shrink-0">🔒</span>
-            <div>
-              <p class="font-semibold text-gray-800 mb-0.5">Exklusive Inhalte freischalten</p>
-              <p>Abonniere ein Profil für CHF X/Monat, um private Fotos & Videos zu sehen.</p>
+            <div class="px-2 py-2 flex items-center gap-1">
+              <span class="text-xs font-semibold text-white truncate group-hover:text-[#e35d8f] transition">{{ item.display_name }}</span>
+              <span v-if="item.verification_status === 'approved'"
+                class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-green-500 shrink-0">
+                <svg class="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </span>
             </div>
-          </div>
-          <div class="flex gap-3">
-            <span class="text-xl shrink-0">💬</span>
-            <div>
-              <p class="font-semibold text-gray-800 mb-0.5">Direkt Schreiben</p>
-              <p>Als Abonnent kannst du der Person direkt Nachrichten senden.</p>
-            </div>
-          </div>
+          </Link>
+          <Link v-if="favoritesCount > 4" :href="route('konto.favorites')"
+            class="flex items-center justify-center rounded-xl border border-dashed border-white/15 text-gray-500 hover:text-[#e35d8f] hover:border-[#e35d8f]/40 transition text-sm font-semibold aspect-[3/4]">
+            +{{ favoritesCount - 4 }} mehr
+          </Link>
         </div>
       </div>
 
@@ -113,18 +111,19 @@
 </template>
 
 <script setup>
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
-  subscriptions:  { type: Array,  default: () => [] },
-  favoritesCount: { type: Number, default: 0 },
+  subscriptions:    { type: Array,  default: () => [] },
+  favoritesPreview: { type: Array,  default: () => [] },
+  favoritesCount:   { type: Number, default: 0 },
 });
 
 const actions = [
-  { icon: '🔍', label: 'Profile entdecken', desc: 'Kostenlos stöbern',        href: route('home') },
-  { icon: '💫', label: 'Meine Abonnements', desc: 'Aktive Abos verwalten',     href: route('konto.subscriptions') },
-  { icon: '💬', label: 'Nachrichten',        desc: 'Konversationen ansehen',    href: route('konto.messages') },
-  { icon: '❤️', label: 'Meine Favoriten',    desc: 'Gespeicherte Inserate',     href: route('konto.favorites') },
+  { icon: '🔍', label: 'Profile entdecken', desc: 'Kostenlos stöbern',     href: route('home') },
+  { icon: '💫', label: 'Abonnements',        desc: 'Aktive Abos verwalten', href: route('konto.subscriptions') },
+  { icon: '💬', label: 'Nachrichten',         desc: 'Konversationen',        href: route('konto.messages') },
+  { icon: '❤️', label: 'Meine Favoriten',     desc: 'Gespeicherte Inserate', href: route('konto.favorites') },
 ];
 </script>

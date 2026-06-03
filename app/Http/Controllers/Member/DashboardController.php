@@ -26,11 +26,23 @@ class DashboardController extends Controller
                 ],
             ]);
 
-        $favoritesCount = $user->favorites()->count();
+        $favoritesPreview = $user->favorites()
+            ->where('status', 'active')
+            ->with(['publicMedia' => fn($q) => $q->where('type', 'image')->orderBy('sort_order')])
+            ->latest('favorites.created_at')
+            ->limit(4)
+            ->get()
+            ->map(fn($p) => [
+                'slug'                => $p->slug,
+                'display_name'        => $p->display_name,
+                'cover_url'           => $p->publicMedia->first()?->url,
+                'verification_status' => $p->verification_status,
+            ]);
 
         return inertia('Member/Dashboard', [
-            'subscriptions'  => $subscriptions,
-            'favoritesCount' => $favoritesCount,
+            'subscriptions'    => $subscriptions,
+            'favoritesPreview' => $favoritesPreview,
+            'favoritesCount'   => $user->favorites()->count(),
         ]);
     }
 }
