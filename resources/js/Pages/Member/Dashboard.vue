@@ -4,8 +4,8 @@
     <div class="max-w-4xl mx-auto px-4 py-8">
 
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Willkommen, {{ $page.props.auth.user.name }}</h1>
-        <p class="text-gray-500 text-sm mt-1">Dein Mitglieder-Bereich – Profile abonnieren & exklusive Inhalte freischalten</p>
+        <h1 class="text-2xl font-bold text-white">Willkommen, {{ $page.props.auth.user.name }}</h1>
+        <p class="text-gray-400 text-sm mt-1">Dein Mitglieder-Bereich – Profile abonnieren & exklusive Inhalte freischalten</p>
       </div>
 
       <!-- Schnellzugriff -->
