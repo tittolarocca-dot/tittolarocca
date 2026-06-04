@@ -48,7 +48,8 @@ class DatabaseSeeder extends Seeder
         // Tags / Leistungen
         $tags = ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
                  'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
-                 'AO', 'Französisch', 'Anal', 'Safe Sex'];
+                 'AO', 'Französisch', 'Anal', 'Safe Sex',
+                 'Ich bin besuchbar', 'Ich komme zu dir', 'Begleitservice'];
         foreach ($tags as $tag) {
             Tag::create(['name' => $tag, 'slug' => \Illuminate\Support\Str::slug($tag)]);
         }
