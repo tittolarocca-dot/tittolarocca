@@ -37,8 +37,8 @@ class HomeController extends Controller
         }
 
         if ($age) {
-            if ($age === '60+') {
-                $q->where('age', '>=', 60);
+            if (preg_match('/^(\d+)\+$/', $age, $m)) {
+                $q->where('age', '>=', (int) $m[1]);
             } elseif (preg_match('/^(\d+)-(\d+)$/', $age, $m)) {
                 $q->whereBetween('age', [(int) $m[1], (int) $m[2]]);
             }
