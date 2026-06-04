@@ -8,19 +8,27 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $newTags = ['Ich bin besuchbar', 'Ich komme zu dir', 'Begleitservice'];
+        $maxSort = DB::table('categories')->max('sort_order') ?? 0;
 
-        foreach ($newTags as $name) {
+        $newCategories = ['Ich bin besuchbar', 'Ich komme zu dir', 'Begleitservice'];
+
+        foreach ($newCategories as $i => $name) {
             $slug = Str::slug($name);
-            if (!DB::table('tags')->where('slug', $slug)->exists()) {
-                DB::table('tags')->insert(['name' => $name, 'slug' => $slug]);
+            if (!DB::table('categories')->where('slug', $slug)->exists()) {
+                DB::table('categories')->insert([
+                    'name'       => $name,
+                    'slug'       => $slug,
+                    'parent_id'  => null,
+                    'is_active'  => true,
+                    'sort_order' => $maxSort + $i + 1,
+                ]);
             }
         }
     }
 
     public function down(): void
     {
-        DB::table('tags')->whereIn('slug', [
+        DB::table('categories')->whereIn('slug', [
             'ich-bin-besuchbar',
             'ich-komme-zu-dir',
             'begleitservice',

@@ -34,12 +34,15 @@ class DatabaseSeeder extends Seeder
 
         // Kategorien
         $categories = [
-            ['name' => 'Escort',   'slug' => 'escort'],
-            ['name' => 'Massage',  'slug' => 'massage'],
-            ['name' => 'Trans/TS', 'slug' => 'trans-ts'],
-            ['name' => 'Männer',   'slug' => 'maenner'],
-            ['name' => 'Paare',    'slug' => 'paare'],
-            ['name' => 'Domina',   'slug' => 'domina'],
+            ['name' => 'Escort',              'slug' => 'escort'],
+            ['name' => 'Massage',             'slug' => 'massage'],
+            ['name' => 'Trans/TS',            'slug' => 'trans-ts'],
+            ['name' => 'Männer',              'slug' => 'maenner'],
+            ['name' => 'Paare',               'slug' => 'paare'],
+            ['name' => 'Domina',              'slug' => 'domina'],
+            ['name' => 'Ich bin besuchbar',   'slug' => 'ich-bin-besuchbar'],
+            ['name' => 'Ich komme zu dir',    'slug' => 'ich-komme-zu-dir'],
+            ['name' => 'Begleitservice',      'slug' => 'begleitservice'],
         ];
         foreach ($categories as $i => $cat) {
             Category::create(array_merge($cat, ['sort_order' => $i]));
@@ -48,8 +51,7 @@ class DatabaseSeeder extends Seeder
         // Tags / Leistungen
         $tags = ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
                  'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
-                 'AO', 'Französisch', 'Anal', 'Safe Sex',
-                 'Ich bin besuchbar', 'Ich komme zu dir', 'Begleitservice'];
+                 'AO', 'Französisch', 'Anal', 'Safe Sex'];
         foreach ($tags as $tag) {
             Tag::create(['name' => $tag, 'slug' => \Illuminate\Support\Str::slug($tag)]);
         }
