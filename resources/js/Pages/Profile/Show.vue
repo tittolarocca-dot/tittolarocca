@@ -13,8 +13,8 @@
         <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl overflow-hidden">
           <div class="flex border-b border-white/8 px-2 pt-2">
             <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
-              class="px-5 py-3 text-sm font-semibold transition rounded-t-lg border-b-2 -mb-px"
-              :class="activeTab === tab.key ? 'border-[#e35d8f] text-[#e35d8f] bg-white/3' : 'border-transparent text-gray-500 hover:text-gray-300'">
+              class="px-5 py-3 text-[20px] font-black transition rounded-t-lg border-b-2 -mb-px"
+              :class="activeTab === tab.key ? 'border-[#e35d8f] text-white bg-white/3' : 'border-transparent text-white/40 hover:text-white'">
               {{ tab.label }} ({{ tab.count }})
             </button>
           </div>
