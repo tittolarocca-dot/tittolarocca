@@ -7,10 +7,13 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProfilesTable
 {
@@ -59,7 +62,15 @@ class ProfilesTable
                 TextColumn::make('listing_expires_at')
                     ->label('Läuft ab')
                     ->date('d.m.Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->color(fn (Profile $record) =>
+                        $record->listing_expires_at && $record->listing_expires_at->isPast()
+                            ? 'danger' : null
+                    )
+                    ->description(fn (Profile $record) =>
+                        $record->listing_expires_at && $record->listing_expires_at->isPast()
+                            ? '⚠ Inserat abgelaufen' : null
+                    ),
                 TextColumn::make('total_subscribers')
                     ->label('Abos')
                     ->numeric()
@@ -87,8 +98,41 @@ class ProfilesTable
                         'approved'   => 'Verifiziert',
                         'rejected'   => 'Abgelehnt',
                     ]),
+                Filter::make('listing_expired')
+                    ->label('Inserat abgelaufen')
+                    ->query(fn (Builder $query) => $query->where(
+                        fn ($q) => $q->whereNull('listing_expires_at')
+                                     ->orWhere('listing_expires_at', '<=', now())
+                    )),
             ])
             ->recordActions([
+                Action::make('reactivate')
+                    ->label('Reaktivieren')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->form([
+                        Select::make('days')
+                            ->label('Verlängerung um')
+                            ->options([
+                                7  => '7 Tage',
+                                14 => '14 Tage',
+                                30 => '30 Tage',
+                                60 => '60 Tage',
+                                90 => '90 Tage',
+                            ])
+                            ->default(30)
+                            ->required(),
+                    ])
+                    ->modalHeading('Inserat reaktivieren')
+                    ->modalDescription('Das Ablaufdatum wird ab heute verlängert.')
+                    ->action(fn (Profile $record, array $data) => $record->update([
+                        'listing_expires_at' => now()->addDays((int) $data['days']),
+                        'status'             => 'active',
+                    ]))
+                    ->visible(fn (Profile $record) =>
+                        ! $record->listing_expires_at || $record->listing_expires_at->isPast()
+                    ),
+
                 Action::make('viewPhoto')
                     ->label('Foto ansehen')
                     ->icon('heroicon-o-photo')
