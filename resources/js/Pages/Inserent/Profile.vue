@@ -132,6 +132,11 @@
             placeholder="z.B. Bahnhofstrasse 12, 8001 Zürich" :error="form.errors.address"
             hint="Wird auf Google Maps verlinkt – nur eingeben wenn du Besucherinnen empfängst" />
 
+          <InputField id="website" label="Webseite"
+            v-model="form.website"
+            placeholder="https://www.deinewebseite.ch" :error="form.errors.website"
+            hint="Wird als Button auf deinem Profil angezeigt" />
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Abo-Preis (CHF/Monat) <span class="text-[#e35d8f]">*</span>
@@ -194,6 +199,7 @@ const form = useForm({
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',
   address:                props.profile?.address                ?? '',
+  website:                props.profile?.website                ?? '',
   subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
   tag_ids:                props.profile?.tag_ids                ?? [],
 });

@@ -9,7 +9,7 @@ class Profile extends Model
     protected $fillable = [
         'user_id', 'slug', 'display_name', 'description',
         'city_id', 'category_id', 'age',
-        'whatsapp_number_encrypted', 'telegram_username', 'address',
+        'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',

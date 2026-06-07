@@ -70,6 +70,7 @@ class ProfileController extends Controller
                 'whatsapp_number'        => $profile->whatsapp_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
+                'website'                => $profile->website,
                 'created_at'             => $profile->created_at->format('d.m.Y'),
                 'verification_status'    => $profile->verification_status,
             ],

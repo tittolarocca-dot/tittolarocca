@@ -29,6 +29,7 @@ class ProfileController extends Controller
                 'whatsapp_number'        => $profile->whatsapp_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
+                'website'                => $profile->website,
                 'subscription_price_chf' => $profile->subscription_price_chf,
                 'tag_ids'                => $profile->tags->pluck('id'),
                 'status'                 => $profile->status,
@@ -60,6 +61,7 @@ class ProfileController extends Controller
             'subscription_price_chf' => $data['subscription_price_chf'],
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
+            'website'                => $data['website'] ?? null,
             'status'                 => 'draft',
         ]);
 
@@ -100,6 +102,7 @@ class ProfileController extends Controller
             'subscription_price_chf' => $data['subscription_price_chf'],
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
+            'website'                => $data['website'] ?? null,
         ]);
 
         if (isset($data['whatsapp_number'])) {
@@ -179,6 +182,7 @@ class ProfileController extends Controller
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
             'telegram_username'      => ['nullable', 'string', 'max:100'],
             'address'                => ['nullable', 'string', 'max:255'],
+            'website'                => ['nullable', 'url', 'max:255'],
             'subscription_price_chf' => ['required', 'numeric', 'min:9', 'max:999'],
             'tag_ids'                => ['nullable', 'array'],
             'tag_ids.*'              => ['exists:tags,id'],

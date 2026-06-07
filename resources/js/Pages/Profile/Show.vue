@@ -440,6 +440,17 @@
               <svg class="w-5 h-5 shrink-0 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
               Ruf mich an · {{ profile.whatsapp_number }}
             </a>
+
+            <!-- Webseite -->
+            <a v-if="profile.website"
+              :href="profile.website"
+              target="_blank" rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2.5 w-full bg-[#1a1a1a] hover:bg-white/5 border border-white/15 hover:border-[#e35d8f]/60 text-white text-sm font-bold px-4 py-3.5 rounded-xl transition">
+              <svg class="w-5 h-5 shrink-0 text-[#e35d8f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+              </svg>
+              Webseite besuchen
+            </a>
             <a v-if="profile.telegram_username"
               :href="`https://t.me/${profile.telegram_username.replace('@','')}`"
               target="_blank"
