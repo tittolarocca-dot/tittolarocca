@@ -20,41 +20,8 @@
         </Link>
       </div>
 
-      <!-- Meine Abonnements -->
-      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6 mb-5">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-semibold text-white">Meine Abonnements</h2>
-          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
-        </div>
-
-        <div v-if="subscriptions.length === 0" class="text-center py-8 text-gray-500">
-          <div class="text-3xl mb-2">💫</div>
-          <p class="text-sm">Du hast noch keine Abonnements.</p>
-          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
-            Jetzt Profile entdecken →
-          </Link>
-        </div>
-
-        <div v-else class="space-y-2">
-          <Link v-for="sub in subscriptions.slice(0,5)" :key="sub.id"
-            :href="route('profile.show', sub.profile.slug)"
-            class="flex items-center justify-between px-4 py-3 rounded-xl bg-white/4 hover:bg-white/7 border border-white/6 hover:border-[#e35d8f]/30 transition group">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold shrink-0">
-                {{ sub.profile.display_name.charAt(0).toUpperCase() }}
-              </div>
-              <span class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition">{{ sub.profile.display_name }}</span>
-            </div>
-            <div class="text-right">
-              <p class="text-xs font-bold text-gray-300">CHF {{ sub.amount_chf }}/Mo</p>
-              <span class="text-xs text-green-400">Aktiv</span>
-            </div>
-          </Link>
-        </div>
-      </div>
-
       <!-- Meine Favoriten -->
-      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6">
+      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6 mb-5">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
@@ -102,6 +69,39 @@
           <Link v-if="favoritesCount > 4" :href="route('konto.favorites')"
             class="flex items-center justify-center rounded-xl border border-dashed border-white/15 text-gray-500 hover:text-[#e35d8f] hover:border-[#e35d8f]/40 transition text-sm font-semibold aspect-[3/4]">
             +{{ favoritesCount - 4 }} mehr
+          </Link>
+        </div>
+      </div>
+
+      <!-- Meine Abonnements -->
+      <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6 mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-white">Meine Abonnements</h2>
+          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
+        </div>
+
+        <div v-if="subscriptions.length === 0" class="text-center py-8 text-gray-500">
+          <div class="text-3xl mb-2">💫</div>
+          <p class="text-sm">Du hast noch keine Abonnements.</p>
+          <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
+            Jetzt Profile entdecken →
+          </Link>
+        </div>
+
+        <div v-else class="space-y-2">
+          <Link v-for="sub in subscriptions.slice(0,5)" :key="sub.id"
+            :href="route('profile.show', sub.profile.slug)"
+            class="flex items-center justify-between px-4 py-3 rounded-xl bg-white/4 hover:bg-white/7 border border-white/6 hover:border-[#e35d8f]/30 transition group">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {{ sub.profile.display_name.charAt(0).toUpperCase() }}
+              </div>
+              <span class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition">{{ sub.profile.display_name }}</span>
+            </div>
+            <div class="text-right">
+              <p class="text-xs font-bold text-gray-300">CHF {{ sub.amount_chf }}/Mo</p>
+              <span class="text-xs text-green-400">Aktiv</span>
+            </div>
           </Link>
         </div>
       </div>
