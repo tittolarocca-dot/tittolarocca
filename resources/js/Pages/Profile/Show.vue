@@ -23,49 +23,42 @@
             <div v-if="activeTab === 'public'">
               <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine Fotos.</div>
               <template v-else>
-                <!-- 1 Bild -->
+                <!-- 1 item -->
                 <div v-if="publicMedia.length === 1"
                   class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
                   @click="openLightbox(publicMedia[0])">
-                  <img :src="publicMedia[0].url" :alt="profile.display_name"
-                    class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
+                  <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                 </div>
-                <!-- 2 Bilder -->
+                <!-- 2 items -->
                 <div v-else-if="publicMedia.length === 2"
                   class="grid grid-cols-2 gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                   <div v-for="(item, i) in publicMedia.slice(0,2)" :key="item.id"
                     class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                    <img :src="i===0 ? item.url : undefined" :data-src="i>0 ? item.url : undefined"
-                      :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', i>0?'lazyload':'']"
-                      :alt="profile.display_name" />
+                    <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
                   </div>
                 </div>
-                <!-- 3–4 Bilder -->
+                <!-- 3–4 items -->
                 <div v-else-if="publicMedia.length <= 4"
                   class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                   <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(publicMedia[0])">
-                    <img :src="publicMedia[0].url" :alt="profile.display_name"
-                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
+                    <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
                   <div class="flex flex-col gap-1 flex-1">
                     <div v-for="item in publicMedia.slice(1)" :key="item.id"
                       class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
-                        :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                      <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
                     </div>
                   </div>
                 </div>
-                <!-- 5+ Bilder -->
+                <!-- 5+ items -->
                 <div v-else class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                   <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(publicMedia[0])">
-                    <img :src="publicMedia[0].url" :alt="profile.display_name"
-                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" loading="eager" />
+                    <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
                   <div class="grid grid-cols-2 gap-1" style="flex:2">
                     <div v-for="(item, i) in publicMedia.slice(1,5)" :key="item.id"
                       class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
-                        :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                      <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
                       <div v-if="i === 3 && publicMedia.length > 5"
                         class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
                         <span class="text-3xl font-black">+{{ publicMedia.length - 5 }}</span>
@@ -82,49 +75,42 @@
               <template v-if="isOwner || isSubscribed || isTrialing">
                 <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
                 <template v-else>
-                  <!-- 1 Bild -->
+                  <!-- 1 item -->
                   <div v-if="privateMedia.length === 1"
                     class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
                     @click="openLightbox(privateMedia[0])">
-                    <img :src="privateMedia[0].url" :alt="profile.display_name"
-                      class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                    <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
-                  <!-- 2 Bilder -->
+                  <!-- 2 items -->
                   <div v-else-if="privateMedia.length === 2"
                     class="grid grid-cols-2 gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                     <div v-for="(item, i) in privateMedia.slice(0,2)" :key="item.id"
                       class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <img :src="i===0 ? item.url : undefined" :data-src="i>0 ? item.url : undefined"
-                        :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', i>0?'lazyload':'']"
-                        :alt="profile.display_name" />
+                      <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
                     </div>
                   </div>
-                  <!-- 3–4 Bilder -->
+                  <!-- 3–4 items -->
                   <div v-else-if="privateMedia.length <= 4"
                     class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                     <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(privateMedia[0])">
-                      <img :src="privateMedia[0].url" :alt="profile.display_name"
-                        class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                      <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                     </div>
                     <div class="flex flex-col gap-1 flex-1">
                       <div v-for="item in privateMedia.slice(1)" :key="item.id"
                         class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                        <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
-                          :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                        <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
                       </div>
                     </div>
                   </div>
-                  <!-- 5+ Bilder -->
+                  <!-- 5+ items -->
                   <div v-else class="flex gap-1 h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                     <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(privateMedia[0])">
-                      <img :src="privateMedia[0].url" :alt="profile.display_name"
-                        class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-300" />
+                      <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                     </div>
                     <div class="grid grid-cols-2 gap-1" style="flex:2">
                       <div v-for="(item, i) in privateMedia.slice(1,5)" :key="item.id"
                         class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                        <img class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-300"
-                          :data-src="item.url" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" :alt="profile.display_name" />
+                        <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
                         <div v-if="i === 3 && privateMedia.length > 5"
                           class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
                           <span class="text-3xl font-black">+{{ privateMedia.length - 5 }}</span>
@@ -573,6 +559,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import MediaThumb from '@/Components/MediaThumb.vue';
 
 const mobileCarousel      = ref(null);
 const activeCarouselIndex = ref(0);
