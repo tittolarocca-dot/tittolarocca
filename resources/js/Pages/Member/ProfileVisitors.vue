@@ -6,9 +6,17 @@
       <!-- Header -->
       <div class="flex items-center gap-3 mb-6">
         <div class="w-11 h-11 rounded-full bg-[#e35d8f]/15 flex items-center justify-center shrink-0">
-          <svg class="w-5 h-5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M13.5 8.5c0 1.657-1.343 3-3 3S7.5 10.157 7.5 8.5 8.843 5.5 10.5 5.5s3 1.343 3 3zM3 19c0-3.314 3.134-6 7-6h1c3.866 0 7 2.686 7 6H3z"/>
-            <path d="M18 8c0 1.105-.895 2-2 2-.552 0-1.053-.224-1.414-.586C15.165 8.86 15.5 8 15.5 8c0-1.105-.895-2-2-2 .362 0 .698.097 1-.25C15.447 6.224 15.948 6 16.5 6c1.105 0 2 .895 2 2zm1.5 5h-.5c.827.935 1.5 2.066 1.5 3.5V19h2v-.5c0-2.985-1.79-4.662-3-5z"/>
+          <svg class="w-6 h-6 text-[#e35d8f]" viewBox="0 0 64 64" fill="currentColor">
+            <ellipse cx="22" cy="14" rx="7" ry="9" transform="rotate(-15 22 14)"/>
+            <ellipse cx="36" cy="10" rx="4.5" ry="6" transform="rotate(10 36 10)"/>
+            <ellipse cx="47" cy="16" rx="4" ry="5.5" transform="rotate(20 47 16)"/>
+            <ellipse cx="54" cy="25" rx="3.5" ry="5" transform="rotate(30 54 25)"/>
+            <path d="M10 35 Q14 22 28 26 Q38 30 34 44 Q30 56 18 52 Q8 48 10 35z"/>
+            <ellipse cx="42" cy="44" rx="7" ry="9" transform="rotate(15 42 44)"/>
+            <ellipse cx="28" cy="48" rx="4.5" ry="6" transform="rotate(-10 28 48)"/>
+            <ellipse cx="17" cy="42" rx="4" ry="5.5" transform="rotate(-20 17 42)"/>
+            <ellipse cx="10" cy="33" rx="3.5" ry="5" transform="rotate(-30 10 33)"/>
+            <path d="M54 29 Q50 42 36 38 Q26 34 30 20 Q34 8 46 12 Q56 16 54 29z"/>
           </svg>
         </div>
         <div>
@@ -17,22 +25,15 @@
         </div>
       </div>
 
-      <!-- No profile state -->
-      <div v-if="!hasProfile" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-10 text-center">
-        <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-          <svg class="w-7 h-7 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-          </svg>
-        </div>
-        <p class="text-gray-400 text-sm mb-3">Du hast noch kein Inserat erstellt.</p>
-        <p class="text-gray-600 text-xs">Diese Funktion steht nur Inserenten mit einem aktiven Profil zur Verfügung.</p>
-      </div>
-
       <!-- Empty state -->
-      <div v-else-if="visitors.length === 0" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-10 text-center">
+      <div v-if="visitors.length === 0" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-10 text-center">
         <div class="w-14 h-14 rounded-full bg-[#e35d8f]/10 flex items-center justify-center mx-auto mb-4">
-          <svg class="w-7 h-7 text-[#e35d8f]/50" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M13.5 8.5c0 1.657-1.343 3-3 3S7.5 10.157 7.5 8.5 8.843 5.5 10.5 5.5s3 1.343 3 3zM3 19c0-3.314 3.134-6 7-6h1c3.866 0 7 2.686 7 6H3z"/>
+          <svg class="w-7 h-7 text-[#e35d8f]/40" viewBox="0 0 64 64" fill="currentColor">
+            <ellipse cx="22" cy="14" rx="7" ry="9" transform="rotate(-15 22 14)"/>
+            <ellipse cx="36" cy="10" rx="4.5" ry="6" transform="rotate(10 36 10)"/>
+            <ellipse cx="47" cy="16" rx="4" ry="5.5" transform="rotate(20 47 16)"/>
+            <ellipse cx="54" cy="25" rx="3.5" ry="5" transform="rotate(30 54 25)"/>
+            <path d="M10 35 Q14 22 28 26 Q38 30 34 44 Q30 56 18 52 Q8 48 10 35z"/>
           </svg>
         </div>
         <p class="text-gray-400 text-sm">Noch keine Besucher.</p>
@@ -41,32 +42,60 @@
 
       <!-- Visitor list -->
       <div v-else class="space-y-3">
-        <div v-for="(visitor, i) in visitors" :key="i"
-          class="flex items-center gap-4 bg-[#1a1a1a] border border-white/8 rounded-2xl px-5 py-4 hover:border-[#e35d8f]/30 transition">
+        <div v-for="(visitor, i) in visitors" :key="i">
 
-          <!-- Avatar -->
-          <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
-            :style="`background: ${avatarColor(visitor.name)}`">
-            {{ visitor.name.charAt(0).toUpperCase() }}
+          <!-- Inserent card (has a profile) -->
+          <Link v-if="visitor.profile"
+            :href="route('profile.show', visitor.profile.slug)"
+            class="flex items-center gap-4 bg-[#1a1a1a] border border-white/8 rounded-2xl px-5 py-4 hover:border-[#e35d8f]/30 transition group block">
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-[#111] shrink-0">
+              <img v-if="visitor.profile.cover_url" :src="visitor.profile.cover_url"
+                :alt="visitor.profile.display_name"
+                class="w-full h-full object-cover" loading="lazy" />
+              <div v-else class="w-full h-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-semibold text-sm group-hover:text-[#e35d8f] transition truncate">{{ visitor.profile.display_name }}</p>
+              <p class="text-gray-500 text-xs mt-0.5">
+                <span v-if="visitor.profile.age">{{ visitor.profile.age }} Jahre</span>
+                <span v-if="visitor.profile.age && visitor.profile.city"> · </span>
+                <span v-if="visitor.profile.city">{{ visitor.profile.city }}</span>
+              </p>
+              <p class="text-gray-600 text-xs mt-1 flex items-center gap-1">
+                <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ visitor.last_visited_at }}
+              </p>
+            </div>
+            <div class="shrink-0">
+              <span class="text-xs font-semibold text-[#e35d8f] border border-[#e35d8f]/40 rounded-lg px-3 py-1.5 whitespace-nowrap">
+                Inserat ansehen →
+              </span>
+            </div>
+          </Link>
+
+          <!-- Regular member card (no inserent profile) -->
+          <div v-else class="flex items-center gap-4 bg-[#1a1a1a] border border-white/8 rounded-2xl px-5 py-4">
+            <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+              :style="`background: ${avatarColor(visitor.name)}`">
+              {{ visitor.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-semibold text-sm truncate">{{ visitor.name }}</p>
+              <p class="text-gray-500 text-xs mt-0.5 flex items-center gap-1">
+                <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ visitor.last_visited_at }}
+              </p>
+            </div>
           </div>
 
-          <!-- Info -->
-          <div class="flex-1 min-w-0">
-            <p class="text-white font-semibold text-sm truncate">{{ visitor.name }}</p>
-            <p class="text-gray-500 text-xs mt-0.5 flex items-center gap-1">
-              <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              {{ visitor.last_visited_at }}
-            </p>
-          </div>
-
-          <!-- Footprint icon -->
-          <div class="w-8 h-8 rounded-full bg-[#e35d8f]/10 flex items-center justify-center shrink-0">
-            <svg class="w-4 h-4 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13.5 8.5c0 1.657-1.343 3-3 3S7.5 10.157 7.5 8.5 8.843 5.5 10.5 5.5s3 1.343 3 3zM3 19c0-3.314 3.134-6 7-6h1c3.866 0 7 2.686 7 6H3z"/>
-            </svg>
-          </div>
         </div>
       </div>
 
@@ -75,12 +104,11 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
-  visitors:   { type: Array,   default: () => [] },
-  hasProfile: { type: Boolean, default: false },
+  visitors: { type: Array, default: () => [] },
 });
 
 const avatarColors = [

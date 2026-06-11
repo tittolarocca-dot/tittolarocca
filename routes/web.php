@@ -18,6 +18,7 @@ Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])-
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
+Route::get('/mitglied/{user}',           [\App\Http\Controllers\Member\MemberProfileController::class, 'show'])->name('mitglied.show');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -59,6 +60,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
     Route::post('/verifikation',  [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
+    Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
 });
 
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────
