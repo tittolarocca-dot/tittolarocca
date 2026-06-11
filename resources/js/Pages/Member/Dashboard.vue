@@ -9,12 +9,27 @@
       </div>
 
       <!-- Schnellzugriff -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
         <Link v-for="action in actions" :key="action.label" :href="action.href"
           class="bg-[#1a1a1a] rounded-xl border border-white/8 p-4 flex items-center gap-3 hover:border-[#e35d8f]/40 transition group">
-          <span class="text-2xl">{{ action.icon }}</span>
-          <div>
-            <p class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition">{{ action.label }}</p>
+          <!-- Footprint SVG icon for visitors tile -->
+          <span v-if="action.footprint" class="w-8 h-8 shrink-0 flex items-center justify-center">
+            <svg class="w-7 h-7 text-[#e35d8f]" viewBox="0 0 64 64" fill="currentColor">
+              <ellipse cx="22" cy="14" rx="7" ry="9" transform="rotate(-15 22 14)"/>
+              <ellipse cx="36" cy="10" rx="4.5" ry="6" transform="rotate(10 36 10)"/>
+              <ellipse cx="47" cy="16" rx="4" ry="5.5" transform="rotate(20 47 16)"/>
+              <ellipse cx="54" cy="25" rx="3.5" ry="5" transform="rotate(30 54 25)"/>
+              <path d="M10 35 Q14 22 28 26 Q38 30 34 44 Q30 56 18 52 Q8 48 10 35z"/>
+              <ellipse cx="42" cy="44" rx="7" ry="9" transform="rotate(15 42 44)"/>
+              <ellipse cx="28" cy="48" rx="4.5" ry="6" transform="rotate(-10 28 48)"/>
+              <ellipse cx="17" cy="42" rx="4" ry="5.5" transform="rotate(-20 17 42)"/>
+              <ellipse cx="10" cy="33" rx="3.5" ry="5" transform="rotate(-30 10 33)"/>
+              <path d="M54 29 Q50 42 36 38 Q26 34 30 20 Q34 8 46 12 Q56 16 54 29z"/>
+            </svg>
+          </span>
+          <span v-else class="text-2xl">{{ action.icon }}</span>
+          <div class="min-w-0">
+            <p class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition leading-tight">{{ action.label }}</p>
             <p class="text-xs text-gray-500 mt-0.5">{{ action.desc }}</p>
           </div>
         </Link>
@@ -118,12 +133,14 @@ const props = defineProps({
   subscriptions:    { type: Array,  default: () => [] },
   favoritesPreview: { type: Array,  default: () => [] },
   favoritesCount:   { type: Number, default: 0 },
+  visitorsCount:    { type: Number, default: 0 },
 });
 
 const actions = [
-  { icon: '🔍', label: 'Profile entdecken', desc: 'Kostenlos stöbern',     href: route('home') },
-  { icon: '💫', label: 'Abonnements',        desc: 'Aktive Abos verwalten', href: route('konto.subscriptions') },
-  { icon: '💬', label: 'Nachrichten',         desc: 'Konversationen',        href: route('konto.messages') },
-  { icon: '❤️', label: 'Meine Favoriten',     desc: 'Gespeicherte Inserate', href: route('konto.favorites') },
+  { icon: '🔍', label: 'Profile entdecken',          desc: 'Kostenlos stöbern',       href: route('home') },
+  { icon: '💫', label: 'Abonnements',                 desc: 'Aktive Abos verwalten',   href: route('konto.subscriptions') },
+  { icon: '💬', label: 'Nachrichten',                  desc: 'Konversationen',           href: route('konto.messages') },
+  { icon: '❤️', label: 'Meine Favoriten',              desc: 'Gespeicherte Inserate',   href: route('konto.favorites') },
+  { icon: null,  label: 'Wer hat mein Profil besucht', desc: 'Profilbesucher ansehen',  href: route('konto.visitors'), footprint: true },
 ];
 </script>

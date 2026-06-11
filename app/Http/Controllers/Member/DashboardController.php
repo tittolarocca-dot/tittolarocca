@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfileVisit;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -39,10 +40,15 @@ class DashboardController extends Controller
                 'verification_status' => $p->verification_status,
             ]);
 
+        $visitorsCount = $user->profile
+            ? ProfileVisit::where('profile_owner_user_id', $user->id)->count()
+            : 0;
+
         return inertia('Member/Dashboard', [
             'subscriptions'    => $subscriptions,
             'favoritesPreview' => $favoritesPreview,
             'favoritesCount'   => $user->favorites()->count(),
+            'visitorsCount'    => $visitorsCount,
         ]);
     }
 }

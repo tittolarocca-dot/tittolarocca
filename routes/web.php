@@ -76,6 +76,7 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::post('/bewertung/{profile:slug}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
     Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');
 });
 
 // ── Stripe Webhooks ───────────────────────────────────────────────────────────

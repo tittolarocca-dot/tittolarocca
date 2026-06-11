@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\ProfileVisit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -20,6 +21,13 @@ class ProfileController extends Controller
 
         $profile->loadMissing(['city', 'category', 'tags', 'approvedReviews.user']);
         $profile->increment('total_views');
+
+        if ($user && !$isOwner) {
+            ProfileVisit::updateOrCreate(
+                ['profile_id' => $profile->id, 'visitor_user_id' => $user->id],
+                ['profile_owner_user_id' => $profile->user_id, 'last_visited_at' => now()]
+            );
+        }
 
         $trialSub = $user ? $user->platformSubscriptions()
             ->where('profile_id', $profile->id)
