@@ -42,8 +42,9 @@
 
       <!-- Visitor list -->
       <div v-else class="space-y-3">
-        <div v-for="(visitor, i) in visitors" :key="i"
-          class="flex items-center gap-4 bg-[#1a1a1a] border border-white/8 rounded-2xl px-5 py-4 hover:border-[#e35d8f]/30 transition">
+        <Link v-for="(visitor, i) in visitors" :key="i"
+          :href="route('mitglied.show', visitor.user_id)"
+          class="flex items-center gap-4 bg-[#1a1a1a] border border-white/8 rounded-2xl px-5 py-4 hover:border-[#e35d8f]/30 transition group block">
 
           <!-- Avatar -->
           <div class="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
@@ -53,7 +54,7 @@
 
           <!-- Info -->
           <div class="flex-1 min-w-0">
-            <p class="text-white font-semibold text-sm truncate">{{ visitor.name }}</p>
+            <p class="text-white font-semibold text-sm truncate group-hover:text-[#e35d8f] transition">{{ visitor.name }}</p>
             <p class="text-gray-500 text-xs mt-0.5 flex items-center gap-1">
               <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -62,14 +63,11 @@
             </p>
           </div>
 
-          <!-- Footprint badge -->
-          <div class="w-8 h-8 rounded-full bg-[#e35d8f]/10 flex items-center justify-center shrink-0">
-            <svg class="w-4 h-4 text-[#e35d8f]" viewBox="0 0 64 64" fill="currentColor">
-              <ellipse cx="22" cy="14" rx="7" ry="9" transform="rotate(-15 22 14)"/>
-              <path d="M10 35 Q14 22 28 26 Q38 30 34 44 Q30 56 18 52 Q8 48 10 35z"/>
-            </svg>
-          </div>
-        </div>
+          <!-- Arrow -->
+          <span class="text-xs font-semibold text-[#e35d8f] border border-[#e35d8f]/40 rounded-lg px-3 py-1.5 shrink-0 whitespace-nowrap">
+            Profil ansehen →
+          </span>
+        </Link>
       </div>
 
     </div>
@@ -77,7 +75,7 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({

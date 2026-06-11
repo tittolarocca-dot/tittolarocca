@@ -19,6 +19,7 @@ class ListingVisitorController extends Controller
             ->orderByDesc('last_visited_at')
             ->get()
             ->map(fn($visit) => [
+                'user_id'         => $visit->visitor->id,
                 'name'            => $visit->visitor->name,
                 'last_visited_at' => $visit->last_visited_at->diffForHumans(),
             ]);
