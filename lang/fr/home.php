@@ -20,4 +20,7 @@ return [
     'private_gallery' => '🔒 Galerie privée',
     'private_badge'   => '🔒 Privé',
     'more'            => 'autres',
+    'new_images_desc' => 'Les derniers uploads des annonces',
+    'private_label'   => 'Privé',
+    'no_images'       => 'Aucune image trouvée.',
 ];

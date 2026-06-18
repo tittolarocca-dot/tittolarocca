@@ -20,4 +20,7 @@ return [
     'private_gallery' => '🔒 Privát galéria',
     'private_badge'   => '🔒 Privát',
     'more'            => 'további',
+    'new_images_desc' => 'A hirdetések legújabb feltöltései',
+    'private_label'   => 'Privát',
+    'no_images'       => 'Nem találhatók képek.',
 ];

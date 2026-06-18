@@ -20,4 +20,7 @@ return [
     'private_gallery' => '🔒 Galerie privată',
     'private_badge'   => '🔒 Privat',
     'more'            => 'mai multe',
+    'new_images_desc' => 'Cele mai recente încărcări ale anunțurilor',
+    'private_label'   => 'Privat',
+    'no_images'       => 'Nu s-au găsit imagini.',
 ];
