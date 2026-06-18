@@ -39,10 +39,11 @@ class HandleInertiaRequests extends Middleware
             'locale'           => $locale,
             'supportedLocales' => SetLocale::SUPPORTED,
             'translations'     => fn () => [
-                'nav'     => trans('nav'),
-                'home'    => trans('home'),
-                'profile' => trans('profile'),
-                'auth'    => trans('auth'),
+                'nav'       => trans('nav'),
+                'home'      => trans('home'),
+                'profile'   => trans('profile'),
+                'auth'      => trans('auth'),
+                'dashboard' => trans('dashboard'),
             ],
         ];
     }

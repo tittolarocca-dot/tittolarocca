@@ -1,2 +1,23 @@
 <?php
-return ['title'=>'Anuncios eróticos en Suiza','search'=>'Buscar...','region'=>'Región','category'=>'Categoría','service'=>'Servicio','search_btn'=>'Buscar','no_results'=>'No se encontraron anuncios.','listings'=>'Anuncios','top_ad'=>'TOP AD','premium'=>'Premium','reset'=>'Restablecer','per_month'=>'/mes'];
+return [
+    'title'           => 'Anuncios eróticos en Suiza',
+    'search'          => 'Buscar...',
+    'region'          => 'Región',
+    'category'        => 'Categoría',
+    'service'         => 'Servicio',
+    'search_btn'      => 'Buscar',
+    'no_results'      => 'No se encontraron anuncios.',
+    'listings'        => 'Anuncios',
+    'top_ad'          => 'TOP AD',
+    'premium'         => 'Premium',
+    'reset'           => 'Restablecer',
+    'per_month'       => '/mes',
+    'hero'            => 'Ver o encontrar – tú decides - en toda Suiza',
+    'new_images'      => 'Nuevas imágenes',
+    'age'             => 'Edad',
+    'verified'        => 'Verificado',
+    'badge_new'       => '✦ Nuevo',
+    'private_gallery' => '🔒 Galería privada',
+    'private_badge'   => '🔒 Privado',
+    'more'            => 'más',
+];

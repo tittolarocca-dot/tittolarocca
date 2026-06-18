@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <Head title="Meine Favoriten" />
+    <Head :title="t('dashboard.favorites_title')" />
     <div class="max-w-5xl mx-auto px-4 py-8">
 
       <!-- Header -->
@@ -11,19 +11,19 @@
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-bold text-gray-900">Meine Favoriten</h1>
-          <p class="text-xs text-gray-500">{{ favorites.length }} gespeicherte {{ favorites.length === 1 ? 'Inserat' : 'Inserate' }}</p>
+          <h1 class="text-xl font-bold text-white">{{ t('dashboard.favorites_title') }}</h1>
+          <p class="text-xs text-gray-500">{{ t('dashboard.favorites_saved', { count: favorites.length }) }}</p>
         </div>
       </div>
 
       <!-- Empty state -->
       <div v-if="favorites.length === 0" class="text-center py-20">
-        <svg class="w-14 h-14 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <svg class="w-14 h-14 text-gray-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
         </svg>
-        <p class="text-gray-500 text-sm mb-3">Du hast noch keine Favoriten gespeichert.</p>
+        <p class="text-gray-500 text-sm mb-3">{{ t('dashboard.favorites_empty') }}</p>
         <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline">
-          Jetzt Profile entdecken →
+          {{ t('dashboard.favorites_empty_hint') }}
         </Link>
       </div>
 
@@ -33,10 +33,10 @@
           v-for="item in favorites"
           :key="item.slug"
           :href="route('profile.show', item.slug)"
-          class="group block bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#e35d8f]/40 transition"
+          class="group block bg-[#1a1a1a] rounded-2xl border border-white/8 overflow-hidden hover:border-[#e35d8f]/40 transition"
         >
           <!-- Cover image -->
-          <div class="aspect-[3/4] relative overflow-hidden bg-gray-100">
+          <div class="aspect-[3/4] relative overflow-hidden bg-[#111]">
             <img
               v-if="item.cover_url"
               :src="item.cover_url"
@@ -45,7 +45,7 @@
               loading="lazy"
             />
             <div v-else class="w-full h-full flex items-center justify-center">
-              <svg class="w-10 h-10 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-10 h-10 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
               </svg>
             </div>
@@ -53,7 +53,7 @@
 
           <!-- Name -->
           <div class="px-3 py-2.5 flex items-center gap-1.5">
-            <span class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#e35d8f] transition">
+            <span class="text-sm font-semibold text-white truncate group-hover:text-[#e35d8f] transition">
               {{ item.display_name }}
             </span>
             <span v-if="item.verification_status === 'approved'"
@@ -73,6 +73,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 defineProps({
   favorites: { type: Array, default: () => [] },

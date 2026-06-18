@@ -1,2 +1,21 @@
 <?php
-return ['home'=>'Acasă','login'=>'Autentificare','register'=>'Publică anunț','logout'=>'Deconectare','my_account'=>'Contul meu','language'=>'Limbă','cities'=>'Orașe'];
+return [
+    'home'            => 'Acasă',
+    'login'           => 'Autentificare',
+    'register'        => 'Publică anunț',
+    'logout'          => 'Deconectare',
+    'my_account'      => 'Contul meu',
+    'language'        => 'Limbă',
+    'cities'          => 'Orașe',
+    'footer_platform' => 'Platformă',
+    'footer_list'     => 'Publică',
+    'footer_legal'    => 'Legal',
+    'about'           => 'Despre noi',
+    'contact'         => 'Contact',
+    'create_listing'  => 'Creează anunț',
+    'prices'          => 'Prețuri',
+    'imprint'         => 'Mențiuni legale',
+    'privacy'         => 'Confidențialitate',
+    'terms'           => 'Termeni',
+    'copyright'       => '© :year Inserate Platformă – Numai pentru adulți 18+.',
+];

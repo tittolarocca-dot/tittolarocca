@@ -1,2 +1,21 @@
 <?php
-return ['home'=>'Kezdőlap','login'=>'Bejelentkezés','register'=>'Hirdetés feladása','logout'=>'Kijelentkezés','my_account'=>'Fiókom','language'=>'Nyelv','cities'=>'Városok'];
+return [
+    'home'            => 'Kezdőlap',
+    'login'           => 'Bejelentkezés',
+    'register'        => 'Hirdetés feladása',
+    'logout'          => 'Kijelentkezés',
+    'my_account'      => 'Fiókom',
+    'language'        => 'Nyelv',
+    'cities'          => 'Városok',
+    'footer_platform' => 'Platform',
+    'footer_list'     => 'Hirdetés feladása',
+    'footer_legal'    => 'Jogi',
+    'about'           => 'Rólunk',
+    'contact'         => 'Kapcsolat',
+    'create_listing'  => 'Hirdetés létrehozása',
+    'prices'          => 'Árak',
+    'imprint'         => 'Impresszum',
+    'privacy'         => 'Adatvédelem',
+    'terms'           => 'ÁSZF',
+    'copyright'       => '© :year Inserate Platform – Csak 18 éven felülieknek.',
+];

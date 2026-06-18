@@ -9,7 +9,7 @@
           {{ member.name.charAt(0).toUpperCase() }}
         </div>
         <h1 class="text-xl font-bold text-white mb-1">{{ member.name }}</h1>
-        <p class="text-xs text-gray-500">Mitglied seit {{ member.member_since }}</p>
+        <p class="text-xs text-gray-500">{{ t('dashboard.member_since', { date: member.member_since }) }}</p>
       </div>
     </div>
   </AppLayout>
@@ -18,6 +18,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 defineProps({
   member: { type: Object, required: true },

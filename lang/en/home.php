@@ -12,4 +12,12 @@ return [
     'premium'    => 'Premium',
     'reset'      => 'Reset',
     'per_month'  => '/mo',
+    'hero'            => 'Browse or meet – you decide - Switzerland-wide',
+    'new_images'      => 'New images',
+    'age'             => 'Age',
+    'verified'        => 'Verified',
+    'badge_new'       => '✦ New',
+    'private_gallery' => '🔒 Private gallery',
+    'private_badge'   => '🔒 Private',
+    'more'            => 'more',
 ];

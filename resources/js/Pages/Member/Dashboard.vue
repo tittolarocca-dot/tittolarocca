@@ -1,11 +1,11 @@
 <template>
   <AppLayout>
-    <Head title="Mein Konto" />
+    <Head :title="t('dashboard.my_listing')" />
     <div class="max-w-4xl mx-auto px-4 py-8">
 
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-white">Willkommen, {{ $page.props.auth.user.name }}</h1>
-        <p class="text-gray-400 text-sm mt-1">Dein Mitglieder-Bereich – Profile abonnieren & exklusive Inhalte freischalten</p>
+        <h1 class="text-2xl font-bold text-white">{{ t('dashboard.welcome', { name: $page.props.auth.user.name }) }}</h1>
+        <p class="text-gray-400 text-sm mt-1">{{ t('dashboard.subtitle') }}</p>
       </div>
 
       <!-- Schnellzugriff -->
@@ -42,19 +42,19 @@
             <svg class="w-5 h-5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
             </svg>
-            <h2 class="font-semibold text-white">Meine Favoriten</h2>
+            <h2 class="font-semibold text-white">{{ t('dashboard.favorites_title') }}</h2>
             <span v-if="favoritesCount > 0" class="text-xs bg-[#e35d8f]/15 text-[#e35d8f] font-bold px-2 py-0.5 rounded-full">{{ favoritesCount }}</span>
           </div>
-          <Link :href="route('konto.favorites')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
+          <Link :href="route('konto.favorites')" class="text-xs text-[#e35d8f] hover:underline">{{ t('dashboard.show_all') }}</Link>
         </div>
 
         <div v-if="favoritesPreview.length === 0" class="text-center py-8 text-gray-500">
           <svg class="w-8 h-8 text-gray-600 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
           </svg>
-          <p class="text-sm">Noch keine Favoriten gespeichert.</p>
+          <p class="text-sm">{{ t('dashboard.no_favorites') }}</p>
           <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
-            Jetzt Profile entdecken →
+            {{ t('dashboard.discover_now') }}
           </Link>
         </div>
 
@@ -91,15 +91,15 @@
       <!-- Meine Abonnements -->
       <div class="bg-[#1a1a1a] rounded-xl border border-white/8 p-6 mb-5">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-semibold text-white">Meine Abonnements</h2>
-          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">Alle anzeigen →</Link>
+          <h2 class="font-semibold text-white">{{ t('dashboard.my_subscriptions') }}</h2>
+          <Link :href="route('konto.subscriptions')" class="text-xs text-[#e35d8f] hover:underline">{{ t('dashboard.show_all') }}</Link>
         </div>
 
         <div v-if="subscriptions.length === 0" class="text-center py-8 text-gray-500">
           <div class="text-3xl mb-2">💫</div>
-          <p class="text-sm">Du hast noch keine Abonnements.</p>
+          <p class="text-sm">{{ t('dashboard.no_subscriptions') }}</p>
           <Link :href="route('home')" class="text-[#e35d8f] text-sm hover:underline mt-1 inline-block">
-            Jetzt Profile entdecken →
+            {{ t('dashboard.discover_now') }}
           </Link>
         </div>
 
@@ -115,7 +115,7 @@
             </div>
             <div class="text-right">
               <p class="text-xs font-bold text-gray-300">CHF {{ sub.amount_chf }}/Mo</p>
-              <span class="text-xs text-green-400">Aktiv</span>
+              <span class="text-xs text-green-400">{{ t('dashboard.active') }}</span>
             </div>
           </Link>
         </div>
@@ -126,8 +126,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   subscriptions:    { type: Array,  default: () => [] },
@@ -136,11 +140,11 @@ const props = defineProps({
   visitorsCount:    { type: Number, default: 0 },
 });
 
-const actions = [
-  { icon: '🔍', label: 'Profile entdecken',          desc: 'Kostenlos stöbern',       href: route('home') },
-  { icon: '💫', label: 'Abonnements',                 desc: 'Aktive Abos verwalten',   href: route('konto.subscriptions') },
-  { icon: '💬', label: 'Nachrichten',                  desc: 'Konversationen',           href: route('konto.messages') },
-  { icon: '❤️', label: 'Meine Favoriten',              desc: 'Gespeicherte Inserate',   href: route('konto.favorites') },
-  { icon: null,  label: 'Wer hat mein Profil besucht', desc: 'Profilbesucher ansehen',  href: route('konto.visitors'), footprint: true },
-];
+const actions = computed(() => [
+  { icon: '🔍', label: t('dashboard.discover'),      desc: t('dashboard.discover_desc'),       href: route('home') },
+  { icon: '💫', label: t('dashboard.subscriptions'), desc: t('dashboard.subscriptions_desc'),  href: route('konto.subscriptions') },
+  { icon: '💬', label: t('dashboard.messages'),      desc: t('dashboard.messages_desc'),        href: route('konto.messages') },
+  { icon: '❤️', label: t('dashboard.my_favorites'),  desc: t('dashboard.favorites_desc'),       href: route('konto.favorites') },
+  { icon: null,  label: t('dashboard.who_visited_me'), desc: t('dashboard.who_visited_desc'),   href: route('konto.visitors'), footprint: true },
+]);
 </script>

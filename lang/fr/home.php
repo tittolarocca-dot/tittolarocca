@@ -12,4 +12,12 @@ return [
     'premium'    => 'Premium',
     'reset'      => 'Réinitialiser',
     'per_month'  => '/mois',
+    'hero'            => 'Regarder ou rencontrer – vous décidez - dans toute la Suisse',
+    'new_images'      => 'Nouvelles images',
+    'age'             => 'Âge',
+    'verified'        => 'Vérifié',
+    'badge_new'       => '✦ Nouveau',
+    'private_gallery' => '🔒 Galerie privée',
+    'private_badge'   => '🔒 Privé',
+    'more'            => 'autres',
 ];

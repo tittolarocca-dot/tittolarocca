@@ -12,4 +12,12 @@ return [
     'premium'    => 'Premium',
     'reset'      => 'Zurücksetzen',
     'per_month'  => '/Mo',
+    'hero'            => 'Anschauen oder treffen – du entscheidest - Schweizweit',
+    'new_images'      => 'Neue Bilder',
+    'age'             => 'Alter',
+    'verified'        => 'Verifiziert',
+    'badge_new'       => '✦ Neu',
+    'private_gallery' => '🔒 Private Galerie',
+    'private_badge'   => '🔒 Privat',
+    'more'            => 'weitere',
 ];

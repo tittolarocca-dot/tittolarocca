@@ -157,17 +157,17 @@
     <footer class="mt-16 py-10 bg-[#1a1a1a] border-t border-white/10">
       <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-400">
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Plattform</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_platform') }}</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e35d8f] transition">Über uns</a>
-            <a href="#" class="block hover:text-[#e35d8f] transition">Kontakt</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.about') }}</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.contact') }}</a>
           </div>
         </div>
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Inserieren</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_list') }}</h5>
           <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">Inserat erstellen</Link>
-            <a href="#" class="block hover:text-[#e35d8f] transition">Preise</a>
+            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">{{ t('nav.create_listing') }}</Link>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.prices') }}</a>
           </div>
         </div>
         <div>
@@ -179,16 +179,16 @@
           </div>
         </div>
         <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">Rechtliches</h5>
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_legal') }}</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e35d8f] transition">Impressum</a>
-            <a href="#" class="block hover:text-[#e35d8f] transition">Datenschutz</a>
-            <a href="#" class="block hover:text-[#e35d8f] transition">AGB</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.imprint') }}</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.privacy') }}</a>
+            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.terms') }}</a>
           </div>
         </div>
       </div>
       <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-white/10 text-xs text-center text-gray-600">
-        © {{ new Date().getFullYear() }} Inserate Plattform – Nur für Erwachsene ab 18 Jahren.
+        {{ t('nav.copyright', { year: new Date().getFullYear() }) }}
       </div>
     </footer>
   </div>

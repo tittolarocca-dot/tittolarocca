@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <Head title="Profilbesucher" />
+    <Head :title="t('dashboard.visited_title')" />
     <div class="max-w-3xl mx-auto px-4 py-8">
 
       <!-- Header -->
@@ -20,8 +20,8 @@
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-bold text-white">Wer hat mein Profil besucht</h1>
-          <p class="text-xs text-gray-500">{{ visitors.length }} {{ visitors.length === 1 ? 'Besucher' : 'Besucher' }} in deiner Liste</p>
+          <h1 class="text-xl font-bold text-white">{{ t('dashboard.visited_title') }}</h1>
+          <p class="text-xs text-gray-500">{{ t('dashboard.visitors_count', { count: visitors.length }) }}</p>
         </div>
       </div>
 
@@ -36,8 +36,8 @@
             <path d="M10 35 Q14 22 28 26 Q38 30 34 44 Q30 56 18 52 Q8 48 10 35z"/>
           </svg>
         </div>
-        <p class="text-gray-400 text-sm">Noch keine Besucher.</p>
-        <p class="text-gray-600 text-xs mt-1">Sobald jemand dein Profil besucht, erscheint er hier.</p>
+        <p class="text-gray-400 text-sm">{{ t('dashboard.no_visitors') }}</p>
+        <p class="text-gray-600 text-xs mt-1">{{ t('dashboard.no_visitors_hint') }}</p>
       </div>
 
       <!-- Visitor list -->
@@ -74,7 +74,7 @@
             </div>
             <div class="shrink-0">
               <span class="text-xs font-semibold text-[#e35d8f] border border-[#e35d8f]/40 rounded-lg px-3 py-1.5 whitespace-nowrap">
-                Inserat ansehen →
+                {{ t('dashboard.view_listing') }}
               </span>
             </div>
           </Link>
@@ -106,6 +106,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 defineProps({
   visitors: { type: Array, default: () => [] },

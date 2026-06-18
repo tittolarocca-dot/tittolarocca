@@ -1,18 +1,18 @@
 <template>
   <AppLayout>
-    <Head title="Mein Inserat" />
+    <Head :title="t('dashboard.my_listing')" />
 
     <div class="max-w-5xl mx-auto px-4 py-8">
-      <h1 class="text-2xl font-bold text-white mb-6">Mein Inserat</h1>
+      <h1 class="text-2xl font-bold text-white mb-6">{{ t('dashboard.my_listing') }}</h1>
 
       <!-- Kein Profil -->
       <div v-if="!profile" class="bg-[#1a1a1a] rounded-xl border border-dashed border-[#e35d8f]/40 p-10 text-center shadow-sm">
         <div class="text-5xl mb-4">📋</div>
-        <h2 class="text-lg font-semibold text-white mb-2">Noch kein Inserat erstellt</h2>
-        <p class="text-gray-400 text-sm mb-6">Erstelle dein Profil und wähle ein Paket, um sichtbar zu werden.</p>
+        <h2 class="text-lg font-semibold text-white mb-2">{{ t('dashboard.no_listing_title') }}</h2>
+        <p class="text-gray-400 text-sm mb-6">{{ t('dashboard.no_listing_desc') }}</p>
         <Link :href="route('inserat.profile.edit')"
           class="inline-flex items-center gap-2 bg-[#e35d8f] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#c44a7a] transition">
-          Profil erstellen →
+          {{ t('dashboard.create_btn') }}
         </Link>
       </div>
 
@@ -30,34 +30,34 @@
             <span class="text-2xl">{{ stats.isActive ? '✅' : '⚠️' }}</span>
             <div>
               <p class="font-semibold text-sm" :class="stats.isActive ? 'text-green-400' : 'text-yellow-400'">
-                {{ stats.isActive ? 'Inserat aktiv' : 'Inserat abgelaufen' }}
+                {{ stats.isActive ? t('dashboard.listing_active') : t('dashboard.listing_expired') }}
               </p>
               <p class="text-xs mt-0.5" :class="stats.isActive ? 'text-green-500' : 'text-yellow-500'">
                 {{ stats.isActive
-                  ? `Läuft bis ${stats.expiresAt}`
+                  ? t('dashboard.expires_at', { date: stats.expiresAt })
                   : stats.isFreeProfile
-                    ? 'Dein kostenloses Inserat ist abgelaufen. Reaktiviere es gratis für 7 weitere Tage.'
-                    : 'Kaufe ein Paket, um wieder sichtbar zu werden.' }}
+                    ? t('dashboard.free_expired_msg')
+                    : t('dashboard.buy_expired_msg') }}
               </p>
-              <p class="text-xs text-gray-500 mt-0.5">Inseriert am {{ stats.createdAt }}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{{ t('dashboard.created_at_label', { date: stats.createdAt }) }}</p>
             </div>
           </div>
           <!-- Aktiv: Verlängern -->
           <Link v-if="stats.isActive" :href="route('inserat.package.select')"
             class="shrink-0 border border-green-600 text-green-400 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-green-900/30 transition">
-            Verlängern
+            {{ t('dashboard.extend_btn') }}
           </Link>
           <!-- Abgelaufen + kostenlos: gratis reaktivieren -->
           <form v-else-if="stats.isFreeProfile" @submit.prevent="reactivate">
             <button type="submit" :disabled="reactivating"
               class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-xs font-bold px-4 py-2 rounded-lg transition whitespace-nowrap">
-              {{ reactivating ? 'Wird aktiviert…' : 'Gratis reaktivieren (7 Tage)' }}
+              {{ reactivating ? t('dashboard.reactivating') : t('dashboard.reactivate_btn') }}
             </button>
           </form>
           <!-- Abgelaufen + bezahlt: Paket kaufen -->
           <Link v-else :href="route('inserat.package.select')"
             class="shrink-0 bg-[#e35d8f] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#c44a7a] transition">
-            Paket kaufen
+            {{ t('dashboard.buy_package_btn') }}
           </Link>
         </div>
 
@@ -66,15 +66,15 @@
           <div class="flex items-center gap-3">
             <span class="text-3xl">🚀</span>
             <div>
-              <p class="font-semibold text-white text-sm">Inserat pushen</p>
-              <p class="text-xs text-gray-500 mt-0.5">Erscheine für 24h ganz oben auf der ersten Seite</p>
-              <p v-if="stats.pushedAt" class="text-xs text-gray-600 mt-0.5">Zuletzt gepusht: {{ stats.pushedAt }}</p>
+              <p class="font-semibold text-white text-sm">{{ t('dashboard.push_title') }}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{{ t('dashboard.push_desc') }}</p>
+              <p v-if="stats.pushedAt" class="text-xs text-gray-600 mt-0.5">{{ t('dashboard.push_last', { date: stats.pushedAt }) }}</p>
             </div>
           </div>
           <form @submit.prevent="push">
             <button type="submit" :disabled="pushing"
               class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-              {{ pushing ? 'Weiterleitung…' : 'CHF 5.00 pushen' }}
+              {{ pushing ? t('dashboard.redirecting') : t('dashboard.push_btn') }}
             </button>
           </form>
         </div>
@@ -92,7 +92,7 @@
         <div class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
           <div class="bg-[#111] border-b border-white/8 px-5 py-3 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-white flex items-center gap-2">
-              🪪 Identitätsverifikation
+              🪪 {{ t('dashboard.verification_title') }}
             </h2>
             <span :class="verificationBadgeClass">{{ verificationBadgeLabel }}</span>
           </div>
@@ -101,8 +101,8 @@
           <div v-if="profile.verification_status === 'approved'" class="p-5 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-green-900/40 border border-green-600/40 flex items-center justify-center shrink-0 text-xl">✅</div>
             <div>
-              <p class="font-semibold text-white text-sm">Verifiziert</p>
-              <p class="text-xs text-gray-400 mt-0.5">Dein Profil trägt das Verifiziert-Badge.</p>
+              <p class="font-semibold text-white text-sm">{{ t('dashboard.v_approved_title') }}</p>
+              <p class="text-xs text-gray-400 mt-0.5">{{ t('dashboard.v_approved_desc') }}</p>
             </div>
           </div>
 
@@ -111,14 +111,14 @@
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-blue-900/40 border border-blue-600/40 flex items-center justify-center shrink-0 text-xl">⏳</div>
               <div>
-                <p class="font-semibold text-white text-sm">Wird geprüft…</p>
-                <p class="text-xs text-gray-400 mt-0.5">Wir prüfen dein Foto in der Regel innerhalb von 24 Stunden.</p>
+                <p class="font-semibold text-white text-sm">{{ t('dashboard.v_pending_title') }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">{{ t('dashboard.v_pending_desc') }}</p>
               </div>
             </div>
             <div>
               <button @click="showResubmit = !showResubmit"
                 class="text-xs text-gray-500 hover:text-gray-300 underline transition">
-                {{ showResubmit ? 'Abbrechen' : 'Neues Foto einreichen' }}
+                {{ showResubmit ? t('dashboard.v_cancel') : t('dashboard.v_resubmit') }}
               </button>
               <div v-if="showResubmit" class="mt-3">
                 <VerificationUploadForm :form="verifyForm" @submit="submitVerification" />
@@ -131,22 +131,22 @@
             <!-- Ablehnungsgrund -->
             <div v-if="profile.verification_status === 'rejected' && profile.verification_rejected_reason"
               class="bg-red-950/40 border border-red-700/40 rounded-lg p-3 text-sm text-red-400">
-              <strong class="text-red-300">Abgelehnt:</strong> {{ profile.verification_rejected_reason }}
+              <strong class="text-red-300">{{ t('dashboard.v_rejected_prefix') }}</strong> {{ profile.verification_rejected_reason }}
             </div>
 
             <!-- Anleitung -->
             <div class="bg-amber-950/30 border border-amber-700/30 rounded-lg p-4">
-              <p class="text-sm font-semibold text-amber-300 mb-2">📸 So funktioniert die Verifikation:</p>
+              <p class="text-sm font-semibold text-amber-300 mb-2">{{ t('dashboard.v_guide_title') }}</p>
               <ol class="text-sm text-amber-400/80 space-y-1.5 list-decimal list-inside">
-                <li>Nimm ein gut belichtetes <strong class="text-amber-300">Selfie</strong> von dir</li>
-                <li>Halte ein handgeschriebenes Schild mit:
+                <li>{{ t('dashboard.v_step1') }}</li>
+                <li>{{ t('dashboard.v_step2') }}
                   <ul class="ml-5 mt-1 list-disc text-xs space-y-0.5 text-amber-400/70">
-                    <li><strong class="text-amber-300">inserate.ch</strong></li>
-                    <li>Dein Profilname: <strong class="text-amber-300">{{ profile.display_name }}</strong></li>
-                    <li>Das heutige Datum</li>
+                    <li><strong class="text-amber-300">{{ t('dashboard.v_step2a') }}</strong></li>
+                    <li>{{ t('dashboard.v_step2b', { name: profile.display_name }) }}</li>
+                    <li>{{ t('dashboard.v_step2c') }}</li>
                   </ul>
                 </li>
-                <li>Lade das Foto unten hoch</li>
+                <li>{{ t('dashboard.v_step3') }}</li>
               </ol>
             </div>
 
@@ -184,31 +184,31 @@
         <!-- Gefahrenzone -->
         <div class="border border-red-900/40 rounded-xl overflow-hidden">
           <div class="bg-red-950/30 px-5 py-3 border-b border-red-900/40">
-            <h2 class="text-sm font-semibold text-red-400">Gefahrenzone</h2>
+            <h2 class="text-sm font-semibold text-red-400">{{ t('dashboard.danger_zone') }}</h2>
           </div>
 
           <!-- Profil deaktivieren -->
           <div class="bg-[#1a1a1a] px-5 py-4 flex items-center justify-between gap-4 border-b border-red-900/20">
             <div>
-              <p class="text-sm font-semibold text-white">Profil deaktivieren</p>
-              <p class="text-xs text-gray-500 mt-0.5">Dein Profil wird sofort aus der öffentlichen Suche entfernt. Du kannst es jederzeit wieder aktivieren.</p>
+              <p class="text-sm font-semibold text-white">{{ t('dashboard.deactivate_title') }}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{{ t('dashboard.deactivate_desc') }}</p>
             </div>
             <button @click="deactivateProfile"
               :disabled="deactivating || !stats.isActive"
               class="shrink-0 border border-orange-700/50 text-orange-400 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-orange-950/40 disabled:opacity-40 disabled:cursor-not-allowed transition whitespace-nowrap">
-              {{ deactivating ? 'Wird deaktiviert…' : stats.isActive ? 'Profil deaktivieren' : 'Bereits inaktiv' }}
+              {{ deactivating ? t('dashboard.deactivating') : stats.isActive ? t('dashboard.deactivate_btn') : t('dashboard.already_inactive') }}
             </button>
           </div>
 
           <!-- Profil löschen -->
           <div class="bg-[#1a1a1a] px-5 py-4 flex items-center justify-between gap-4">
             <div>
-              <p class="text-sm font-semibold text-white">Profil löschen</p>
-              <p class="text-xs text-gray-500 mt-0.5">Löscht dein Profil, alle Medien und beendet aktive Abonnements. Nicht rückgängig zu machen.</p>
+              <p class="text-sm font-semibold text-white">{{ t('dashboard.delete_title') }}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{{ t('dashboard.delete_desc') }}</p>
             </div>
             <button @click="showDeleteConfirm = true"
               class="shrink-0 border border-red-700/50 text-red-400 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-950/40 transition whitespace-nowrap">
-              Profil löschen
+              {{ t('dashboard.delete_btn') }}
             </button>
           </div>
         </div>
@@ -216,7 +216,7 @@
       </div>
     </div>
 
-    <!-- Lösch-Bestätigungsmodal -->
+    <!-- Delete confirm modal -->
     <Teleport to="body">
       <div v-if="showDeleteConfirm"
         class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4"
@@ -228,30 +228,30 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
               </svg>
             </div>
-            <h3 class="text-lg font-bold text-white">Profil wirklich löschen?</h3>
+            <h3 class="text-lg font-bold text-white">{{ t('dashboard.delete_modal_title') }}</h3>
           </div>
 
-          <p class="text-sm text-gray-400 mb-3">Folgendes wird <strong class="text-white">unwiderruflich</strong> gelöscht:</p>
+          <p class="text-sm text-gray-400 mb-3">{{ t('dashboard.delete_irr') }}</p>
           <ul class="text-sm text-gray-400 space-y-1 mb-5 ml-4 list-disc">
-            <li>Dein Profil und alle Profilinformationen</li>
-            <li>Alle hochgeladenen Fotos und Medien</li>
-            <li>Alle aktiven Abonnements deiner Kunden</li>
-            <li>Alle Bewertungen und Nachrichten</li>
+            <li>{{ t('dashboard.delete_i1') }}</li>
+            <li>{{ t('dashboard.delete_i2') }}</li>
+            <li>{{ t('dashboard.delete_i3') }}</li>
+            <li>{{ t('dashboard.delete_i4') }}</li>
           </ul>
 
-          <p class="text-sm text-gray-300 mb-2 font-medium">Gib zur Bestätigung <span class="font-bold text-red-400">LÖSCHEN</span> ein:</p>
-          <input v-model="deleteConfirmText" type="text" placeholder="LÖSCHEN"
+          <p class="text-sm text-gray-300 mb-2 font-medium">{{ t('dashboard.delete_confirm_hint') }} <span class="font-bold text-red-400">{{ t('dashboard.delete_confirm_word') }}</span></p>
+          <input v-model="deleteConfirmText" type="text" :placeholder="t('dashboard.delete_confirm_word')"
             class="w-full border border-white/10 bg-[#111] text-white rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:border-red-500 placeholder-gray-600" />
 
           <div class="flex gap-3">
             <button @click="showDeleteConfirm = false; deleteConfirmText = ''"
               class="flex-1 border border-white/10 text-gray-400 text-sm font-semibold py-2.5 rounded-lg hover:bg-white/5 transition">
-              Abbrechen
+              {{ t('dashboard.delete_cancel') }}
             </button>
             <button @click="deleteProfile"
-              :disabled="deleteConfirmText !== 'LÖSCHEN' || deleting"
+              :disabled="deleteConfirmText !== t('dashboard.delete_confirm_word') || deleting"
               class="flex-1 bg-red-700 hover:bg-red-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold py-2.5 rounded-lg transition">
-              {{ deleting ? 'Wird gelöscht…' : 'Endgültig löschen' }}
+              {{ deleting ? t('dashboard.deleting') : t('dashboard.delete_final') }}
             </button>
           </div>
         </div>
@@ -264,6 +264,9 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref, computed, defineComponent, h } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   profile: Object,
@@ -295,11 +298,11 @@ const verificationBadgeClass = computed(() => {
 });
 
 const verificationBadgeLabel = computed(() => ({
-  unverified: 'Nicht beantragt',
-  pending:    '⏳ Ausstehend',
-  approved:   '✓ Verifiziert',
-  rejected:   '✗ Abgelehnt',
-}[props.profile?.verification_status] ?? 'Nicht beantragt'));
+  unverified: t('dashboard.v_unverified'),
+  pending:    t('dashboard.v_pending_badge'),
+  approved:   t('dashboard.v_approved_badge'),
+  rejected:   t('dashboard.v_rejected_badge'),
+}[props.profile?.verification_status] ?? t('dashboard.v_unverified')));
 
 // Inline upload form component
 const VerificationUploadForm = defineComponent({
@@ -308,7 +311,7 @@ const VerificationUploadForm = defineComponent({
   setup(props, { emit }) {
     return () => h('div', { class: 'space-y-3' }, [
       h('div', [
-        h('label', { class: 'block text-xs font-medium text-gray-400 mb-1.5' }, 'Selfie mit Schild hochladen (JPG / PNG, max. 15 MB)'),
+        h('label', { class: 'block text-xs font-medium text-gray-400 mb-1.5' }, t('dashboard.v_upload_label')),
         h('input', {
           type: 'file',
           accept: 'image/jpeg,image/jpg,image/png',
@@ -324,17 +327,17 @@ const VerificationUploadForm = defineComponent({
         disabled: !props.form.photo || props.form.processing,
         class: 'bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition',
         onClick: () => emit('submit'),
-      }, props.form.processing ? 'Wird hochgeladen…' : 'Foto einreichen'),
+      }, props.form.processing ? t('dashboard.v_uploading') : t('dashboard.v_submit')),
     ]);
   },
 });
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 const statCards = computed(() => props.stats ? [
-  { label: 'Profilaufrufe',  value: props.stats.views },
-  { label: 'Abonnenten',     value: props.stats.subscribers },
-  { label: 'Medien',         value: props.stats.mediaCount },
-  { label: 'Besucher',       value: props.stats.visitorsCount },
+  { label: t('dashboard.stat_views'),       value: props.stats.views },
+  { label: t('dashboard.stat_subscribers'), value: props.stats.subscribers },
+  { label: t('dashboard.stat_media'),       value: props.stats.mediaCount },
+  { label: t('dashboard.stat_visitors'),    value: props.stats.visitorsCount },
 ] : []);
 
 // ── Reactivate (free listings) ────────────────────────────────────────────────
@@ -364,7 +367,7 @@ const deleteConfirmText = ref('');
 const deleting          = ref(false);
 
 function deleteProfile() {
-  if (deleteConfirmText.value !== 'LÖSCHEN') return;
+  if (deleteConfirmText.value !== t('dashboard.delete_confirm_word')) return;
   deleting.value = true;
   router.delete(route('inserat.profile.destroy'), {
     onFinish: () => { deleting.value = false; },
@@ -372,10 +375,10 @@ function deleteProfile() {
 }
 
 // ── Quick actions ─────────────────────────────────────────────────────────────
-const quickActions = [
-  { icon: '✏️',      label: 'Profil bearbeiten',           desc: 'Texte und Angaben ändern', href: route('inserat.profile.edit'),  footprint: false },
-  { icon: '🖼️',      label: 'Medien verwalten',            desc: 'Fotos hochladen',          href: route('inserat.media.index'),   footprint: false },
-  { icon: '💬',      label: 'Nachrichten',                 desc: 'Postfach öffnen',          href: route('inserat.messages'),      footprint: false },
-  { icon: null,      label: 'Wer hat mein Inserat besucht', desc: 'Besucher ansehen',         href: route('inserat.visitors'),      footprint: true  },
-];
+const quickActions = computed(() => [
+  { icon: '✏️', label: t('dashboard.action_edit'),     desc: t('dashboard.action_edit_desc'),     href: route('inserat.profile.edit'),  footprint: false },
+  { icon: '🖼️', label: t('dashboard.action_media'),    desc: t('dashboard.action_media_desc'),    href: route('inserat.media.index'),   footprint: false },
+  { icon: '💬', label: t('dashboard.action_messages'), desc: t('dashboard.action_msg_desc'),      href: route('inserat.messages'),      footprint: false },
+  { icon: null, label: t('dashboard.action_visitors'), desc: t('dashboard.action_visitors_desc'), href: route('inserat.visitors'),      footprint: true  },
+]);
 </script>

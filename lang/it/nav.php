@@ -1,2 +1,21 @@
 <?php
-return ['home'=>'Home','login'=>'Accedi','register'=>'Inserisci','logout'=>'Esci','my_account'=>'Il mio account','language'=>'Lingua','cities'=>'Città'];
+return [
+    'home'            => 'Home',
+    'login'           => 'Accedi',
+    'register'        => 'Inserisci',
+    'logout'          => 'Esci',
+    'my_account'      => 'Il mio account',
+    'language'        => 'Lingua',
+    'cities'          => 'Città',
+    'footer_platform' => 'Piattaforma',
+    'footer_list'     => 'Inserire',
+    'footer_legal'    => 'Legale',
+    'about'           => 'Chi siamo',
+    'contact'         => 'Contatto',
+    'create_listing'  => 'Crea annuncio',
+    'prices'          => 'Prezzi',
+    'imprint'         => 'Impressum',
+    'privacy'         => 'Privacy',
+    'terms'           => 'Termini',
+    'copyright'       => '© :year Inserate Piattaforma – Solo per adulti di 18+ anni.',
+];

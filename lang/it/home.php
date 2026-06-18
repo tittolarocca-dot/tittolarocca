@@ -1,2 +1,23 @@
 <?php
-return ['title'=>'Annunci erotici in Svizzera','search'=>'Cerca...','region'=>'Regione','category'=>'Categoria','service'=>'Servizio','search_btn'=>'Cerca','no_results'=>'Nessun annuncio trovato.','listings'=>'Annunci','top_ad'=>'TOP AD','premium'=>'Premium','reset'=>'Reimposta','per_month'=>'/mese'];
+return [
+    'title'           => 'Annunci erotici in Svizzera',
+    'search'          => 'Cerca...',
+    'region'          => 'Regione',
+    'category'        => 'Categoria',
+    'service'         => 'Servizio',
+    'search_btn'      => 'Cerca',
+    'no_results'      => 'Nessun annuncio trovato.',
+    'listings'        => 'Annunci',
+    'top_ad'          => 'TOP AD',
+    'premium'         => 'Premium',
+    'reset'           => 'Reimposta',
+    'per_month'       => '/mese',
+    'hero'            => 'Guarda o incontra – decidi tu - in tutta la Svizzera',
+    'new_images'      => 'Nuove immagini',
+    'age'             => 'Età',
+    'verified'        => 'Verificato',
+    'badge_new'       => '✦ Nuovo',
+    'private_gallery' => '🔒 Galleria privata',
+    'private_badge'   => '🔒 Privato',
+    'more'            => 'altri',
+];

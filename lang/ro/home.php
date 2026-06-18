@@ -1,2 +1,23 @@
 <?php
-return ['title'=>'Anunțuri erotice în Elveția','search'=>'Caută...','region'=>'Regiune','category'=>'Categorie','service'=>'Serviciu','search_btn'=>'Caută','no_results'=>'Nu s-au găsit anunțuri.','listings'=>'Anunțuri','top_ad'=>'TOP AD','premium'=>'Premium','reset'=>'Resetare','per_month'=>'/lună'];
+return [
+    'title'           => 'Anunțuri erotice în Elveția',
+    'search'          => 'Caută...',
+    'region'          => 'Regiune',
+    'category'        => 'Categorie',
+    'service'         => 'Serviciu',
+    'search_btn'      => 'Caută',
+    'no_results'      => 'Nu s-au găsit anunțuri.',
+    'listings'        => 'Anunțuri',
+    'top_ad'          => 'TOP AD',
+    'premium'         => 'Premium',
+    'reset'           => 'Resetare',
+    'per_month'       => '/lună',
+    'hero'            => 'Privește sau întâlnește – tu decizi - în toată Elveția',
+    'new_images'      => 'Imagini noi',
+    'age'             => 'Vârstă',
+    'verified'        => 'Verificat',
+    'badge_new'       => '✦ Nou',
+    'private_gallery' => '🔒 Galerie privată',
+    'private_badge'   => '🔒 Privat',
+    'more'            => 'mai multe',
+];

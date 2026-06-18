@@ -1,12 +1,12 @@
 <template>
   <AppLayout>
-    <Head title="Startseite" />
+    <Head :title="t('home.title')" />
 
     <!-- Hero + Filters -->
     <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
-          Anschauen oder treffen – du entscheidest - Schweizweit
+          {{ t('home.hero') }}
         </h1>
 
         <!-- Featured Profiles Carousel -->
@@ -18,7 +18,7 @@
               <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#111] group-hover:ring-[#f08ab0] transition bg-gradient-to-br from-[#e35d8f] via-[#c44a7a] to-[#7c3aed] flex items-center justify-center shadow-lg shadow-[#e35d8f]/40">
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               </div>
-              <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">Neue Bilder</span>
+              <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.new_images') }}</span>
             </a>
 
             <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
@@ -43,7 +43,7 @@
           <div class="relative">
             <select v-model="filters.city"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">Region</option>
+              <option value="">{{ t('home.region') }}</option>
               <option v-for="c in cities" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -51,19 +51,19 @@
           <div class="relative">
             <select v-model="filters.age"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">Alter</option>
-              <option value="18-25">Alter 18-25</option>
-              <option value="25-35">Alter 25-35</option>
-              <option value="35-45">Alter 35-45</option>
-              <option value="45-55">Alter 45-55</option>
-              <option value="55+">Alter 55+</option>
+              <option value="">{{ t('home.age') }}</option>
+              <option value="18-25">{{ t('home.age') }} 18-25</option>
+              <option value="25-35">{{ t('home.age') }} 25-35</option>
+              <option value="35-45">{{ t('home.age') }} 35-45</option>
+              <option value="45-55">{{ t('home.age') }} 45-55</option>
+              <option value="55+">{{ t('home.age') }} 55+</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
           <div class="relative">
             <select v-model="filters.category"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">Rubrik</option>
+              <option value="">{{ t('home.category') }}</option>
               <option v-for="c in categories" :key="c.id" :value="c.slug">{{ c.name }}</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -71,22 +71,22 @@
           <div class="relative">
             <select v-model="filters.service"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">Service</option>
+              <option value="">{{ t('home.service') }}</option>
               <option v-for="s in services" :key="s.id" :value="s.slug">{{ s.name }}</option>
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
           <button @click="applyFilters" class="bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-2.5 rounded transition sm:hidden">
-            Suchen
+            {{ t('home.search_btn') }}
           </button>
           <div class="relative col-span-2 sm:col-span-1 sm:flex-1">
-            <input v-model="filters.search" type="text" placeholder="Suchen..."
+            <input v-model="filters.search" type="text" :placeholder="t('home.search')"
               @keyup.enter="applyFilters"
               class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-4 py-2.5 pr-10 focus:outline-none focus:border-[#e35d8f] placeholder-gray-600" />
             <svg class="absolute right-3 top-3 w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
           <button @click="applyFilters" class="hidden sm:block bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-5 py-2.5 rounded transition">
-            Suchen
+            {{ t('home.search_btn') }}
           </button>
         </div>
 
@@ -95,10 +95,10 @@
             <span v-if="activeCity" class="text-[#e35d8f]">📍 {{ activeCity.name }}</span>
             <span v-if="activeCategory" class="text-[#e35d8f]">🏷 {{ activeCategory.name }}</span>
             <span v-if="activeService" class="text-[#e35d8f]">✨ {{ activeService.name }}</span>
-            <span v-if="activeAge" class="text-[#e35d8f]">🎂 Alter {{ activeAge }}</span>
-            <Link v-if="activeCity || activeCategory || activeService || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ Zurücksetzen</Link>
+            <span v-if="activeAge" class="text-[#e35d8f]">🎂 {{ t('home.age') }} {{ activeAge }}</span>
+            <Link v-if="activeCity || activeCategory || activeService || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ {{ t('home.reset') }}</Link>
           </div>
-          <span class="shrink-0 ml-2 text-gray-500">{{ profiles.total }} Inserate</span>
+          <span class="shrink-0 ml-2 text-gray-500">{{ profiles.total }} {{ t('home.listings') }}</span>
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-4 pb-12 pt-4 sm:pt-6">
       <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-600">
         <div class="text-5xl mb-4">🔍</div>
-        <p class="text-lg">Keine Inserate gefunden.</p>
+        <p class="text-lg">{{ t('home.no_results') }}</p>
       </div>
 
       <div v-else class="space-y-4">
@@ -125,7 +125,7 @@
                 class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                 loading="eager" fetchpriority="high" />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-5xl">👤</div>
-              <span class="absolute top-2 left-2 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
+              <span class="absolute top-2 left-2 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">{{ t('home.top_ad') }}</span>
             </div>
 
             <!-- Info -->
@@ -138,7 +138,7 @@
                   </h2>
                   <span v-if="profiles.data[0].verification_status === 'approved'"
                     class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-500 shrink-0"
-                    title="Verifiziert">
+                    :title="t('home.verified')">
                     <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                   </span>
                 </div>
@@ -159,9 +159,9 @@
               <!-- Badges -->
               <div class="flex flex-wrap gap-1.5 mt-3">
                 <span v-if="isNew(profiles.data[0].created_at)"
-                  class="bg-blue-500/15 text-blue-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">✦ Neu</span>
+                  class="bg-blue-500/15 text-blue-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">{{ t('home.badge_new') }}</span>
                 <span v-if="profiles.data[0].private_media_count > 0"
-                  class="bg-white/5 text-gray-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">🔒 Private Galerie</span>
+                  class="bg-white/5 text-gray-300 text-[10px] font-semibold px-2.5 py-1 rounded-full">{{ t('home.private_gallery') }}</span>
               </div>
             </div>
           </div>
@@ -189,10 +189,10 @@
                 <span v-if="profile.verification_status === 'approved'"
                   class="flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                   <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                  Verifiziert
+                  {{ t('home.verified') }}
                 </span>
                 <span v-if="isNew(profile.created_at)"
-                  class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">✦ Neu</span>
+                  class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ t('home.badge_new') }}</span>
               </div>
             </div>
 
@@ -227,7 +227,7 @@
               <!-- Badges unten -->
               <div class="flex flex-wrap gap-1 mt-2">
                 <span v-if="profile.private_media_count > 0"
-                  class="bg-white/5 text-gray-400 text-[10px] px-2 py-0.5 rounded-full">🔒 Privat</span>
+                  class="bg-white/5 text-gray-400 text-[10px] px-2 py-0.5 rounded-full">{{ t('home.private_badge') }}</span>
               </div>
             </div>
 
@@ -253,6 +253,9 @@
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   profiles:       Object,
