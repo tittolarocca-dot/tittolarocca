@@ -219,7 +219,7 @@
                 </div>
 
                 <!-- Teaser -->
-                <p v-if="profile.description" class="text-gray-300 text-xs line-clamp-2 leading-relaxed">
+                <p v-if="profile.description" class="text-gray-300 text-sm line-clamp-2 leading-relaxed">
                   {{ profile.description }}
                 </p>
               </div>
