@@ -34,15 +34,16 @@ class DatabaseSeeder extends Seeder
 
         // Kategorien
         $categories = [
-            ['name' => 'Escort',              'slug' => 'escort'],
-            ['name' => 'Massage',             'slug' => 'massage'],
-            ['name' => 'Trans/TS',            'slug' => 'trans-ts'],
-            ['name' => 'Männer',              'slug' => 'maenner'],
-            ['name' => 'Paare',               'slug' => 'paare'],
-            ['name' => 'Domina',              'slug' => 'domina'],
-            ['name' => 'Ich bin besuchbar',   'slug' => 'ich-bin-besuchbar'],
-            ['name' => 'Ich komme zu dir',    'slug' => 'ich-komme-zu-dir'],
-            ['name' => 'Begleitservice',      'slug' => 'begleitservice'],
+            ['name' => 'Escort',                 'slug' => 'escort'],
+            ['name' => 'Massage',                'slug' => 'massage'],
+            ['name' => 'Trans/TS',               'slug' => 'trans-ts'],
+            ['name' => 'Männer',                 'slug' => 'maenner'],
+            ['name' => 'Paare',                  'slug' => 'paare'],
+            ['name' => 'Domina',                 'slug' => 'domina'],
+            ['name' => 'Ich bin besuchbar',      'slug' => 'ich-bin-besuchbar'],
+            ['name' => 'Ich komme zu dir',       'slug' => 'ich-komme-zu-dir'],
+            ['name' => 'Begleitservice',         'slug' => 'begleitservice'],
+            ['name' => 'Content (Fotos/Videos)', 'slug' => 'content-fotos-videos'],
         ];
         foreach ($categories as $i => $cat) {
             Category::create(array_merge($cat, ['sort_order' => $i]));
