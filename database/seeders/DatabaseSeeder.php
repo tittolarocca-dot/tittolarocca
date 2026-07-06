@@ -50,11 +50,35 @@ class DatabaseSeeder extends Seeder
         }
 
         // Tags / Leistungen
-        $tags = ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
-                 'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
-                 'AO', 'Französisch', 'Anal', 'Safe Sex'];
-        foreach ($tags as $tag) {
-            Tag::create(['name' => $tag, 'slug' => \Illuminate\Support\Str::slug($tag)]);
+        $tagGroups = [
+            null => ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
+                     'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
+                     'AO', 'Französisch', 'Anal', 'Safe Sex'],
+            'Softcore Service' => [
+                'Foto-Aufnahmen', 'Striptease', 'Kuscheln', 'Zungenküsse', 'Dirty Talk',
+                'Intimrasur', 'Dusch-/Badespiele', 'Ölmassage', 'Erotische Massage',
+                'Thai-Massage', 'Tantra-Sex', 'Busensex', 'Vaginal-Sex', 'Schenkelsex',
+                'Girlfriendsex', 'Oralverkehr', 'Lecken', 'Masturbation', 'Fingern',
+                'Dildo-/Vibratorspiele', '69', 'Handjob', 'Fuß-Erotik', 'Spanking passiv',
+                'Spanking aktiv', 'Video-Aufnahmen',
+            ],
+            'Hardcore Service' => [
+                'Gesichtsbesamung', 'Körperbesamung', 'Facesitting passiv', 'Facesitting aktiv',
+                'Deepthroat', 'Squirting', 'Hardcore Foto-Aufnahmen', 'Analverkehr passiv',
+                'Analverkehr aktiv', 'Anal-Fingern aktiv', 'Anal-Fingern passiv', 'Rimming aktiv',
+                'Rimming passiv', 'Fisting aktiv', 'Fisting passiv', 'Sandwich', 'Dreier MMF',
+                'Dreier MFF', 'Männerschuss', 'Gangbang Party', 'Lesben-Spiele', 'Homo-Spiele',
+                'Hardcore Video-Aufnahmen',
+            ],
+        ];
+        foreach ($tagGroups as $group => $tags) {
+            foreach ($tags as $tag) {
+                $slug = \Illuminate\Support\Str::slug($tag) ?: \Illuminate\Support\Str::slug($group . '-' . $tag);
+                if (Tag::where('slug', $slug)->exists()) {
+                    continue;
+                }
+                Tag::create(['name' => $tag, 'slug' => $slug, 'group' => $group]);
+            }
         }
 
         // Listing-Pakete

@@ -96,18 +96,21 @@
         </div>
 
         <!-- Tags -->
-        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-sm">
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Angebote / Tags</h2>
-          <div class="flex flex-wrap gap-2">
-            <button v-for="tag in tags" :key="tag.id" type="button" @click="toggleTag(tag.id)"
-              :class="[
-                'px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
-                form.tag_ids.includes(tag.id)
-                  ? 'bg-[#e35d8f] text-white border-[#e35d8f]'
-                  : 'bg-transparent text-gray-600 border-gray-200 hover:border-[#e35d8f]/50',
-              ]">
-              {{ tag.name }}
-            </button>
+          <div v-for="group in tagGroups" :key="group.label" class="space-y-2">
+            <h3 class="text-[11px] font-bold text-[#e35d8f] uppercase tracking-wide">{{ group.label }}</h3>
+            <div class="flex flex-wrap gap-2">
+              <button v-for="tag in group.items" :key="tag.id" type="button" @click="toggleTag(tag.id)"
+                :class="[
+                  'px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
+                  form.tag_ids.includes(tag.id)
+                    ? 'bg-[#e35d8f] text-white border-[#e35d8f]'
+                    : 'bg-transparent text-gray-600 border-gray-200 hover:border-[#e35d8f]/50',
+                ]">
+                {{ tag.name }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -176,6 +179,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputField from '@/Components/InputField.vue';
@@ -186,6 +190,24 @@ const props = defineProps({
   cities:     Array,
   categories: Array,
   tags:       Array,
+});
+
+// Tags nach Gruppe bündeln – ungruppierte zuerst, dann Softcore / Hardcore
+const tagGroups = computed(() => {
+  const groups = new Map();
+  for (const tag of props.tags ?? []) {
+    const key = tag.group || 'Allgemein';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(tag);
+  }
+  const order = ['Allgemein', 'Softcore Service', 'Hardcore Service'];
+  return [...groups.entries()]
+    .sort((a, b) => {
+      const ia = order.indexOf(a[0]);
+      const ib = order.indexOf(b[0]);
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    })
+    .map(([label, items]) => ({ label, items }));
 });
 
 const steps = ['Profil erstellen', 'Paket wählen', 'Zahlung', 'Live!'];
