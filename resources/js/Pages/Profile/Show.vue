@@ -239,10 +239,17 @@
           <!-- Steckbrief / Details -->
           <div v-if="details.length" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{{ t('profile.details_section') }}</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3">
-              <div v-for="item in details" :key="item.label" class="flex flex-col">
-                <span class="text-[11px] text-gray-500 uppercase tracking-wide">{{ item.label }}</span>
-                <span class="text-sm text-white font-medium">{{ item.value }}</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
+              <div v-for="item in details" :key="item.label" class="flex items-center gap-2.5">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#e35d8f]/15 border border-[#e35d8f]/30 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-[#e35d8f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                    <path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" />
+                  </svg>
+                </span>
+                <span class="min-w-0">
+                  <span class="block text-[11px] text-gray-500 uppercase tracking-wide leading-tight">{{ item.label }}</span>
+                  <span class="block text-sm text-white font-medium leading-tight truncate">{{ item.value }}</span>
+                </span>
               </div>
             </div>
           </div>
@@ -671,19 +678,37 @@ const avgRating = computed(() => {
   return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
 });
 
+// Outline-Icons (Heroicons-Stil, 24er viewBox) – bewusst andere Motive als die Vorlage
+const detailIcons = {
+  // Globus → Nationalität
+  nationality: 'M12 21a9 9 0 100-18 9 9 0 000 18zm0 0c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3M3.6 9h16.8M3.6 15h16.8',
+  // Auf-/Ab-Pfeil → Körpergrösse
+  height: 'M12 3.75v16.5m0 0l-3.75-3.75M12 20.25l3.75-3.75M12 3.75L8.25 7.5M12 3.75L15.75 7.5',
+  // Auge → Augenfarbe
+  eye_color: 'M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178zM15 12a3 3 0 11-6 0 3 3 0 016 0z',
+  // Person → Körperbau
+  body_type: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.118a7.5 7.5 0 0115 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.5-1.632z',
+  // Funkeln → Intimbereich
+  intimate_area: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z',
+  // Flamme → Rauchen
+  smoking: 'M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z',
+  // Stern → Tattoo
+  tattoo: 'M11.48 3.5a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z',
+};
+
 const details = computed(() => {
   const p = props.profile;
   const yesNo = (v) => (v ? t('profile.yes') : t('profile.no'));
   const items = [
-    p.nationality           && { label: t('profile.nationality'),   value: p.nationality },
-    p.height_cm             && { label: t('profile.height'),         value: `${p.height_cm} cm` },
-    p.eye_color             && { label: t('profile.eye_color'),      value: p.eye_color },
-    p.body_type             && { label: t('profile.body_type'),      value: p.body_type },
-    p.intimate_area         && { label: t('profile.intimate_area'),  value: p.intimate_area },
-    p.smoking !== null && p.smoking !== undefined && { label: t('profile.smoking'), value: yesNo(p.smoking) },
-    p.tattoo  !== null && p.tattoo  !== undefined && { label: t('profile.tattoo'),  value: yesNo(p.tattoo) },
+    p.nationality           && { key: 'nationality',   label: t('profile.nationality'),   value: p.nationality },
+    p.height_cm             && { key: 'height',         label: t('profile.height'),        value: `${p.height_cm} cm` },
+    p.eye_color             && { key: 'eye_color',      label: t('profile.eye_color'),     value: p.eye_color },
+    p.body_type             && { key: 'body_type',      label: t('profile.body_type'),     value: p.body_type },
+    p.intimate_area         && { key: 'intimate_area',  label: t('profile.intimate_area'), value: p.intimate_area },
+    p.smoking !== null && p.smoking !== undefined && { key: 'smoking', label: t('profile.smoking'), value: yesNo(p.smoking) },
+    p.tattoo  !== null && p.tattoo  !== undefined && { key: 'tattoo',  label: t('profile.tattoo'),  value: yesNo(p.tattoo) },
   ];
-  return items.filter(Boolean);
+  return items.filter(Boolean).map((i) => ({ ...i, icon: detailIcons[i.key] }));
 });
 
 function startTrial() {
