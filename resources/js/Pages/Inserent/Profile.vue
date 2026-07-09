@@ -76,6 +76,73 @@
               <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-600">{{ form.errors.category_id }}</p>
             </div>
           </div>
+
+          <!-- Weitere Angaben -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <InputField id="nationality" label="Nationalität"
+              v-model="form.nationality" :error="form.errors.nationality"
+              placeholder="z.B. Schweiz, Italien…" />
+            <InputField id="height_cm" label="Körpergrösse (cm)"
+              v-model="form.height_cm" type="number" min="120" max="230"
+              :error="form.errors.height_cm" placeholder="z.B. 168" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Augenfarbe -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Augenfarbe</label>
+              <select v-model="form.eye_color"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="c in eyeColors" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+
+            <!-- Körperbau -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Körperbau</label>
+              <select v-model="form.body_type"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="b in bodyTypes" :key="b" :value="b">{{ b }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Rauchen -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Rauchen</label>
+              <select v-model="form.smoking"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option :value="null">Keine Angabe</option>
+                <option :value="true">Ja</option>
+                <option :value="false">Nein</option>
+              </select>
+            </div>
+
+            <!-- Tattoo -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tattoo</label>
+              <select v-model="form.tattoo"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option :value="null">Keine Angabe</option>
+                <option :value="true">Ja</option>
+                <option :value="false">Nein</option>
+              </select>
+            </div>
+
+            <!-- Intimbereich -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Intimbereich</label>
+              <select v-model="form.intimate_area"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option value="Rasiert">Rasiert</option>
+                <option value="Nicht rasiert">Nicht rasiert</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- Beschreibung -->
@@ -212,12 +279,22 @@ const tagGroups = computed(() => {
 
 const steps = ['Profil erstellen', 'Paket wählen', 'Zahlung', 'Live!'];
 
+const eyeColors = ['Braun', 'Blau', 'Grün', 'Grau', 'Bernstein', 'Schwarz'];
+const bodyTypes = ['Schlank', 'Sportlich', 'Rundlich'];
+
 const form = useForm({
   display_name:           props.profile?.display_name           ?? '',
   description:            props.profile?.description            ?? '',
   city_id:                props.profile?.city_id                ?? '',
   category_id:            props.profile?.category_id            ?? '',
   age:                    props.profile?.age                    ?? '',
+  nationality:            props.profile?.nationality            ?? '',
+  height_cm:              props.profile?.height_cm              ?? '',
+  eye_color:              props.profile?.eye_color              ?? '',
+  smoking:                props.profile?.smoking                ?? null,
+  tattoo:                 props.profile?.tattoo                 ?? null,
+  intimate_area:          props.profile?.intimate_area          ?? '',
+  body_type:              props.profile?.body_type              ?? '',
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',
   address:                props.profile?.address                ?? '',

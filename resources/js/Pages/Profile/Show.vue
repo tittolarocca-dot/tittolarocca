@@ -236,6 +236,17 @@
             <p class="text-white text-[16px] leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
           </div>
 
+          <!-- Steckbrief / Details -->
+          <div v-if="details.length" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{{ t('profile.details_section') }}</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3">
+              <div v-for="item in details" :key="item.label" class="flex flex-col">
+                <span class="text-[11px] text-gray-500 uppercase tracking-wide">{{ item.label }}</span>
+                <span class="text-sm text-white font-medium">{{ item.value }}</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Angebote & Services (Tags as checklist) -->
           <div v-if="profile.tags && profile.tags.length" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{{ t('profile.services_section') }}</h2>
@@ -658,6 +669,21 @@ const tabs = computed(() => [
 const avgRating = computed(() => {
   if (!props.reviews.length) return 0;
   return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
+});
+
+const details = computed(() => {
+  const p = props.profile;
+  const yesNo = (v) => (v ? t('profile.yes') : t('profile.no'));
+  const items = [
+    p.nationality           && { label: t('profile.nationality'),   value: p.nationality },
+    p.height_cm             && { label: t('profile.height'),         value: `${p.height_cm} cm` },
+    p.eye_color             && { label: t('profile.eye_color'),      value: p.eye_color },
+    p.body_type             && { label: t('profile.body_type'),      value: p.body_type },
+    p.intimate_area         && { label: t('profile.intimate_area'),  value: p.intimate_area },
+    p.smoking !== null && p.smoking !== undefined && { label: t('profile.smoking'), value: yesNo(p.smoking) },
+    p.tattoo  !== null && p.tattoo  !== undefined && { label: t('profile.tattoo'),  value: yesNo(p.tattoo) },
+  ];
+  return items.filter(Boolean);
 });
 
 function startTrial() {

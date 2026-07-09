@@ -9,6 +9,8 @@ class Profile extends Model
     protected $fillable = [
         'user_id', 'slug', 'display_name', 'description',
         'city_id', 'category_id', 'age',
+        'nationality', 'height_cm', 'eye_color', 'smoking', 'tattoo',
+        'intimate_area', 'body_type',
         'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
@@ -26,6 +28,8 @@ class Profile extends Model
         'verification_submitted_at' => 'datetime',
         'verification_reviewed_at'  => 'datetime',
         'subscription_price_chf'    => 'decimal:2',
+        'smoking'                   => 'boolean',
+        'tattoo'                    => 'boolean',
     ];
 
     // Encrypted WhatsApp getter/setter
