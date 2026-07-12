@@ -18,6 +18,18 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $f = $this->parseFilters($request);
+        $searched = $request->boolean('searched');
+
+        // Vor dem ersten "Suchen"-Klick keine Profile anzeigen
+        if (! $searched) {
+            return inertia('Search/Index', [
+                'profiles'    => Profile::whereRaw('1 = 0')->paginate(20),
+                'services'    => Tag::orderBy('name')->get(['id', 'name', 'group']),
+                'filters'     => $f,
+                'resultCount' => 0,
+                'searched'    => false,
+            ]);
+        }
 
         $query = Profile::with([
             'city', 'category', 'publicMedia',
@@ -109,6 +121,7 @@ class SearchController extends Controller
             'services'    => Tag::orderBy('name')->get(['id', 'name', 'group']),
             'filters'     => $f,
             'resultCount' => $profiles->total(),
+            'searched'    => true,
         ]);
     }
 

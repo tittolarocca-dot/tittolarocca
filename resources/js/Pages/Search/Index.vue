@@ -11,7 +11,9 @@
         </div>
         <div>
           <h1 class="text-2xl font-black text-white">Suchen</h1>
-          <p class="text-xs text-gray-500">{{ resultCount }} Inserate gefunden</p>
+          <p class="text-xs text-gray-500">
+            {{ searched ? resultCount + ' Inserate gefunden' : 'Filter wählen und auf „Suchen“ klicken' }}
+          </p>
         </div>
       </div>
 
@@ -179,12 +181,21 @@
 
       <!-- ══ ERGEBNISSE ═════════════════════════════════════════════════ -->
       <div class="mt-8">
-        <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-600">
+        <!-- Noch keine Suche ausgeführt -->
+        <div v-if="!searched" class="text-center py-20 text-gray-600">
+          <div class="text-5xl mb-4">🔍</div>
+          <p class="text-lg">Wähle deine Filter und klicke auf „Suchen“.</p>
+          <p class="text-sm mt-1 text-gray-700">Deine Ergebnisse erscheinen dann hier.</p>
+        </div>
+
+        <!-- Gesucht, aber nichts gefunden -->
+        <div v-else-if="profiles.data.length === 0" class="text-center py-20 text-gray-600">
           <div class="text-5xl mb-4">🔍</div>
           <p class="text-lg">Keine Inserate gefunden.</p>
           <p class="text-sm mt-1 text-gray-700">Versuche es mit weniger Filtern.</p>
         </div>
 
+        <!-- Treffer -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <ProfileCard v-for="profile in profiles.data" :key="profile.id" :profile="profile" />
         </div>
@@ -216,6 +227,7 @@ const props = defineProps({
   services:    Array,
   filters:     Object,
   resultCount: Number,
+  searched:    Boolean,
 });
 
 const page = usePage();
@@ -316,7 +328,7 @@ function knob(on) {
 }
 
 function buildQuery() {
-  const q = {};
+  const q = { searched: 1 };
   // Echte Filter
   if (state.q.trim())            q.q = state.q.trim();
   if (state.region && state.region !== 'nearby') q.region = state.region;
