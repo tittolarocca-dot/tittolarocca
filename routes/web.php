@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -13,6 +14,7 @@ Route::get('/lang/{locale}', [LocaleController::class, 'switch'])
 
 // ── Public ────────────────────────────────────────────────────────────────────
 Route::get('/',                          [HomeController::class,   'index'])->name('home');
+Route::get('/suchen',                    [SearchController::class, 'index'])->name('search');
 Route::get('/stadt/{city:slug}',         [HomeController::class,   'city'])->name('city');
 Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])->name('category');
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');

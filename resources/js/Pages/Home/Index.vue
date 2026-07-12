@@ -21,6 +21,15 @@
               <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.new_images') }}</span>
             </a>
 
+            <!-- Suchen -->
+            <a :href="route('search')"
+              class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#111] group-hover:ring-[#f08ab0] transition bg-gradient-to-br from-[#7c3aed] via-[#c44a7a] to-[#e35d8f] flex items-center justify-center shadow-lg shadow-[#e35d8f]/40">
+                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+              <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.search_btn') }}</span>
+            </a>
+
             <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
               :href="route('profile.show', profile.slug)"
               class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">

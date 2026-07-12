@@ -205,7 +205,7 @@ class ProfileController extends Controller
             'eye_color'              => ['nullable', 'string', 'max:30'],
             'smoking'                => ['nullable', 'boolean'],
             'tattoo'                 => ['nullable', 'boolean'],
-            'intimate_area'          => ['nullable', 'string', 'in:Rasiert,Nicht rasiert'],
+            'intimate_area'          => ['nullable', 'string', 'in:Glatt,Teilrasiert,Natürlich'],
             'body_type'              => ['nullable', 'string', 'in:Schlank,Sportlich,Rundlich'],
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
             'telegram_username'      => ['nullable', 'string', 'max:100'],
