@@ -79,4 +79,8 @@ return [
     'tattoo' => 'Tetoválás',
     'yes' => 'Igen',
     'no' => 'Nem',
+    'origin' => 'Származás',
+    'weight' => 'Testsúly',
+    'cup_size' => 'Melltartóméret',
+    'breast_type' => 'Mell típusa',
 ];

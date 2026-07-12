@@ -79,4 +79,8 @@ return [
     'tattoo' => 'Tatuaj',
     'yes' => 'Da',
     'no' => 'Nu',
+    'origin' => 'Origine',
+    'weight' => 'Greutate',
+    'cup_size' => 'Cupă',
+    'breast_type' => 'Tip de sân',
 ];

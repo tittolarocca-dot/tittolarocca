@@ -694,15 +694,33 @@ const detailIcons = {
   smoking: 'M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z',
   // Stern → Tattoo
   tattoo: 'M11.48 3.5a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z',
+  // Globus (Meridiane) → Herkunft
+  origin: 'M12 21a9 9 0 100-18 9 9 0 000 18zm0 0a14.98 14.98 0 01-3.5-9A14.98 14.98 0 0112 3a14.98 14.98 0 013.5 9 14.98 14.98 0 01-3.5 9z',
+  // Waage → Gewicht
+  weight: 'M12 3a2.25 2.25 0 00-2.12 1.5H6a1.5 1.5 0 00-1.44 1.08L2.3 13.2A4.5 4.5 0 006.6 19h.3a4.5 4.5 0 004.3-5.8L9.4 6.5h5.2l-1.8 6.7A4.5 4.5 0 0017.1 19h.3a4.5 4.5 0 004.3-5.8l-2.26-7.62A1.5 1.5 0 0018 4.5h-3.88A2.25 2.25 0 0012 3z',
+  // Herz → Oberweite
+  cup_size: 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z',
+  // Kreise → Brusttyp
+  breast_type: 'M8.25 15a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5zM15.75 15a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z',
 };
+
+const originLabels = {
+  europaeisch: 'Europäisch (Weiß)', asiatisch: 'Asiatisch', schwarz: 'Schwarz',
+  indisch: 'Indisch', latina: 'Latina (Hispanisch)', gemischt: 'Gemischt',
+};
+const breastLabels = { natur: 'Natur', implantate: 'Implantate' };
 
 const details = computed(() => {
   const p = props.profile;
   const yesNo = (v) => (v ? t('profile.yes') : t('profile.no'));
   const items = [
     p.nationality           && { key: 'nationality',   label: t('profile.nationality'),   value: p.nationality },
+    p.origin                && { key: 'origin',         label: t('profile.origin'),        value: originLabels[p.origin] ?? p.origin },
     p.height_cm             && { key: 'height',         label: t('profile.height'),        value: `${p.height_cm} cm` },
+    p.weight_kg             && { key: 'weight',         label: t('profile.weight'),        value: `${p.weight_kg} kg` },
     p.eye_color             && { key: 'eye_color',      label: t('profile.eye_color'),     value: p.eye_color },
+    p.cup_size              && { key: 'cup_size',       label: t('profile.cup_size'),      value: p.cup_size },
+    p.breast_type           && { key: 'breast_type',    label: t('profile.breast_type'),   value: breastLabels[p.breast_type] ?? p.breast_type },
     p.body_type             && { key: 'body_type',      label: t('profile.body_type'),     value: p.body_type },
     p.intimate_area         && { key: 'intimate_area',  label: t('profile.intimate_area'), value: p.intimate_area },
     p.smoking !== null && p.smoking !== undefined && { key: 'smoking', label: t('profile.smoking'), value: yesNo(p.smoking) },

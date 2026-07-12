@@ -79,4 +79,8 @@ return [
     'tattoo' => 'Tattoo',
     'yes' => 'Yes',
     'no' => 'No',
+    'origin' => 'Origin',
+    'weight' => 'Weight',
+    'cup_size' => 'Cup size',
+    'breast_type' => 'Breast type',
 ];

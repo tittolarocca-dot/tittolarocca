@@ -54,21 +54,29 @@ class DatabaseSeeder extends Seeder
             null => ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
                      'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
                      'AO', 'Französisch', 'Anal', 'Safe Sex'],
-            'Softcore Service' => [
-                'Foto-Aufnahmen', 'Striptease', 'Kuscheln', 'Zungenküsse', 'Dirty Talk',
-                'Intimrasur', 'Dusch-/Badespiele', 'Ölmassage', 'Erotische Massage',
-                'Thai-Massage', 'Tantra-Sex', 'Busensex', 'Vaginal-Sex', 'Schenkelsex',
-                'Girlfriendsex', 'Oralverkehr', 'Lecken', 'Masturbation', 'Fingern',
-                'Dildo-/Vibratorspiele', '69', 'Handjob', 'Fuß-Erotik', 'Spanking passiv',
-                'Spanking aktiv', 'Video-Aufnahmen',
+            'Klassisch' => [
+                'Sex Klassisch', 'Blasen mit Gummi',
             ],
-            'Hardcore Service' => [
-                'Gesichtsbesamung', 'Körperbesamung', 'Facesitting passiv', 'Facesitting aktiv',
-                'Deepthroat', 'Squirting', 'Hardcore Foto-Aufnahmen', 'Analverkehr passiv',
-                'Analverkehr aktiv', 'Anal-Fingern aktiv', 'Anal-Fingern passiv', 'Rimming aktiv',
-                'Rimming passiv', 'Fisting aktiv', 'Fisting passiv', 'Sandwich', 'Dreier MMF',
-                'Dreier MFF', 'Männerschuss', 'Gangbang Party', 'Lesben-Spiele', 'Homo-Spiele',
-                'Hardcore Video-Aufnahmen',
+            'Spezial' => [
+                'Anal mit Schutz', 'Algierfranzösisch', 'Blasen ohne Gummi', 'Hoden Französisch',
+                'Brustbesamung', 'Busenerotik', 'Deep Throat', 'Dildospiele', 'Dreier MFF',
+                'Double penetration', 'Dreier MMF', 'Gesichtsfick', 'Foto/Video Aufnahmen',
+                'Französisch bei Ihr', 'Gesichtsbesamung (COF)', 'Girlfriendsex', 'Gruppensex',
+                'High Heels', 'Lesbensex', 'Mundvollendung (CIM)', 'Schlucken', 'Rollenspiele',
+                'Sex mit Paaren', 'Strip', 'Zungenküsse', 'Sexualbegleitung',
+                'Service für Behinderte', 'Squirting', 'Spitting',
+            ],
+            'BDSM / Fetisch' => [
+                'Ballbusting', 'Bondage', 'Brustwarzentortur', 'Strapon', 'Domina', 'Einlauf',
+                'Facesitting', 'Fetisch', 'Fingering Anal (aktiv)', 'Fisting Anal (passiv)',
+                'Fisting Vaginal', 'Fuss Erotik', 'Gummi-Puppe', 'Kaviar aktiv', 'Kaviar passiv',
+                'Keuschhaltung', 'Leicht Devot', 'Nadelung', 'Natursekt geben (aktiv)',
+                'Natursekt nehmen (passiv)', 'Rimming aktiv', 'Rimming passiv', 'Sklavenerziehung',
+                'Sklavin', 'Spanking', 'Trampling', 'Wachsbehandlung',
+            ],
+            'Massage' => [
+                'Prostata-Massage', 'Entspannungs Massage', 'Erotische Massage',
+                'Klassische Massage', 'Sakura-Massage', 'Thai-Massage',
             ],
         ];
         foreach ($tagGroups as $group => $tags) {

@@ -11,6 +11,7 @@ class Profile extends Model
         'city_id', 'category_id', 'age',
         'nationality', 'height_cm', 'eye_color', 'smoking', 'tattoo',
         'intimate_area', 'body_type',
+        'gender', 'origin', 'weight_kg', 'cup_size', 'breast_type', 'has_video',
         'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
@@ -30,6 +31,7 @@ class Profile extends Model
         'subscription_price_chf'    => 'decimal:2',
         'smoking'                   => 'boolean',
         'tattoo'                    => 'boolean',
+        'has_video'                 => 'boolean',
     ];
 
     // Encrypted WhatsApp getter/setter

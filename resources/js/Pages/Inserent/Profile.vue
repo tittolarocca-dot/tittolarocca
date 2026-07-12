@@ -146,6 +146,67 @@
           </div>
         </div>
 
+        <!-- Aussehen -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Aussehen</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Geschlecht -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Geschlecht</label>
+              <select v-model="form.gender"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="[val,lbl] in genderOptions" :key="val" :value="val">{{ lbl }}</option>
+              </select>
+            </div>
+
+            <!-- Herkunft -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Herkunft</label>
+              <select v-model="form.origin"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="[val,lbl] in originOptions" :key="val" :value="val">{{ lbl }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Gewicht -->
+            <InputField id="weight_kg" label="Gewicht (kg)"
+              v-model="form.weight_kg" type="number" min="30" max="200"
+              :error="form.errors.weight_kg" placeholder="z.B. 58" />
+
+            <!-- Oberweite -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Oberweite</label>
+              <select v-model="form.cup_size"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="c in cupSizes" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+
+            <!-- Brusttyp -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Brusttyp</label>
+              <select v-model="form.breast_type"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition">
+                <option value="">Keine Angabe</option>
+                <option v-for="[val,lbl] in breastTypes" :key="val" :value="val">{{ lbl }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" v-model="form.has_video"
+              class="w-4 h-4 rounded border-gray-300 text-[#e35d8f] focus:ring-[#e35d8f]" />
+            <span class="text-sm text-gray-700">Ich habe ein Video in meinem Profil</span>
+          </label>
+        </div>
+
         <!-- Beschreibung -->
         <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">Beschreibung</h2>
@@ -268,7 +329,7 @@ const tagGroups = computed(() => {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(tag);
   }
-  const order = ['Allgemein', 'Softcore Service', 'Hardcore Service'];
+  const order = ['Allgemein', 'Klassisch', 'Spezial', 'BDSM / Fetisch', 'Massage'];
   return [...groups.entries()]
     .sort((a, b) => {
       const ia = order.indexOf(a[0]);
@@ -282,6 +343,13 @@ const steps = ['Profil erstellen', 'Paket wählen', 'Zahlung', 'Live!'];
 
 const eyeColors = ['Braun', 'Blau', 'Grün', 'Grau', 'Bernstein', 'Schwarz'];
 const bodyTypes = ['Schlank', 'Sportlich', 'Rundlich'];
+const cupSizes  = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const genderOptions = [['frau', 'Frau'], ['trans', 'Trans'], ['gigolo', 'Gigolo']];
+const originOptions = [
+  ['europaeisch', 'Europäisch (Weiß)'], ['asiatisch', 'Asiatisch'], ['schwarz', 'Schwarz'],
+  ['indisch', 'Indisch'], ['latina', 'Latina (Hispanisch)'], ['gemischt', 'Gemischt'],
+];
+const breastTypes = [['natur', 'Natur'], ['implantate', 'Implantate']];
 
 const form = useForm({
   display_name:           props.profile?.display_name           ?? '',
@@ -296,6 +364,12 @@ const form = useForm({
   tattoo:                 props.profile?.tattoo                 ?? null,
   intimate_area:          props.profile?.intimate_area          ?? '',
   body_type:              props.profile?.body_type              ?? '',
+  gender:                 props.profile?.gender                 ?? '',
+  origin:                 props.profile?.origin                 ?? '',
+  weight_kg:              props.profile?.weight_kg              ?? '',
+  cup_size:               props.profile?.cup_size               ?? '',
+  breast_type:            props.profile?.breast_type            ?? '',
+  has_video:              props.profile?.has_video              ?? false,
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',
   address:                props.profile?.address                ?? '',

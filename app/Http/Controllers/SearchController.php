@@ -14,6 +14,9 @@ class SearchController extends Controller
     private const AGE_MAX = 80;   // 80 = "80+" → keine Obergrenze
     private const HEIGHT_MIN = 140;
     private const HEIGHT_MAX = 205; // 205 = "205+"
+    private const WEIGHT_MIN = 40;
+    private const WEIGHT_MAX = 140; // 140 = "140+"
+    private const CUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
     public function index(Request $request)
     {
@@ -85,6 +88,42 @@ class SearchController extends Controller
             $query->where('height_cm', '<=', $f['height_max']);
         }
 
+        // ── Wer (Geschlecht) ────────────────────────────────────────────
+        if ($f['who']) {
+            $query->where('gender', $f['who']);
+        }
+
+        // ── Herkunft ────────────────────────────────────────────────────
+        if ($f['origin']) {
+            $query->where('origin', $f['origin']);
+        }
+
+        // ── Gewicht ─────────────────────────────────────────────────────
+        if ($f['weight_min'] > self::WEIGHT_MIN) {
+            $query->where('weight_kg', '>=', $f['weight_min']);
+        }
+        if ($f['weight_max'] < self::WEIGHT_MAX) {
+            $query->where('weight_kg', '<=', $f['weight_max']);
+        }
+
+        // ── Oberweite (A–G, alphabetisch vergleichbar) ──────────────────
+        if ($f['cup_min'] && $f['cup_min'] !== 'A') {
+            $query->where('cup_size', '>=', $f['cup_min']);
+        }
+        if ($f['cup_max'] && $f['cup_max'] !== 'G') {
+            $query->where('cup_size', '<=', $f['cup_max']);
+        }
+
+        // ── Brusttyp ────────────────────────────────────────────────────
+        if ($f['breast']) {
+            $query->where('breast_type', $f['breast']);
+        }
+
+        // ── Video vorhanden ─────────────────────────────────────────────
+        if ($f['has_video']) {
+            $query->where('has_video', true);
+        }
+
         // ── Intimbereich ────────────────────────────────────────────────
         if ($f['intim']) {
             $query->where('intimate_area', $f['intim']);
@@ -150,15 +189,28 @@ class SearchController extends Controller
         $region = $request->query('region');
         $region = ($region && City::where('slug', $region)->exists()) ? $region : null;
 
+        $cup = fn ($key) => in_array($request->query($key), self::CUPS, true) ? $request->query($key) : null;
+
         return [
             'q'          => trim((string) $request->query('q', '')) ?: null,
             'region'     => $region,
             'contact'    => in_array($request->query('contact'), ['call-out', 'call-in', 'escort'], true)
                                 ? $request->query('contact') : null,
+            'who'        => in_array($request->query('who'), ['frau', 'trans', 'gigolo'], true)
+                                ? $request->query('who') : null,
+            'origin'     => in_array($request->query('origin'), ['europaeisch', 'asiatisch', 'schwarz', 'indisch', 'latina', 'gemischt'], true)
+                                ? $request->query('origin') : null,
+            'breast'     => in_array($request->query('breast'), ['natur', 'implantate'], true)
+                                ? $request->query('breast') : null,
+            'has_video'  => (bool) $request->query('has_video'),
             'age_min'    => max(self::AGE_MIN, min(self::AGE_MAX, $int('age_min', self::AGE_MIN))),
             'age_max'    => max(self::AGE_MIN, min(self::AGE_MAX, $int('age_max', self::AGE_MAX))),
             'height_min' => max(self::HEIGHT_MIN, min(self::HEIGHT_MAX, $int('height_min', self::HEIGHT_MIN))),
             'height_max' => max(self::HEIGHT_MIN, min(self::HEIGHT_MAX, $int('height_max', self::HEIGHT_MAX))),
+            'weight_min' => max(self::WEIGHT_MIN, min(self::WEIGHT_MAX, $int('weight_min', self::WEIGHT_MIN))),
+            'weight_max' => max(self::WEIGHT_MIN, min(self::WEIGHT_MAX, $int('weight_max', self::WEIGHT_MAX))),
+            'cup_min'    => $cup('cup_min'),
+            'cup_max'    => $cup('cup_max'),
             'intim'      => in_array($request->query('intim'), ['Glatt', 'Teilrasiert', 'Natürlich'], true)
                                 ? $request->query('intim') : null,
             'smoking'    => $bool('smoking'),

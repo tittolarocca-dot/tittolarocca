@@ -234,7 +234,7 @@ const page = usePage();
 const cities = computed(() => page.props.cities ?? []);
 
 // Option-Listen [wert, label]
-const whoOptions     = [['', 'Alle'], ['frauen', 'Frauen'], ['trans', 'Trans'], ['gigolos', 'Gigolos']];
+const whoOptions     = [['', 'Alle'], ['frau', 'Frauen'], ['trans', 'Trans'], ['gigolo', 'Gigolos']];
 const contactOptions = [['', 'Alle'], ['call-out', 'Call-Out'], ['call-in', 'Call-In'], ['escort', 'Escort']];
 const originOptions  = [['', 'Alle'], ['europaeisch', 'Europäisch (Weiß)'], ['asiatisch', 'Asiatisch'], ['schwarz', 'Schwarz'], ['indisch', 'Indisch'], ['latina', 'Latina (Hispanisch)'], ['gemischt', 'Gemischt']];
 const intimOptions   = [['', 'Alle'], ['Glatt', 'Glatt'], ['Teilrasiert', 'Teilrasiert'], ['Natürlich', 'Natürlich']];
@@ -243,6 +243,10 @@ const breastOptions  = [['', 'Alle'], ['natur', 'Natur'], ['implantate', 'Implan
 const smokingOptions = [['', 'Alle'], ['0', 'Nichtraucher'], ['1', 'Raucher']];
 const cupLetters     = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const cupFormat      = (v) => cupLetters[v] ?? v;
+function cupIndex(letter, fallback) {
+  const i = cupLetters.indexOf(letter);
+  return i === -1 ? fallback : i;
+}
 
 // UI-only Filter aus der URL wiederherstellen (noch keine DB-Anbindung)
 function urlParam(key, fallback = '') {
@@ -264,17 +268,17 @@ const state = reactive({
   verified: !!f.verified,
   services: Array.isArray(f.services) ? [...f.services] : [],
   contact:  f.contact ?? urlParam('contact'),
+  who:      f.who ?? '',
+  origin:   f.origin ?? '',
+  weight:   [f.weight_min ?? 40, f.weight_max ?? 140],
+  cup:      [cupIndex(f.cup_min, 0), cupIndex(f.cup_max, 6)],
+  breast:   f.breast ?? '',
+  authVideo: !!f.has_video,
   tattooLevel: urlParam('tattoo_level') || (f.tattoo === false ? 'Keine' : f.tattoo === true ? 'Viele' : ''),
 
-  // ── UI vorbereitet, noch KEINE DB-Felder (siehe README/Hinweis) ──
-  who:       urlParam('who'),
-  origin:    urlParam('origin'),
-  weight:    [Number(urlParam('weight_min', 40)), Number(urlParam('weight_max', 140))],
-  cup:       [Number(urlParam('cup_min', 0)), Number(urlParam('cup_max', 6))],
-  breast:    urlParam('breast'),
+  // ── UI vorbereitet, noch KEINE DB-Felder (siehe Hinweis) ──
   authPhone: urlParam('auth_phone') === '1',
   authAge:   urlParam('auth_age') === '1',
-  authVideo: urlParam('auth_video') === '1',
 });
 
 const open = reactive({ aussehen: true, auth: false, services: false });
@@ -293,7 +297,7 @@ const serviceGroups = computed(() => {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(s);
   }
-  const order = ['Allgemein', 'Softcore Service', 'Hardcore Service'];
+  const order = ['Allgemein', 'Klassisch', 'Spezial', 'BDSM / Fetisch', 'Massage'];
   return [...groups.entries()]
     .sort((a, b) => {
       const ia = order.indexOf(a[0]); const ib = order.indexOf(b[0]);
@@ -333,29 +337,29 @@ function buildQuery() {
   if (state.q.trim())            q.q = state.q.trim();
   if (state.region && state.region !== 'nearby') q.region = state.region;
   if (state.contact)             q.contact = state.contact;
+  if (state.who)                 q.who = state.who;
+  if (state.origin)              q.origin = state.origin;
+  if (state.breast)              q.breast = state.breast;
   if (state.age[0] > 18)         q.age_min = state.age[0];
   if (state.age[1] < 80)         q.age_max = state.age[1];
   if (state.height[0] > 140)     q.height_min = state.height[0];
   if (state.height[1] < 205)     q.height_max = state.height[1];
+  if (state.weight[0] > 40)      q.weight_min = state.weight[0];
+  if (state.weight[1] < 140)     q.weight_max = state.weight[1];
+  if (state.cup[0] > 0)          q.cup_min = cupLetters[state.cup[0]];
+  if (state.cup[1] < 6)          q.cup_max = cupLetters[state.cup[1]];
   if (state.intim)               q.intim = state.intim;
   if (state.smoking)             q.smoking = state.smoking;
   if (tattooParam.value !== '')  q.tattoo = tattooParam.value;
   if (state.verified)            q.verified = 1;
+  if (state.authVideo)           q.has_video = 1;
   if (state.services.length)     q.services = state.services.join(',');
 
   // UI-only (für persistente/teilbare URL – Backend ignoriert diese noch)
   if (state.region === 'nearby') q.region = 'nearby';
-  if (state.who)                 q.who = state.who;
-  if (state.origin)              q.origin = state.origin;
-  if (state.weight[0] > 40)      q.weight_min = state.weight[0];
-  if (state.weight[1] < 140)     q.weight_max = state.weight[1];
-  if (state.cup[0] > 0)          q.cup_min = state.cup[0];
-  if (state.cup[1] < 6)          q.cup_max = state.cup[1];
-  if (state.breast)              q.breast = state.breast;
   if (state.tattooLevel)         q.tattoo_level = state.tattooLevel;
   if (state.authPhone)           q.auth_phone = 1;
   if (state.authAge)             q.auth_age = 1;
-  if (state.authVideo)           q.auth_video = 1;
   return q;
 }
 
