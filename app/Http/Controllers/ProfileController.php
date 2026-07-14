@@ -39,12 +39,30 @@ class ProfileController extends Controller
             ->where('profile_id', $profile->id)
             ->exists() : false;
 
-        $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility']);
+        // Freigeschaltete Medien liefern die echte Datei; gesperrte NUR die
+        // serverseitig weichgezeichnete Vorschau (niemals das Original).
+        $streamItem = fn ($m) => [
+            'id'         => $m->id,
+            'type'       => $m->type,
+            'visibility' => $m->visibility,
+            'url'        => route('media.stream', $m->id),
+        ];
+        $lockedItem = fn ($m) => [
+            'id'          => $m->id,
+            'type'        => $m->type,
+            'visibility'  => $m->visibility,
+            'preview_url' => route('media.preview', $m->id),
+        ];
 
-        $privateMediaCount = $profile->privateMedia()->count();
-        $privateMedia = ($isOwner || $subscribed || $trialSub)
-            ? $profile->privateMedia()->get(['id', 'type', 'visibility'])
-            : collect([]);
+        $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility'])
+            ->map($streamItem)->values();
+
+        $unlocked      = $isOwner || $subscribed || (bool) $trialSub;
+        $privateItems  = $profile->privateMedia()->get(['id', 'type', 'visibility']);
+        $privateMediaCount = $privateItems->count();
+        $privateMedia = $unlocked
+            ? $privateItems->map($streamItem)->values()
+            : $privateItems->map($lockedItem)->values();
 
         $reviews = $profile->approvedReviews()
             ->with('reviewer:id,name')

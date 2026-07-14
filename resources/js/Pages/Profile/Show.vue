@@ -125,8 +125,8 @@
                 <div class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden">
                   <div class="flex gap-1 h-full">
                     <div class="relative overflow-hidden" style="flex:3">
-                      <div class="absolute inset-0 scale-110"
-                        :style="`background: ${blurGradients[0]}; filter: blur(16px) brightness(0.5);`" />
+                      <img :src="privateMedia[0]?.preview_url" alt="Locked"
+                        class="absolute inset-0 w-full h-full object-cover blur-lg scale-110 brightness-75" />
                       <div class="absolute inset-0 flex items-center justify-center">
                         <svg class="w-10 h-10 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
@@ -134,9 +134,9 @@
                       </div>
                     </div>
                     <div class="grid grid-cols-2 gap-1" style="flex:2">
-                      <div v-for="i in Math.min(privateMediaCount, 4)" :key="i" class="relative overflow-hidden">
-                        <div class="absolute inset-0 scale-110"
-                          :style="`background: ${blurGradients[i % blurGradients.length]}; filter: blur(16px) brightness(0.5);`" />
+                      <div v-for="item in privateMedia.slice(1, 5)" :key="item.id" class="relative overflow-hidden">
+                        <img :src="item.preview_url" alt="Locked"
+                          class="absolute inset-0 w-full h-full object-cover blur-lg scale-110 brightness-75" />
                         <div class="absolute inset-0 flex items-center justify-center">
                           <svg class="w-7 h-7 text-white/60" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
@@ -146,6 +146,10 @@
                     </div>
                   </div>
                   <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                    <div class="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center mb-2">
+                      <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <p class="text-xs text-gray-200 mb-1">{{ t('home.members_only') }}</p>
                     <p class="font-bold text-white text-base mb-1">{{ t('profile.private_count', { count: privateMediaCount }) }}</p>
                     <p class="text-xs text-gray-300 mb-4">{{ t('profile.unlock_for', { price: profile.subscription_price_chf }) }}</p>
                     <template v-if="!$page.props.auth.user">
@@ -656,17 +660,6 @@ const submittingReview = ref(false);
 const reviewForm       = ref({ stars: 0, comment: '' });
 const replyTarget      = ref(null);
 const replyText        = ref('');
-
-const blurGradients = [
-  'linear-gradient(135deg, #f093fb, #f5576c)',
-  'linear-gradient(135deg, #4facfe, #00f2fe)',
-  'linear-gradient(135deg, #f7971e, #ffd200)',
-  'linear-gradient(135deg, #a18cd1, #fbc2eb)',
-  'linear-gradient(135deg, #84fab0, #8fd3f4)',
-  'linear-gradient(135deg, #fd7043, #e35d8f)',
-  'linear-gradient(135deg, #30cfd0, #330867)',
-  'linear-gradient(135deg, #f6d365, #fda085)',
-];
 
 const tabs = computed(() => [
   { key: 'public',  label: t('profile.tab_public'), count: props.publicMedia.length },

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class Media extends Model
 {
     protected $fillable = [
-        'profile_id', 'type', 'storage_path', 'thumbnail_path',
+        'profile_id', 'type', 'storage_path', 'thumbnail_path', 'blur_path',
         'visibility', 'status', 'rejection_reason', 'sort_order',
         'filesize_bytes', 'duration_seconds',
     ];

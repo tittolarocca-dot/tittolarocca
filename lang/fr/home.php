@@ -23,4 +23,5 @@ return [
     'new_images_desc' => 'Les derniers uploads des annonces',
     'private_label'   => 'Privé',
     'no_images'       => 'Aucune image trouvée.',
+    'members_only'    => 'Abonnés uniquement',
 ];

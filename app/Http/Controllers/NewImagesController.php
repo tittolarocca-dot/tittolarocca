@@ -8,6 +8,8 @@ class NewImagesController extends Controller
 {
     public function index(Request $request)
     {
+        // Öffentliche UND private Bilder anzeigen – private jedoch nur als
+        // gesperrte, serverseitig weichgezeichnete Vorschau (nie das Original).
         $query = Media::with(['profile:id,slug,display_name'])
             ->where('type', 'image')
             ->where('status', 'approved')
@@ -16,11 +18,20 @@ class NewImagesController extends Controller
                 ->where('listing_expires_at', '>', now())
             );
 
-        if (! auth()->check()) {
-            $query->where('visibility', 'public');
-        }
-
-        $images = $query->orderByDesc('created_at')->paginate(48)->withQueryString();
+        $images = $query->orderByDesc('created_at')->paginate(48)->withQueryString()
+            ->through(function ($m) {
+                $private = $m->visibility === 'private';
+                return [
+                    'id'          => $m->id,
+                    'private'     => $private,
+                    'url'         => $private ? null : route('media.stream', $m->id),
+                    'preview_url' => $private ? route('media.preview', $m->id) : null,
+                    'profile'     => [
+                        'slug'         => $m->profile->slug,
+                        'display_name' => $m->profile->display_name,
+                    ],
+                ];
+            });
 
         return inertia('NewImages/Index', [
             'images' => $images,

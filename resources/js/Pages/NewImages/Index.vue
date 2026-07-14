@@ -23,22 +23,24 @@
           :href="route('profile.show', image.profile.slug)"
           class="relative block overflow-hidden rounded-xl group aspect-[3/4]"
         >
+          <!-- Bild: privat = serverseitig weichgezeichnete Vorschau -->
           <img
-            :src="image.url"
-            :alt="image.profile.display_name"
-            class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+            :src="image.private ? image.preview_url : image.url"
+            :alt="image.private ? 'Locked' : image.profile.display_name"
+            :class="['w-full h-full object-cover transition duration-300 group-hover:scale-105', image.private ? 'blur-md scale-110' : '']"
             loading="lazy"
           />
 
-          <!-- Private overlay -->
-          <div v-if="image.visibility === 'private'"
-            class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm rounded-full px-2 py-0.5 flex items-center gap-1">
-            <svg class="w-3 h-3 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-            <span class="text-[10px] text-[#e35d8f] font-bold">{{ t('home.private_label') }}</span>
+          <!-- Locked-Content-Overlay -->
+          <div v-if="image.private" class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+            <div class="w-11 h-11 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center mb-2">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+            </div>
+            <span class="text-[11px] text-white font-bold drop-shadow text-center px-2">{{ t('home.members_only') }}</span>
           </div>
 
-          <!-- Hover overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3">
+          <!-- Hover overlay (nur öffentliche Bilder) -->
+          <div v-else class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3">
             <span class="text-white text-xs font-bold truncate">{{ image.profile.display_name }}</span>
           </div>
         </a>

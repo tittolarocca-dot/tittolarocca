@@ -84,7 +84,7 @@ class MediaController extends Controller
 
         $nextSort = ($profile->media()->where('visibility', $visibility)->max('sort_order') ?? -1) + 1;
 
-        Media::create([
+        $media = Media::create([
             'profile_id'     => $profile->id,
             'type'           => $type,
             'storage_path'   => $path,
@@ -93,6 +93,11 @@ class MediaController extends Controller
             'sort_order'     => $nextSort,
             'filesize_bytes' => $file->getSize(),
         ]);
+
+        // Serverseitige, stark weichgezeichnete Locked-Content-Vorschau erzeugen
+        if ($type === 'image') {
+            app(\App\Services\ImageBlur::class)->generate($media);
+        }
 
         return back()->with('success', 'Datei hochgeladen und sofort sichtbar.');
     }
@@ -104,6 +109,9 @@ class MediaController extends Controller
         }
 
         Storage::disk('local')->delete($media->storage_path);
+        if ($media->blur_path) {
+            Storage::disk('local')->delete($media->blur_path);
+        }
         $media->delete();
 
         return back()->with('success', 'Datei gelöscht.');

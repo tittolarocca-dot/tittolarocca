@@ -23,4 +23,5 @@ return [
     'new_images_desc' => 'Las últimas subidas de los anuncios',
     'private_label'   => 'Privado',
     'no_images'       => 'No se encontraron imágenes.',
+    'members_only'    => 'Solo para suscriptores',
 ];

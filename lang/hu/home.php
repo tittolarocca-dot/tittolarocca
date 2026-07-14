@@ -23,4 +23,5 @@ return [
     'new_images_desc' => 'A hirdetések legújabb feltöltései',
     'private_label'   => 'Privát',
     'no_images'       => 'Nem találhatók képek.',
+    'members_only'    => 'Csak előfizetőknek',
 ];

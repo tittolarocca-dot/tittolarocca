@@ -90,6 +90,7 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
 
 // ── Media streams ─────────────────────────────────────────────────────────────
 Route::get('/media/{media}',       [\App\Http\Controllers\MediaStreamController::class, 'show'])->name('media.stream');
+Route::get('/media/{media}/vorschau', [\App\Http\Controllers\MediaStreamController::class, 'preview'])->name('media.preview');
 Route::get('/media/ppv/{message}', [\App\Http\Controllers\MediaStreamController::class, 'ppv'])->middleware('auth')->name('media.ppv');
 
 // ── Payment pages ─────────────────────────────────────────────────────────────

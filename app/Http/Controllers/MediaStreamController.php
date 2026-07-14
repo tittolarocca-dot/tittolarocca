@@ -5,11 +5,47 @@ namespace App\Http\Controllers;
 use App\Models\Media;
 use App\Models\Message;
 use App\Models\PpvPurchase;
+use App\Services\ImageBlur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MediaStreamController extends Controller
 {
+    /**
+     * Liefert die serverseitig weichgezeichnete Locked-Content-Vorschau.
+     * Enthält niemals das Original – gefahrlos an alle auslieferbar.
+     */
+    public function preview(Request $request, Media $media, ImageBlur $blur)
+    {
+        if ($media->type !== 'image' || $media->status !== 'approved') {
+            return $this->outputPlaceholder($blur);
+        }
+
+        $disk = Storage::disk('local');
+
+        // Blur fehlt (Altbestand)? → einmalig nacherzeugen
+        if (! $media->blur_path || ! $disk->exists($media->blur_path)) {
+            $blur->generate($media->refresh());
+        }
+
+        if ($media->blur_path && $disk->exists($media->blur_path)) {
+            return response($disk->get($media->blur_path), 200, [
+                'Content-Type'  => 'image/jpeg',
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
+        }
+
+        return $this->outputPlaceholder($blur);
+    }
+
+    private function outputPlaceholder(ImageBlur $blur)
+    {
+        return response($blur->placeholderBytes(), 200, [
+            'Content-Type'  => 'image/jpeg',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
     public function show(Request $request, Media $media)
     {
         $user    = $request->user();
