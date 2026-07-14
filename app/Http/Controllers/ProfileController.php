@@ -76,13 +76,21 @@ class ProfileController extends Controller
             ->take(20)
             ->get()
             ->map(fn($r) => [
-                'id'         => $r->id,
-                'stars'      => $r->stars,
-                'comment'    => $r->comment,
-                'reply'      => $r->reply_status === 'approved' ? $r->inserent_reply : null,
-                'author'     => $r->reviewer->name,
-                'created_at' => $r->created_at->format('d.m.Y'),
+                'id'           => $r->id,
+                'stars'        => $r->stars,
+                'comment'      => $r->comment,
+                'reply'        => $r->reply_status === 'approved' ? $r->inserent_reply : null,
+                'reply_status' => $r->reply_status, // für Owner-Hinweis (Text nur wenn approved)
+                'author'       => $r->reviewer->name,
+                'created_at'   => $r->created_at->format('d.m.Y'),
             ]);
+
+        // Eigene Bewertung (auch pending/rejected) – damit der Nutzer den Status sieht
+        $myReview = $user
+            ? \App\Models\Review::where('reviewer_user_id', $user->id)
+                ->where('profile_id', $profile->id)
+                ->first(['id', 'stars', 'comment', 'status'])
+            : null;
 
         return Inertia::render('Profile/Show', [
             'profile' => [
@@ -128,7 +136,8 @@ class ProfileController extends Controller
             'trialDaysLeft'       => $trialSub ? max(0, (int) now()->diffInDays($trialSub->current_period_end, false)) : 0,
             'hasTrialed'          => $hasTrialed,
             'hasSubscriptionOffer'=> $profile->subscription_price_chf > 0,
-            'hasReviewed'         => $user ? \App\Models\Review::where('reviewer_user_id', $user->id)->where('profile_id', $profile->id)->exists() : false,
+            'hasReviewed'         => (bool) $myReview,
+            'myReview'            => $myReview,
             'isFavorited'         => $user ? $user->favorites()->where('profile_id', $profile->id)->exists() : false,
             'subscribed'          => $request->query('subscribed') === '1',
         ]);

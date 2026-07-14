@@ -83,4 +83,13 @@ return [
     'weight' => 'Greutate',
     'cup_size' => 'Cupă',
     'breast_type' => 'Tip de sân',
+    'edit_review' => 'Recenzia ta',
+    'update_review' => 'Actualizează recenzia',
+    'review_status_pending' => 'Recenzia ta este în verificare și nu este încă publică.',
+    'review_status_rejected' => 'Recenzia ta nu a fost aprobată. Modific-o și trimite din nou.',
+    'review_policy_hint' => 'Fără numere, adrese, nume reale, linkuri sau insulte.',
+    'reply_status_pending' => 'Răspuns în verificare …',
+    'reply_status_rejected' => 'Răspunsul a fost respins.',
+    'report_review' => 'Raportează',
+    'report_reason_ph' => 'De ce raportezi această recenzie?',
 ];

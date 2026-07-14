@@ -83,4 +83,13 @@ return [
     'weight' => 'Gewicht',
     'cup_size' => 'Oberweite',
     'breast_type' => 'Brusttyp',
+    'edit_review' => 'Deine Bewertung',
+    'update_review' => 'Bewertung aktualisieren',
+    'review_status_pending' => 'Deine Bewertung wird geprüft und ist noch nicht öffentlich sichtbar.',
+    'review_status_rejected' => 'Deine Bewertung wurde nicht freigeschaltet. Bitte passe sie an und sende sie erneut.',
+    'review_policy_hint' => 'Keine Telefonnummern, Adressen, Klarnamen, Links oder Beleidigungen.',
+    'reply_status_pending' => 'Antwort wird geprüft …',
+    'reply_status_rejected' => 'Antwort wurde abgelehnt.',
+    'report_review' => 'Melden',
+    'report_reason_ph' => 'Warum meldest du diese Bewertung?',
 ];

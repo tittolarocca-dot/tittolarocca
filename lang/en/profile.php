@@ -83,4 +83,13 @@ return [
     'weight' => 'Weight',
     'cup_size' => 'Cup size',
     'breast_type' => 'Breast type',
+    'edit_review' => 'Your review',
+    'update_review' => 'Update review',
+    'review_status_pending' => 'Your review is being checked and is not public yet.',
+    'review_status_rejected' => 'Your review was not approved. Please adjust it and submit again.',
+    'review_policy_hint' => 'No phone numbers, addresses, real names, links or insults.',
+    'reply_status_pending' => 'Reply under review …',
+    'reply_status_rejected' => 'Reply was rejected.',
+    'report_review' => 'Report',
+    'report_reason_ph' => 'Why are you reporting this review?',
 ];

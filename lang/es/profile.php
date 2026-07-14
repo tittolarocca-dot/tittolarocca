@@ -83,4 +83,13 @@ return [
     'weight' => 'Peso',
     'cup_size' => 'Copa',
     'breast_type' => 'Tipo de pecho',
+    'edit_review' => 'Tu reseña',
+    'update_review' => 'Actualizar reseña',
+    'review_status_pending' => 'Tu reseña se está revisando y aún no es pública.',
+    'review_status_rejected' => 'Tu reseña no fue aprobada. Ajústala y envíala de nuevo.',
+    'review_policy_hint' => 'Sin números, direcciones, nombres reales, enlaces ni insultos.',
+    'reply_status_pending' => 'Respuesta en revisión …',
+    'reply_status_rejected' => 'Respuesta rechazada.',
+    'report_review' => 'Reportar',
+    'report_reason_ph' => '¿Por qué reportas esta reseña?',
 ];

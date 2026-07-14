@@ -83,4 +83,13 @@ return [
     'weight' => 'Testsúly',
     'cup_size' => 'Melltartóméret',
     'breast_type' => 'Mell típusa',
+    'edit_review' => 'Az értékelésed',
+    'update_review' => 'Értékelés frissítése',
+    'review_status_pending' => 'Az értékelésed ellenőrzés alatt áll, még nem látható.',
+    'review_status_rejected' => 'Az értékelésed nem lett jóváhagyva. Módosítsd és küldd be újra.',
+    'review_policy_hint' => 'Nincs telefonszám, cím, valódi név, link vagy sértés.',
+    'reply_status_pending' => 'Válasz ellenőrzés alatt …',
+    'reply_status_rejected' => 'A választ elutasították.',
+    'report_review' => 'Jelentés',
+    'report_reason_ph' => 'Miért jelented ezt az értékelést?',
 ];

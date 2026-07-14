@@ -59,7 +59,8 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::get('/auszahlungen',             [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
     Route::post('/auszahlungen/bankdaten',  [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
-    Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->name('review.reply');
+    Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->middleware('throttle:10,1')->name('review.reply');
+    Route::post('/bewertung/{review}/melden',    [\App\Http\Controllers\Member\ReviewController::class, 'report'])->name('review.report');
     Route::post('/verifikation',  [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
@@ -77,7 +78,8 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::post('/nachrichten/{profile:slug}/bild',        [\App\Http\Controllers\Member\MessageController::class, 'sendMedia'])->name('messages.send.media');
     Route::get('/nachrichten/{userId}/verlauf',            [\App\Http\Controllers\Member\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::post('/nachrichten/{message}/ppv-kaufen',       [\App\Http\Controllers\Member\MessageController::class, 'ppvCheckout'])->name('messages.ppv.checkout');
-    Route::post('/bewertung/{profile:slug}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->name('review.store');
+    Route::post('/bewertung/{profile:slug}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->middleware('throttle:6,1')->name('review.store');
+    Route::put('/bewertung/{review}',                      [\App\Http\Controllers\Member\ReviewController::class, 'update'])->middleware('throttle:6,1')->name('review.update');
     Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');

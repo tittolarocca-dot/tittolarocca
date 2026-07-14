@@ -83,4 +83,13 @@ return [
     'weight' => 'Poids',
     'cup_size' => 'Bonnet',
     'breast_type' => 'Type de poitrine',
+    'edit_review' => 'Ton avis',
+    'update_review' => 'Mettre à jour l\'avis',
+    'review_status_pending' => 'Ton avis est en cours de vérification et n\'est pas encore visible.',
+    'review_status_rejected' => 'Ton avis n\'a pas été validé. Modifie-le et renvoie-le.',
+    'review_policy_hint' => 'Pas de numéros, adresses, vrais noms, liens ou insultes.',
+    'reply_status_pending' => 'Réponse en cours de vérification …',
+    'reply_status_rejected' => 'Réponse rejetée.',
+    'report_review' => 'Signaler',
+    'report_reason_ph' => 'Pourquoi signales-tu cet avis ?',
 ];

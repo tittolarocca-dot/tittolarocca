@@ -272,9 +272,20 @@
             </div>
           </div>
 
-          <!-- Review Form -->
-          <div v-if="isSubscribed && !hasReviewed" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
-            <h2 class="font-semibold text-white mb-4">{{ t('profile.review_submit_title') }}</h2>
+          <!-- Review Form / eigene Bewertung -->
+          <div v-if="isSubscribed && !isOwner" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <h2 class="font-semibold text-white mb-4">{{ myReview ? t('profile.edit_review') : t('profile.review_submit_title') }}</h2>
+
+            <!-- Status der eigenen Bewertung -->
+            <div v-if="myReview && myReview.status === 'pending'"
+              class="mb-3 text-xs bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-lg px-3 py-2">
+              {{ t('profile.review_status_pending') }}
+            </div>
+            <div v-else-if="myReview && myReview.status === 'rejected'"
+              class="mb-3 text-xs bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg px-3 py-2">
+              {{ t('profile.review_status_rejected') }}
+            </div>
+
             <form @submit.prevent="submitReview" class="space-y-4">
               <div class="flex gap-1">
                 <button v-for="n in 5" :key="n" type="button" @click="reviewForm.stars = n"
@@ -282,9 +293,10 @@
               </div>
               <textarea v-model="reviewForm.comment" rows="3" maxlength="1000" :placeholder="t('profile.your_experience')"
                 class="w-full bg-[#111] border border-white/10 text-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#e35d8f] resize-none placeholder-gray-600" />
+              <p class="text-[11px] text-gray-600">{{ t('profile.review_policy_hint') }}</p>
               <button type="submit" :disabled="!reviewForm.stars || submittingReview"
                 class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">
-                {{ submittingReview ? t('profile.submitting') : t('profile.submit_review') }}
+                {{ submittingReview ? t('profile.submitting') : (myReview ? t('profile.update_review') : t('profile.submit_review')) }}
               </button>
             </form>
           </div>
@@ -307,12 +319,28 @@
                 <div v-if="r.reply" class="mt-2 ml-4 pl-3 border-l-2 border-[#e35d8f]/40 text-sm text-gray-500 italic">
                   <span class="font-semibold text-[#e35d8f]">{{ t('profile.reply_answer') }}</span>{{ r.reply }}
                 </div>
-                <div v-if="isOwner && !r.reply" class="mt-2">
+
+                <!-- Antwort-Status (nur Owner) -->
+                <div v-if="isOwner && r.reply_status === 'pending'" class="mt-2 text-xs text-yellow-400">{{ t('profile.reply_status_pending') }}</div>
+                <div v-else-if="isOwner && r.reply_status === 'rejected'" class="mt-2 text-xs text-red-400">{{ t('profile.reply_status_rejected') }}</div>
+
+                <!-- Antwort verfassen (Owner, wenn noch keine sichtbare/anhängige Antwort) -->
+                <div v-if="isOwner && !r.reply && r.reply_status !== 'pending'" class="mt-2">
                   <button @click="replyTarget = replyTarget === r.id ? null : r.id" class="text-xs text-[#e35d8f] hover:underline">{{ t('profile.reply') }}</button>
                   <div v-if="replyTarget === r.id" class="mt-2 flex gap-2">
                     <input v-model="replyText" type="text" :placeholder="t('profile.your_experience')" maxlength="500"
                       class="flex-1 bg-[#111] border border-white/10 text-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:border-[#e35d8f]" />
                     <button @click="submitReply(r.id)" class="bg-[#e35d8f] text-white text-xs px-3 py-1 rounded hover:bg-[#c44a7a]">{{ t('profile.send') }}</button>
+                  </div>
+                </div>
+
+                <!-- Melden (Owner) -->
+                <div v-if="isOwner" class="mt-2">
+                  <button @click="reportTarget = reportTarget === r.id ? null : r.id" class="text-xs text-gray-600 hover:text-red-400 transition">⚑ {{ t('profile.report_review') }}</button>
+                  <div v-if="reportTarget === r.id" class="mt-2 flex gap-2">
+                    <input v-model="reportReason" type="text" :placeholder="t('profile.report_reason_ph')" maxlength="500"
+                      class="flex-1 bg-[#111] border border-white/10 text-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:border-red-400" />
+                    <button @click="submitReport(r.id)" class="bg-red-500/80 text-white text-xs px-3 py-1 rounded hover:bg-red-500">{{ t('profile.send') }}</button>
                   </div>
                 </div>
               </div>
@@ -647,6 +675,7 @@ const props = defineProps({
   hasTrialed:          { type: Boolean, default: false },
   hasSubscriptionOffer:{ type: Boolean, default: false },
   hasReviewed:         { type: Boolean, default: false },
+  myReview:            { type: Object,  default: null },
   isFavorited:         { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
   privateMediaCount:   { type: Number,  default: 0 },
@@ -657,9 +686,11 @@ const favorited        = ref(props.isFavorited);
 const subscribing      = ref(false);
 const trialing         = ref(false);
 const submittingReview = ref(false);
-const reviewForm       = ref({ stars: 0, comment: '' });
+const reviewForm       = ref({ stars: props.myReview?.stars ?? 0, comment: props.myReview?.comment ?? '' });
 const replyTarget      = ref(null);
 const replyText        = ref('');
+const reportTarget     = ref(null);
+const reportReason     = ref('');
 
 const tabs = computed(() => [
   { key: 'public',  label: t('profile.tab_public'), count: props.publicMedia.length },
@@ -744,11 +775,16 @@ function cancelSub() {
 function submitReview() {
   if (!reviewForm.value.stars) return;
   submittingReview.value = true;
-  router.post(route('konto.review.store', props.profile.slug), reviewForm.value, {
+  const opts = {
     preserveScroll: true,
     onFinish: () => { submittingReview.value = false; },
-    onSuccess: () => { reviewForm.value = { stars: 0, comment: '' }; },
-  });
+  };
+  if (props.myReview) {
+    // Bearbeiten → geht serverseitig erneut auf 'pending'
+    router.put(route('konto.review.update', props.myReview.id), reviewForm.value, opts);
+  } else {
+    router.post(route('konto.review.store', props.profile.slug), reviewForm.value, opts);
+  }
 }
 
 function submitReply(reviewId) {
@@ -756,6 +792,14 @@ function submitReply(reviewId) {
   router.post(route('inserat.review.reply', reviewId), { reply: replyText.value }, {
     preserveScroll: true,
     onSuccess: () => { replyTarget.value = null; replyText.value = ''; },
+  });
+}
+
+function submitReport(reviewId) {
+  if (!reportReason.value.trim()) return;
+  router.post(route('inserat.review.report', reviewId), { reason: reportReason.value }, {
+    preserveScroll: true,
+    onSuccess: () => { reportTarget.value = null; reportReason.value = ''; },
   });
 }
 
