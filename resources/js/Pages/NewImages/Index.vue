@@ -23,9 +23,11 @@
           :href="route('profile.show', image.profile.slug)"
           class="relative block overflow-hidden rounded-xl group aspect-[3/4]"
         >
-          <!-- Bild: privat = serverseitig weichgezeichnete Vorschau -->
+          <!-- Bild: privat = serverseitig weichgezeichnete Vorschau, öffentlich = card-Variante -->
           <img
-            :src="image.private ? image.preview_url : image.url"
+            :src="image.private ? image.preview_url : (image.src?.card ?? image.src?.full ?? image.src?.thumbnail)"
+            :srcset="!image.private && image.src ? `${image.src.thumbnail} 320w, ${image.src.card} 720w` : undefined"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             :alt="image.private ? 'Locked' : image.profile.display_name"
             :class="['w-full h-full object-cover transition duration-300 group-hover:scale-105', image.private ? 'blur-md scale-110' : '']"
             loading="lazy"
