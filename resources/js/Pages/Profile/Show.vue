@@ -566,7 +566,7 @@
 
       <!-- Media -->
       <img v-if="lightboxItem.type === 'image'"
-        :src="lightboxItem.url"
+        :src="lightboxItem.src?.full ?? lightboxItem.url"
         class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
       <video v-else
         :src="lightboxItem.url"

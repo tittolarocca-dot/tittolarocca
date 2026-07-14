@@ -4,10 +4,14 @@
 
     <!-- Photo -->
     <div class="relative w-[50%] shrink-0 overflow-hidden">
-      <img v-if="profile.public_media?.[0]"
+      <img v-if="img"
         class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
-        :data-src="profile.public_media[0].url"
+        :data-src="src(img, 'card')"
+        :data-srcset="srcset(img)"
+        data-sizes="auto"
         src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+        :width="img.width || undefined"
+        :height="img.height || undefined"
         :alt="profile.display_name" />
       <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
 
@@ -63,13 +67,24 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
 
-defineProps({
+const props = defineProps({
   profile: { type: Object, required: true },
 });
+
+const img = computed(() => props.profile.public_media?.[0] ?? null);
+
+// Variante wählen, mit Fallback auf den Original-Stream (Alt-Medien ohne Varianten)
+function src(m, size) {
+  return m?.src?.[size] ?? m?.url;
+}
+function srcset(m) {
+  return m?.src ? `${m.src.thumbnail} 320w, ${m.src.card} 720w` : undefined;
+}
 
 function isNew(iso) {
   if (!iso) return false;

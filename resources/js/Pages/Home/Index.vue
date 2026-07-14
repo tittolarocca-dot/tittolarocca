@@ -36,7 +36,7 @@
               <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#111] group-hover:ring-[#f08ab0] transition">
                 <img v-if="profile.public_media?.[0]"
                   class="lazyload w-full h-full object-cover"
-                  :data-src="profile.public_media[0].url"
+                  :data-src="mediaSrc(profile.public_media[0], 'thumbnail')"
                   src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                   :alt="profile.display_name"
                   width="72" height="72" />
@@ -129,7 +129,9 @@
             <!-- Photo -->
             <div class="relative w-[160px] sm:w-[220px] md:w-[300px] shrink-0 overflow-hidden">
               <img v-if="profiles.data[0].public_media?.[0]"
-                :src="profiles.data[0].public_media[0].url"
+                :src="mediaSrc(profiles.data[0].public_media[0], 'card')"
+                :srcset="mediaSrcset(profiles.data[0].public_media[0])"
+                sizes="(max-width: 640px) 160px, (max-width: 768px) 220px, 300px"
                 :alt="profiles.data[0].display_name"
                 class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                 loading="eager" fetchpriority="high" />
@@ -186,7 +188,9 @@
             <div class="relative w-[50%] shrink-0 overflow-hidden">
               <img v-if="profile.public_media?.[0]"
                 class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
-                :data-src="profile.public_media[0].url"
+                :data-src="mediaSrc(profile.public_media[0], 'card')"
+                :data-srcset="mediaSrcset(profile.public_media[0])"
+                data-sizes="auto"
                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 :alt="profile.display_name" />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
@@ -265,6 +269,14 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
+
+// Bild-Variante wählen (Fallback auf Original-Stream bei Alt-Medien)
+function mediaSrc(m, size) {
+  return m?.src?.[size] ?? m?.url;
+}
+function mediaSrcset(m) {
+  return m?.src ? `${m.src.thumbnail} 320w, ${m.src.card} 720w` : undefined;
+}
 
 const props = defineProps({
   profiles:       Object,

@@ -29,9 +29,14 @@
     <!-- Image thumbnail -->
     <img
       v-else
-      :src="eager ? item.url : undefined"
-      :data-src="!eager ? item.url : undefined"
+      :src="eager ? primary : undefined"
+      :srcset="eager ? srcset : undefined"
+      :data-src="!eager ? primary : undefined"
+      :data-srcset="!eager ? srcset : undefined"
+      data-sizes="auto"
       :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', !eager ? 'lazyload' : '']"
+      :width="item.width || undefined"
+      :height="item.height || undefined"
       :alt="alt"
       :loading="eager ? 'eager' : 'lazy'"
     />
@@ -39,9 +44,17 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   item:  { type: Object,  required: true },
   alt:   { type: String,  default: '' },
   eager: { type: Boolean, default: false },
 });
+
+// Bild-Varianten mit Fallback auf den Original-Stream (Alt-Medien)
+const primary = computed(() => props.item.src?.full ?? props.item.url);
+const srcset = computed(() =>
+  props.item.src ? `${props.item.src.card} 720w, ${props.item.src.full} 1600w` : undefined
+);
 </script>

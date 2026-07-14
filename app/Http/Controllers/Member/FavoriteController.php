@@ -18,7 +18,8 @@ class FavoriteController extends Controller
             ->map(fn($profile) => [
                 'slug'                => $profile->slug,
                 'display_name'        => $profile->display_name,
-                'cover_url'           => $profile->publicMedia->first()?->url,
+                'cover_url'           => data_get($profile->publicMedia->first(), 'src.thumbnail')
+                                            ?? $profile->publicMedia->first()?->url,
                 'verification_status' => $profile->verification_status,
             ]);
 

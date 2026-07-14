@@ -36,7 +36,8 @@ class DashboardController extends Controller
             ->map(fn($p) => [
                 'slug'                => $p->slug,
                 'display_name'        => $p->display_name,
-                'cover_url'           => $p->publicMedia->first()?->url,
+                'cover_url'           => data_get($p->publicMedia->first(), 'src.thumbnail')
+                                            ?? $p->publicMedia->first()?->url,
                 'verification_status' => $p->verification_status,
             ]);
 

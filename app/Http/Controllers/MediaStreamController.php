@@ -48,6 +48,49 @@ class MediaStreamController extends Controller
 
     public function show(Request $request, Media $media)
     {
+        $this->authorizeOriginal($request, $media);
+        return $this->streamFile($request, $media->storage_path);
+    }
+
+    /**
+     * Liefert eine optimierte Variante (thumbnail/card/full).
+     * WICHTIG: identische Berechtigungsprüfung wie beim Original – scharfe
+     * Varianten privater Medien nur an Owner/Abonnenten.
+     */
+    public function variant(Request $request, Media $media, string $variant, ImageBlur $blur)
+    {
+        if (! array_key_exists($variant, \App\Services\ImageVariants::SIZES)) {
+            abort(404);
+        }
+
+        $this->authorizeOriginal($request, $media);
+
+        $variants = $media->variants ?? [];
+        $path     = $variants[$variant] ?? null;
+        $disk     = Storage::disk('local');
+
+        // Variante fehlt (noch nicht erzeugt) → auf Original-Stream zurückfallen
+        if (! $path || ! $disk->exists($path)) {
+            return $this->streamFile($request, $media->storage_path);
+        }
+
+        $isPublic  = $media->visibility === 'public';
+        $mime      = str_ends_with($path, '.webp') ? 'image/webp' : 'image/jpeg';
+        // Öffentliche Varianten: lange, unveränderliche Cache-Zeit (URL ist versioniert).
+        // Private Varianten: nur privat cachen (nie in Shared-Caches/CDN).
+        $cache = $isPublic
+            ? 'public, max-age=31536000, immutable'
+            : 'private, max-age=3600';
+
+        return response($disk->get($path), 200, [
+            'Content-Type'  => $mime,
+            'Cache-Control' => $cache,
+        ]);
+    }
+
+    /** Gemeinsame Autorisierung für Original + scharfe Varianten. */
+    private function authorizeOriginal(Request $request, Media $media): void
+    {
         $user    = $request->user();
         $profile = $media->profile;
         $isOwner = $user && $profile->user_id === $user->id;
@@ -62,8 +105,6 @@ class MediaStreamController extends Controller
                 }
             }
         }
-
-        return $this->streamFile($request, $media->storage_path);
     }
 
     public function ppv(Request $request, Message $message)

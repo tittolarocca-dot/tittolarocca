@@ -32,7 +32,8 @@ class ProfileVisitorController extends Controller
                     'display_name' => $visit->visitor->profile->display_name,
                     'city'         => $visit->visitor->profile->city?->name,
                     'age'          => $visit->visitor->profile->age,
-                    'cover_url'    => $visit->visitor->profile->publicMedia->first()?->url,
+                    'cover_url'    => data_get($visit->visitor->profile->publicMedia->first(), 'src.thumbnail')
+                                        ?? $visit->visitor->profile->publicMedia->first()?->url,
                 ] : null,
             ]);
 

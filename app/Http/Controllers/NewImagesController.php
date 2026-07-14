@@ -24,7 +24,7 @@ class NewImagesController extends Controller
                 return [
                     'id'          => $m->id,
                     'private'     => $private,
-                    'url'         => $private ? null : route('media.stream', $m->id),
+                    'src'         => $private ? null : $m->src, // Bild-Varianten
                     'preview_url' => $private ? route('media.preview', $m->id) : null,
                     'profile'     => [
                         'slug'         => $m->profile->slug,

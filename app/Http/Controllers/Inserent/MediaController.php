@@ -31,7 +31,9 @@ class MediaController extends Controller
                 'status'     => $m->status,
                 'rejection_reason' => $m->rejection_reason,
                 'sort_order' => $m->sort_order,
-                'url'        => route('media.stream', $m->id),
+                'url'        => $m->type === 'image'
+                    ? ($m->src['card'] ?? route('media.stream', $m->id))
+                    : route('media.stream', $m->id),
                 'created_at' => $m->created_at->format('d.m.Y'),
             ]);
 
@@ -65,9 +67,21 @@ class MediaController extends Controller
         ]);
 
         $file       = $request->file('file');
-        $isImage    = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'webp']);
+        $isImage    = str_starts_with((string) $file->getMimeType(), 'image/');
         $type       = $isImage ? 'image' : 'video';
         $visibility = $request->input('visibility');
+
+        // Bilddateien serverseitig echt prüfen (nicht nur an der Endung) und
+        // extrem grosse Abmessungen abweisen (Schutz vor Dekompressions-Bomben).
+        if ($isImage) {
+            $dim = @getimagesize($file->getRealPath());
+            if ($dim === false) {
+                return back()->with('error', 'Ungültige oder beschädigte Bilddatei.');
+            }
+            if (($dim[0] * $dim[1]) > 40_000_000) {
+                return back()->with('error', 'Bild zu gross (max. 40 Megapixel).');
+            }
+        }
 
         // Limit check
         $existingCount = $profile->media()->where('visibility', $visibility)->count();
@@ -94,8 +108,9 @@ class MediaController extends Controller
             'filesize_bytes' => $file->getSize(),
         ]);
 
-        // Serverseitige, stark weichgezeichnete Locked-Content-Vorschau erzeugen
+        // Optimierte WebP-Varianten + Locked-Content-Blur erzeugen (synchron)
         if ($type === 'image') {
+            app(\App\Services\ImageVariants::class)->generate($media);
             app(\App\Services\ImageBlur::class)->generate($media);
         }
 
@@ -108,9 +123,13 @@ class MediaController extends Controller
             abort(403);
         }
 
-        Storage::disk('local')->delete($media->storage_path);
+        $disk = Storage::disk('local');
+        $disk->delete($media->storage_path);
         if ($media->blur_path) {
-            Storage::disk('local')->delete($media->blur_path);
+            $disk->delete($media->blur_path);
+        }
+        foreach (app(\App\Services\ImageVariants::class)->paths($media) as $variantPath) {
+            $disk->delete($variantPath);
         }
         $media->delete();
 

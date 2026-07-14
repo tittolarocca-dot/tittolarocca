@@ -39,13 +39,19 @@ class ProfileController extends Controller
             ->where('profile_id', $profile->id)
             ->exists() : false;
 
-        // Freigeschaltete Medien liefern die echte Datei; gesperrte NUR die
-        // serverseitig weichgezeichnete Vorschau (niemals das Original).
+        // Freigeschaltete Medien liefern optimierte Varianten (Bilder) bzw. den
+        // Original-Stream (Videos); gesperrte NUR die serverseitig erzeugte
+        // Blur-Vorschau (niemals ein scharfes Bild).
+        $cols = ['id', 'type', 'visibility', 'variants', 'width', 'height', 'updated_at'];
+
         $streamItem = fn ($m) => [
             'id'         => $m->id,
             'type'       => $m->type,
             'visibility' => $m->visibility,
-            'url'        => route('media.stream', $m->id),
+            'width'      => $m->width,
+            'height'     => $m->height,
+            'url'        => route('media.stream', $m->id), // Video + Fallback
+            'src'        => $m->src,                        // Bild-Varianten (null bei Video)
         ];
         $lockedItem = fn ($m) => [
             'id'          => $m->id,
@@ -54,11 +60,11 @@ class ProfileController extends Controller
             'preview_url' => route('media.preview', $m->id),
         ];
 
-        $publicMedia = $profile->publicMedia()->get(['id', 'type', 'visibility'])
+        $publicMedia = $profile->publicMedia()->get($cols)
             ->map($streamItem)->values();
 
         $unlocked      = $isOwner || $subscribed || (bool) $trialSub;
-        $privateItems  = $profile->privateMedia()->get(['id', 'type', 'visibility']);
+        $privateItems  = $profile->privateMedia()->get($cols);
         $privateMediaCount = $privateItems->count();
         $privateMedia = $unlocked
             ? $privateItems->map($streamItem)->values()
