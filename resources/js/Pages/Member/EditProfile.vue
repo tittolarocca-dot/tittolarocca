@@ -31,6 +31,20 @@
           </div>
         </div>
 
+        <!-- Moderations-Status -->
+        <div v-if="member.avatar_url && member.avatar_status === 'pending'"
+          class="mt-3 text-xs bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-lg px-3 py-2">
+          Dein Foto wird geprüft und ist noch nicht öffentlich sichtbar.
+        </div>
+        <div v-else-if="member.avatar_url && member.avatar_status === 'rejected'"
+          class="mt-3 text-xs bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg px-3 py-2">
+          Dein Foto wurde nicht freigeschaltet. Bitte lade ein anderes Foto hoch.
+        </div>
+        <div v-else-if="member.avatar_url && member.avatar_status === 'approved'"
+          class="mt-3 text-xs bg-green-500/10 border border-green-500/30 text-green-300 rounded-lg px-3 py-2">
+          Dein Foto ist freigeschaltet und öffentlich sichtbar.
+        </div>
+
         <!-- Bilderregeln -->
         <div class="mt-4 bg-[#111] border border-white/8 rounded-xl p-4 text-xs text-gray-400 space-y-1.5">
           <p class="text-red-400 font-bold">⚠ Keine Genitalien-Fotos erlaubt.</p>

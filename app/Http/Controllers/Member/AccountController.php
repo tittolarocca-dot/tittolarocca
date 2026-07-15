@@ -20,9 +20,10 @@ class AccountController extends Controller
         return inertia('Member/EditProfile', [
             'member' => [
                 'name'        => $user->name,
-                'avatar_url'  => $user->avatar_path
+                'avatar_url'    => $user->avatar_path
                     ? route('mitglied.avatar', $user->id) . '?v=' . ($user->updated_at?->timestamp ?? 1)
                     : null,
+                'avatar_status' => $user->avatar_status,
                 'gender'      => $user->gender,
                 'age'         => $user->age,
                 'height_cm'   => $user->height_cm,

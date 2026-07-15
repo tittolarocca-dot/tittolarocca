@@ -15,7 +15,8 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name', 'email', 'password', 'role', 'status', 'email_verified_at',
         'gender', 'age', 'height_cm', 'weight_kg', 'city_id', 'languages',
-        'smoking', 'bio', 'preferences', 'deactivated_at', 'avatar_path',
+        'smoking', 'bio', 'preferences', 'deactivated_at',
+        'avatar_path', 'avatar_status', 'avatar_rejection_reason', 'avatar_moderated_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -27,6 +28,7 @@ class User extends Authenticatable implements FilamentUser
             'password'          => 'hashed',
             'blocked_at'        => 'datetime',
             'deactivated_at'    => 'datetime',
+            'avatar_moderated_at' => 'datetime',
             'languages'         => 'array',
             'smoking'           => 'boolean',
             'age'               => 'integer',

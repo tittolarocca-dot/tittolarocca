@@ -63,7 +63,14 @@ class UserAvatar
         $this->delete($user);
 
         Storage::disk('local')->put($path, $data);
-        $user->forceFill(['avatar_path' => $path])->save();
+
+        // Neues Foto muss erst vom Admin freigegeben werden
+        $user->forceFill([
+            'avatar_path'             => $path,
+            'avatar_status'           => 'pending',
+            'avatar_rejection_reason' => null,
+            'avatar_moderated_at'     => null,
+        ])->save();
 
         return true;
     }
@@ -73,8 +80,13 @@ class UserAvatar
         if ($user->avatar_path && Storage::disk('local')->exists($user->avatar_path)) {
             Storage::disk('local')->delete($user->avatar_path);
         }
-        if ($user->avatar_path) {
-            $user->forceFill(['avatar_path' => null])->save();
+        if ($user->avatar_path || $user->avatar_status) {
+            $user->forceFill([
+                'avatar_path'             => null,
+                'avatar_status'           => null,
+                'avatar_rejection_reason' => null,
+                'avatar_moderated_at'     => null,
+            ])->save();
         }
     }
 }

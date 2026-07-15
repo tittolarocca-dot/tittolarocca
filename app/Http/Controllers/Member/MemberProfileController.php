@@ -33,7 +33,7 @@ class MemberProfileController extends Controller
                 'id'           => $user->id,
                 'name'         => $user->name,
                 'member_since' => $user->created_at->format('d.m.Y'),
-                'avatar_url'   => $user->avatar_path
+                'avatar_url'   => ($user->avatar_path && $user->avatar_status === 'approved')
                     ? route('mitglied.avatar', $user->id) . '?v=' . ($user->updated_at?->timestamp ?? 1)
                     : null,
                 'gender'       => $user->gender,
@@ -49,8 +49,8 @@ class MemberProfileController extends Controller
         ]);
     }
 
-    /** Öffentliches Profilfoto ausliefern (serverseitig verarbeitetes WebP). */
-    public function avatar(User $user)
+    /** Profilfoto ausliefern (serverseitig verarbeitetes WebP). */
+    public function avatar(Request $request, User $user)
     {
         if ($user->deactivated_at) {
             abort(404);
@@ -58,6 +58,16 @@ class MemberProfileController extends Controller
 
         $disk = Storage::disk('local');
         if (! $user->avatar_path || ! $disk->exists($user->avatar_path)) {
+            abort(404);
+        }
+
+        // Öffentlich nur nach Freigabe. Eigentümer:in und Admins/Moderatoren
+        // dürfen auch ausstehende/abgelehnte Fotos sehen (Vorschau/Moderation).
+        $viewer = $request->user();
+        $maySeeUnapproved = $viewer && (
+            $viewer->id === $user->id || in_array($viewer->role, ['admin', 'moderator'], true)
+        );
+        if ($user->avatar_status !== 'approved' && ! $maySeeUnapproved) {
             abort(404);
         }
 
