@@ -20,8 +20,11 @@ Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])-
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
-Route::get('/mitglied/{user}',           [\App\Http\Controllers\Member\MemberProfileController::class, 'show'])->name('mitglied.show');
-Route::get('/mitglied-foto/{user}',      [\App\Http\Controllers\Member\MemberProfileController::class, 'avatar'])->name('mitglied.avatar');
+// Mitglieder-Profile nur für eingeloggte Nutzer/Inserierende sichtbar
+Route::middleware('auth')->group(function () {
+    Route::get('/mitglied/{user}',      [\App\Http\Controllers\Member\MemberProfileController::class, 'show'])->name('mitglied.show');
+    Route::get('/mitglied-foto/{user}', [\App\Http\Controllers\Member\MemberProfileController::class, 'avatar'])->name('mitglied.avatar');
+});
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
