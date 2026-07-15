@@ -205,7 +205,8 @@ const page  = usePage();
 
 const locale          = computed(() => page.props.locale ?? 'de');
 const supportedLocales = computed(() => page.props.supportedLocales ?? []);
-const cities          = computed(() => page.props.cities ?? []);
+// nur Städte mit slug (route('city', slug) würde sonst die ganze Seite crashen)
+const cities          = computed(() => (page.props.cities ?? []).filter((c) => c?.slug));
 const activeCitySlug  = computed(() => page.props.activeCity?.slug);
 
 const dashboardRoute = computed(() =>

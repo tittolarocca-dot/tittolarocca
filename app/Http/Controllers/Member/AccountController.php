@@ -29,7 +29,9 @@ class AccountController extends Controller
                 'bio'         => $user->bio,
                 'preferences' => $user->preferences,
             ],
-            'cities' => City::where('is_active', true)->orderBy('sort_order')->get(['id', 'name', 'canton']),
+            // slug muss enthalten sein, da die geteilten cities (Header-Navigation)
+            // damit überschrieben werden – sonst bricht route('city', city.slug).
+            'cities' => City::where('is_active', true)->orderBy('sort_order')->get(['id', 'name', 'canton', 'slug']),
         ]);
     }
 
