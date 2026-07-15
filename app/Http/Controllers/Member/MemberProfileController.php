@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserVisit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MemberProfileController extends Controller
 {
@@ -32,6 +33,9 @@ class MemberProfileController extends Controller
                 'id'           => $user->id,
                 'name'         => $user->name,
                 'member_since' => $user->created_at->format('d.m.Y'),
+                'avatar_url'   => $user->avatar_path
+                    ? route('mitglied.avatar', $user->id) . '?v=' . ($user->updated_at?->timestamp ?? 1)
+                    : null,
                 'gender'       => $user->gender,
                 'age'          => $user->age,
                 'height_cm'    => $user->height_cm,
@@ -42,6 +46,26 @@ class MemberProfileController extends Controller
                 'bio'          => $user->bio,
                 'preferences'  => $user->preferences,
             ],
+        ]);
+    }
+
+    /** Öffentliches Profilfoto ausliefern (serverseitig verarbeitetes WebP). */
+    public function avatar(User $user)
+    {
+        if ($user->deactivated_at) {
+            abort(404);
+        }
+
+        $disk = Storage::disk('local');
+        if (! $user->avatar_path || ! $disk->exists($user->avatar_path)) {
+            abort(404);
+        }
+
+        $mime = str_ends_with($user->avatar_path, '.webp') ? 'image/webp' : 'image/jpeg';
+
+        return response($disk->get($user->avatar_path), 200, [
+            'Content-Type'  => $mime,
+            'Cache-Control' => 'public, max-age=86400',
         ]);
     }
 }

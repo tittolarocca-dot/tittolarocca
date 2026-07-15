@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Services\UserAvatar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,9 @@ class AccountController extends Controller
         return inertia('Member/EditProfile', [
             'member' => [
                 'name'        => $user->name,
+                'avatar_url'  => $user->avatar_path
+                    ? route('mitglied.avatar', $user->id) . '?v=' . ($user->updated_at?->timestamp ?? 1)
+                    : null,
                 'gender'      => $user->gender,
                 'age'         => $user->age,
                 'height_cm'   => $user->height_cm,
@@ -67,6 +71,31 @@ class AccountController extends Controller
         return back()->with('success', 'Profil gespeichert.');
     }
 
+    /** Profilfoto hochladen (Genitalien-Fotos sind nicht erlaubt – Hinweis im UI). */
+    public function uploadAvatar(Request $request, UserAvatar $avatars)
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:12288'],
+        ], [
+            'photo.image'    => 'Bitte lade eine gültige Bilddatei hoch.',
+            'photo.mimes'    => 'Erlaubt sind JPG, PNG oder WebP.',
+            'photo.max'      => 'Das Bild darf höchstens 12 MB gross sein.',
+        ]);
+
+        $ok = $avatars->store($request->user(), $request->file('photo'));
+
+        return $ok
+            ? back()->with('success', 'Profilfoto aktualisiert.')
+            : back()->with('error', 'Ungültige oder zu grosse Bilddatei.');
+    }
+
+    /** Profilfoto entfernen. */
+    public function deleteAvatar(Request $request, UserAvatar $avatars)
+    {
+        $avatars->delete($request->user());
+        return back()->with('success', 'Profilfoto entfernt.');
+    }
+
     /** Konto deaktivieren – reversibel: das nächste Login reaktiviert es. */
     public function deactivate(Request $request)
     {
@@ -104,6 +133,7 @@ class AccountController extends Controller
         }
 
         $user->favorites()->detach();
+        app(UserAvatar::class)->delete($user);
 
         Auth::logout();
         $request->session()->invalidate();

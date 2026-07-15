@@ -4,9 +4,10 @@
     <div class="max-w-xl mx-auto px-4 py-12 space-y-5">
       <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-8 text-center">
         <!-- Avatar -->
-        <div class="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4"
-          :style="`background: ${avatarColor(member.name)}`">
-          {{ member.name.charAt(0).toUpperCase() }}
+        <div class="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4"
+          :style="member.avatar_url ? '' : `background: ${avatarColor(member.name)}`">
+          <img v-if="member.avatar_url" :src="member.avatar_url" alt="Profilfoto" class="w-full h-full object-cover" />
+          <span v-else>{{ member.name.charAt(0).toUpperCase() }}</span>
         </div>
         <h1 class="text-xl font-bold text-white mb-1">{{ member.name }}</h1>
         <p class="text-xs text-gray-500">{{ t('dashboard.member_since', { date: member.member_since }) }}</p>

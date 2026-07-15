@@ -21,6 +21,7 @@ Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
 Route::get('/mitglied/{user}',           [\App\Http\Controllers\Member\MemberProfileController::class, 'show'])->name('mitglied.show');
+Route::get('/mitglied-foto/{user}',      [\App\Http\Controllers\Member\MemberProfileController::class, 'avatar'])->name('mitglied.avatar');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -71,6 +72,8 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::get('/',              [\App\Http\Controllers\Member\DashboardController::class,    'index'])->name('dashboard');
     Route::get('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'edit'])->name('account.edit');
     Route::put('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'update'])->name('account.update');
+    Route::post('/profil/foto',  [\App\Http\Controllers\Member\AccountController::class,      'uploadAvatar'])->name('account.avatar.upload');
+    Route::delete('/profil/foto',[\App\Http\Controllers\Member\AccountController::class,      'deleteAvatar'])->name('account.avatar.delete');
     Route::post('/deaktivieren', [\App\Http\Controllers\Member\AccountController::class,      'deactivate'])->name('account.deactivate');
     Route::delete('/loeschen',   [\App\Http\Controllers\Member\AccountController::class,      'destroy'])->name('account.destroy');
     Route::get('/berichte',      [\App\Http\Controllers\Member\MyReviewsController::class,    'index'])->name('reviews.mine');
