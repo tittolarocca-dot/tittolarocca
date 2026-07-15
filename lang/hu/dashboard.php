@@ -119,4 +119,8 @@ return [
     'listing_no_visitors'      => 'Még nincs látogató.',
     'listing_no_visitors_hint' => 'Ha valaki meglátogatja a hirdetésedet, itt fog megjelenni.',
     'view_profile_btn'         => 'Profil megtekintése →',
+    'my_profile' => 'Profilom',
+    'my_profile_desc' => 'Bio és fiók',
+    'my_reports' => 'Értékeléseim',
+    'my_reports_desc' => 'A te értékeléseid',
 ];

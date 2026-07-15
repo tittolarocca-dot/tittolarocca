@@ -141,6 +141,8 @@ const props = defineProps({
 });
 
 const actions = computed(() => [
+  { icon: '🧑', label: t('dashboard.my_profile'),    desc: t('dashboard.my_profile_desc'),     href: route('konto.account.edit') },
+  { icon: '📝', label: t('dashboard.my_reports'),    desc: t('dashboard.my_reports_desc'),      href: route('konto.reviews.mine') },
   { icon: '🔍', label: t('dashboard.discover'),      desc: t('dashboard.discover_desc'),       href: route('home') },
   { icon: '💫', label: t('dashboard.subscriptions'), desc: t('dashboard.subscriptions_desc'),  href: route('konto.subscriptions') },
   { icon: '💬', label: t('dashboard.messages'),      desc: t('dashboard.messages_desc'),        href: route('konto.messages') },

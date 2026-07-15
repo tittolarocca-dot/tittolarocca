@@ -119,4 +119,8 @@ return [
     'listing_no_visitors'      => 'Nessun visitatore ancora.',
     'listing_no_visitors_hint' => 'Non appena qualcuno visita il tuo annuncio, apparirà qui.',
     'view_profile_btn'         => 'Vedi profilo →',
+    'my_profile' => 'Il mio profilo',
+    'my_profile_desc' => 'Bio e account',
+    'my_reports' => 'Le mie recensioni',
+    'my_reports_desc' => 'Le tue valutazioni',
 ];

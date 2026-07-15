@@ -47,6 +47,11 @@ class LoginController extends Controller
             ]);
         }
 
+        // Deaktiviertes Konto durch erneutes Login reaktivieren
+        if ($user->deactivated_at) {
+            $user->update(['deactivated_at' => null]);
+        }
+
         if ($user->role === 'inserent') {
             return redirect()->intended(route('inserat.dashboard'));
         }

@@ -119,4 +119,8 @@ return [
     'listing_no_visitors'      => "Aucun visiteur pour l'instant.",
     'listing_no_visitors_hint' => "Dès que quelqu'un visite votre annonce, il apparaît ici.",
     'view_profile_btn'         => 'Voir le profil →',
+    'my_profile' => 'Mon profil',
+    'my_profile_desc' => 'Bio et compte',
+    'my_reports' => 'Mes avis',
+    'my_reports_desc' => 'Tes évaluations',
 ];

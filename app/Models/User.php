@@ -14,6 +14,8 @@ class User extends Authenticatable implements FilamentUser
 
     protected $fillable = [
         'name', 'email', 'password', 'role', 'status', 'email_verified_at',
+        'gender', 'age', 'height_cm', 'weight_kg', 'city_id', 'languages',
+        'smoking', 'bio', 'preferences', 'deactivated_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -24,6 +26,12 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'blocked_at'        => 'datetime',
+            'deactivated_at'    => 'datetime',
+            'languages'         => 'array',
+            'smoking'           => 'boolean',
+            'age'               => 'integer',
+            'height_cm'         => 'integer',
+            'weight_kg'         => 'integer',
         ];
     }
 
@@ -36,6 +44,8 @@ class User extends Authenticatable implements FilamentUser
     public function isInserent(): bool { return $this->role === 'inserent'; }
 
     public function profile()  { return $this->hasOne(Profile::class); }
+    public function city()     { return $this->belongsTo(City::class); }
+    public function writtenReviews() { return $this->hasMany(Review::class, 'reviewer_user_id'); }
     public function messages() { return $this->hasMany(Message::class, 'from_user_id'); }
     public function platformSubscriptions() { return $this->hasMany(PlatformSubscription::class, 'subscriber_user_id'); }
     public function favorites() { return $this->belongsToMany(Profile::class, 'favorites')->withTimestamps(); }

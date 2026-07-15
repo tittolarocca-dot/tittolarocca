@@ -69,6 +69,11 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────
 Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () {
     Route::get('/',              [\App\Http\Controllers\Member\DashboardController::class,    'index'])->name('dashboard');
+    Route::get('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'edit'])->name('account.edit');
+    Route::put('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'update'])->name('account.update');
+    Route::post('/deaktivieren', [\App\Http\Controllers\Member\AccountController::class,      'deactivate'])->name('account.deactivate');
+    Route::delete('/loeschen',   [\App\Http\Controllers\Member\AccountController::class,      'destroy'])->name('account.destroy');
+    Route::get('/berichte',      [\App\Http\Controllers\Member\MyReviewsController::class,    'index'])->name('reviews.mine');
     Route::get('/abonnements',   [\App\Http\Controllers\Member\SubscriptionController::class, 'index'])->name('subscriptions');
     Route::post('/abonnieren/{profile:slug}',  [\App\Http\Controllers\Member\SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/gratis-test/{profile:slug}', [\App\Http\Controllers\Member\SubscriptionController::class, 'trial'])->name('trial');

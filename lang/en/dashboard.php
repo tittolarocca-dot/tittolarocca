@@ -119,4 +119,8 @@ return [
     'listing_no_visitors'      => 'No visitors yet.',
     'listing_no_visitors_hint' => 'Once someone visits your listing, they will appear here.',
     'view_profile_btn'         => 'View profile →',
+    'my_profile' => 'My profile',
+    'my_profile_desc' => 'Bio & account settings',
+    'my_reports' => 'My reports',
+    'my_reports_desc' => 'Your reviews',
 ];

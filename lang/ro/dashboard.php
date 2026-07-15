@@ -119,4 +119,8 @@ return [
     'listing_no_visitors'      => 'Niciun vizitator încă.',
     'listing_no_visitors_hint' => 'Când cineva îți vizitează anunțul, va apărea aici.',
     'view_profile_btn'         => 'Vezi profilul →',
+    'my_profile' => 'Profilul meu',
+    'my_profile_desc' => 'Bio și cont',
+    'my_reports' => 'Recenziile mele',
+    'my_reports_desc' => 'Evaluările tale',
 ];

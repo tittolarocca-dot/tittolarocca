@@ -126,4 +126,8 @@ return [
     'listing_no_visitors'      => 'Noch keine Besucher.',
     'listing_no_visitors_hint' => 'Sobald jemand dein Inserat besucht, erscheint er hier.',
     'view_profile_btn'         => 'Profil ansehen →',
+    'my_profile' => 'Mein Profil',
+    'my_profile_desc' => 'Bio & Konto verwalten',
+    'my_reports' => 'Meine Berichte',
+    'my_reports_desc' => 'Deine Bewertungen',
 ];
