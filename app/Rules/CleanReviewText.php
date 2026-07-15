@@ -49,7 +49,7 @@ class CleanReviewText implements ValidationRule
 
         // Telefonnummern: 9+ Ziffern in einer Folge (Datumsangaben mit 8 Ziffern bleiben erlaubt)
         $digits = preg_replace('/\D+/', '', $text);
-        if (preg_match('/(?:\+?\d[\s./\-()]?){7,}/', $text) && strlen($digits) >= 9) {
+        if (preg_match('#(?:\+?\d[\s./\-()]?){7,}#', $text) && strlen($digits) >= 9) {
             $fail('Bitte keine Telefonnummern oder Ziffernfolgen angeben.');
             return;
         }
