@@ -27,6 +27,12 @@
               <path d="M54 29 Q50 42 36 38 Q26 34 30 20 Q34 8 46 12 Q56 16 54 29z"/>
             </svg>
           </span>
+          <!-- Personen-Icon für "Mein Profil" -->
+          <span v-else-if="action.userIcon" class="w-8 h-8 shrink-0 flex items-center justify-center">
+            <svg class="w-7 h-7 text-[#e35d8f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+            </svg>
+          </span>
           <span v-else class="text-2xl">{{ action.icon }}</span>
           <div class="min-w-0">
             <p class="text-sm font-semibold text-white group-hover:text-[#e35d8f] transition leading-tight">{{ action.label }}</p>
@@ -141,7 +147,7 @@ const props = defineProps({
 });
 
 const actions = computed(() => [
-  { icon: '🧑', label: t('dashboard.my_profile'),    desc: t('dashboard.my_profile_desc'),     href: route('konto.account.edit') },
+  { icon: null, userIcon: true, label: t('dashboard.my_profile'), desc: t('dashboard.my_profile_desc'), href: route('konto.account.edit') },
   { icon: '📝', label: t('dashboard.my_reports'),    desc: t('dashboard.my_reports_desc'),      href: route('konto.reviews.mine') },
   { icon: '🔍', label: t('dashboard.discover'),      desc: t('dashboard.discover_desc'),       href: route('home') },
   { icon: '💫', label: t('dashboard.subscriptions'), desc: t('dashboard.subscriptions_desc'),  href: route('konto.subscriptions') },
