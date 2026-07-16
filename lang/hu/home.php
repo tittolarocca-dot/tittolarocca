@@ -24,4 +24,6 @@ return [
     'private_label'   => 'Privát',
     'no_images'       => 'Nem találhatók képek.',
     'members_only'    => 'Csak előfizetőknek',
+    'yes' => 'Igen',
+    'no' => 'Nem',
 ];

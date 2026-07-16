@@ -24,4 +24,6 @@ return [
     'private_label'   => 'Privat',
     'no_images'       => 'Keine Bilder gefunden.',
     'members_only'    => 'Nur für Abonnenten',
+    'yes' => 'Ja',
+    'no' => 'Nein',
 ];

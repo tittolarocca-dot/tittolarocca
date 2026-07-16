@@ -85,6 +85,15 @@
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
+          <div class="relative">
+            <select v-model="filters.verified" @change="applyFilters"
+              class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
+              <option value="">{{ t('home.verified') }}</option>
+              <option value="ja">{{ t('home.yes') }}</option>
+              <option value="nein">{{ t('home.no') }}</option>
+            </select>
+            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
           <button @click="applyFilters" class="bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-2.5 rounded transition sm:hidden">
             {{ t('home.search_btn') }}
           </button>
@@ -288,6 +297,7 @@ const props = defineProps({
   activeService:  Object,
   activeSearch:   String,
   activeAge:      String,
+  activeVerified: String,
 });
 
 const filters = ref({
@@ -296,6 +306,7 @@ const filters = ref({
   service:  props.activeService?.slug ?? '',
   age:      props.activeAge ?? '',
   search:   props.activeSearch ?? '',
+  verified: props.activeVerified ?? '',
 });
 
 function isNew(iso) {
@@ -305,8 +316,9 @@ function isNew(iso) {
 
 function applyFilters() {
   const query = {};
-  if (filters.value.search) query.search = filters.value.search;
-  if (filters.value.age)    query.age    = filters.value.age;
+  if (filters.value.search)   query.search   = filters.value.search;
+  if (filters.value.age)      query.age      = filters.value.age;
+  if (filters.value.verified) query.verified = filters.value.verified;
 
   if (filters.value.service) {
     router.get(route('service', filters.value.service), query);

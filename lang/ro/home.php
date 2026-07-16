@@ -24,4 +24,6 @@ return [
     'private_label'   => 'Privat',
     'no_images'       => 'Nu s-au găsit imagini.',
     'members_only'    => 'Doar pentru abonați',
+    'yes' => 'Da',
+    'no' => 'Nu',
 ];
