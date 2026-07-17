@@ -49,7 +49,7 @@ class ProfileController extends Controller
                 'listing_expires_at'     => $profile->listing_expires_at?->format('d.m.Y'),
             ] : null,
             // cities and categories come from HandleInertiaRequests (include slug)
-            'tags' => Tag::orderBy('name')->get(['id', 'name', 'group']),
+            'tags' => Tag::orderBy('name')->get(['id', 'name', 'group', 'slug']),
         ]);
     }
 

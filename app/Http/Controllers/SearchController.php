@@ -27,7 +27,7 @@ class SearchController extends Controller
         if (! $searched) {
             return inertia('Search/Index', [
                 'profiles'    => Profile::whereRaw('1 = 0')->paginate(20),
-                'services'    => Tag::orderBy('name')->get(['id', 'name', 'group']),
+                'services'    => Tag::orderBy('name')->get(['id', 'name', 'group', 'slug']),
                 'filters'     => $f,
                 'resultCount' => 0,
                 'searched'    => false,
@@ -157,7 +157,7 @@ class SearchController extends Controller
 
         return inertia('Search/Index', [
             'profiles'    => $profiles,
-            'services'    => Tag::orderBy('name')->get(['id', 'name', 'group']),
+            'services'    => Tag::orderBy('name')->get(['id', 'name', 'group', 'slug']),
             'filters'     => $f,
             'resultCount' => $profiles->total(),
             'searched'    => true,
