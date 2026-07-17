@@ -12,16 +12,6 @@
           <span class="text-lg font-black text-white">inserate<span class="text-white/70">®</span></span>
         </Link>
 
-        <!-- Desktop city nav -->
-        <nav class="hidden md:flex items-center gap-5 text-sm text-white/80 flex-1">
-          <Link v-for="city in cities.slice(0,6)" :key="city.id"
-            :href="route('city', { city: city.slug })"
-            class="hover:text-white transition whitespace-nowrap font-medium"
-            :class="{ 'text-white font-bold underline underline-offset-4': activeCitySlug === city.slug }">
-            {{ city.name }}
-          </Link>
-        </nav>
-
         <!-- Desktop right: language switcher + auth -->
         <div class="hidden md:flex items-center gap-3 ml-auto shrink-0">
 
@@ -95,15 +85,6 @@
 
       <!-- Mobile dropdown -->
       <div v-show="mobileMenu" class="md:hidden bg-[#1a1a1a] border-t border-white/10 px-4 py-4">
-        <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">{{ t('nav.cities') }}</p>
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <Link v-for="city in cities.slice(0,6)" :key="city.id"
-            :href="route('city', { city: city.slug })"
-            @click="mobileMenu = false"
-            class="text-sm text-center py-2 px-1 rounded-lg bg-white/5 hover:bg-[#e35d8f]/20 hover:text-[#e35d8f] transition text-gray-300 font-medium">
-            {{ city.name }}
-          </Link>
-        </div>
 
         <!-- Mobile language switcher -->
         <div class="border-t border-white/10 pt-3 mb-3">
@@ -207,7 +188,6 @@ const locale          = computed(() => page.props.locale ?? 'de');
 const supportedLocales = computed(() => page.props.supportedLocales ?? []);
 // nur Städte mit slug (route('city', slug) würde sonst die ganze Seite crashen)
 const cities          = computed(() => (page.props.cities ?? []).filter((c) => c?.slug));
-const activeCitySlug  = computed(() => page.props.activeCity?.slug);
 
 const dashboardRoute = computed(() =>
   page.props.auth.user?.role === 'inserent'
