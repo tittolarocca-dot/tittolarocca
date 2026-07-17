@@ -12,6 +12,7 @@ class Profile extends Model
         'nationality', 'height_cm', 'eye_color', 'smoking', 'tattoo',
         'intimate_area', 'body_type',
         'gender', 'origin', 'weight_kg', 'cup_size', 'breast_type', 'has_video',
+        'languages',
         'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
@@ -32,6 +33,7 @@ class Profile extends Model
         'smoking'                   => 'boolean',
         'tattoo'                    => 'boolean',
         'has_video'                 => 'boolean',
+        'languages'                 => 'array',
     ];
 
     // Encrypted WhatsApp getter/setter

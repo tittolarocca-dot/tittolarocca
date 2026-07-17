@@ -87,4 +87,6 @@ return [
     'save' => 'Save changes',
     'create' => 'Create profile & continue',
     'g_gigolo' => 'Gigolo',
+    'languages' => 'Languages',
+    'languages_hint' => 'Select the languages and rate how well you speak them (more stars = better).',
 ];

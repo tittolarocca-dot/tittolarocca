@@ -87,4 +87,6 @@ return [
     'save' => 'Módosítások mentése',
     'create' => 'Profil létrehozása és tovább',
     'g_gigolo' => 'Gigoló',
+    'languages' => 'Nyelvek',
+    'languages_hint' => 'Válaszd ki a nyelveket, és értékeld, mennyire beszéled (több csillag = jobb).',
 ];

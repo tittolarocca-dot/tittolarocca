@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'Antwort wurde abgelehnt.',
     'report_review' => 'Melden',
     'report_reason_ph' => 'Warum meldest du diese Bewertung?',
+    'languages_section' => 'Sprachen',
 ];

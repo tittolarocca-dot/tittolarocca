@@ -207,6 +207,25 @@
           </label>
         </div>
 
+        <!-- Sprachen -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
+          <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">{{ t('inserent.languages') }}</h2>
+          <p class="text-xs text-gray-500">{{ t('inserent.languages_hint') }}</p>
+          <div class="space-y-1">
+            <div v-for="[code, flag] in languageList" :key="code"
+              class="flex items-center justify-between gap-3 py-1.5 border-b border-gray-100 last:border-0">
+              <span class="flex items-center gap-2 text-sm text-gray-700">
+                <span class="text-base leading-none">{{ flag }}</span>{{ t('languages.' + code) }}
+              </span>
+              <div class="flex gap-0.5">
+                <button v-for="n in 5" :key="n" type="button" @click="setLang(code, n)"
+                  class="text-lg leading-none transition"
+                  :class="n <= (form.languages[code] || 0) ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-200'">★</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Beschreibung -->
         <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-3 shadow-sm">
           <h2 class="font-semibold text-gray-500 text-xs uppercase tracking-wide">{{ t('inserent.description') }}</h2>
@@ -356,6 +375,15 @@ const originOptions = [
   ['indisch', 'o_indian'], ['latina', 'o_latina'], ['gemischt', 'o_mixed'],
 ];
 const breastTypes = [['natur', 'b_natural'], ['implantate', 'b_implants']];
+const languageList = [
+  ['de', '🇩🇪'], ['en', '🇬🇧'], ['fr', '🇫🇷'], ['es', '🇪🇸'], ['it', '🇮🇹'],
+  ['hu', '🇭🇺'], ['ro', '🇷🇴'], ['pt', '🇵🇹'], ['ru', '🇷🇺'], ['other', '🌐'],
+];
+
+function setLang(code, n) {
+  const cur = form.languages[code] || 0;
+  form.languages = { ...form.languages, [code]: cur === n ? 0 : n };
+}
 
 const form = useForm({
   display_name:           props.profile?.display_name           ?? '',
@@ -376,6 +404,7 @@ const form = useForm({
   cup_size:               props.profile?.cup_size               ?? '',
   breast_type:            props.profile?.breast_type            ?? '',
   has_video:              props.profile?.has_video              ?? false,
+  languages:              props.profile?.languages              ?? {},
   whatsapp_number:        props.profile?.whatsapp_number        ?? '',
   telegram_username:      props.profile?.telegram_username      ?? '',
   address:                props.profile?.address                ?? '',

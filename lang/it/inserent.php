@@ -87,4 +87,6 @@ return [
     'save' => 'Salva modifiche',
     'create' => 'Crea profilo e continua',
     'g_gigolo' => 'Gigolo',
+    'languages' => 'Lingue',
+    'languages_hint' => 'Seleziona le lingue e valuta quanto bene le parli (più stelle = meglio).',
 ];

@@ -272,6 +272,21 @@
             </div>
           </div>
 
+          <!-- Gesprochene Sprachen -->
+          <div v-if="languages.length" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{{ t('profile.languages_section') }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+              <div v-for="l in languages" :key="l.code" class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-2 text-sm text-gray-300">
+                  <span class="text-base leading-none">{{ langFlag(l.code) }}</span>{{ t('languages.' + l.code) }}
+                </span>
+                <span class="text-sm tracking-tight whitespace-nowrap">
+                  <span class="text-yellow-400">{{ '★'.repeat(l.level) }}</span><span class="text-gray-700">{{ '★'.repeat(5 - l.level) }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
           <!-- Review Form / eigene Bewertung -->
           <div v-if="isSubscribed && !isOwner" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="font-semibold text-white mb-4">{{ myReview ? t('profile.edit_review') : t('profile.review_submit_title') }}</h2>
@@ -667,6 +682,7 @@ const props = defineProps({
   publicMedia:         { type: Array,  default: () => [] },
   privateMedia:        { type: Array,  default: () => [] },
   reviews:             { type: Array,  default: () => [] },
+  languages:           { type: Array,  default: () => [] },
   isOwner:             { type: Boolean, default: false },
   isSubscribed:        { type: Boolean, default: false },
   isTrialing:          { type: Boolean, default: false },
@@ -733,6 +749,12 @@ const originLabels = {
   indisch: 'Indisch', latina: 'Latina (Hispanisch)', gemischt: 'Gemischt',
 };
 const breastLabels = { natur: 'Natur', implantate: 'Implantate' };
+
+const langFlags = {
+  de: '🇩🇪', en: '🇬🇧', fr: '🇫🇷', es: '🇪🇸', it: '🇮🇹',
+  hu: '🇭🇺', ro: '🇷🇴', pt: '🇵🇹', ru: '🇷🇺', other: '🌐',
+};
+const langFlag = (code) => langFlags[code] ?? '🌐';
 
 const details = computed(() => {
   const p = props.profile;

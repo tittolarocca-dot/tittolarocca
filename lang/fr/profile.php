@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'Réponse rejetée.',
     'report_review' => 'Signaler',
     'report_reason_ph' => 'Pourquoi signales-tu cet avis ?',
+    'languages_section' => 'Langues',
 ];

@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'A választ elutasították.',
     'report_review' => 'Jelentés',
     'report_reason_ph' => 'Miért jelented ezt az értékelést?',
+    'languages_section' => 'Nyelvek',
 ];

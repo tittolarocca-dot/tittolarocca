@@ -85,6 +85,17 @@ class ProfileController extends Controller
                 'created_at'   => $r->created_at->format('d.m.Y'),
             ]);
 
+        // Gesprochene Sprachen als geordnete Liste { code, level }
+        $langOrder    = ['de', 'en', 'fr', 'es', 'it', 'hu', 'ro', 'pt', 'ru', 'other'];
+        $profileLangs = $profile->languages ?? [];
+        $languages    = [];
+        foreach ($langOrder as $c) {
+            $lvl = (int) ($profileLangs[$c] ?? 0);
+            if ($lvl >= 1) {
+                $languages[] = ['code' => $c, 'level' => $lvl];
+            }
+        }
+
         // Eigene Bewertung (auch pending/rejected) – damit der Nutzer den Status sieht
         $myReview = $user
             ? \App\Models\Review::where('reviewer_user_id', $user->id)
@@ -125,6 +136,7 @@ class ProfileController extends Controller
                 'created_at'             => $profile->created_at->format('d.m.Y'),
                 'verification_status'    => $profile->verification_status,
             ],
+            'languages'           => $languages,
             'publicMedia'         => $publicMedia,
             'privateMedia'        => $privateMedia,
             'privateMediaCount'   => $privateMediaCount,

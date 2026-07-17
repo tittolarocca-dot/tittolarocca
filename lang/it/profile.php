@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'Risposta rifiutata.',
     'report_review' => 'Segnala',
     'report_reason_ph' => 'Perché segnali questa recensione?',
+    'languages_section' => 'Lingue',
 ];

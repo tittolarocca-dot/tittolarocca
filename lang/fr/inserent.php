@@ -87,4 +87,6 @@ return [
     'save' => 'Enregistrer',
     'create' => 'Créer le profil et continuer',
     'g_gigolo' => 'Gigolo',
+    'languages' => 'Langues',
+    'languages_hint' => 'Choisis les langues et indique ton niveau (plus d\'étoiles = mieux).',
 ];

@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'Reply was rejected.',
     'report_review' => 'Report',
     'report_reason_ph' => 'Why are you reporting this review?',
+    'languages_section' => 'Languages',
 ];

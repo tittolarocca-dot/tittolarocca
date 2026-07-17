@@ -39,6 +39,7 @@ class ProfileController extends Controller
                 'cup_size'               => $profile->cup_size,
                 'breast_type'            => $profile->breast_type,
                 'has_video'              => $profile->has_video,
+                'languages'              => $profile->languages,
                 'whatsapp_number'        => $profile->whatsapp_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
@@ -84,6 +85,7 @@ class ProfileController extends Controller
             'cup_size'               => $data['cup_size'] ?? null,
             'breast_type'            => $data['breast_type'] ?? null,
             'has_video'              => $data['has_video'] ?? false,
+            'languages'              => $this->sanitizeLanguages($request),
             'subscription_price_chf' => $data['subscription_price_chf'],
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
@@ -138,6 +140,7 @@ class ProfileController extends Controller
             'cup_size'               => $data['cup_size'] ?? null,
             'breast_type'            => $data['breast_type'] ?? null,
             'has_video'              => $data['has_video'] ?? false,
+            'languages'              => $this->sanitizeLanguages($request),
             'subscription_price_chf' => $data['subscription_price_chf'],
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
@@ -210,6 +213,26 @@ class ProfileController extends Controller
             ->with('success', 'Dein Profil wurde erfolgreich gelöscht.');
     }
 
+    /** Sprachen-Map { code: level(1–5) } serverseitig säubern. */
+    private function sanitizeLanguages(Request $request): ?array
+    {
+        $allowed = ['de', 'en', 'fr', 'es', 'it', 'hu', 'ro', 'pt', 'ru', 'other'];
+        $input   = $request->input('languages', []);
+        if (! is_array($input)) {
+            return null;
+        }
+        $out = [];
+        foreach ($allowed as $code) {
+            if (isset($input[$code]) && is_numeric($input[$code])) {
+                $lvl = (int) $input[$code];
+                if ($lvl >= 1 && $lvl <= 5) {
+                    $out[$code] = $lvl;
+                }
+            }
+        }
+        return $out ?: null;
+    }
+
     private function validateProfile(Request $request): array
     {
         return $request->validate([
@@ -231,6 +254,7 @@ class ProfileController extends Controller
             'cup_size'               => ['nullable', 'string', 'in:A,B,C,D,E,F,G'],
             'breast_type'            => ['nullable', 'string', 'in:natur,implantate'],
             'has_video'              => ['nullable', 'boolean'],
+            'languages'              => ['nullable', 'array'],
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
             'telegram_username'      => ['nullable', 'string', 'max:100'],
             'address'                => ['nullable', 'string', 'max:255'],

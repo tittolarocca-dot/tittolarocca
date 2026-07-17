@@ -92,4 +92,5 @@ return [
     'reply_status_rejected' => 'Răspunsul a fost respins.',
     'report_review' => 'Raportează',
     'report_reason_ph' => 'De ce raportezi această recenzie?',
+    'languages_section' => 'Limbi',
 ];
