@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'profile'   => trans('profile'),
                 'auth'      => trans('auth'),
                 'dashboard' => trans('dashboard'),
+                'inserent'  => trans('inserent'),
             ],
         ];
     }
