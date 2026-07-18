@@ -18,7 +18,7 @@ class HomeController extends Controller
         ];
     }
 
-    private function baseQuery(?string $search = null, ?string $age = null, ?string $verified = null, array $services = [])
+    private function baseQuery(?string $search, ?string $verified, array $services, array $ages, array $categories)
     {
         $q = Profile::with(['city', 'category', 'publicMedia',
             'listingOrders' => fn ($q) => $q
@@ -36,12 +36,17 @@ class HomeController extends Controller
             });
         }
 
-        if ($age) {
-            if (preg_match('/^(\d+)\+$/', $age, $m)) {
-                $q->where('age', '>=', (int) $m[1]);
-            } elseif (preg_match('/^(\d+)-(\d+)$/', $age, $m)) {
-                $q->whereBetween('age', [(int) $m[1], (int) $m[2]]);
-            }
+        // Mehrfachauswahl Alter: Profile in MINDESTENS EINER der gewählten Altersspannen (ODER-Verknüpfung)
+        if (! empty($ages)) {
+            $q->where(function ($outer) use ($ages) {
+                foreach ($ages as $age) {
+                    if (preg_match('/^(\d+)\+$/', $age, $m)) {
+                        $outer->orWhere('age', '>=', (int) $m[1]);
+                    } elseif (preg_match('/^(\d+)-(\d+)$/', $age, $m)) {
+                        $outer->orWhereBetween('age', [(int) $m[1], (int) $m[2]]);
+                    }
+                }
+            });
         }
 
         if ($verified === 'ja') {
@@ -55,81 +60,100 @@ class HomeController extends Controller
             $q->whereHas('tags', fn ($t) => $t->whereIn('tags.slug', $services));
         }
 
+        // Mehrfachauswahl Rubrik: Profile in MINDESTENS EINER der gewählten Kategorien (ODER-Verknüpfung)
+        if (! empty($categories)) {
+            $q->whereIn('category_id', function ($sub) use ($categories) {
+                $sub->select('id')->from('categories')->whereIn('slug', $categories);
+            });
+        }
+
         return $q->orderByDesc('pushed_at')->orderByDesc('created_at');
+    }
+
+    /**
+     * Normalisiert einen Query-Parameter, der als kommagetrennter String
+     * (?x=a,b) oder als Array (?x[]=a) kommen kann, zu einer sauberen Slug-Liste.
+     */
+    private function multiParam(Request $request, string $key): array
+    {
+        $raw = $request->query($key, []);
+        if (is_string($raw)) {
+            $raw = explode(',', $raw);
+        }
+        return array_values(array_unique(array_filter(array_map(
+            fn ($s) => trim((string) $s),
+            is_array($raw) ? $raw : []
+        ))));
     }
 
     private function filters(Request $request): array
     {
         $verified = $request->query('verified');
 
-        // Services können als kommagetrennter String (?services=a,b) oder Array (?services[]=a) kommen
-        $servicesRaw = $request->query('services', []);
-        if (is_string($servicesRaw)) {
-            $servicesRaw = explode(',', $servicesRaw);
-        }
-        $services = array_values(array_unique(array_filter(array_map(
-            fn ($s) => trim((string) $s),
-            is_array($servicesRaw) ? $servicesRaw : []
-        ))));
-
         return [
             trim($request->query('search', '')) ?: null,
-            trim($request->query('age', '')) ?: null,
             in_array($verified, ['ja', 'nein'], true) ? $verified : null,
-            $services,
+            $this->multiParam($request, 'services'),
+            $this->multiParam($request, 'age'),
+            $this->multiParam($request, 'categories'),
         ];
     }
 
     public function index(Request $request)
     {
-        [$search, $age, $verified, $services] = $this->filters($request);
+        [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'        => $this->baseQuery($search, $age, $verified, $services)->paginate(20)->withQueryString(),
-            'activeSearch'    => $search,
-            'activeAge'       => $age,
-            'activeVerified'  => $verified,
-            'activeServices'  => $services,
+            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
+            'activeSearch'     => $search,
+            'activeAges'       => $ages,
+            'activeVerified'   => $verified,
+            'activeServices'   => $services,
+            'activeCategories' => $categories,
         ]));
     }
 
     public function city(City $city, Request $request)
     {
-        [$search, $age, $verified, $services] = $this->filters($request);
+        [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'        => $this->baseQuery($search, $age, $verified, $services)->where('city_id', $city->id)->paginate(20)->withQueryString(),
-            'activeCity'      => $city,
-            'activeSearch'    => $search,
-            'activeAge'       => $age,
-            'activeVerified'  => $verified,
-            'activeServices'  => $services,
+            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
+            'activeCity'       => $city,
+            'activeSearch'     => $search,
+            'activeAges'       => $ages,
+            'activeVerified'   => $verified,
+            'activeServices'   => $services,
+            'activeCategories' => $categories,
         ]));
     }
 
     public function category(Category $category, Request $request)
     {
-        [$search, $age, $verified, $services] = $this->filters($request);
+        [$search, $verified, $services, $ages, $categories] = $this->filters($request);
+        // Pfad-Kategorie in die Mehrfachauswahl aufnehmen (Direktlinks /kategorie/{slug} bleiben gültig)
+        $categories = array_values(array_unique(array_merge($categories, [$category->slug])));
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'        => $this->baseQuery($search, $age, $verified, $services)->where('category_id', $category->id)->paginate(20)->withQueryString(),
-            'activeCategory'  => $category,
-            'activeSearch'    => $search,
-            'activeAge'       => $age,
-            'activeVerified'  => $verified,
-            'activeServices'  => $services,
+            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
+            'activeSearch'     => $search,
+            'activeAges'       => $ages,
+            'activeVerified'   => $verified,
+            'activeServices'   => $services,
+            'activeCategories' => $categories,
         ]));
     }
 
     public function service(Tag $tag, Request $request)
     {
-        [$search, $age, $verified, $services] = $this->filters($request);
+        [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         // Pfad-Service in die Mehrfachauswahl aufnehmen (Direktlinks /service/{slug} bleiben gültig)
         $services = array_values(array_unique(array_merge($services, [$tag->slug])));
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'        => $this->baseQuery($search, $age, $verified, $services)
+            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)
                 ->paginate(20)->withQueryString(),
-            'activeSearch'    => $search,
-            'activeAge'       => $age,
-            'activeVerified'  => $verified,
-            'activeServices'  => $services,
+            'activeSearch'     => $search,
+            'activeAges'       => $ages,
+            'activeVerified'   => $verified,
+            'activeServices'   => $services,
+            'activeCategories' => $categories,
         ]));
     }
 }

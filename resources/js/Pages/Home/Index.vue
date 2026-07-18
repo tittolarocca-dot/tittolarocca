@@ -57,25 +57,59 @@
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
+          <!-- Alter: Mehrfachauswahl (Checkboxen) -->
           <div class="relative">
-            <select v-model="filters.age"
-              class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">{{ t('home.age') }}</option>
-              <option value="18-25">{{ t('home.age') }} 18-25</option>
-              <option value="25-35">{{ t('home.age') }} 25-35</option>
-              <option value="35-45">{{ t('home.age') }} 35-45</option>
-              <option value="45-55">{{ t('home.age') }} 45-55</option>
-              <option value="55+">{{ t('home.age') }} 55+</option>
-            </select>
-            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button type="button" @click="ageMenuOpen = !ageMenuOpen"
+              class="w-full flex items-center justify-between gap-2 bg-[#1a1a1a] border text-sm rounded px-3 py-2.5 cursor-pointer transition sm:min-w-[130px] focus:outline-none"
+              :class="[filters.ages.length ? 'border-[#e35d8f] text-white' : 'border-white/10 text-gray-200', 'hover:border-[#e35d8f]']">
+              <span class="truncate">
+                {{ filters.ages.length ? t('home.age') + ' (' + filters.ages.length + ')' : t('home.age') }}
+              </span>
+              <svg class="shrink-0 w-4 h-4 text-gray-500 transition-transform" :class="ageMenuOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div v-if="ageMenuOpen" class="fixed inset-0 z-30" @click="ageMenuOpen = false"></div>
+            <div v-if="ageMenuOpen"
+              class="absolute z-40 mt-1 left-0 w-56 max-w-[80vw] max-h-72 overflow-y-auto bg-[#1a1a1a] border border-white/15 rounded-lg shadow-xl shadow-black/50 p-1">
+              <label v-for="a in ageOptions" :key="a"
+                class="flex items-center gap-2 px-2.5 py-2 rounded cursor-pointer hover:bg-white/5 transition">
+                <input type="checkbox" :value="a" v-model="filters.ages"
+                  class="w-4 h-4 rounded accent-[#e35d8f] cursor-pointer" />
+                <span class="text-sm text-gray-200">{{ a === '55+' ? '55+' : a }}</span>
+              </label>
+              <div v-if="filters.ages.length" class="border-t border-white/10 mt-1 pt-1 px-1">
+                <button type="button" @click="filters.ages = []"
+                  class="w-full text-left text-xs text-gray-400 hover:text-[#e35d8f] px-2 py-1.5 transition">
+                  ✕ {{ t('home.reset') }}
+                </button>
+              </div>
+            </div>
           </div>
+          <!-- Rubrik: Mehrfachauswahl (Checkboxen) -->
           <div class="relative">
-            <select v-model="filters.category"
-              class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">{{ t('home.category') }}</option>
-              <option v-for="c in categories" :key="c.id" :value="c.slug">{{ c.name }}</option>
-            </select>
-            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button type="button" @click="categoryMenuOpen = !categoryMenuOpen"
+              class="w-full flex items-center justify-between gap-2 bg-[#1a1a1a] border text-sm rounded px-3 py-2.5 cursor-pointer transition sm:min-w-[130px] focus:outline-none"
+              :class="[filters.categories.length ? 'border-[#e35d8f] text-white' : 'border-white/10 text-gray-200', 'hover:border-[#e35d8f]']">
+              <span class="truncate">
+                {{ filters.categories.length ? t('home.category') + ' (' + filters.categories.length + ')' : t('home.category') }}
+              </span>
+              <svg class="shrink-0 w-4 h-4 text-gray-500 transition-transform" :class="categoryMenuOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div v-if="categoryMenuOpen" class="fixed inset-0 z-30" @click="categoryMenuOpen = false"></div>
+            <div v-if="categoryMenuOpen"
+              class="absolute z-40 mt-1 left-0 w-64 max-w-[80vw] max-h-72 overflow-y-auto bg-[#1a1a1a] border border-white/15 rounded-lg shadow-xl shadow-black/50 p-1">
+              <label v-for="c in categories" :key="c.id"
+                class="flex items-center gap-2 px-2.5 py-2 rounded cursor-pointer hover:bg-white/5 transition">
+                <input type="checkbox" :value="c.slug" v-model="filters.categories"
+                  class="w-4 h-4 rounded accent-[#e35d8f] cursor-pointer" />
+                <span class="text-sm text-gray-200 truncate">{{ c.name }}</span>
+              </label>
+              <div v-if="filters.categories.length" class="border-t border-white/10 mt-1 pt-1 px-1">
+                <button type="button" @click="filters.categories = []"
+                  class="w-full text-left text-xs text-gray-400 hover:text-[#e35d8f] px-2 py-1.5 transition">
+                  ✕ {{ t('home.reset') }}
+                </button>
+              </div>
+            </div>
           </div>
           <!-- Service: Mehrfachauswahl (Checkboxen) -->
           <div class="relative">
@@ -134,10 +168,10 @@
         <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
           <div class="flex flex-wrap gap-2">
             <span v-if="activeCity" class="text-[#e35d8f]">📍 {{ activeCity.name }}</span>
-            <span v-if="activeCategory" class="text-[#e35d8f]">🏷 {{ activeCategory.name }}</span>
+            <span v-for="name in activeCategoryNames" :key="name" class="text-[#e35d8f]">🏷 {{ name }}</span>
             <span v-for="name in activeServiceNames" :key="name" class="text-[#e35d8f]">✨ {{ name }}</span>
-            <span v-if="activeAge" class="text-[#e35d8f]">🎂 {{ t('home.age') }} {{ activeAge }}</span>
-            <Link v-if="activeCity || activeCategory || activeServiceNames.length || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ {{ t('home.reset') }}</Link>
+            <span v-for="a in (activeAges || [])" :key="a" class="text-[#e35d8f]">🎂 {{ t('home.age') }} {{ a }}</span>
+            <Link v-if="activeCity || activeCategoryNames.length || activeServiceNames.length || (activeAges && activeAges.length)" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ {{ t('home.reset') }}</Link>
           </div>
           <span class="shrink-0 ml-2 text-gray-500">{{ profiles.total }} {{ t('home.listings') }}</span>
         </div>
@@ -322,29 +356,40 @@ const props = defineProps({
   cities:         Array,
   categories:     Array,
   services:       Array,
-  activeCity:      Object,
-  activeCategory:  Object,
-  activeServices:  { type: Array, default: () => [] },
-  activeSearch:    String,
-  activeAge:       String,
-  activeVerified:  String,
+  activeCity:        Object,
+  activeCategories:  { type: Array, default: () => [] },
+  activeServices:    { type: Array, default: () => [] },
+  activeSearch:      String,
+  activeAges:        { type: Array, default: () => [] },
+  activeVerified:    String,
 });
 
-const serviceMenuOpen = ref(false);
+const serviceMenuOpen  = ref(false);
+const ageMenuOpen       = ref(false);
+const categoryMenuOpen  = ref(false);
+
+const ageOptions = ['18-25', '25-35', '35-45', '45-55', '55+'];
 
 const filters = ref({
-  city:     props.activeCity?.slug ?? '',
-  category: props.activeCategory?.slug ?? '',
-  services: [...(props.activeServices ?? [])],
-  age:      props.activeAge ?? '',
-  search:   props.activeSearch ?? '',
-  verified: props.activeVerified ?? '',
+  city:       props.activeCity?.slug ?? '',
+  categories: [...(props.activeCategories ?? [])],
+  services:   [...(props.activeServices ?? [])],
+  ages:       [...(props.activeAges ?? [])],
+  search:     props.activeSearch ?? '',
+  verified:   props.activeVerified ?? '',
 });
 
 // Namen der aktiven Services für die Chip-Anzeige (Slug → übersetzter Name)
 const activeServiceNames = computed(() =>
   (props.activeServices ?? [])
     .map((slug) => props.services?.find((s) => s.slug === slug)?.name)
+    .filter(Boolean)
+);
+
+// Namen der aktiven Rubriken für die Chip-Anzeige (Slug → übersetzter Name)
+const activeCategoryNames = computed(() =>
+  (props.activeCategories ?? [])
+    .map((slug) => props.categories?.find((c) => c.slug === slug)?.name)
     .filter(Boolean)
 );
 
@@ -355,16 +400,17 @@ function isNew(iso) {
 
 function applyFilters() {
   serviceMenuOpen.value = false;
+  ageMenuOpen.value = false;
+  categoryMenuOpen.value = false;
   const query = {};
-  if (filters.value.search)          query.search   = filters.value.search;
-  if (filters.value.age)             query.age      = filters.value.age;
-  if (filters.value.verified)        query.verified = filters.value.verified;
-  if (filters.value.services.length) query.services = filters.value.services.join(',');
+  if (filters.value.search)            query.search     = filters.value.search;
+  if (filters.value.ages.length)       query.age        = filters.value.ages.join(',');
+  if (filters.value.verified)          query.verified   = filters.value.verified;
+  if (filters.value.services.length)   query.services   = filters.value.services.join(',');
+  if (filters.value.categories.length) query.categories = filters.value.categories.join(',');
 
   if (filters.value.city) {
     router.get(route('city', filters.value.city), query);
-  } else if (filters.value.category) {
-    router.get(route('category', filters.value.category), query);
   } else {
     router.get(route('home'), query);
   }
