@@ -51,7 +51,7 @@
             <div class="w-14 h-14 rounded-xl overflow-hidden bg-[#111] shrink-0">
               <img v-if="visitor.profile.cover_url" :src="visitor.profile.cover_url"
                 :alt="visitor.profile.display_name"
-                class="w-full h-full object-cover" loading="lazy" />
+                class="w-full h-full object-cover object-top" loading="lazy" />
               <div v-else class="w-full h-full flex items-center justify-center">
                 <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>

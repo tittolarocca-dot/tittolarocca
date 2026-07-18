@@ -70,7 +70,7 @@
             class="group block rounded-xl overflow-hidden border border-white/8 hover:border-[#e35d8f]/40 transition">
             <div class="aspect-[3/4] relative overflow-hidden bg-[#111]">
               <img v-if="item.cover_url" :src="item.cover_url" :alt="item.display_name"
-                class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
+                class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-300" loading="lazy" />
               <div v-else class="w-full h-full flex items-center justify-center">
                 <svg class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>

@@ -5,7 +5,7 @@
     <!-- Photo -->
     <div class="relative w-[50%] shrink-0 overflow-hidden">
       <img v-if="img"
-        class="lazyload w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
+        class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
         :data-src="src(img, 'card')"
         :data-srcset="srcset(img)"
         data-sizes="auto"
