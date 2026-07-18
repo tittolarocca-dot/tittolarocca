@@ -26,4 +26,7 @@ return [
     'members_only'    => 'Doar pentru abonați',
     'yes' => 'Da',
     'no' => 'Nu',
+    'photo_verified' => 'Foto confirmată',
+    'id_verified' => 'Identitate și vârstă verificate',
+    'fully_verified' => 'Complet verificat',
 ];

@@ -115,14 +115,16 @@
           </div>
         </div>
 
-        <!-- Verifikation -->
+        <!-- Foto-Verifizierung -->
         <div class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
           <div class="bg-[#111] border-b border-white/8 px-5 py-3 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-white flex items-center gap-2">
-              🪪 {{ t('dashboard.verification_title') }}
+              📷 {{ t('dashboard.photo_verif_title') }}
             </h2>
             <span :class="verificationBadgeClass">{{ verificationBadgeLabel }}</span>
           </div>
+
+          <p class="px-5 pt-4 text-xs text-gray-400">{{ t('dashboard.photo_verif_desc') }}</p>
 
           <!-- Genehmigt -->
           <div v-if="profile.verification_status === 'approved'" class="p-5 flex items-center gap-3">
@@ -178,6 +180,51 @@
             </div>
 
             <VerificationUploadForm :form="verifyForm" @submit="submitVerification" />
+          </div>
+        </div>
+
+        <!-- Identität & Alter verifizieren (Veriff) -->
+        <div class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
+          <div class="bg-[#111] border-b border-white/8 px-5 py-3 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+              🪪 {{ t('dashboard.id_verif_title') }}
+            </h2>
+            <span :class="identityBadgeClass">{{ identityBadgeLabel }}</span>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <p class="text-sm text-gray-400">{{ t('dashboard.id_verif_desc') }}</p>
+
+            <!-- Verifiziert -->
+            <div v-if="profile.identity_verification_status === 'approved'" class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-green-900/40 border border-green-600/40 flex items-center justify-center shrink-0 text-xl">✅</div>
+              <div>
+                <p class="font-semibold text-white text-sm">{{ t('dashboard.id_approved_title') }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">{{ t('dashboard.id_approved_desc') }}</p>
+              </div>
+            </div>
+
+            <!-- In Prüfung -->
+            <div v-else-if="profile.identity_verification_status === 'pending'" class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-900/40 border border-blue-600/40 flex items-center justify-center shrink-0 text-xl">⏳</div>
+              <div>
+                <p class="font-semibold text-white text-sm">{{ t('dashboard.id_pending_title') }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">{{ t('dashboard.id_pending_desc') }}</p>
+              </div>
+            </div>
+
+            <!-- Nicht beantragt / abgelehnt -->
+            <template v-else>
+              <div v-if="profile.identity_verification_status === 'rejected' && profile.identity_rejected_reason"
+                class="bg-red-950/40 border border-red-700/40 rounded-lg p-3 text-sm text-red-400">
+                <strong class="text-red-300">{{ t('dashboard.id_rejected_prefix') }}</strong> {{ profile.identity_rejected_reason }}
+              </div>
+              <button @click="startVeriff" :disabled="startingVeriff"
+                class="inline-flex items-center gap-2 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-3 rounded-xl transition shadow-lg shadow-[#e35d8f]/20">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{ startingVeriff ? '…' : t('dashboard.id_verif_button') }}
+              </button>
+            </template>
           </div>
         </div>
 
@@ -303,6 +350,31 @@ const verificationBadgeLabel = computed(() => ({
   approved:   t('dashboard.v_approved_badge'),
   rejected:   t('dashboard.v_rejected_badge'),
 }[props.profile?.verification_status] ?? t('dashboard.v_unverified')));
+
+// ── Veriff (Identität & Alter) ────────────────────────────────────────────────
+const startingVeriff = ref(false);
+
+function startVeriff() {
+  startingVeriff.value = true;
+  router.post(route('inserat.veriff.start'), {}, {
+    onFinish: () => { startingVeriff.value = false; },
+  });
+}
+
+const identityBadgeClass = computed(() => {
+  const colors = {
+    pending:  'bg-blue-900/50 text-blue-400',
+    approved: 'bg-green-900/50 text-green-400',
+    rejected: 'bg-red-900/50 text-red-400',
+  };
+  return `text-xs font-semibold px-2.5 py-0.5 rounded-full ${colors[props.profile?.identity_verification_status] ?? 'bg-gray-800 text-gray-400'}`;
+});
+
+const identityBadgeLabel = computed(() => ({
+  pending:  t('dashboard.id_status_pending'),
+  approved: t('dashboard.id_status_approved'),
+  rejected: t('dashboard.id_status_rejected'),
+}[props.profile?.identity_verification_status] ?? t('dashboard.id_status_none')));
 
 // Inline upload form component
 const VerificationUploadForm = defineComponent({

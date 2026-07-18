@@ -19,10 +19,15 @@
       <div class="absolute top-2 left-2 flex flex-col gap-1">
         <span v-if="profile.listing_orders?.[0]?.amount_chf > 0"
           class="bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
-        <span v-if="profile.verification_status === 'approved'"
+        <span v-if="profile.identity_verification_status === 'approved'"
           class="flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
           <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           {{ t('home.verified') }}
+        </span>
+        <span v-else-if="profile.verification_status === 'approved'"
+          class="flex items-center gap-1 bg-sky-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          {{ t('home.photo_verified') }}
         </span>
         <span v-if="isNew(profile.created_at)"
           class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ t('home.badge_new') }}</span>
@@ -37,9 +42,10 @@
           <h3 class="text-white font-bold text-sm sm:text-base group-hover:text-[#e35d8f] transition truncate">
             {{ profile.display_name }}
           </h3>
-          <span v-if="profile.verification_status === 'approved'"
-            class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-500 shrink-0"
-            :title="t('home.verified')">
+          <span v-if="profile.identity_verification_status === 'approved' || profile.verification_status === 'approved'"
+            class="inline-flex items-center justify-center w-4 h-4 rounded-full shrink-0"
+            :class="profile.identity_verification_status === 'approved' ? 'bg-green-500' : 'bg-sky-500'"
+            :title="profile.identity_verification_status === 'approved' ? t('home.verified') : t('home.photo_verified')">
             <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           </span>
           <span v-if="profile.age" class="shrink-0 text-gray-400 text-xs">{{ profile.age }} J.</span>

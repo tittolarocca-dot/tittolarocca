@@ -26,4 +26,7 @@ return [
     'members_only'    => 'Solo per abbonati',
     'yes' => 'Sì',
     'no' => 'No',
+    'photo_verified' => 'Foto confermata',
+    'id_verified' => 'ID ed età verificati',
+    'fully_verified' => 'Completamente verificato',
 ];

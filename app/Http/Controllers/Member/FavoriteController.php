@@ -21,6 +21,7 @@ class FavoriteController extends Controller
                 'cover_url'           => data_get($profile->publicMedia->first(), 'src.thumbnail')
                                             ?? $profile->publicMedia->first()?->url,
                 'verification_status' => $profile->verification_status,
+                'identity_verification_status' => $profile->identity_verification_status,
             ]);
 
         return inertia('Member/Favorites', [

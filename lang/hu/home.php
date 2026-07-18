@@ -26,4 +26,7 @@ return [
     'members_only'    => 'Csak előfizetőknek',
     'yes' => 'Igen',
     'no' => 'Nem',
+    'photo_verified' => 'Fotó megerősítve',
+    'id_verified' => 'Személyazonosság és kor ellenőrizve',
+    'fully_verified' => 'Teljesen hitelesítve',
 ];

@@ -41,4 +41,11 @@ return [
         ],
     ],
 
+    // Veriff – Identitäts- & Altersprüfung (nur Metadaten/Status werden gespeichert)
+    'veriff' => [
+        'api_key'  => env('VERIFF_API_KEY'),
+        'secret'   => env('VERIFF_SECRET'),
+        'base_url' => env('VERIFF_BASE_URL', 'https://stationapi.veriff.com'),
+    ],
+
 ];

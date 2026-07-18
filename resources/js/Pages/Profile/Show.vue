@@ -188,11 +188,24 @@
         <!-- Name + badges -->
         <div class="flex flex-wrap items-center gap-3">
           <h1 class="text-3xl font-black text-white">{{ profile.display_name }}</h1>
-          <span v-if="profile.verification_status === 'approved'"
-            class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-green-500 shrink-0"
-            :title="t('home.verified')">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          <!-- Verifizierungs-Badges (Foto / Identität getrennt) -->
+          <span v-if="photoVerified && idVerified"
+            class="inline-flex items-center gap-1 text-xs bg-green-500/15 text-green-300 border border-green-500/40 px-2.5 py-1 rounded-full font-semibold">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            {{ t('home.fully_verified') }}
           </span>
+          <template v-else>
+            <span v-if="idVerified"
+              class="inline-flex items-center gap-1 text-xs bg-green-500/15 text-green-300 border border-green-500/40 px-2.5 py-1 rounded-full font-semibold">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              {{ t('home.id_verified') }}
+            </span>
+            <span v-if="photoVerified"
+              class="inline-flex items-center gap-1 text-xs bg-sky-500/15 text-sky-300 border border-sky-500/40 px-2.5 py-1 rounded-full font-semibold">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              {{ t('home.photo_verified') }}
+            </span>
+          </template>
           <span v-if="profile.category"
             class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-3 py-1 rounded-full font-semibold">
             {{ profile.category }}
@@ -717,6 +730,9 @@ const avgRating = computed(() => {
   if (!props.reviews.length) return 0;
   return props.reviews.reduce((s, r) => s + r.stars, 0) / props.reviews.length;
 });
+
+const photoVerified = computed(() => props.profile.verification_status === 'approved');
+const idVerified    = computed(() => props.profile.identity_verification_status === 'approved');
 
 // Outline-Icons (Heroicons-Stil, 24er viewBox) – bewusst andere Motive als die Vorlage
 const detailIcons = {

@@ -21,6 +21,10 @@ class Profile extends Model
         'verification_status', 'verification_photo',
         'verification_rejected_reason',
         'verification_submitted_at', 'verification_reviewed_at',
+        // Veriff (Identität & Alter) – nur Metadaten/Status
+        'identity_verification_status', 'identity_rejected_reason',
+        'identity_submitted_at', 'identity_verified_at', 'age_verified_at',
+        'veriff_session_id',
     ];
 
     protected $casts = [
@@ -29,6 +33,9 @@ class Profile extends Model
         'pushed_at'                 => 'datetime',
         'verification_submitted_at' => 'datetime',
         'verification_reviewed_at'  => 'datetime',
+        'identity_submitted_at'     => 'datetime',
+        'identity_verified_at'      => 'datetime',
+        'age_verified_at'           => 'datetime',
         'subscription_price_chf'    => 'decimal:2',
         'smoking'                   => 'boolean',
         'tattoo'                    => 'boolean',
@@ -63,4 +70,13 @@ class Profile extends Model
     public function reviews()      { return $this->hasMany(Review::class); }
     public function approvedReviews() { return $this->hasMany(Review::class)->where('status', 'approved'); }
     public function listingOrders(){ return $this->hasMany(ListingOrder::class); }
+
+    /** Manuelle Foto-Verifizierung bestätigt. */
+    public function isPhotoVerified(): bool { return $this->verification_status === 'approved'; }
+
+    /** Identität & Alter über Veriff bestätigt. */
+    public function isIdentityVerified(): bool { return $this->identity_verification_status === 'approved'; }
+
+    /** Beide Prüfungen bestätigt. */
+    public function isFullyVerified(): bool { return $this->isPhotoVerified() && $this->isIdentityVerified(); }
 }

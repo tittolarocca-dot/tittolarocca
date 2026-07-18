@@ -66,6 +66,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->middleware('throttle:10,1')->name('review.reply');
     Route::post('/bewertung/{review}/melden',    [\App\Http\Controllers\Member\ReviewController::class, 'report'])->name('review.report');
     Route::post('/verifikation',  [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
+    Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
 });
@@ -99,6 +100,11 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
 // ── Stripe Webhooks ───────────────────────────────────────────────────────────
 Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
+// ── Veriff Webhook (Identität & Alter – nur Status/Metadaten) ─────────────────
+Route::post('/veriff/webhook', [\App\Http\Controllers\VeriffWebhookController::class, 'handle'])
+    ->name('veriff.webhook')
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ── Media streams ─────────────────────────────────────────────────────────────

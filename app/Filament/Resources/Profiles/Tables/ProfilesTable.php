@@ -43,7 +43,7 @@ class ProfilesTable
                         default   => 'gray',
                     }),
                 TextColumn::make('verification_status')
-                    ->label('Verifikation')
+                    ->label('Foto')
                     ->badge()
                     ->color(fn ($state) => match ($state) {
                         'approved'   => 'success',
@@ -53,11 +53,27 @@ class ProfilesTable
                         default      => 'gray',
                     })
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'approved'   => '✓ Verifiziert',
+                        'approved'   => '✓ Foto bestätigt',
                         'pending'    => '⏳ Ausstehend',
                         'rejected'   => '✗ Abgelehnt',
                         'unverified' => 'Nicht beantragt',
                         default      => $state,
+                    }),
+                TextColumn::make('identity_verification_status')
+                    ->label('Identität (Veriff)')
+                    ->badge()
+                    ->placeholder('Nicht beantragt')
+                    ->color(fn ($state) => match ($state) {
+                        'approved' => 'success',
+                        'pending'  => 'warning',
+                        'rejected' => 'danger',
+                        default    => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'approved' => '✓ ID & Alter',
+                        'pending'  => '⏳ Ausstehend',
+                        'rejected' => '✗ Abgelehnt',
+                        default    => 'Nicht beantragt',
                     }),
                 TextColumn::make('listing_expires_at')
                     ->label('Läuft ab')
@@ -170,6 +186,38 @@ class ProfilesTable
                         'verification_reviewed_at'     => now(),
                     ]))
                     ->visible(fn (Profile $record) => $record->verification_status === 'pending'),
+
+                // ── Identität & Alter (Veriff) manuell moderieren ──────────
+                Action::make('approveIdentity')
+                    ->label('ID genehmigen')
+                    ->icon('heroicon-o-identification')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Identität & Alter bestätigen')
+                    ->modalDescription('Das Profil erhält ein „ID & Alter verifiziert"-Badge.')
+                    ->action(fn (Profile $record) => $record->update([
+                        'identity_verification_status' => 'approved',
+                        'identity_verified_at'         => now(),
+                        'age_verified_at'              => now(),
+                        'identity_rejected_reason'     => null,
+                    ]))
+                    ->visible(fn (Profile $record) => $record->identity_verification_status !== 'approved'),
+
+                Action::make('rejectIdentity')
+                    ->label('ID ablehnen')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->form([
+                        Textarea::make('reason')
+                            ->label('Ablehnungsgrund (intern)')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->action(fn (Profile $record, array $data) => $record->update([
+                        'identity_verification_status' => 'rejected',
+                        'identity_rejected_reason'     => $data['reason'],
+                    ]))
+                    ->visible(fn (Profile $record) => $record->identity_verification_status === 'pending'),
 
                 EditAction::make(),
             ])

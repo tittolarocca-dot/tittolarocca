@@ -56,8 +56,9 @@
             <span class="text-sm font-semibold text-white truncate group-hover:text-[#e35d8f] transition">
               {{ item.display_name }}
             </span>
-            <span v-if="item.verification_status === 'approved'"
-              class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-500 shrink-0">
+            <span v-if="item.identity_verification_status === 'approved' || item.verification_status === 'approved'"
+              class="inline-flex items-center justify-center w-4 h-4 rounded-full shrink-0"
+              :class="item.identity_verification_status === 'approved' ? 'bg-green-500' : 'bg-sky-500'">
               <svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
               </svg>

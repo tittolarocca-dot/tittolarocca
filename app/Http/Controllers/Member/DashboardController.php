@@ -39,6 +39,7 @@ class DashboardController extends Controller
                 'cover_url'           => data_get($p->publicMedia->first(), 'src.thumbnail')
                                             ?? $p->publicMedia->first()?->url,
                 'verification_status' => $p->verification_status,
+                'identity_verification_status' => $p->identity_verification_status,
             ]);
 
         $visitorsCount = $user->profile

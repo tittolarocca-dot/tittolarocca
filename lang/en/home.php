@@ -26,4 +26,7 @@ return [
     'members_only'    => 'Subscribers only',
     'yes' => 'Yes',
     'no' => 'No',
+    'photo_verified' => 'Photo confirmed',
+    'id_verified' => 'ID & age verified',
+    'fully_verified' => 'Fully verified',
 ];
