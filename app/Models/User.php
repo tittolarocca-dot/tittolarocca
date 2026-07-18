@@ -51,6 +51,7 @@ class User extends Authenticatable implements FilamentUser
     public function messages() { return $this->hasMany(Message::class, 'from_user_id'); }
     public function platformSubscriptions() { return $this->hasMany(PlatformSubscription::class, 'subscriber_user_id'); }
     public function favorites() { return $this->belongsToMany(Profile::class, 'favorites')->withTimestamps(); }
+    public function likes()     { return $this->belongsToMany(Profile::class, 'likes')->withTimestamps(); }
 
     public function isSubscribedTo(Profile $profile): bool
     {

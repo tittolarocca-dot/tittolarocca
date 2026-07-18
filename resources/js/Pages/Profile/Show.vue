@@ -233,8 +233,12 @@
             {{ profile.total_views }} {{ t('profile.views_count') }}
           </span>
           <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
+            <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
+            {{ likesCount }} {{ t('profile.likes_count') }}
+          </span>
+          <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
             <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
-            {{ profile.total_subscribers }} {{ t('profile.subscribers_count') }}
+            {{ followersCount }} {{ t('profile.followers_count') }}
           </span>
         </div>
       </div>
@@ -533,21 +537,31 @@
             </button>
             <p v-if="shareCopied" class="text-center text-xs text-green-400 mt-2">{{ t('profile.link_copied') }}</p>
 
-            <!-- Favorit -->
-            <template v-if="$page.props.auth.user">
-              <form :action="route('konto.favorites.toggle', profile.slug)" method="POST" @submit.prevent="toggleFavorite">
-                <button type="submit"
-                  class="flex items-center justify-center gap-2.5 w-full border text-sm font-bold px-4 py-3.5 rounded-xl transition"
-                  :class="favorited
-                    ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
-                    : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
-                  <svg class="w-5 h-5 shrink-0" :fill="favorited ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
-                  </svg>
-                  {{ favorited ? t('profile.saved_favorite') : t('profile.save_favorite') }}
-                </button>
-              </form>
-            </template>
+            <!-- Like -->
+            <button type="button" @click="onLikeClick"
+              class="flex items-center justify-center gap-2.5 w-full border text-sm font-bold px-4 py-3.5 rounded-xl transition"
+              :class="liked
+                ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
+                : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
+              <svg class="w-5 h-5 shrink-0" :fill="liked ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.6.6 0 01.6-.6 1.98 1.98 0 011.98 1.98c0 1.325-.44 2.547-1.183 3.526-.281.37-.031.895.434.895h2.324c1.397 0 2.665.816 3.017 2.168.239.917.006 1.83-.32 2.664m-6.34-8.033a4.531 4.531 0 00-.601 2.201c0 .806-.15 1.598-.44 2.353m-3.62 6.031a12.35 12.35 0 003.62-6.031m0 0l.622-.207a2.25 2.25 0 011.767.129l.324.162a2.25 2.25 0 001.767.129l1.238-.412M6.633 10.5H4.5A2.25 2.25 0 002.25 12.75v6A2.25 2.25 0 004.5 21h1.372c.516 0 .966-.351 1.091-.852l1.106-4.423c.14-.56.086-1.15-.154-1.676a4.5 4.5 0 01-.417-1.899V10.5z"/>
+              </svg>
+              {{ liked ? t('profile.liked') : t('profile.like') }}
+              <span class="ml-0.5 opacity-70 font-bold">({{ likesCount }})</span>
+            </button>
+
+            <!-- Favorit / Follow -->
+            <button type="button" @click="onFavoriteClick"
+              class="flex items-center justify-center gap-2.5 w-full border text-sm font-bold px-4 py-3.5 rounded-xl transition"
+              :class="favorited
+                ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
+                : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
+              <svg class="w-5 h-5 shrink-0" :fill="favorited ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
+              </svg>
+              {{ favorited ? t('profile.saved_favorite') : t('profile.save_favorite') }}
+              <span class="ml-0.5 opacity-70 font-bold">({{ followersCount }})</span>
+            </button>
           </div>
 
           <!-- Address -->
@@ -582,8 +596,12 @@
                 <span class="text-white font-semibold">{{ profile.total_views }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-500">{{ t('profile.subscribers_count') }}</span>
-                <span class="text-white font-semibold">{{ profile.total_subscribers }}</span>
+                <span class="text-gray-500">{{ t('profile.likes_count') }}</span>
+                <span class="text-white font-semibold">{{ likesCount }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">{{ t('profile.followers_count') }}</span>
+                <span class="text-white font-semibold">{{ followersCount }}</span>
               </div>
               <div v-if="reviews.length" class="flex justify-between">
                 <span class="text-gray-500">{{ t('profile.rating_label') }}</span>
@@ -630,15 +648,21 @@
         controls autoplay playsinline controlsList="nodownload"
         @click.stop />
     </div>
+
+    <!-- ── MEMBER-GATE (Gäste) ───────────────────────────────────────────────── -->
+    <MemberGateModal :open="showMemberGate" @close="showMemberGate = false" />
   </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import MediaThumb from '@/Components/MediaThumb.vue';
+import MemberGateModal from '@/Components/MemberGateModal.vue';
 import { useI18n } from '@/composables/useI18n';
+
+const page = usePage();
 
 const { t } = useI18n();
 
@@ -706,12 +730,17 @@ const props = defineProps({
   hasReviewed:         { type: Boolean, default: false },
   myReview:            { type: Object,  default: null },
   isFavorited:         { type: Boolean, default: false },
+  isLiked:             { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
   privateMediaCount:   { type: Number,  default: 0 },
 });
 
 const activeTab        = ref('public');
 const favorited        = ref(props.isFavorited);
+const liked            = ref(props.isLiked);
+const likesCount       = ref(props.profile.likes_count ?? 0);
+const followersCount   = ref(props.profile.followers_count ?? 0);
+const showMemberGate   = ref(false);
 const subscribing      = ref(false);
 const trialing         = ref(false);
 const submittingReview = ref(false);
@@ -841,10 +870,27 @@ function submitReport(reviewId) {
   });
 }
 
-function toggleFavorite() {
+// Like: 1 pro Member (Toggle). Gäste sehen den Member-Gate-Dialog.
+function onLikeClick() {
+  if (!page.props.auth?.user) { showMemberGate.value = true; return; }
+  router.post(route('konto.likes.toggle', props.profile.slug), {}, {
+    preserveScroll: true,
+    onSuccess: () => {
+      liked.value = !liked.value;
+      likesCount.value = Math.max(0, likesCount.value + (liked.value ? 1 : -1));
+    },
+  });
+}
+
+// Favorit = Follow. Followers = Anzahl Member, die favorisiert haben.
+function onFavoriteClick() {
+  if (!page.props.auth?.user) { showMemberGate.value = true; return; }
   router.post(route('konto.favorites.toggle', props.profile.slug), {}, {
     preserveScroll: true,
-    onSuccess: () => { favorited.value = !favorited.value; },
+    onSuccess: () => {
+      favorited.value = !favorited.value;
+      followersCount.value = Math.max(0, followersCount.value + (favorited.value ? 1 : -1));
+    },
   });
 }
 

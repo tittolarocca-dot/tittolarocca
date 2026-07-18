@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'dashboard' => trans('dashboard'),
                 'inserent'  => trans('inserent'),
                 'languages' => trans('languages'),
+                'gate'      => trans('gate'),
             ],
         ];
     }

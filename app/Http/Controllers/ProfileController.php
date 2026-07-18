@@ -129,6 +129,8 @@ class ProfileController extends Controller
                 'subscription_price_chf' => $profile->subscription_price_chf,
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
+                'likes_count'            => $profile->likedBy()->count(),
+                'followers_count'        => $profile->favoritedBy()->count(),
                 'whatsapp_number'        => $profile->whatsapp_number,
                 'telegram_username'      => $profile->telegram_username,
                 'address'                => $profile->address,
@@ -152,6 +154,7 @@ class ProfileController extends Controller
             'hasReviewed'         => (bool) $myReview,
             'myReview'            => $myReview,
             'isFavorited'         => $user ? $user->favorites()->where('profile_id', $profile->id)->exists() : false,
+            'isLiked'             => $user ? $user->likes()->where('profile_id', $profile->id)->exists() : false,
             'subscribed'          => $request->query('subscribed') === '1',
         ]);
     }

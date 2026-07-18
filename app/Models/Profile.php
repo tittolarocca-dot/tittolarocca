@@ -63,6 +63,8 @@ class Profile extends Model
     public function city()         { return $this->belongsTo(City::class); }
     public function category()     { return $this->belongsTo(Category::class); }
     public function tags()         { return $this->belongsToMany(Tag::class, 'profile_tags'); }
+    public function favoritedBy()  { return $this->belongsToMany(User::class, 'favorites')->withTimestamps(); }
+    public function likedBy()      { return $this->belongsToMany(User::class, 'likes')->withTimestamps(); }
     public function media()        { return $this->hasMany(Media::class)->orderBy('sort_order'); }
     public function publicMedia()  { return $this->hasMany(Media::class)->where('visibility', 'public')->where('status', 'approved'); }
     public function privateMedia() { return $this->hasMany(Media::class)->where('visibility', 'private')->where('status', 'approved'); }

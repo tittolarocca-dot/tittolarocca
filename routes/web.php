@@ -94,6 +94,7 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::put('/bewertung/{review}',                      [\App\Http\Controllers\Member\ReviewController::class, 'update'])->middleware('throttle:6,1')->name('review.update');
     Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/like/{profile:slug}',                    [\App\Http\Controllers\Member\LikeController::class, 'toggle'])->name('likes.toggle');
     Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');
 });
 
