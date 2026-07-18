@@ -233,7 +233,7 @@
             {{ profile.total_views }} {{ t('profile.views_count') }}
           </span>
           <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-            <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
+            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
             {{ likesCount }} {{ t('profile.likes_count') }}
           </span>
           <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
@@ -543,8 +543,8 @@
               :class="liked
                 ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
                 : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
-              <svg class="w-5 h-5 shrink-0" :fill="liked ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.6.6 0 01.6-.6 1.98 1.98 0 011.98 1.98c0 1.325-.44 2.547-1.183 3.526-.281.37-.031.895.434.895h2.324c1.397 0 2.665.816 3.017 2.168.239.917.006 1.83-.32 2.664m-6.34-8.033a4.531 4.531 0 00-.601 2.201c0 .806-.15 1.598-.44 2.353m-3.62 6.031a12.35 12.35 0 003.62-6.031m0 0l.622-.207a2.25 2.25 0 011.767.129l.324.162a2.25 2.25 0 001.767.129l1.238-.412M6.633 10.5H4.5A2.25 2.25 0 002.25 12.75v6A2.25 2.25 0 004.5 21h1.372c.516 0 .966-.351 1.091-.852l1.106-4.423c.14-.56.086-1.15-.154-1.676a4.5 4.5 0 01-.417-1.899V10.5z"/>
+              <svg class="w-5 h-5 shrink-0 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V2.5a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.727a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z"/>
               </svg>
               {{ liked ? t('profile.liked') : t('profile.like') }}
               <span class="ml-0.5 opacity-70 font-bold">({{ likesCount }})</span>
@@ -556,7 +556,7 @@
               :class="favorited
                 ? 'bg-[#e35d8f]/10 border-[#e35d8f]/60 text-[#e35d8f]'
                 : 'bg-white/5 border-white/10 hover:border-[#e35d8f]/50 text-white hover:text-[#e35d8f]'">
-              <svg class="w-5 h-5 shrink-0" :fill="favorited ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg class="w-5 h-5 shrink-0 text-[#e35d8f]" :fill="favorited ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
               </svg>
               {{ favorited ? t('profile.saved_favorite') : t('profile.save_favorite') }}
