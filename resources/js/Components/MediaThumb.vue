@@ -1,5 +1,6 @@
 <template>
-  <div class="relative w-full h-full">
+  <!-- Galerie-Ansicht: vollständiges Bild (kein Zuschneiden), dunkle Balken bei Hochformat -->
+  <div class="relative w-full h-full bg-[#0d0d0d]">
     <!-- Video thumbnail -->
     <template v-if="item.type === 'video'">
       <video
@@ -7,7 +8,7 @@
         preload="metadata"
         muted
         playsinline
-        class="w-full h-full object-cover"
+        class="w-full h-full object-contain"
       />
       <!-- Play button overlay -->
       <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition">
@@ -34,7 +35,7 @@
       :data-src="!eager ? primary : undefined"
       :data-srcset="!eager ? srcset : undefined"
       data-sizes="auto"
-      :class="['w-full h-full object-cover object-center group-hover:scale-105 transition duration-300', !eager ? 'lazyload' : '']"
+      :class="['w-full h-full object-contain object-center transition duration-300', !eager ? 'lazyload' : '']"
       :width="item.width || undefined"
       :height="item.height || undefined"
       :alt="alt"

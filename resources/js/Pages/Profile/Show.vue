@@ -25,7 +25,7 @@
               <template v-else>
                 <!-- 1 item -->
                 <div v-if="publicMedia.length === 1"
-                  class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
+                  class="relative h-[60vh] max-h-[80vh] rounded-xl overflow-hidden cursor-pointer group bg-[#0d0d0d]"
                   @click="openLightbox(publicMedia[0])">
                   <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                 </div>
@@ -77,7 +77,7 @@
                 <template v-else>
                   <!-- 1 item -->
                   <div v-if="privateMedia.length === 1"
-                    class="relative h-[300px] sm:h-[420px] rounded-xl overflow-hidden cursor-pointer group"
+                    class="relative h-[60vh] max-h-[80vh] rounded-xl overflow-hidden cursor-pointer group bg-[#0d0d0d]"
                     @click="openLightbox(privateMedia[0])">
                     <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
