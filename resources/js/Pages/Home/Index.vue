@@ -77,13 +77,36 @@
             </select>
             <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </div>
+          <!-- Service: Mehrfachauswahl (Checkboxen) -->
           <div class="relative">
-            <select v-model="filters.service"
-              class="w-full bg-[#1a1a1a] border border-white/10 text-gray-200 text-sm rounded px-3 py-2.5 pr-8 appearance-none cursor-pointer hover:border-[#e35d8f] transition sm:min-w-[130px] focus:outline-none focus:border-[#e35d8f]">
-              <option value="">{{ t('home.service') }}</option>
-              <option v-for="s in services" :key="s.id" :value="s.slug">{{ s.name }}</option>
-            </select>
-            <svg class="pointer-events-none absolute right-2 top-3 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button type="button" @click="serviceMenuOpen = !serviceMenuOpen"
+              class="w-full flex items-center justify-between gap-2 bg-[#1a1a1a] border text-sm rounded px-3 py-2.5 cursor-pointer transition sm:min-w-[130px] focus:outline-none"
+              :class="[filters.services.length ? 'border-[#e35d8f] text-white' : 'border-white/10 text-gray-200', 'hover:border-[#e35d8f]']">
+              <span class="truncate">
+                {{ filters.services.length ? t('home.service') + ' (' + filters.services.length + ')' : t('home.service') }}
+              </span>
+              <svg class="shrink-0 w-4 h-4 text-gray-500 transition-transform" :class="serviceMenuOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+
+            <!-- Backdrop zum Schließen -->
+            <div v-if="serviceMenuOpen" class="fixed inset-0 z-30" @click="serviceMenuOpen = false"></div>
+
+            <!-- Dropdown-Panel -->
+            <div v-if="serviceMenuOpen"
+              class="absolute z-40 mt-1 left-0 w-64 max-w-[80vw] max-h-72 overflow-y-auto bg-[#1a1a1a] border border-white/15 rounded-lg shadow-xl shadow-black/50 p-1">
+              <label v-for="s in services" :key="s.id"
+                class="flex items-center gap-2 px-2.5 py-2 rounded cursor-pointer hover:bg-white/5 transition">
+                <input type="checkbox" :value="s.slug" v-model="filters.services"
+                  class="w-4 h-4 rounded accent-[#e35d8f] cursor-pointer" />
+                <span class="text-sm text-gray-200 truncate">{{ s.name }}</span>
+              </label>
+              <div v-if="filters.services.length" class="border-t border-white/10 mt-1 pt-1 px-1">
+                <button type="button" @click="filters.services = []"
+                  class="w-full text-left text-xs text-gray-400 hover:text-[#e35d8f] px-2 py-1.5 transition">
+                  ✕ {{ t('home.reset') }}
+                </button>
+              </div>
+            </div>
           </div>
           <div class="relative">
             <select v-model="filters.verified" @change="applyFilters"
@@ -112,9 +135,9 @@
           <div class="flex flex-wrap gap-2">
             <span v-if="activeCity" class="text-[#e35d8f]">📍 {{ activeCity.name }}</span>
             <span v-if="activeCategory" class="text-[#e35d8f]">🏷 {{ activeCategory.name }}</span>
-            <span v-if="activeService" class="text-[#e35d8f]">✨ {{ activeService.name }}</span>
+            <span v-for="name in activeServiceNames" :key="name" class="text-[#e35d8f]">✨ {{ name }}</span>
             <span v-if="activeAge" class="text-[#e35d8f]">🎂 {{ t('home.age') }} {{ activeAge }}</span>
-            <Link v-if="activeCity || activeCategory || activeService || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ {{ t('home.reset') }}</Link>
+            <Link v-if="activeCity || activeCategory || activeServiceNames.length || activeAge" :href="route('home')" class="text-gray-600 hover:text-gray-300 transition">✕ {{ t('home.reset') }}</Link>
           </div>
           <span class="shrink-0 ml-2 text-gray-500">{{ profiles.total }} {{ t('home.listings') }}</span>
         </div>
@@ -279,7 +302,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useI18n } from '@/composables/useI18n';
@@ -299,22 +322,31 @@ const props = defineProps({
   cities:         Array,
   categories:     Array,
   services:       Array,
-  activeCity:     Object,
-  activeCategory: Object,
-  activeService:  Object,
-  activeSearch:   String,
-  activeAge:      String,
-  activeVerified: String,
+  activeCity:      Object,
+  activeCategory:  Object,
+  activeServices:  { type: Array, default: () => [] },
+  activeSearch:    String,
+  activeAge:       String,
+  activeVerified:  String,
 });
+
+const serviceMenuOpen = ref(false);
 
 const filters = ref({
   city:     props.activeCity?.slug ?? '',
   category: props.activeCategory?.slug ?? '',
-  service:  props.activeService?.slug ?? '',
+  services: [...(props.activeServices ?? [])],
   age:      props.activeAge ?? '',
   search:   props.activeSearch ?? '',
   verified: props.activeVerified ?? '',
 });
+
+// Namen der aktiven Services für die Chip-Anzeige (Slug → übersetzter Name)
+const activeServiceNames = computed(() =>
+  (props.activeServices ?? [])
+    .map((slug) => props.services?.find((s) => s.slug === slug)?.name)
+    .filter(Boolean)
+);
 
 function isNew(iso) {
   if (!iso) return false;
@@ -322,14 +354,14 @@ function isNew(iso) {
 }
 
 function applyFilters() {
+  serviceMenuOpen.value = false;
   const query = {};
-  if (filters.value.search)   query.search   = filters.value.search;
-  if (filters.value.age)      query.age      = filters.value.age;
-  if (filters.value.verified) query.verified = filters.value.verified;
+  if (filters.value.search)          query.search   = filters.value.search;
+  if (filters.value.age)             query.age      = filters.value.age;
+  if (filters.value.verified)        query.verified = filters.value.verified;
+  if (filters.value.services.length) query.services = filters.value.services.join(',');
 
-  if (filters.value.service) {
-    router.get(route('service', filters.value.service), query);
-  } else if (filters.value.city) {
+  if (filters.value.city) {
     router.get(route('city', filters.value.city), query);
   } else if (filters.value.category) {
     router.get(route('category', filters.value.category), query);
