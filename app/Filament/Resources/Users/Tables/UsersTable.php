@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Actions\CreditAdjustActions;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -28,6 +29,21 @@ class UsersTable
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn($s) => $s === 'active' ? 'success' : 'danger'),
+                TextColumn::make('creditBalance.balance')
+                    ->label('Credits')
+                    ->badge()
+                    ->color('success')
+                    ->placeholder('0'),
+                TextColumn::make('creditBalance.total_granted')
+                    ->label('Erhalten')
+                    ->numeric()
+                    ->placeholder('0')
+                    ->toggleable(),
+                TextColumn::make('creditBalance.total_spent')
+                    ->label('Verbraucht')
+                    ->numeric()
+                    ->placeholder('0')
+                    ->toggleable(),
                 TextColumn::make('blocked_at')
                     ->label('Gesperrt am')
                     ->date('d.m.Y')
@@ -49,7 +65,11 @@ class UsersTable
                 SelectFilter::make('status')
                     ->options(['active' => 'Aktiv', 'blocked' => 'Gesperrt']),
             ])
-            ->recordActions([EditAction::make()])
+            ->recordActions([
+                CreditAdjustActions::add(),
+                CreditAdjustActions::remove(),
+                EditAction::make(),
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([DeleteBulkAction::make()]),
             ])

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Profiles\Tables;
 
+use App\Models\CreditTransaction;
 use App\Models\Profile;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -90,7 +92,28 @@ class ProfilesTable
                 TextColumn::make('total_subscribers')
                     ->label('Abos')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+                IconColumn::make('has_private_media')
+                    ->label('Privat')
+                    ->boolean()
+                    ->getStateUsing(fn (Profile $record) => $record->privateMedia()->exists()),
+                IconColumn::make('launch_gallery_free')
+                    ->label('Launch-Galerie')
+                    ->boolean(),
+                TextColumn::make('push_count')
+                    ->label('Pushs')
+                    ->badge()
+                    ->color('info')
+                    ->getStateUsing(fn (Profile $record) => CreditTransaction::where('profile_id', $record->id)
+                        ->where('type', 'profile_push')->count())
+                    ->toggleable(),
+                TextColumn::make('pushed_at')
+                    ->label('Letzter Push')
+                    ->dateTime('d.m.Y H:i')
+                    ->placeholder('—')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Erstellt')
                     ->date('d.m.Y')

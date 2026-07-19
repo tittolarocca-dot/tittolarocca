@@ -6,6 +6,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class ProfileForm
@@ -43,6 +44,10 @@ class ProfileForm
                     ->required(),
                 TextInput::make('age')->numeric(),
                 TextInput::make('subscription_price_chf')->label('Abo-Preis (CHF)')->numeric(),
+                Toggle::make('launch_gallery_free')
+                    ->label('Private Galerie im Launch kostenlos freigeben')
+                    ->helperText('Registrierte Mitglieder erhalten im Launch-Modus kostenlosen Zugang zur privaten Galerie.')
+                    ->columnSpanFull(),
                 Textarea::make('description')->label('Beschreibung')->columnSpanFull(),
                 Textarea::make('verification_rejected_reason')
                     ->label('Ablehnungsgrund')
