@@ -199,7 +199,7 @@
                 :srcset="mediaSrcset(profiles.data[0].public_media[0])"
                 sizes="(max-width: 640px) 160px, (max-width: 768px) 220px, 300px"
                 :alt="profiles.data[0].display_name"
-                class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
+                class="w-full h-full object-cover object-top transition duration-500"
                 loading="eager" fetchpriority="high" />
               <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-5xl">👤</div>
               <span class="absolute top-2 left-2 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">{{ t('home.top_ad') }}</span>
@@ -254,7 +254,7 @@
             <!-- Photo -->
             <div class="relative w-[50%] shrink-0 overflow-hidden">
               <img v-if="profile.public_media?.[0]"
-                class="lazyload w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
+                class="lazyload w-full h-full object-cover object-top transition duration-500"
                 :data-src="mediaSrc(profile.public_media[0], 'card')"
                 :data-srcset="mediaSrcset(profile.public_media[0])"
                 data-sizes="auto"

@@ -29,7 +29,7 @@
             :srcset="!image.private && image.src ? `${image.src.thumbnail} 320w, ${image.src.card} 720w` : undefined"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             :alt="image.private ? 'Locked' : image.profile.display_name"
-            :class="['w-full h-full object-cover object-top transition duration-300 group-hover:scale-105', image.private ? 'blur-md scale-110' : '']"
+            :class="['w-full h-full object-cover object-top transition duration-300', image.private ? 'blur-md scale-110' : '']"
             loading="lazy"
           />
 

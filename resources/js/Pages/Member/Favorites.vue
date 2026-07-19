@@ -41,7 +41,7 @@
               v-if="item.cover_url"
               :src="item.cover_url"
               :alt="item.display_name"
-              class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-300"
+              class="w-full h-full object-cover object-top transition duration-300"
               loading="lazy"
             />
             <div v-else class="w-full h-full flex items-center justify-center">
