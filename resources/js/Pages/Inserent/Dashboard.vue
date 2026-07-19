@@ -88,6 +88,21 @@
           </Link>
         </div>
 
+        <!-- Launch-Angebot: Credits-Übersicht -->
+        <div v-if="launchMode" class="bg-gradient-to-br from-[#e35d8f]/15 to-[#7c3aed]/10 rounded-xl border border-[#e35d8f]/30 p-5 shadow-sm">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🎁</span>
+            <div class="min-w-0">
+              <p class="font-bold text-white text-sm">{{ t('dashboard.launch_offer_title') }}</p>
+              <p class="text-xs text-gray-300 mt-0.5">{{ t('dashboard.launch_offer_text') }}</p>
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-2">
+            <span class="text-xs text-gray-400">{{ t('dashboard.your_launch_credits') }}</span>
+            <span class="text-lg font-black text-[#e35d8f]">{{ credits }}</span>
+          </div>
+        </div>
+
         <!-- Push-Karte -->
         <div v-if="stats.isActive" class="bg-[#1a1a1a] rounded-xl border border-white/8 p-5 shadow-sm flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -96,12 +111,19 @@
               <p class="font-semibold text-white text-sm">{{ t('dashboard.push_title') }}</p>
               <p class="text-xs text-gray-500 mt-0.5">{{ t('dashboard.push_desc') }}</p>
               <p v-if="stats.pushedAt" class="text-xs text-gray-600 mt-0.5">{{ t('dashboard.push_last', { date: stats.pushedAt }) }}</p>
+              <!-- Launch-Modus: Credit-Kosten + Rest anzeigen -->
+              <template v-if="launchMode">
+                <p class="text-xs text-gray-400 mt-1">{{ t('dashboard.push_cost', { cost: pushCost }) }}</p>
+                <p class="text-xs" :class="credits >= pushCost ? 'text-gray-500' : 'text-red-400'">
+                  {{ credits >= pushCost ? t('dashboard.push_remaining', { count: credits }) : t('dashboard.push_no_credits') }}
+                </p>
+              </template>
             </div>
           </div>
           <form @submit.prevent="push">
-            <button type="submit" :disabled="pushing"
-              class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-              {{ pushing ? t('dashboard.redirecting') : t('dashboard.push_btn') }}
+            <button type="submit" :disabled="pushing || (launchMode && credits < pushCost)"
+              class="shrink-0 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+              {{ pushing ? t('dashboard.redirecting') : (launchMode ? t('dashboard.push_free_btn') : t('dashboard.push_btn')) }}
             </button>
           </form>
         </div>
@@ -316,8 +338,11 @@ import { useI18n } from '@/composables/useI18n';
 const { t } = useI18n();
 
 const props = defineProps({
-  profile: Object,
-  stats:   Object,
+  profile:    Object,
+  stats:      Object,
+  launchMode: { type: Boolean, default: false },
+  credits:    { type: Number,  default: 0 },
+  pushCost:   { type: Number,  default: 1 },
 });
 
 // ── Verification ──────────────────────────────────────────────────────────────

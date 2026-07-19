@@ -2,8 +2,10 @@
 namespace App\Http\Controllers\Inserent;
 
 use App\Http\Controllers\Controller;
+use App\Exceptions\InsufficientCreditsException;
 use App\Models\ListingPackage;
 use App\Models\ListingOrder;
+use App\Services\CreditService;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
@@ -45,6 +47,29 @@ class ListingController extends Controller
         }
 
         $package = ListingPackage::findOrFail($request->package_id);
+
+        // Launch-Modus: Inserate sind gratis – direkt aktivieren, keine Zahlung.
+        if (config('features.launch_mode')) {
+            $days = (int) config('features.launch_listing_days', 14);
+            $profile->update([
+                'status'             => 'active',
+                'listing_expires_at' => now()->addDays($days),
+            ]);
+
+            ListingOrder::create([
+                'profile_id'         => $profile->id,
+                'listing_package_id' => ListingPackage::where('price_chf', 0)->value('id') ?? $package->id,
+                'user_id'            => $user->id,
+                'amount_chf'         => 0,
+                'currency'           => 'CHF',
+                'status'             => 'paid',
+                'paid_at'            => now(),
+                'expires_at'         => now()->addDays($days),
+            ]);
+
+            return redirect()->route('payment.success')
+                ->with('success', "Dein Inserat ist jetzt {$days} Tage kostenlos aktiv!");
+        }
 
         // Gratis-Paket: direkt aktivieren ohne Stripe
         if ($package->price_chf == 0) {
@@ -130,9 +155,11 @@ class ListingController extends Controller
             return back()->with('error', 'Gratis-Reaktivierung nur für kostenlose Inserate möglich.');
         }
 
+        $days = (int) config('features.launch_listing_days', 14);
+
         $profile->update([
             'status'             => 'active',
-            'listing_expires_at' => now()->addDays(7),
+            'listing_expires_at' => now()->addDays($days),
         ]);
 
         ListingOrder::create([
@@ -143,19 +170,42 @@ class ListingController extends Controller
             'currency'           => 'CHF',
             'status'             => 'paid',
             'paid_at'            => now(),
-            'expires_at'         => now()->addDays(7),
+            'expires_at'         => now()->addDays($days),
         ]);
 
-        return back()->with('success', 'Dein Inserat ist jetzt wieder für 7 Tage aktiv!');
+        return back()->with('success', "Dein Inserat ist jetzt wieder für {$days} Tage aktiv!");
     }
 
-    public function push(Request $request)
+    public function push(Request $request, CreditService $credits)
     {
         $user    = $request->user();
         $profile = $user->profile;
 
         if (!$profile || !$profile->isActive()) {
             return back()->with('error', 'Dein Inserat muss aktiv sein, um es zu pushen.');
+        }
+
+        // Launch-Modus: Push kostet 1 Launch-Credit statt CHF – keine Zahlung.
+        if (config('features.launch_mode')) {
+            $cost = (int) config('features.push_credit_cost', 1);
+
+            if (! $credits->hasEnough($user, $cost)) {
+                return back()->with('error', 'Du hast aktuell keine Launch-Credits mehr.');
+            }
+
+            try {
+                $credits->spend($user, $cost, 'profile_push', $profile, [
+                    'description'    => 'Inserat gepusht (Launch)',
+                    'reference_type' => 'profile',
+                    'reference_id'   => $profile->id,
+                ]);
+            } catch (InsufficientCreditsException $e) {
+                return back()->with('error', 'Du hast aktuell keine Launch-Credits mehr.');
+            }
+
+            $profile->update(['pushed_at' => now()]);
+
+            return back()->with('success', 'Dein Inserat wurde nach oben gepusht!');
         }
 
         Stripe::setApiKey(config('cashier.secret'));

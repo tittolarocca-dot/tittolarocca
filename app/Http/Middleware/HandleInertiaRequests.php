@@ -35,6 +35,11 @@ class HandleInertiaRequests extends Middleware
             'cities'     => fn () => \App\Models\City::where('is_active', true)->orderBy('sort_order')->get(),
             'categories' => fn () => \App\Models\Category::where('is_active', true)->orderBy('sort_order')->get(),
 
+            // Feature-Flags (Launch-Modus etc.) – für Preise/Buttons im Frontend
+            'features' => [
+                'launchMode' => (bool) config('features.launch_mode'),
+            ],
+
             // i18n
             'locale'           => $locale,
             'supportedLocales' => SetLocale::SUPPORTED,

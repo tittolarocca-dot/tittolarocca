@@ -22,6 +22,9 @@ class DashboardController extends Controller
 
         return inertia('Inserent/Dashboard', [
             'profile'      => $profile,
+            'launchMode'   => (bool) config('features.launch_mode'),
+            'credits'      => $user->creditsBalance(),
+            'pushCost'     => (int) config('features.push_credit_cost', 1),
             'stats' => $profile ? [
                 'views'         => $profile->total_views,
                 'subscribers'   => $profile->total_subscribers,

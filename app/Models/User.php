@@ -52,6 +52,11 @@ class User extends Authenticatable implements FilamentUser
     public function platformSubscriptions() { return $this->hasMany(PlatformSubscription::class, 'subscriber_user_id'); }
     public function favorites() { return $this->belongsToMany(Profile::class, 'favorites')->withTimestamps(); }
     public function likes()     { return $this->belongsToMany(Profile::class, 'likes')->withTimestamps(); }
+    public function creditBalance()      { return $this->hasOne(CreditBalance::class); }
+    public function creditTransactions() { return $this->hasMany(CreditTransaction::class); }
+
+    /** Aktueller Credit-Saldo (0, falls noch kein Wallet angelegt). */
+    public function creditsBalance(): int { return (int) ($this->creditBalance?->balance ?? 0); }
 
     public function isSubscribedTo(Profile $profile): bool
     {
