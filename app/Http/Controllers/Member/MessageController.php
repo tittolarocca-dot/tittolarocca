@@ -172,6 +172,11 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
+        // Launch-Modus: keine echten Zahlungen (Pay-per-View deaktiviert).
+        if (config('features.launch_mode')) {
+            return back()->with('error', 'Im Launch-Modus sind kostenpflichtige Inhalte deaktiviert.');
+        }
+
         if (!$message->isPpv()) {
             return back()->with('error', 'Diese Nachricht enthält keinen bezahlten Inhalt.');
         }

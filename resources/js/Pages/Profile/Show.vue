@@ -72,7 +72,7 @@
 
             <!-- Private Media -->
             <div v-if="activeTab === 'private'">
-              <template v-if="isOwner || isSubscribed || isTrialing">
+              <template v-if="isOwner || isSubscribed || isTrialing || isLaunchUnlocked">
                 <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">{{ t('profile.no_private') }}</div>
                 <template v-else>
                   <!-- 1 item -->
@@ -145,26 +145,53 @@
                       </div>
                     </div>
                   </div>
-                  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 px-4 text-center">
                     <div class="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center mb-2">
                       <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
                     </div>
-                    <p class="text-xs text-gray-200 mb-1">{{ t('home.members_only') }}</p>
-                    <p class="font-bold text-white text-base mb-1">{{ t('profile.private_count', { count: privateMediaCount }) }}</p>
-                    <p class="text-xs text-gray-300 mb-4">{{ t('profile.unlock_for', { price: profile.subscription_price_chf }) }}</p>
-                    <template v-if="!$page.props.auth.user">
-                      <Link :href="route('register')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ t('profile.free_trial') }}</Link>
+
+                    <!-- ── LAUNCH-MODUS: keine Preise, keine Zahlung ── -->
+                    <template v-if="launchMode">
+                      <p class="font-bold text-white text-base mb-1">{{ t('profile.private_gallery') }}</p>
+                      <p class="text-xs text-gray-300 mb-1">{{ t('profile.private_gallery_intro') }}</p>
+                      <template v-if="launchGalleryFree">
+                        <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_free') }}</p>
+                        <Link v-if="!$page.props.auth.user" :href="route('register')"
+                          class="bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          {{ t('profile.launch_register_view') }}
+                        </Link>
+                      </template>
+                      <template v-else>
+                        <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_locked') }}</p>
+                        <button type="button" @click="onFavoriteClick"
+                          class="border border-white/20 text-white/90 text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">
+                          {{ favorited ? t('profile.saved_favorite') : t('profile.launch_notify_me') }}
+                        </button>
+                      </template>
                     </template>
-                    <template v-else-if="!hasTrialed">
-                      <button @click="startTrial" :disabled="trialing" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? t('profile.activating') : t('profile.free_trial') }}</button>
-                    </template>
+
+                    <!-- ── NORMALBETRIEB (mit Preisen/Abo) ── -->
                     <template v-else>
-                      <button @click="subscribe" :disabled="subscribing" class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? t('profile.redirecting') : t('profile.direct_subscribe', { price: profile.subscription_price_chf }) }}</button>
+                      <p class="text-xs text-gray-200 mb-1">{{ t('home.members_only') }}</p>
+                      <p class="font-bold text-white text-base mb-1">{{ t('profile.private_count', { count: privateMediaCount }) }}</p>
+                      <p class="text-xs text-gray-300 mb-4">{{ t('profile.unlock_for', { price: profile.subscription_price_chf }) }}</p>
+                      <template v-if="!$page.props.auth.user">
+                        <Link :href="route('register')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ t('profile.free_trial') }}</Link>
+                      </template>
+                      <template v-else-if="!hasTrialed">
+                        <button @click="startTrial" :disabled="trialing" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? t('profile.activating') : t('profile.free_trial') }}</button>
+                      </template>
+                      <template v-else>
+                        <button @click="subscribe" :disabled="subscribing" class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? t('profile.redirecting') : t('profile.direct_subscribe', { price: profile.subscription_price_chf }) }}</button>
+                      </template>
                     </template>
                   </div>
                 </div>
               </template>
-              <div v-else class="text-center py-10 text-gray-500">Noch keine privaten Inhalte.</div>
+              <div v-else class="text-center py-10 text-gray-500">
+                <p v-if="launchMode" class="text-sm">{{ t('profile.no_private_launch') }}</p>
+                <p v-else class="text-sm">{{ t('profile.no_private') }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -383,8 +410,8 @@
         <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────── -->
         <div class="lg:w-72 shrink-0 space-y-4 lg:order-1">
 
-          <!-- Subscribe / Owner CTA (sticky) -->
-          <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 lg:sticky lg:top-4">
+          <!-- Subscribe / Owner CTA (sticky) – im Launch-Modus keine Preise/Abos für Besucher -->
+          <div v-if="isOwner || !launchMode" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 lg:sticky lg:top-4">
 
             <!-- Owner -->
             <template v-if="isOwner">
@@ -733,6 +760,9 @@ const props = defineProps({
   isLiked:             { type: Boolean, default: false },
   subscribed:          { type: Boolean, default: false },
   privateMediaCount:   { type: Number,  default: 0 },
+  launchMode:          { type: Boolean, default: false },
+  launchGalleryFree:   { type: Boolean, default: false },
+  isLaunchUnlocked:    { type: Boolean, default: false },
 });
 
 const activeTab        = ref('public');

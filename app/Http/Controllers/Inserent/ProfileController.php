@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\CreditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -45,10 +46,13 @@ class ProfileController extends Controller
                 'address'                => $profile->address,
                 'website'                => $profile->website,
                 'subscription_price_chf' => $profile->subscription_price_chf,
+                'launch_gallery_free'    => (bool) $profile->launch_gallery_free,
+                'has_private_media'      => $profile->privateMedia()->exists(),
                 'tag_ids'                => $profile->tags->pluck('id'),
                 'status'                 => $profile->status,
                 'listing_expires_at'     => $profile->listing_expires_at?->format('d.m.Y'),
             ] : null,
+            'launchMode' => (bool) config('features.launch_mode'),
             // cities and categories come from HandleInertiaRequests (include slug)
             'tags' => Tag::orderBy('name')->get(['id', 'name', 'group', 'slug']),
         ]);
@@ -87,6 +91,7 @@ class ProfileController extends Controller
             'has_video'              => $data['has_video'] ?? false,
             'languages'              => $this->sanitizeLanguages($request),
             'subscription_price_chf' => $data['subscription_price_chf'],
+            'launch_gallery_free'    => $request->boolean('launch_gallery_free'),
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
             'website'                => $data['website'] ?? null,
@@ -142,6 +147,7 @@ class ProfileController extends Controller
             'has_video'              => $data['has_video'] ?? false,
             'languages'              => $this->sanitizeLanguages($request),
             'subscription_price_chf' => $data['subscription_price_chf'],
+            'launch_gallery_free'    => $request->boolean('launch_gallery_free'),
             'telegram_username'      => $data['telegram_username'] ?? null,
             'address'                => $data['address'] ?? null,
             'website'                => $data['website'] ?? null,
@@ -154,6 +160,11 @@ class ProfileController extends Controller
 
         if (! empty($data['tag_ids'])) {
             $profile->tags()->sync($data['tag_ids']);
+        }
+
+        // Launch-Bonus: private Galerie freigegeben + private Medien vorhanden → einmalig +3 Credits
+        if (config('features.launch_mode') && $profile->launch_gallery_free && $profile->privateMedia()->exists()) {
+            app(CreditService::class)->grantGalleryBonus($request->user(), $profile);
         }
 
         return redirect()->route('inserat.dashboard')
@@ -260,6 +271,7 @@ class ProfileController extends Controller
             'address'                => ['nullable', 'string', 'max:255'],
             'website'                => ['nullable', 'url', 'max:255'],
             'subscription_price_chf' => ['required', 'numeric', 'min:9', 'max:999'],
+            'launch_gallery_free'    => ['nullable', 'boolean'],
             'tag_ids'                => ['nullable', 'array'],
             'tag_ids.*'              => ['exists:tags,id'],
         ], [

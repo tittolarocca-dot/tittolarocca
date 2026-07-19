@@ -40,6 +40,11 @@ class SubscriptionController extends Controller
     {
         $user = $request->user();
 
+        // Launch-Modus: keine Abo-/Trial-Funnels.
+        if (config('features.launch_mode')) {
+            return back()->with('error', 'Im Launch-Modus sind Abonnements deaktiviert. Private Inhalte sind kostenlos, wenn die Inserentin sie freigibt.');
+        }
+
         if (!$profile->isActive()) {
             return back()->with('error', 'Dieses Profil ist nicht mehr aktiv.');
         }
@@ -74,6 +79,11 @@ class SubscriptionController extends Controller
     public function subscribe(Request $request, Profile $profile)
     {
         $user = $request->user();
+
+        // Launch-Modus: keine echten Zahlungen / Abos.
+        if (config('features.launch_mode')) {
+            return back()->with('error', 'Im Launch-Modus sind Abonnements deaktiviert. Private Inhalte sind kostenlos, wenn die Inserentin sie freigibt.');
+        }
 
         if (!$profile->isActive()) {
             return back()->with('error', 'Dieses Profil ist nicht mehr aktiv.');

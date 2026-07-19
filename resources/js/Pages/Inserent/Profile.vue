@@ -301,12 +301,26 @@
             <p v-if="form.errors.subscription_price_chf" class="mt-1 text-xs text-red-600">{{ form.errors.subscription_price_chf }}</p>
             <p class="mt-1 text-xs text-gray-500">{{ t('inserent.price_note') }}</p>
 
-            <!-- Verdienst-Rechner -->
-            <div v-if="form.subscription_price_chf >= 9" class="mt-2 bg-[#e35d8f]/10 border border-[#e35d8f]/20 rounded-lg px-3 py-2 text-xs text-[#e35d8f]">
+            <!-- Verdienst-Rechner (nur ausserhalb Launch-Modus relevant) -->
+            <div v-if="!launchMode && form.subscription_price_chf >= 9" class="mt-2 bg-[#e35d8f]/10 border border-[#e35d8f]/20 rounded-lg px-3 py-2 text-xs text-[#e35d8f]">
               {{ t('inserent.earnings10') }} <strong>CHF {{ earnings(10) }}{{ t('inserent.per_month') }}</strong> ·
               {{ t('inserent.earnings50') }} <strong>CHF {{ earnings(50) }}{{ t('inserent.per_month') }}</strong>
               <span class="text-[#e35d8f]/60 block mt-0.5">{{ t('inserent.earnings_note') }}</span>
             </div>
+          </div>
+
+          <!-- Launch-Modus: private Galerie kostenlos freigeben -->
+          <div v-if="launchMode" class="sm:col-span-2 bg-[#e35d8f]/5 border border-[#e35d8f]/25 rounded-lg p-4">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" v-model="form.launch_gallery_free"
+                class="mt-0.5 w-5 h-5 rounded accent-[#e35d8f] cursor-pointer shrink-0" />
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-gray-800">{{ t('inserent.launch_gallery_title') }}</span>
+                <span class="block text-xs text-gray-500 mt-0.5">{{ t('inserent.launch_gallery_hint') }}</span>
+                <span v-if="profile && !profile.has_private_media" class="block text-xs text-amber-600 mt-1">{{ t('inserent.launch_gallery_no_media') }}</span>
+                <span v-if="form.launch_gallery_free" class="block text-xs text-[#e35d8f] mt-1">{{ t('inserent.launch_gallery_bonus') }}</span>
+              </span>
+            </label>
           </div>
         </div>
 
@@ -341,6 +355,7 @@ const props = defineProps({
   cities:     Array,
   categories: Array,
   tags:       Array,
+  launchMode: { type: Boolean, default: false },
 });
 
 // Tags nach Gruppe bündeln – ungruppierte zuerst, dann Softcore / Hardcore
@@ -410,6 +425,7 @@ const form = useForm({
   address:                props.profile?.address                ?? '',
   website:                props.profile?.website                ?? '',
   subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
+  launch_gallery_free:    props.profile?.launch_gallery_free    ?? false,
   tag_ids:                props.profile?.tag_ids                ?? [],
 });
 

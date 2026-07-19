@@ -63,7 +63,13 @@ class ProfileController extends Controller
         $publicMedia = $profile->publicMedia()->get($cols)
             ->map($streamItem)->values();
 
-        $unlocked      = $isOwner || $subscribed || (bool) $trialSub;
+        // Launch-Modus: Inserentin kann private Galerie kostenlos für registrierte
+        // Mitglieder freigeben. Niemals für Gäste – nur eingeloggte Mitglieder.
+        $launchMode        = (bool) config('features.launch_mode');
+        $launchGalleryFree = (bool) $profile->launch_gallery_free;
+        $launchUnlocked    = $launchMode && $launchGalleryFree && $user !== null;
+
+        $unlocked      = $isOwner || $subscribed || (bool) $trialSub || $launchUnlocked;
         $privateItems  = $profile->privateMedia()->get($cols);
         $privateMediaCount = $privateItems->count();
         $privateMedia = $unlocked
@@ -155,6 +161,9 @@ class ProfileController extends Controller
             'myReview'            => $myReview,
             'isFavorited'         => $user ? $user->favorites()->where('profile_id', $profile->id)->exists() : false,
             'isLiked'             => $user ? $user->likes()->where('profile_id', $profile->id)->exists() : false,
+            'launchMode'          => $launchMode,
+            'launchGalleryFree'   => $launchGalleryFree,
+            'isLaunchUnlocked'    => $launchUnlocked,
             'subscribed'          => $request->query('subscribed') === '1',
         ]);
     }
