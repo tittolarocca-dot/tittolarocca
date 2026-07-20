@@ -19,173 +19,86 @@
             </button>
           </div>
           <div class="p-4">
-            <!-- Public Media -->
+            <!-- Public Media – einheitliches Grid, gleich grosse 4:5-Kacheln -->
             <div v-if="activeTab === 'public'">
               <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">{{ t('profile.no_photos') }}</div>
-              <template v-else>
-                <!-- 1 item -->
-                <div v-if="publicMedia.length === 1"
-                  class="relative h-[60vh] max-h-[80vh] rounded-xl overflow-hidden cursor-pointer group bg-[#0d0d0d]"
-                  @click="openLightbox(publicMedia[0])">
-                  <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
+              <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div v-for="(item, i) in publicMedia" :key="item.id"
+                  class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
+                  @click="openLightbox(item)">
+                  <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
                 </div>
-                <!-- 2 items -->
-                <div v-else-if="publicMedia.length === 2"
-                  class="grid grid-cols-2 gap-1 h-[290px] rounded-xl overflow-hidden">
-                  <div v-for="(item, i) in publicMedia.slice(0,2)" :key="item.id"
-                    class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                    <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
-                  </div>
-                </div>
-                <!-- 3–4 items -->
-                <div v-else-if="publicMedia.length <= 4"
-                  class="flex gap-1 h-[290px] rounded-xl overflow-hidden">
-                  <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(publicMedia[0])">
-                    <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
-                  </div>
-                  <div class="flex flex-col gap-1 flex-1">
-                    <div v-for="item in publicMedia.slice(1)" :key="item.id"
-                      class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
-                    </div>
-                  </div>
-                </div>
-                <!-- 5+ items -->
-                <div v-else class="flex gap-1 h-[290px] rounded-xl overflow-hidden">
-                  <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(publicMedia[0])">
-                    <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
-                  </div>
-                  <div class="grid grid-cols-2 gap-1" style="flex:2">
-                    <div v-for="(item, i) in publicMedia.slice(1,5)" :key="item.id"
-                      class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
-                      <div v-if="i === 3 && publicMedia.length > 5"
-                        class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
-                        <span class="text-3xl font-black">+{{ publicMedia.length - 5 }}</span>
-                        <span class="text-xs mt-1 opacity-80">weitere</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
+              </div>
             </div>
 
             <!-- Private Media -->
             <div v-if="activeTab === 'private'">
               <template v-if="isOwner || isSubscribed || isTrialing || isLaunchUnlocked">
                 <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">{{ t('profile.no_private') }}</div>
-                <template v-else>
-                  <!-- 1 item -->
-                  <div v-if="privateMedia.length === 1"
-                    class="relative h-[60vh] max-h-[80vh] rounded-xl overflow-hidden cursor-pointer group bg-[#0d0d0d]"
-                    @click="openLightbox(privateMedia[0])">
-                    <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
+                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  <div v-for="(item, i) in privateMedia" :key="item.id"
+                    class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
+                    @click="openLightbox(item)">
+                    <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
                   </div>
-                  <!-- 2 items -->
-                  <div v-else-if="privateMedia.length === 2"
-                    class="grid grid-cols-2 gap-1 h-[290px] rounded-xl overflow-hidden">
-                    <div v-for="(item, i) in privateMedia.slice(0,2)" :key="item.id"
-                      class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                      <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
-                    </div>
-                  </div>
-                  <!-- 3–4 items -->
-                  <div v-else-if="privateMedia.length <= 4"
-                    class="flex gap-1 h-[290px] rounded-xl overflow-hidden">
-                    <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(privateMedia[0])">
-                      <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
-                    </div>
-                    <div class="flex flex-col gap-1 flex-1">
-                      <div v-for="item in privateMedia.slice(1)" :key="item.id"
-                        class="relative flex-1 overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                        <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- 5+ items -->
-                  <div v-else class="flex gap-1 h-[290px] rounded-xl overflow-hidden">
-                    <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(privateMedia[0])">
-                      <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
-                    </div>
-                    <div class="grid grid-cols-2 gap-1" style="flex:2">
-                      <div v-for="(item, i) in privateMedia.slice(1,5)" :key="item.id"
-                        class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
-                        <MediaThumb :item="item" :alt="profile.display_name" :eager="false" />
-                        <div v-if="i === 3 && privateMedia.length > 5"
-                          class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white font-bold pointer-events-none">
-                          <span class="text-3xl font-black">+{{ privateMedia.length - 5 }}</span>
-                          <span class="text-xs mt-1 opacity-80">{{ t('profile.more') }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
+                </div>
               </template>
               <template v-else-if="privateMediaCount > 0">
-                <div class="relative h-[290px] rounded-xl overflow-hidden">
-                  <div class="flex gap-1 h-full">
-                    <div class="relative overflow-hidden" style="flex:3">
-                      <img :src="privateMedia[0]?.preview_url" alt="Locked"
-                        class="absolute inset-0 w-full h-full object-cover blur-lg scale-110 brightness-75" />
-                      <div class="absolute inset-0 flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white/80 drop-shadow" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1" style="flex:2">
-                      <div v-for="item in privateMedia.slice(1, 5)" :key="item.id" class="relative overflow-hidden">
-                        <img :src="item.preview_url" alt="Locked"
-                          class="absolute inset-0 w-full h-full object-cover blur-lg scale-110 brightness-75" />
-                        <div class="absolute inset-0 flex items-center justify-center">
-                          <svg class="w-7 h-7 text-white/60" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                          </svg>
-                        </div>
+                <!-- Gesperrte private Bilder: gleiches Grid, verschwommen + Schloss -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  <div v-for="item in privateMedia" :key="item.id"
+                    class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900">
+                    <img :src="item.preview_url" alt="Privat"
+                      class="absolute inset-0 w-full h-full object-cover object-top blur-lg scale-110 brightness-75" />
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white/85" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
                       </div>
                     </div>
                   </div>
-                  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 px-4 text-center">
-                    <div class="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center mb-2">
-                      <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-                    </div>
+                </div>
 
-                    <!-- ── LAUNCH-MODUS: keine Preise, keine Zahlung ── -->
-                    <template v-if="launchMode">
-                      <p class="font-bold text-white text-base mb-1">{{ t('profile.private_gallery') }}</p>
-                      <p class="text-xs text-gray-300 mb-1">{{ t('profile.private_gallery_intro') }}</p>
-                      <template v-if="launchGalleryFree">
-                        <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_free') }}</p>
-                        <Link v-if="!$page.props.auth.user" :href="route('register')"
-                          class="bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
-                          {{ t('profile.launch_register_view') }}
-                        </Link>
-                      </template>
-                      <template v-else>
-                        <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_locked') }}</p>
-                        <button type="button" @click="onFavoriteClick"
-                          class="border border-white/20 text-white/90 text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">
-                          {{ favorited ? t('profile.saved_favorite') : t('profile.launch_notify_me') }}
-                        </button>
-                      </template>
+                <!-- CTA unterhalb des Grids -->
+                <div class="mt-4 bg-[#111] border border-white/10 rounded-xl p-6 text-center flex flex-col items-center">
+                  <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                  </div>
+
+                  <!-- ── LAUNCH-MODUS: keine Preise, keine Zahlung ── -->
+                  <template v-if="launchMode">
+                    <p class="font-bold text-white text-base mb-1">{{ t('profile.private_gallery') }}</p>
+                    <p class="text-xs text-gray-300 mb-1">{{ t('profile.private_gallery_intro') }}</p>
+                    <template v-if="launchGalleryFree">
+                      <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_free') }}</p>
+                      <Link v-if="!$page.props.auth.user" :href="route('register')"
+                        class="bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                        {{ t('profile.launch_register_view') }}
+                      </Link>
                     </template>
-
-                    <!-- ── NORMALBETRIEB (mit Preisen/Abo) ── -->
                     <template v-else>
-                      <p class="text-xs text-gray-200 mb-1">{{ t('home.members_only') }}</p>
-                      <p class="font-bold text-white text-base mb-1">{{ t('profile.private_count', { count: privateMediaCount }) }}</p>
-                      <p class="text-xs text-gray-300 mb-4">{{ t('profile.unlock_for', { price: profile.subscription_price_chf }) }}</p>
-                      <template v-if="!$page.props.auth.user">
-                        <Link :href="route('register')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ t('profile.free_trial') }}</Link>
-                      </template>
-                      <template v-else-if="!hasTrialed">
-                        <button @click="startTrial" :disabled="trialing" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? t('profile.activating') : t('profile.free_trial') }}</button>
-                      </template>
-                      <template v-else>
-                        <button @click="subscribe" :disabled="subscribing" class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? t('profile.redirecting') : t('profile.direct_subscribe', { price: profile.subscription_price_chf }) }}</button>
-                      </template>
+                      <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_locked') }}</p>
+                      <button type="button" @click="onFavoriteClick"
+                        class="border border-white/20 text-white/90 text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">
+                        {{ favorited ? t('profile.saved_favorite') : t('profile.launch_notify_me') }}
+                      </button>
                     </template>
-                  </div>
+                  </template>
+
+                  <!-- ── NORMALBETRIEB (mit Preisen/Abo) ── -->
+                  <template v-else>
+                    <p class="text-xs text-gray-200 mb-1">{{ t('home.members_only') }}</p>
+                    <p class="font-bold text-white text-base mb-1">{{ t('profile.private_count', { count: privateMediaCount }) }}</p>
+                    <p class="text-xs text-gray-300 mb-4">{{ t('profile.unlock_for', { price: profile.subscription_price_chf }) }}</p>
+                    <template v-if="!$page.props.auth.user">
+                      <Link :href="route('register')" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ t('profile.free_trial') }}</Link>
+                    </template>
+                    <template v-else-if="!hasTrialed">
+                      <button @click="startTrial" :disabled="trialing" class="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ trialing ? t('profile.activating') : t('profile.free_trial') }}</button>
+                    </template>
+                    <template v-else>
+                      <button @click="subscribe" :disabled="subscribing" class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">{{ subscribing ? t('profile.redirecting') : t('profile.direct_subscribe', { price: profile.subscription_price_chf }) }}</button>
+                    </template>
+                  </template>
                 </div>
               </template>
               <div v-else class="text-center py-10 text-gray-500">
@@ -706,7 +619,7 @@ const lightboxIndex = ref(null);
 
 const allMedia = computed(() => {
   const media = [...props.publicMedia];
-  if (props.isOwner || props.isSubscribed || props.isTrialing) {
+  if (props.isOwner || props.isSubscribed || props.isTrialing || props.isLaunchUnlocked) {
     media.push(...props.privateMedia);
   }
   return media;

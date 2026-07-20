@@ -1,6 +1,6 @@
 <template>
-  <!-- Galerie-Ansicht: vollständiges Bild (kein Zuschneiden), dunkle Balken bei Hochformat -->
-  <div class="relative w-full h-full bg-[#0d0d0d]">
+  <!-- Galerie-Kachel: einheitlicher Zuschnitt (cover, oben verankert – Kopf bleibt sichtbar) -->
+  <div class="relative w-full h-full bg-neutral-900">
     <!-- Video thumbnail -->
     <template v-if="item.type === 'video'">
       <video
@@ -8,7 +8,7 @@
         preload="metadata"
         muted
         playsinline
-        class="w-full h-full object-contain"
+        class="absolute inset-0 w-full h-full object-cover object-top"
       />
       <!-- Play button overlay -->
       <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition">
@@ -35,7 +35,7 @@
       :data-src="!eager ? primary : undefined"
       :data-srcset="!eager ? srcset : undefined"
       data-sizes="auto"
-      :class="['w-full h-full object-contain object-center transition duration-300', !eager ? 'lazyload' : '']"
+      :class="['absolute inset-0 w-full h-full object-cover object-top transition duration-300', !eager ? 'lazyload' : '']"
       :width="item.width || undefined"
       :height="item.height || undefined"
       :alt="alt"
@@ -53,9 +53,9 @@ const props = defineProps({
   eager: { type: Boolean, default: false },
 });
 
-// Bild-Varianten mit Fallback auf den Original-Stream (Alt-Medien)
-const primary = computed(() => props.item.src?.full ?? props.item.url);
+// Galerie-Kacheln sind klein → günstigere Varianten (Fallback auf Original-Stream)
+const primary = computed(() => props.item.src?.card ?? props.item.src?.full ?? props.item.url);
 const srcset = computed(() =>
-  props.item.src ? `${props.item.src.card} 720w, ${props.item.src.full} 1600w` : undefined
+  props.item.src ? `${props.item.src.thumbnail} 320w, ${props.item.src.card} 720w` : undefined
 );
 </script>
