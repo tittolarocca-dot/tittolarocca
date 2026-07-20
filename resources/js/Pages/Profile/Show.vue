@@ -22,11 +22,13 @@
             <!-- Public Media – einheitliches Grid, gleich grosse 4:5-Kacheln -->
             <div v-if="activeTab === 'public'">
               <div v-if="publicMedia.length === 0" class="text-center py-10 text-gray-500">{{ t('profile.no_photos') }}</div>
-              <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                <div v-for="(item, i) in publicMedia" :key="item.id"
-                  class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
-                  @click="openLightbox(item)">
-                  <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
+              <div v-else class="h-[270px] overflow-y-auto rounded-xl gallery-scroll">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  <div v-for="(item, i) in publicMedia" :key="item.id"
+                    class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
+                    @click="openLightbox(item)">
+                    <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -35,24 +37,28 @@
             <div v-if="activeTab === 'private'">
               <template v-if="isOwner || isSubscribed || isTrialing || isLaunchUnlocked">
                 <div v-if="privateMedia.length === 0" class="text-center py-10 text-gray-500">{{ t('profile.no_private') }}</div>
-                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  <div v-for="(item, i) in privateMedia" :key="item.id"
-                    class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
-                    @click="openLightbox(item)">
-                    <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
+                <div v-else class="h-[270px] overflow-y-auto rounded-xl gallery-scroll">
+                  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div v-for="(item, i) in privateMedia" :key="item.id"
+                      class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900 cursor-pointer group"
+                      @click="openLightbox(item)">
+                      <MediaThumb :item="item" :alt="profile.display_name" :eager="i < 4" />
+                    </div>
                   </div>
                 </div>
               </template>
               <template v-else-if="privateMediaCount > 0">
-                <!-- Gesperrte private Bilder: gleiches Grid, verschwommen + Schloss -->
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  <div v-for="item in privateMedia" :key="item.id"
-                    class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900">
-                    <img :src="item.preview_url" alt="Privat"
-                      class="absolute inset-0 w-full h-full object-cover object-top blur-lg scale-110 brightness-75" />
-                    <div class="absolute inset-0 flex items-center justify-center">
-                      <div class="w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white/85" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                <!-- Gesperrte private Bilder: gleiches Grid im 270px-Feld, verschwommen + Schloss -->
+                <div class="h-[270px] overflow-y-auto rounded-xl gallery-scroll">
+                  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div v-for="item in privateMedia" :key="item.id"
+                      class="relative aspect-[4/5] overflow-hidden rounded-lg bg-neutral-900">
+                      <img :src="item.preview_url" alt="Privat"
+                        class="absolute inset-0 w-full h-full object-cover object-top blur-lg scale-110 brightness-75" />
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <svg class="w-4 h-4 text-white/85" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -851,3 +857,11 @@ async function shareProfile() {
   }
 }
 </script>
+
+<style scoped>
+/* Schmale Scrollleiste im festen 270px-Galeriefeld */
+.gallery-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.18) transparent; }
+.gallery-scroll::-webkit-scrollbar { width: 6px; }
+.gallery-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+.gallery-scroll::-webkit-scrollbar-track { background: transparent; }
+</style>
