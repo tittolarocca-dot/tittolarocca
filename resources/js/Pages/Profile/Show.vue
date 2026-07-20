@@ -31,7 +31,7 @@
                 </div>
                 <!-- 2 items -->
                 <div v-else-if="publicMedia.length === 2"
-                  class="grid grid-cols-2 gap-1 h-[200px] rounded-xl overflow-hidden">
+                  class="grid grid-cols-2 gap-1 h-[250px] rounded-xl overflow-hidden">
                   <div v-for="(item, i) in publicMedia.slice(0,2)" :key="item.id"
                     class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
                     <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
@@ -39,7 +39,7 @@
                 </div>
                 <!-- 3–4 items -->
                 <div v-else-if="publicMedia.length <= 4"
-                  class="flex gap-1 h-[200px] rounded-xl overflow-hidden">
+                  class="flex gap-1 h-[250px] rounded-xl overflow-hidden">
                   <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(publicMedia[0])">
                     <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
@@ -51,7 +51,7 @@
                   </div>
                 </div>
                 <!-- 5+ items -->
-                <div v-else class="flex gap-1 h-[200px] rounded-xl overflow-hidden">
+                <div v-else class="flex gap-1 h-[250px] rounded-xl overflow-hidden">
                   <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(publicMedia[0])">
                     <MediaThumb :item="publicMedia[0]" :alt="profile.display_name" :eager="true" />
                   </div>
@@ -83,7 +83,7 @@
                   </div>
                   <!-- 2 items -->
                   <div v-else-if="privateMedia.length === 2"
-                    class="grid grid-cols-2 gap-1 h-[200px] rounded-xl overflow-hidden">
+                    class="grid grid-cols-2 gap-1 h-[250px] rounded-xl overflow-hidden">
                     <div v-for="(item, i) in privateMedia.slice(0,2)" :key="item.id"
                       class="relative overflow-hidden cursor-pointer group" @click="openLightbox(item)">
                       <MediaThumb :item="item" :alt="profile.display_name" :eager="i===0" />
@@ -91,7 +91,7 @@
                   </div>
                   <!-- 3–4 items -->
                   <div v-else-if="privateMedia.length <= 4"
-                    class="flex gap-1 h-[200px] rounded-xl overflow-hidden">
+                    class="flex gap-1 h-[250px] rounded-xl overflow-hidden">
                     <div class="relative flex-[2] overflow-hidden cursor-pointer group" @click="openLightbox(privateMedia[0])">
                       <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                     </div>
@@ -103,7 +103,7 @@
                     </div>
                   </div>
                   <!-- 5+ items -->
-                  <div v-else class="flex gap-1 h-[200px] rounded-xl overflow-hidden">
+                  <div v-else class="flex gap-1 h-[250px] rounded-xl overflow-hidden">
                     <div class="relative overflow-hidden cursor-pointer group" style="flex:3" @click="openLightbox(privateMedia[0])">
                       <MediaThumb :item="privateMedia[0]" :alt="profile.display_name" :eager="true" />
                     </div>
@@ -122,7 +122,7 @@
                 </template>
               </template>
               <template v-else-if="privateMediaCount > 0">
-                <div class="relative h-[200px] rounded-xl overflow-hidden">
+                <div class="relative h-[250px] rounded-xl overflow-hidden">
                   <div class="flex gap-1 h-full">
                     <div class="relative overflow-hidden" style="flex:3">
                       <img :src="privateMedia[0]?.preview_url" alt="Locked"
