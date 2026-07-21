@@ -124,6 +124,16 @@ class ProfileController extends Controller
             return redirect()->route('inserat.profile.edit');
         }
 
+        // TEMPORÄRES DEBUG-LOGGING (wird nach Diagnose wieder entfernt)
+        Log::info('[launch-debug] profile update', [
+            'user_id'      => $request->user()->id,
+            'profile_id'   => $profile->id,
+            'profile_name' => $profile->display_name,
+            'lgf_has'      => $request->has('launch_gallery_free'),
+            'lgf_raw'      => $request->input('launch_gallery_free'),
+            'lgf_bool'     => $request->boolean('launch_gallery_free'),
+        ]);
+
         $data = $this->validateProfile($request);
 
         $profile->update([
