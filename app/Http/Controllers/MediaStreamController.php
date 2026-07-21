@@ -100,8 +100,14 @@ class MediaStreamController extends Controller
                 abort(404);
             }
             if ($media->visibility === 'private') {
-                if (!$user || !$user->isSubscribedTo($profile)) {
-                    abort(403, 'Abonnement erforderlich.');
+                // Launch-Zugang: gleiche Regel wie ProfileController@show –
+                // eingeloggtes Mitglied, wenn die Inserentin die Galerie im Launch freigegeben hat.
+                $launchAccess = config('features.launch_mode')
+                    && $profile->launch_gallery_free
+                    && $user !== null;
+
+                if (!$launchAccess && (!$user || !$user->isSubscribedTo($profile))) {
+                    abort(403, 'Zugriff nicht erlaubt.');
                 }
             }
         }
