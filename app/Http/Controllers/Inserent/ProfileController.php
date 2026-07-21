@@ -124,16 +124,6 @@ class ProfileController extends Controller
             return redirect()->route('inserat.profile.edit');
         }
 
-        // TEMPORÄRES DEBUG-LOGGING (wird nach Diagnose wieder entfernt)
-        Log::info('[launch-debug] profile update', [
-            'user_id'      => $request->user()->id,
-            'profile_id'   => $profile->id,
-            'profile_name' => $profile->display_name,
-            'lgf_has'      => $request->has('launch_gallery_free'),
-            'lgf_raw'      => $request->input('launch_gallery_free'),
-            'lgf_bool'     => $request->boolean('launch_gallery_free'),
-        ]);
-
         $data = $this->validateProfile($request);
 
         $profile->update([
@@ -267,13 +257,13 @@ class ProfileController extends Controller
             'eye_color'              => ['nullable', 'string', 'max:30'],
             'smoking'                => ['nullable', 'boolean'],
             'tattoo'                 => ['nullable', 'boolean'],
-            'intimate_area'          => ['nullable', 'string', 'in:Glatt,Teilrasiert,Natürlich'],
-            'body_type'              => ['nullable', 'string', 'in:Schlank,Sportlich,Rundlich'],
-            'gender'                 => ['nullable', 'string', 'in:frau,trans,gigolo'],
-            'origin'                 => ['nullable', 'string', 'in:europaeisch,asiatisch,schwarz,indisch,latina,gemischt'],
+            'intimate_area'          => ['nullable', 'string', 'max:30'],
+            'body_type'              => ['nullable', 'string', 'max:30'],
+            'gender'                 => ['nullable', 'string', 'max:20'],
+            'origin'                 => ['nullable', 'string', 'max:40'],
             'weight_kg'              => ['nullable', 'integer', 'min:30', 'max:200'],
-            'cup_size'               => ['nullable', 'string', 'in:A,B,C,D,E,F,G'],
-            'breast_type'            => ['nullable', 'string', 'in:natur,implantate'],
+            'cup_size'               => ['nullable', 'string', 'max:10'],
+            'breast_type'            => ['nullable', 'string', 'max:20'],
             'has_video'              => ['nullable', 'boolean'],
             'languages'              => ['nullable', 'array'],
             'whatsapp_number'        => ['nullable', 'string', 'max:20'],
