@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $isOwner    = $user && $profile->user_id === $user->id;
         $subscribed = $user && $user->isSubscribedTo($profile);
 
-        $profile->loadMissing(['city', 'category', 'tags', 'approvedReviews.reviewer']);
+        $profile->loadMissing(['city', 'category', 'categories', 'tags', 'approvedReviews.reviewer']);
         $profile->increment('total_views');
 
         if ($user && !$isOwner) {
@@ -131,6 +131,10 @@ class ProfileController extends Controller
                 'city_slug'              => $profile->city?->slug,
                 'category'               => $profile->category?->name,
                 'category_slug'          => $profile->category?->slug,
+                'categories'             => $profile->categories->map(fn ($c) => [
+                    'name' => $c->name,
+                    'slug' => $c->slug,
+                ])->values(),
                 'tags'                   => $profile->tags->pluck('name'),
                 'subscription_price_chf' => $profile->subscription_price_chf,
                 'total_subscribers'      => $profile->total_subscribers,

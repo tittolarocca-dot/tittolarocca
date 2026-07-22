@@ -60,11 +60,10 @@ class HomeController extends Controller
             $q->whereHas('tags', fn ($t) => $t->whereIn('tags.slug', $services));
         }
 
-        // Mehrfachauswahl Rubrik: Profile in MINDESTENS EINER der gewählten Kategorien (ODER-Verknüpfung)
+        // Mehrfachauswahl Rubrik: Profile in MINDESTENS EINER der gewählten Kategorien (ODER-Verknüpfung).
+        // Nutzt die m:n-Zuordnung, damit ein Profil unter jeder seiner Kategorien erscheint.
         if (! empty($categories)) {
-            $q->whereIn('category_id', function ($sub) use ($categories) {
-                $sub->select('id')->from('categories')->whereIn('slug', $categories);
-            });
+            $q->whereHas('categories', fn ($c) => $c->whereIn('categories.slug', $categories));
         }
 
         return $q->orderByDesc('pushed_at')->orderByDesc('created_at');

@@ -60,20 +60,28 @@
               <p v-if="form.errors.city_id" class="mt-1 text-xs text-red-600">{{ form.errors.city_id }}</p>
             </div>
 
-            <!-- Kategorie -->
-            <div>
+            <!-- Kategorie (Mehrfachauswahl, max. 3) -->
+            <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 {{ t('inserent.category') }} <span class="text-[#e35d8f]">*</span>
+                <span class="text-xs font-normal text-gray-400">· {{ t('inserent.category_multi_hint') }}</span>
               </label>
-              <select v-model="form.category_id"
-                :class="['w-full px-3 py-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition',
-                  form.errors.category_id ? 'border-red-500' : 'border-gray-300']">
-                <option value="">{{ t('inserent.category_select') }}</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+              <div class="flex flex-wrap gap-2">
+                <label v-for="cat in categories" :key="cat.id"
+                  class="inline-flex items-center gap-2 px-3 py-2 border rounded-lg text-sm cursor-pointer transition select-none"
+                  :class="[
+                    form.category_ids.includes(cat.id)
+                      ? 'border-[#e35d8f] bg-[#e35d8f]/10 text-gray-900'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-[#e35d8f]/50',
+                    (!form.category_ids.includes(cat.id) && form.category_ids.length >= 3) ? 'opacity-40 cursor-not-allowed' : '',
+                  ]">
+                  <input type="checkbox" :value="cat.id" v-model="form.category_ids"
+                    :disabled="!form.category_ids.includes(cat.id) && form.category_ids.length >= 3"
+                    class="w-4 h-4 rounded accent-[#e35d8f] cursor-pointer" />
                   {{ cat.name }}
-                </option>
-              </select>
-              <p v-if="form.errors.category_id" class="mt-1 text-xs text-red-600">{{ form.errors.category_id }}</p>
+                </label>
+              </div>
+              <p v-if="form.errors.category_ids" class="mt-1 text-xs text-red-600">{{ form.errors.category_ids }}</p>
             </div>
           </div>
 
@@ -404,7 +412,7 @@ const form = useForm({
   display_name:           props.profile?.display_name           ?? '',
   description:            props.profile?.description            ?? '',
   city_id:                props.profile?.city_id                ?? '',
-  category_id:            props.profile?.category_id            ?? '',
+  category_ids:           props.profile?.category_ids           ?? [],
   age:                    props.profile?.age                    ?? '',
   nationality:            props.profile?.nationality            ?? '',
   height_cm:              props.profile?.height_cm              ?? '',

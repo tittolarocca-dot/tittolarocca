@@ -21,6 +21,7 @@ return [
     'city_select' => 'Alege orașul…',
     'category' => 'Categorie',
     'category_select' => 'Alege categoria…',
+        'category_multi_hint' => "max. 3",
     'nationality' => 'Naționalitate',
     'nationality_ph' => 'ex. Elveția, Italia…',
     'height' => 'Înălțime (cm)',

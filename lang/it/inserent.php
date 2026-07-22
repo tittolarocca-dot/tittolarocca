@@ -21,6 +21,7 @@ return [
     'city_select' => 'Scegli città…',
     'category' => 'Categoria',
     'category_select' => 'Scegli categoria…',
+        'category_multi_hint' => "max. 3",
     'nationality' => 'Nazionalità',
     'nationality_ph' => 'es. Svizzera, Italia…',
     'height' => 'Altezza (cm)',

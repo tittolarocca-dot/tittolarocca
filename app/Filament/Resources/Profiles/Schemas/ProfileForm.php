@@ -39,9 +39,16 @@ class ProfileForm
                     ->relationship('city', 'name')
                     ->required(),
                 Select::make('category_id')
-                    ->label('Kategorie')
+                    ->label('Haupt-Kategorie')
                     ->relationship('category', 'name')
                     ->required(),
+                Select::make('categories')
+                    ->label('Kategorien (Mehrfach, max. 3)')
+                    ->relationship('categories', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->maxItems(3)
+                    ->helperText('Das Profil erscheint unter jeder gewählten Kategorie.'),
                 TextInput::make('age')->numeric(),
                 TextInput::make('subscription_price_chf')->label('Abo-Preis (CHF)')->numeric(),
                 Toggle::make('launch_gallery_free')

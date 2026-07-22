@@ -21,6 +21,7 @@ return [
     'city_select' => 'Stadt wählen…',
     'category' => 'Kategorie',
     'category_select' => 'Kategorie wählen…',
+        'category_multi_hint' => "max. 3 auswählbar",
     'nationality' => 'Nationalität',
     'nationality_ph' => 'z.B. Schweiz, Italien…',
     'height' => 'Körpergrösse (cm)',

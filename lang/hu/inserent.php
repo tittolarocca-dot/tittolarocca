@@ -21,6 +21,7 @@ return [
     'city_select' => 'Válassz várost…',
     'category' => 'Kategória',
     'category_select' => 'Válassz kategóriát…',
+        'category_multi_hint' => "max. 3",
     'nationality' => 'Nemzetiség',
     'nationality_ph' => 'pl. Svájc, Olaszország…',
     'height' => 'Magasság (cm)',

@@ -69,7 +69,7 @@ class SearchController extends Controller
             'escort'   => 'escort',
         ];
         if ($f['contact'] && isset($contactMap[$f['contact']])) {
-            $query->whereHas('category', fn ($c) => $c->where('slug', $contactMap[$f['contact']]));
+            $query->whereHas('categories', fn ($c) => $c->where('categories.slug', $contactMap[$f['contact']]));
         }
 
         // ── Alter ───────────────────────────────────────────────────────

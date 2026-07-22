@@ -17,7 +17,7 @@ class ProfileController extends Controller
     public function edit(Request $request)
     {
         $user    = $request->user();
-        $profile = $user->profile()->with(['city', 'category', 'tags'])->first();
+        $profile = $user->profile()->with(['city', 'category', 'categories', 'tags'])->first();
 
         return inertia('Inserent/Profile', [
             'profile'    => $profile ? [
@@ -26,6 +26,8 @@ class ProfileController extends Controller
                 'description'            => $profile->description,
                 'city_id'                => $profile->city_id,
                 'category_id'            => $profile->category_id,
+                'category_ids'           => $profile->categories->pluck('id')->all()
+                                              ?: array_values(array_filter([$profile->category_id])),
                 'age'                    => $profile->age,
                 'nationality'            => $profile->nationality,
                 'height_cm'              => $profile->height_cm,
@@ -74,7 +76,7 @@ class ProfileController extends Controller
             'display_name'           => $data['display_name'],
             'description'            => $data['description'] ?? null,
             'city_id'                => $data['city_id'],
-            'category_id'            => $data['category_id'],
+            'category_id'            => $data['category_ids'][0],
             'age'                    => $data['age'],
             'nationality'            => $data['nationality'] ?? null,
             'height_cm'              => $data['height_cm'] ?? null,
@@ -107,6 +109,9 @@ class ProfileController extends Controller
             $profile->tags()->sync($data['tag_ids']);
         }
 
+        // Mehrere Kategorien (max 3); category_id bleibt die erste als Haupt-Kategorie.
+        $profile->categories()->sync($data['category_ids']);
+
         // Rolle auf inserent setzen falls noch nicht
         if ($user->role !== 'inserent') {
             $user->update(['role' => 'inserent']);
@@ -130,7 +135,7 @@ class ProfileController extends Controller
             'display_name'           => $data['display_name'],
             'description'            => $data['description'] ?? null,
             'city_id'                => $data['city_id'],
-            'category_id'            => $data['category_id'],
+            'category_id'            => $data['category_ids'][0],
             'age'                    => $data['age'],
             'nationality'            => $data['nationality'] ?? null,
             'height_cm'              => $data['height_cm'] ?? null,
@@ -161,6 +166,9 @@ class ProfileController extends Controller
         if (! empty($data['tag_ids'])) {
             $profile->tags()->sync($data['tag_ids']);
         }
+
+        // Mehrere Kategorien (max 3); category_id bleibt die erste als Haupt-Kategorie.
+        $profile->categories()->sync($data['category_ids']);
 
         // Launch-Bonus: private Galerie freigegeben + private Medien vorhanden → einmalig +3 Credits
         if (config('features.launch_mode') && $profile->launch_gallery_free && $profile->privateMedia()->exists()) {
@@ -250,7 +258,8 @@ class ProfileController extends Controller
             'display_name'           => ['required', 'string', 'min:2', 'max:60'],
             'description'            => ['nullable', 'string', 'max:2000'],
             'city_id'                => ['required', 'exists:cities,id'],
-            'category_id'            => ['required', 'exists:categories,id'],
+            'category_ids'           => ['required', 'array', 'min:1', 'max:3'],
+            'category_ids.*'         => ['exists:categories,id'],
             'age'                    => ['required', 'integer', 'min:18', 'max:99'],
             'nationality'            => ['nullable', 'string', 'max:60'],
             'height_cm'              => ['nullable', 'integer', 'min:120', 'max:230'],
@@ -278,7 +287,9 @@ class ProfileController extends Controller
             'display_name.required'           => 'Bitte gib einen Namen an.',
             'display_name.min'                => 'Der Name muss mindestens 2 Zeichen lang sein.',
             'city_id.required'                => 'Bitte wähle eine Stadt.',
-            'category_id.required'            => 'Bitte wähle eine Kategorie.',
+            'category_ids.required'           => 'Bitte wähle mindestens eine Kategorie.',
+            'category_ids.min'                => 'Bitte wähle mindestens eine Kategorie.',
+            'category_ids.max'                => 'Du kannst maximal 3 Kategorien wählen.',
             'age.required'                    => 'Bitte gib dein Alter an.',
             'age.min'                         => 'Du musst mindestens 18 Jahre alt sein.',
             'subscription_price_chf.required' => 'Bitte lege einen Abo-Preis fest.',

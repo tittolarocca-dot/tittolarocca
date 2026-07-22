@@ -154,7 +154,13 @@
               {{ t('home.photo_verified') }}
             </span>
           </template>
-          <span v-if="profile.category"
+          <template v-if="profile.categories && profile.categories.length">
+            <Link v-for="cat in profile.categories" :key="cat.slug" :href="route('category', cat.slug)"
+              class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-3 py-1 rounded-full font-semibold hover:bg-[#e35d8f]/20 transition">
+              {{ cat.name }}
+            </Link>
+          </template>
+          <span v-else-if="profile.category"
             class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-3 py-1 rounded-full font-semibold">
             {{ profile.category }}
           </span>

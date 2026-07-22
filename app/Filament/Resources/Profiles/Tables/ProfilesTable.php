@@ -33,8 +33,11 @@ class ProfilesTable
                 TextColumn::make('city.name')
                     ->label('Stadt')
                     ->sortable(),
-                TextColumn::make('category.name')
-                    ->label('Kategorie'),
+                TextColumn::make('categories.name')
+                    ->label('Kategorien')
+                    ->badge()
+                    ->separator(',')
+                    ->placeholder('—'),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn ($state) => match ($state) {
