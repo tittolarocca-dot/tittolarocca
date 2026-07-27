@@ -63,14 +63,31 @@ class MessageController extends Controller
         ]);
     }
 
+    /**
+     * Darf $user dieser Inserentin schreiben?
+     * - Launch-Modus: jedes registrierte Mitglied darf.
+     * - Normalbetrieb: nur Abonnenten.
+     * - In beiden Fällen NICHT, wenn die Inserentin den Nutzer blockiert hat.
+     */
+    private function canChatWith(\App\Models\User $user, Profile $profile): bool
+    {
+        $access = config('features.launch_mode') || $user->isSubscribedTo($profile);
+        if (! $access) {
+            return false;
+        }
+
+        $owner = \App\Models\User::find($profile->user_id);
+        return ! ($owner && $owner->hasBlocked($user->id));
+    }
+
     public function send(Request $request, Profile $profile)
     {
         $request->validate(['body' => ['required', 'string', 'max:2000']]);
 
         $user = $request->user();
 
-        if (!$user->isSubscribedTo($profile)) {
-            return back()->with('error', 'Nur Abonnenten können Nachrichten senden.');
+        if (! $this->canChatWith($user, $profile)) {
+            return response()->json(['error' => 'Du kannst dieser Person aktuell nicht schreiben.'], 403);
         }
 
         Message::create([
@@ -91,8 +108,8 @@ class MessageController extends Controller
 
         $user = $request->user();
 
-        if (!$user->isSubscribedTo($profile)) {
-            return response()->json(['error' => 'Nur Abonnenten können Bilder senden.'], 403);
+        if (! $this->canChatWith($user, $profile)) {
+            return response()->json(['error' => 'Du kannst dieser Person aktuell nicht schreiben.'], 403);
         }
 
         $file    = $request->file('media');

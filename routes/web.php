@@ -61,6 +61,8 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/nachrichten/{userId}',    [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
     Route::post('/nachrichten/{userId}/ppv',[\App\Http\Controllers\Inserent\MessageController::class, 'sendPpv'])->name('messages.ppv');
     Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
+    Route::post('/nachrichten/{userId}/blockieren', [\App\Http\Controllers\Inserent\MessageController::class, 'block'])->name('messages.block');
+    Route::post('/nachrichten/{userId}/entsperren', [\App\Http\Controllers\Inserent\MessageController::class, 'unblock'])->name('messages.unblock');
     Route::get('/auszahlungen',             [\App\Http\Controllers\Inserent\PayoutController::class, 'index'])->name('payouts');
     Route::post('/auszahlungen/bankdaten',  [\App\Http\Controllers\Inserent\PayoutController::class, 'updateBankDetails'])->name('payouts.bank');
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->middleware('throttle:10,1')->name('review.reply');

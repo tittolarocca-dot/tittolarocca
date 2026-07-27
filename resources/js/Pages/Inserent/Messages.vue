@@ -42,8 +42,21 @@
           </div>
         </div>
         <template v-else>
-          <div class="px-4 py-3 border-b border-gray-200 font-semibold text-gray-900">
-            {{ activeConv.name }}
+          <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
+            <span class="font-semibold text-gray-900">{{ activeConv.name }}</span>
+            <button v-if="!activeConv.blocked" @click="blockUser"
+              class="shrink-0 text-xs font-semibold text-gray-400 hover:text-red-500 transition inline-flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              Blockieren
+            </button>
+            <button v-else @click="unblockUser"
+              class="shrink-0 text-xs font-semibold text-red-500 hover:text-gray-600 transition inline-flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              Blockiert · aufheben
+            </button>
+          </div>
+          <div v-if="activeConv.blocked" class="px-4 py-2 bg-red-50 border-b border-red-100 text-xs text-red-600">
+            Dieser Nutzer ist blockiert und kann dir nicht schreiben.
           </div>
 
           <!-- Messages -->
@@ -195,6 +208,22 @@ async function openConversation(conv) {
   } finally {
     chatLoading.value = false;
   }
+}
+
+function blockUser() {
+  if (!activeConv.value) return;
+  router.post(route('inserat.messages.block', activeConv.value.user_id), {}, {
+    preserveScroll: true,
+    onSuccess: () => { activeConv.value.blocked = true; },
+  });
+}
+
+function unblockUser() {
+  if (!activeConv.value) return;
+  router.post(route('inserat.messages.unblock', activeConv.value.user_id), {}, {
+    preserveScroll: true,
+    onSuccess: () => { activeConv.value.blocked = false; },
+  });
 }
 
 function sendReply() {

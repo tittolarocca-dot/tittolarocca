@@ -38,6 +38,7 @@ class MessageController extends Controller
                     'last_message' => $msg->previewText(),
                     'last_at'      => $msg->created_at->format('d.m.Y H:i'),
                     'unread'       => 0,
+                    'blocked'      => $user->hasBlocked($otherId),
                 ];
             }
             if ($msg->to_user_id === $user->id && !$msg->read_at) {
@@ -65,6 +66,26 @@ class MessageController extends Controller
         ]);
 
         return back()->with('success', 'Antwort gesendet.');
+    }
+
+    /** Inserentin blockiert einen Kunden – er kann ihr nicht mehr schreiben. */
+    public function block(Request $request, int $userId)
+    {
+        \App\Models\ChatBlock::firstOrCreate([
+            'user_id'         => $request->user()->id,
+            'blocked_user_id' => $userId,
+        ]);
+
+        return back()->with('success', 'Nutzer blockiert.');
+    }
+
+    public function unblock(Request $request, int $userId)
+    {
+        \App\Models\ChatBlock::where('user_id', $request->user()->id)
+            ->where('blocked_user_id', $userId)
+            ->delete();
+
+        return back()->with('success', 'Blockierung aufgehoben.');
     }
 
     public function sendPpv(Request $request, int $toUserId)

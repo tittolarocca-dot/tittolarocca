@@ -54,6 +54,13 @@ class User extends Authenticatable implements FilamentUser
     public function likes()     { return $this->belongsToMany(Profile::class, 'likes')->withTimestamps(); }
     public function creditBalance()      { return $this->hasOne(CreditBalance::class); }
     public function creditTransactions() { return $this->hasMany(CreditTransaction::class); }
+    public function chatBlocks()         { return $this->hasMany(ChatBlock::class); }
+
+    /** Hat dieser Nutzer den angegebenen Nutzer im Chat blockiert? */
+    public function hasBlocked(int $userId): bool
+    {
+        return $this->chatBlocks()->where('blocked_user_id', $userId)->exists();
+    }
 
     /** Aktueller Credit-Saldo (0, falls noch kein Wallet angelegt). */
     public function creditsBalance(): int { return (int) ($this->creditBalance?->balance ?? 0); }
