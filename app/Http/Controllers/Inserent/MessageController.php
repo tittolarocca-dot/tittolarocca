@@ -88,6 +88,16 @@ class MessageController extends Controller
         return back()->with('success', 'Blockierung aufgehoben.');
     }
 
+    /** Leichtgewichtiger Endpoint fürs Polling der ungelesenen Nachrichten (Dashboard-Badge). */
+    public function unreadCount(Request $request)
+    {
+        $count = Message::where('to_user_id', $request->user()->id)
+            ->whereNull('read_at')
+            ->count();
+
+        return response()->json(['count' => $count]);
+    }
+
     public function sendPpv(Request $request, int $toUserId)
     {
         $request->validate([

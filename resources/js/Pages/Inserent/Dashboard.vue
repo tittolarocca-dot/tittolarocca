@@ -5,6 +5,19 @@
     <div class="max-w-5xl mx-auto px-4 py-8">
       <h1 class="text-2xl font-bold text-white mb-6">{{ t('dashboard.my_listing') }}</h1>
 
+      <!-- Neue-Nachrichten-Benachrichtigung (roter Zähler) -->
+      <Link v-if="unread > 0" :href="route('inserat.messages')"
+        class="flex items-center gap-3 bg-[#e35d8f]/10 border border-[#e35d8f]/40 rounded-xl px-4 py-3 mb-6 hover:bg-[#e35d8f]/15 transition">
+        <span class="relative shrink-0">
+          <svg class="w-7 h-7 text-[#e35d8f]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span class="absolute -top-2 -right-2 min-w-[20px] h-5 px-1 bg-red-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center ring-2 ring-[#111]">{{ unread > 99 ? '99+' : unread }}</span>
+        </span>
+        <span class="text-sm font-semibold text-white">
+          {{ unread === 1 ? t('dashboard.new_message_one') : t('dashboard.new_message_many', { count: unread }) }}
+        </span>
+        <span class="ml-auto text-xs text-[#e35d8f] font-bold whitespace-nowrap">{{ t('dashboard.open_chat') }} →</span>
+      </Link>
+
       <!-- Kein Profil -->
       <div v-if="!profile" class="bg-[#1a1a1a] rounded-xl border border-dashed border-[#e35d8f]/40 p-10 text-center shadow-sm">
         <div class="text-5xl mb-4">📋</div>
@@ -331,19 +344,32 @@
 
 <script setup>
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ref, computed, defineComponent, h } from 'vue';
+import { ref, computed, defineComponent, h, onMounted, onUnmounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
 
 const props = defineProps({
-  profile:    Object,
-  stats:      Object,
-  launchMode: { type: Boolean, default: false },
-  credits:    { type: Number,  default: 0 },
-  pushCost:   { type: Number,  default: 1 },
+  profile:        Object,
+  stats:          Object,
+  launchMode:     { type: Boolean, default: false },
+  credits:        { type: Number,  default: 0 },
+  pushCost:       { type: Number,  default: 1 },
+  unreadMessages: { type: Number,  default: 0 },
 });
+
+// ── Neue-Nachrichten-Badge (Polling alle 20s) ───────────────────────────────
+const unread = ref(props.unreadMessages ?? 0);
+let unreadTimer = null;
+async function refreshUnread() {
+  try {
+    const res = await fetch(route('inserat.messages.unread'), { headers: { Accept: 'application/json' } });
+    if (res.ok) { const d = await res.json(); unread.value = d.count ?? 0; }
+  } catch { /* still, ignore */ }
+}
+onMounted(() => { unreadTimer = setInterval(refreshUnread, 20000); });
+onUnmounted(() => { if (unreadTimer) clearInterval(unreadTimer); });
 
 // ── Verification ──────────────────────────────────────────────────────────────
 const verifyForm    = useForm({ photo: null });

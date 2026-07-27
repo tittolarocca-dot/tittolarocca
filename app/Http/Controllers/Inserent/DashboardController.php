@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Inserent;
 
 use App\Http\Controllers\Controller;
+use App\Models\Message;
 use App\Models\ProfileVisit;
 use Illuminate\Http\Request;
 
@@ -20,11 +21,14 @@ class DashboardController extends Controller
             ? ProfileVisit::where('profile_owner_user_id', $user->id)->count()
             : 0;
 
+        $unreadMessages = Message::where('to_user_id', $user->id)->whereNull('read_at')->count();
+
         return inertia('Inserent/Dashboard', [
-            'profile'      => $profile,
-            'launchMode'   => (bool) config('features.launch_mode'),
-            'credits'      => $user->creditsBalance(),
-            'pushCost'     => (int) config('features.push_credit_cost', 1),
+            'profile'        => $profile,
+            'launchMode'     => (bool) config('features.launch_mode'),
+            'credits'        => $user->creditsBalance(),
+            'pushCost'       => (int) config('features.push_credit_cost', 1),
+            'unreadMessages' => $unreadMessages,
             'stats' => $profile ? [
                 'views'         => $profile->total_views,
                 'subscribers'   => $profile->total_subscribers,

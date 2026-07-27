@@ -48,6 +48,9 @@ return [
     'subs_past_due'        => 'Zahlung ausstehend',
     // ── Inserent Dashboard ───────────────────────────────────────────────────
     'my_listing'           => 'Mein Inserat',
+    'new_message_one'  => "Du hast 1 neue Nachricht",
+    'new_message_many' => "Du hast :count neue Nachrichten",
+    'open_chat'        => "Chat öffnen",
     'no_listing_title'     => 'Noch kein Inserat erstellt',
     'no_listing_desc'      => 'Erstelle dein Profil und wähle ein Paket, um sichtbar zu werden.',
     'create_btn'           => 'Profil erstellen →',
