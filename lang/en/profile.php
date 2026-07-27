@@ -70,6 +70,7 @@ return [
     'liked'              => 'Liked',
     'likes_count'        => 'Likes',
     'followers_count'    => 'Followers',
+    'send_message'        => "Send message",
     'private_gallery'       => "Private gallery",
     'private_gallery_intro' => "This advertiser offers private content.",
     'launch_gallery_free'   => "Free for registered members during the launch phase.",

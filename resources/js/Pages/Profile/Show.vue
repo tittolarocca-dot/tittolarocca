@@ -482,6 +482,16 @@
             </a>
           </div>
 
+          <!-- Nachricht senden (eingeloggtes Mitglied; im Launch für alle, sonst Abonnenten) -->
+          <div v-if="$page.props.auth.user && !isOwner && (launchMode || isSubscribed)"
+            class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <Link :href="route('konto.messages', { to: profile.slug })"
+              class="flex items-center justify-center gap-2.5 w-full bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-3.5 rounded-xl transition">
+              <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              {{ t('profile.send_message') }}
+            </Link>
+          </div>
+
           <!-- Profil teilen -->
           <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 space-y-2">
             <button @click="shareProfile"

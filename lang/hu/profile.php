@@ -70,6 +70,7 @@ return [
     'liked'              => 'Tetszett',
     'likes_count'        => 'Likes',
     'followers_count'    => 'Followers',
+    'send_message'        => "Üzenet küldése",
     'private_gallery'       => "Privát galéria",
     'private_gallery_intro' => "Ez a hirdető privát tartalmat kínál.",
     'launch_gallery_free'   => "Az indulási időszakban ingyenes a regisztrált tagoknak.",

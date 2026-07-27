@@ -70,6 +70,7 @@ return [
     'liked'              => 'Aimé',
     'likes_count'        => 'Likes',
     'followers_count'    => 'Followers',
+    'send_message'        => "Envoyer un message",
     'private_gallery'       => "Galerie privée",
     'private_gallery_intro' => "Cette annonceuse propose du contenu privé.",
     'launch_gallery_free'   => "Gratuit pour les membres inscrits pendant la phase de lancement.",

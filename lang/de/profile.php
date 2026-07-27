@@ -70,6 +70,7 @@ return [
     'liked'              => 'Geliked',
     'likes_count'        => 'Likes',
     'followers_count'    => 'Followers',
+    'send_message'        => "Nachricht senden",
     'private_gallery'       => "Private Galerie",
     'private_gallery_intro' => "Diese Inserentin bietet private Inhalte an.",
     'launch_gallery_free'   => "Während der Launchphase kostenlos für registrierte Mitglieder.",

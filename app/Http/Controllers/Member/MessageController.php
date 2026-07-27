@@ -56,9 +56,24 @@ class MessageController extends Controller
                 'slug'            => $s->profile->slug,
             ]);
 
+        // Direkter Chat-Start von der Profilseite (?to=slug) – z. B. im Launch-Modus,
+        // wo es keine Abos gibt, über die man sonst eine Konversation beginnt.
+        $startWith = null;
+        if ($slug = $request->query('to')) {
+            $target = Profile::where('slug', $slug)->first();
+            if ($target && $this->canChatWith($user, $target) && ! isset($conversations[$target->user_id])) {
+                $startWith = [
+                    'user_id' => $target->user_id,
+                    'name'    => $target->display_name,
+                    'profile' => ['display_name' => $target->display_name, 'slug' => $target->slug],
+                ];
+            }
+        }
+
         return Inertia::render('Member/Messages', [
             'conversations' => array_values($conversations),
             'subscriptions' => $subscriptions,
+            'startWith'     => $startWith,
             'ppvSuccess'    => $request->query('ppv_success') === '1',
         ]);
     }

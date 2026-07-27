@@ -70,6 +70,7 @@ return [
     'liked'              => 'Apreciat',
     'likes_count'        => 'Likes',
     'followers_count'    => 'Followers',
+    'send_message'        => "Trimite mesaj",
     'private_gallery'       => "Galerie privată",
     'private_gallery_intro' => "Această anunțătoare oferă conținut privat.",
     'launch_gallery_free'   => "Gratuit pentru membrii înregistrați în perioada de lansare.",

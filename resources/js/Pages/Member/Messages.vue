@@ -200,6 +200,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 const props = defineProps({
   conversations: { type: Array, default: () => [] },
   subscriptions: { type: Array, default: () => [] },
+  startWith:     { type: Object, default: null },
   ppvSuccess:    { type: Boolean, default: false },
 });
 
@@ -234,6 +235,19 @@ onMounted(() => {
   if (props.ppvSuccess) {
     ppvSuccessToast.value = true;
     setTimeout(() => { ppvSuccessToast.value = false; }, 5000);
+  }
+  // Direkter Chat-Start von der Profilseite (?to=slug)
+  if (props.startWith) {
+    const existing = props.conversations.find(c => c.user_id === props.startWith.user_id);
+    if (existing) {
+      openConversation(existing);
+    } else {
+      openNewConversation({
+        creator_user_id: props.startWith.user_id,
+        display_name:    props.startWith.name,
+        slug:            props.startWith.profile.slug,
+      });
+    }
   }
 });
 
