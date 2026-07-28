@@ -76,6 +76,15 @@ class ProfileController extends Controller
             ? $privateItems->map($streamItem)->values()
             : $privateItems->map($lockedItem)->values();
 
+        // ── Geoblocking: Besucher aus gesperrten Ländern sehen keine Fotos/Kontaktdaten ──
+        $visitorCountry = app(\App\Support\VisitorCountry::class)->for($request);
+        $geoBlocked     = ! $isOwner && $profile->isBlockedInCountry($visitorCountry);
+        if ($geoBlocked) {
+            $publicMedia       = collect();
+            $privateMedia      = collect();
+            $privateMediaCount = 0;
+        }
+
         $reviews = $profile->approvedReviews()
             ->with('reviewer:id,name')
             ->latest()
@@ -141,10 +150,10 @@ class ProfileController extends Controller
                 'total_views'            => $profile->total_views,
                 'likes_count'            => $profile->likedBy()->count(),
                 'followers_count'        => $profile->favoritedBy()->count(),
-                'whatsapp_number'        => $profile->whatsapp_number,
-                'telegram_username'      => $profile->telegram_username,
-                'address'                => $profile->address,
-                'website'                => $profile->website,
+                'whatsapp_number'        => $geoBlocked ? null : $profile->whatsapp_number,
+                'telegram_username'      => $geoBlocked ? null : $profile->telegram_username,
+                'address'                => $geoBlocked ? null : $profile->address,
+                'website'                => $geoBlocked ? null : $profile->website,
                 'created_at'             => $profile->created_at->format('d.m.Y'),
                 'verification_status'          => $profile->verification_status,
                 'identity_verification_status' => $profile->identity_verification_status,
@@ -153,6 +162,7 @@ class ProfileController extends Controller
             'publicMedia'         => $publicMedia,
             'privateMedia'        => $privateMedia,
             'privateMediaCount'   => $privateMediaCount,
+            'geoBlocked'          => $geoBlocked,
             'reviews'            => $reviews,
             'isOwner'             => $isOwner,
             'isSubscribed'        => $subscribed,

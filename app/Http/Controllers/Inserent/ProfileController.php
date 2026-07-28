@@ -179,6 +179,27 @@ class ProfileController extends Controller
             ->with('success', 'Profil erfolgreich aktualisiert.');
     }
 
+    /** Geoblocking: bis zu 5 Länder, in denen das Inserat nicht angezeigt wird. */
+    public function updateBlockedCountries(Request $request)
+    {
+        $profile = $request->user()->profile;
+        if (! $profile) {
+            return back()->with('error', 'Kein Profil gefunden.');
+        }
+
+        $codes = array_keys(config('countries', []));
+        $data  = $request->validate([
+            'blocked_countries'   => ['nullable', 'array', 'max:5'],
+            'blocked_countries.*' => ['string', 'in:' . implode(',', $codes)],
+        ], [
+            'blocked_countries.max' => 'Du kannst maximal 5 Länder auswählen.',
+        ]);
+
+        $profile->update(['blocked_countries' => array_values(array_unique($data['blocked_countries'] ?? []))]);
+
+        return back()->with('success', 'Blockierte Länder gespeichert.');
+    }
+
     public function deactivate(Request $request)
     {
         $profile = $request->user()->profile;

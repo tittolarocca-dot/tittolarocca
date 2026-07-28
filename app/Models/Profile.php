@@ -16,6 +16,7 @@ class Profile extends Model
         'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'launch_gallery_free',
+        'blocked_countries',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
         'total_subscribers', 'total_views',
@@ -39,6 +40,7 @@ class Profile extends Model
         'age_verified_at'           => 'datetime',
         'subscription_price_chf'    => 'decimal:2',
         'launch_gallery_free'       => 'boolean',
+        'blocked_countries'         => 'array',
         'smoking'                   => 'boolean',
         'tattoo'                    => 'boolean',
         'has_video'                 => 'boolean',
@@ -59,6 +61,16 @@ class Profile extends Model
     }
 
     public function isActive(): bool { return $this->status === 'active' && $this->listing_expires_at?->isFuture(); }
+
+    /** Ist das Inserat für Besucher aus diesem Land (ISO-2) gesperrt? */
+    public function isBlockedInCountry(?string $code): bool
+    {
+        if (! $code) {
+            return false;
+        }
+        $blocked = array_map('strtoupper', $this->blocked_countries ?? []);
+        return in_array(strtoupper($code), $blocked, true);
+    }
     public function isExpired(): bool { return $this->listing_expires_at?->isPast() ?? true; }
 
     public function user()         { return $this->belongsTo(User::class); }

@@ -29,6 +29,7 @@ class DashboardController extends Controller
             'credits'        => $user->creditsBalance(),
             'pushCost'       => (int) config('features.push_credit_cost', 1),
             'unreadMessages' => $unreadMessages,
+            'countries'      => config('countries', []),
             'stats' => $profile ? [
                 'views'         => $profile->total_views,
                 'subscribers'   => $profile->total_subscribers,

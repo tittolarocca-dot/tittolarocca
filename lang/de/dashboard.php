@@ -48,6 +48,13 @@ return [
     'subs_past_due'        => 'Zahlung ausstehend',
     // ── Inserent Dashboard ───────────────────────────────────────────────────
     'my_listing'           => 'Mein Inserat',
+    'geo_title'        => "Blockierte Länder",
+    'geo_desc'         => "In den ausgewählten Ländern werden Fotos, Kontaktdaten und Stories zur Wahrung der Privatsphäre nicht angezeigt.",
+    'geo_max'          => "Es können bis zu 5 Länder ausgewählt werden.",
+    'geo_select'       => "Länder auswählen",
+    'geo_max_reached'  => "Maximal 5 Länder erreicht",
+    'geo_save'         => "Speichern",
+    'geo_saved'        => "Gespeichert",
     'new_message_one'  => "Du hast 1 neue Nachricht",
     'new_message_many' => "Du hast :count neue Nachrichten",
     'open_chat'        => "Chat öffnen",

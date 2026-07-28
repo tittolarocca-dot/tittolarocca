@@ -23,6 +23,11 @@ return [
     // Laufzeit (Tage), für die ein Inserat im Launch-Modus kostenlos aktiv ist.
     'launch_listing_days' => (int) env('LAUNCH_LISTING_DAYS', 14),
 
+    // Geoblocking: HTTP-Header, aus dem das Besucherland gelesen wird.
+    // Standard nutzt Cloudflares "CF-IPCountry". Für andere Setups hier den
+    // passenden Header setzen (z. B. wenn ein anderer Proxy das Land liefert).
+    'geo_country_header' => env('GEO_COUNTRY_HEADER'),
+
     /*
     |--------------------------------------------------------------------------
     | Credit-Pakete (Vorbereitung für später – KEIN aktiver Checkout)

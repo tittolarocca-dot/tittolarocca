@@ -49,6 +49,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
     Route::post('/profil',     [\App\Http\Controllers\Inserent\ProfileController::class,    'store'])->name('profile.store');
     Route::put('/profil',      [\App\Http\Controllers\Inserent\ProfileController::class,    'update'])->name('profile.update');
     Route::delete('/profil',   [\App\Http\Controllers\Inserent\ProfileController::class,    'destroy'])->name('profile.destroy');
+    Route::post('/laender',    [\App\Http\Controllers\Inserent\ProfileController::class,    'updateBlockedCountries'])->name('countries.update');
     Route::post('/profil/deaktivieren', [\App\Http\Controllers\Inserent\ProfileController::class, 'deactivate'])->name('profile.deactivate');
     Route::get('/paket',       [\App\Http\Controllers\Inserent\ListingController::class,    'selectPackage'])->name('package.select');
     Route::post('/paket/pay',  [\App\Http\Controllers\Inserent\ListingController::class,    'checkout'])->name('package.checkout');

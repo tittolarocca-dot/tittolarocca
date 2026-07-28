@@ -263,6 +263,43 @@
           </div>
         </div>
 
+        <!-- Blockierte Länder (Geoblocking) -->
+        <div class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
+          <div class="px-5 py-3 border-b border-white/8">
+            <h2 class="text-sm font-semibold text-white flex items-center gap-2">🌍 {{ t('dashboard.geo_title') }}</h2>
+          </div>
+          <div class="p-5 grid sm:grid-cols-2 gap-4">
+            <p class="text-xs text-gray-400 leading-relaxed">
+              {{ t('dashboard.geo_desc') }}<br>
+              {{ t('dashboard.geo_max') }}
+            </p>
+            <div>
+              <!-- Auswahl-Dropdown -->
+              <select :disabled="blockedCountries.length >= 5"
+                @change="addCountry($event)"
+                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#e35d8f] transition disabled:opacity-50">
+                <option value="">{{ blockedCountries.length >= 5 ? t('dashboard.geo_max_reached') : t('dashboard.geo_select') }}</option>
+                <option v-for="(name, code) in availableCountries" :key="code" :value="code">{{ name }}</option>
+              </select>
+
+              <!-- Gewählte Länder als Chips -->
+              <div v-if="blockedCountries.length" class="flex flex-wrap gap-2 mt-3">
+                <span v-for="code in blockedCountries" :key="code"
+                  class="inline-flex items-center gap-1.5 bg-[#e35d8f]/10 border border-[#e35d8f]/40 text-[#e35d8f] text-xs font-semibold px-2.5 py-1 rounded-full">
+                  {{ countries[code] ?? code }}
+                  <button type="button" @click="removeCountry(code)" class="hover:text-white transition">✕</button>
+                </span>
+              </div>
+
+              <button type="button" @click="saveCountries" :disabled="savingCountries"
+                class="mt-3 bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-5 py-2 rounded-lg transition">
+                {{ savingCountries ? t('dashboard.redirecting') : t('dashboard.geo_save') }}
+              </button>
+              <span v-if="countriesSaved" class="ml-2 text-xs text-green-400">✓ {{ t('dashboard.geo_saved') }}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Gefahrenzone -->
         <div class="border border-red-900/40 rounded-xl overflow-hidden">
           <div class="bg-red-950/30 px-5 py-3 border-b border-red-900/40">
@@ -357,6 +394,7 @@ const props = defineProps({
   credits:        { type: Number,  default: 0 },
   pushCost:       { type: Number,  default: 1 },
   unreadMessages: { type: Number,  default: 0 },
+  countries:      { type: Object,  default: () => ({}) },
 });
 
 // ── Neue-Nachrichten-Badge (Polling alle 20s) ───────────────────────────────
@@ -370,6 +408,39 @@ async function refreshUnread() {
 }
 onMounted(() => { unreadTimer = setInterval(refreshUnread, 20000); });
 onUnmounted(() => { if (unreadTimer) clearInterval(unreadTimer); });
+
+// ── Blockierte Länder (Geoblocking) ─────────────────────────────────────────
+const blockedCountries = ref([...(props.profile?.blocked_countries ?? [])]);
+const savingCountries  = ref(false);
+const countriesSaved   = ref(false);
+
+const availableCountries = computed(() => {
+  const out = {};
+  for (const [code, name] of Object.entries(props.countries || {})) {
+    if (!blockedCountries.value.includes(code)) out[code] = name;
+  }
+  return out;
+});
+
+function addCountry(e) {
+  const code = e.target.value;
+  e.target.value = '';
+  if (code && !blockedCountries.value.includes(code) && blockedCountries.value.length < 5) {
+    blockedCountries.value.push(code);
+  }
+}
+function removeCountry(code) {
+  blockedCountries.value = blockedCountries.value.filter(c => c !== code);
+}
+function saveCountries() {
+  savingCountries.value = true;
+  countriesSaved.value  = false;
+  router.post(route('inserat.countries.update'), { blocked_countries: blockedCountries.value }, {
+    preserveScroll: true,
+    onSuccess: () => { countriesSaved.value = true; setTimeout(() => { countriesSaved.value = false; }, 2500); },
+    onFinish:  () => { savingCountries.value = false; },
+  });
+}
 
 // ── Verification ──────────────────────────────────────────────────────────────
 const verifyForm    = useForm({ photo: null });
