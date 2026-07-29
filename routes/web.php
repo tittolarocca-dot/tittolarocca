@@ -20,6 +20,15 @@ Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])-
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
+
+// ── Clubs & Lokale ──────────────────────────────────────────────────────────
+Route::get('/clubs',                     [\App\Http\Controllers\ClubController::class, 'index'])->name('clubs.index');
+Route::get('/clubs/{club:slug}/visit',   [\App\Http\Controllers\ClubController::class, 'visit'])->name('clubs.visit');
+// Kanton-SEO-Seiten (/clubs/zuerich …) – auf die 26 Kanton-Slugs beschränkt, damit
+// sie nicht mit den Club-Detailseiten (/clubs/{slug}) kollidieren.
+Route::get('/clubs/{canton}',            [\App\Http\Controllers\ClubController::class, 'canton'])->name('clubs.canton')
+    ->where('canton', implode('|', array_column(config('cantons'), 'slug')));
+Route::get('/clubs/{club:slug}',         [\App\Http\Controllers\ClubController::class, 'show'])->name('clubs.show');
 // Mitglieder-Profile nur für eingeloggte Nutzer/Inserierende sichtbar
 Route::middleware('auth')->group(function () {
     Route::get('/mitglied/{user}',      [\App\Http\Controllers\Member\MemberProfileController::class, 'show'])->name('mitglied.show');

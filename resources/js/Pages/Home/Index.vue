@@ -30,6 +30,15 @@
               <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.search_btn') }}</span>
             </a>
 
+            <!-- Clubs -->
+            <a :href="route('clubs.index')"
+              class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#111] group-hover:ring-[#f08ab0] transition bg-gradient-to-br from-[#c44a7a] via-[#e35d8f] to-[#7c3aed] flex items-center justify-center shadow-lg shadow-[#e35d8f]/40">
+                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M4 21V7l8-4 8 4v14M9 21v-5a1 1 0 011-1h4a1 1 0 011 1v5M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/></svg>
+              </div>
+              <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.clubs') }}</span>
+            </a>
+
             <a v-for="profile in profiles.data.slice(0,12)" :key="profile.id"
               :href="route('profile.show', profile.slug)"
               class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">

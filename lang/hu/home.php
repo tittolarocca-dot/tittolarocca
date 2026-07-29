@@ -6,6 +6,7 @@ return [
     'category'        => 'Kategória',
     'service'         => 'Szolgáltatás',
     'search_btn'      => 'Keresés',
+    'clubs' => "Klubok",
     'no_results'      => 'Nem találhatók hirdetések.',
     'listings'        => 'Hirdetések',
     'top_ad'          => 'TOP AD',

@@ -6,6 +6,7 @@ return [
     'category'   => 'Category',
     'service'    => 'Service',
     'search_btn' => 'Search',
+    'clubs' => "Clubs",
     'no_results' => 'No listings found.',
     'listings'   => 'Listings',
     'top_ad'     => 'TOP AD',

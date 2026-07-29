@@ -6,6 +6,7 @@ return [
     'category'        => 'Categorie',
     'service'         => 'Serviciu',
     'search_btn'      => 'Caută',
+    'clubs' => "Cluburi",
     'no_results'      => 'Nu s-au găsit anunțuri.',
     'listings'        => 'Anunțuri',
     'top_ad'          => 'TOP AD',

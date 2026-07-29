@@ -52,6 +52,7 @@ class HandleInertiaRequests extends Middleware
                 'inserent'  => trans('inserent'),
                 'languages' => trans('languages'),
                 'gate'      => trans('gate'),
+                'clubs'     => trans('clubs'),
             ],
         ];
     }
