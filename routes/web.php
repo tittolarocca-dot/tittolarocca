@@ -24,6 +24,7 @@ Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesControl
 // ── Clubs & Lokale ──────────────────────────────────────────────────────────
 Route::get('/clubs',                     [\App\Http\Controllers\ClubController::class, 'index'])->name('clubs.index');
 Route::get('/clubs/{club:slug}/visit',   [\App\Http\Controllers\ClubController::class, 'visit'])->name('clubs.visit');
+Route::post('/clubs/{club:slug}/melden', [\App\Http\Controllers\ClubController::class, 'report'])->middleware('throttle:6,1')->name('clubs.report');
 // Kanton-SEO-Seiten (/clubs/zuerich …) – auf die 26 Kanton-Slugs beschränkt, damit
 // sie nicht mit den Club-Detailseiten (/clubs/{slug}) kollidieren.
 Route::get('/clubs/{canton}',            [\App\Http\Controllers\ClubController::class, 'canton'])->name('clubs.canton')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use App\Models\ClubReport;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -101,6 +102,26 @@ class ClubController extends Controller
                 'description' => "Erotikclub {$club->name} in {$club->city} ({$club->canton_name}) – Adresse, Öffnungszeiten und Website.",
             ],
         ]);
+    }
+
+    /** Betreiber/Besucher meldet eine Änderung oder beansprucht den Eintrag. */
+    public function report(Request $request, Club $club)
+    {
+        $data = $request->validate([
+            'type'    => ['required', 'in:report,claim'],
+            'message' => ['required', 'string', 'max:2000'],
+            'email'   => ['nullable', 'email', 'max:190'],
+        ]);
+
+        ClubReport::create([
+            'club_id' => $club->id,
+            'type'    => $data['type'],
+            'message' => $data['message'],
+            'email'   => $data['email'] ?? null,
+            'status'  => 'open',
+        ]);
+
+        return back()->with('success', 'Danke! Deine Meldung wurde übermittelt.');
     }
 
     /** Zählt den Website-Klick und leitet weiter. */

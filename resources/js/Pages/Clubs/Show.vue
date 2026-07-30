@@ -67,18 +67,34 @@
       <!-- Rechtlicher Hinweis + Melden -->
       <div class="bg-[#141414] border border-white/8 rounded-2xl p-5 text-xs text-gray-500 leading-relaxed">
         <p>{{ t('clubs.legal_notice') }}</p>
-        <div class="flex flex-wrap gap-2 mt-3">
-          <a :href="reportMailto('report')" class="border border-white/10 text-gray-300 px-3 py-1.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">{{ t('clubs.report_entry') }}</a>
-          <a :href="reportMailto('claim')" class="border border-white/10 text-gray-300 px-3 py-1.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">{{ t('clubs.claim_entry') }}</a>
+
+        <p v-if="reportSent" class="mt-3 text-green-400 font-semibold">✓ {{ t('clubs.report_sent') }}</p>
+
+        <div v-else-if="!reportType" class="flex flex-wrap gap-2 mt-3">
+          <button type="button" @click="openReport('report')" class="border border-white/10 text-gray-300 px-3 py-1.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">{{ t('clubs.report_entry') }}</button>
+          <button type="button" @click="openReport('claim')" class="border border-white/10 text-gray-300 px-3 py-1.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">{{ t('clubs.claim_entry') }}</button>
         </div>
+
+        <form v-else @submit.prevent="submitReport" class="mt-3 space-y-2">
+          <p class="text-gray-300 font-semibold">{{ reportType === 'claim' ? t('clubs.claim_entry') : t('clubs.report_entry') }}</p>
+          <textarea v-model="reportForm.message" rows="3" maxlength="2000" :placeholder="t('clubs.report_message_ph')"
+            class="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-gray-200 text-sm focus:outline-none focus:border-[#e35d8f] resize-none"></textarea>
+          <input v-model="reportForm.email" type="email" :placeholder="t('clubs.report_email_ph')"
+            class="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-gray-200 text-sm focus:outline-none focus:border-[#e35d8f]" />
+          <div class="flex gap-2">
+            <button type="submit" :disabled="reportSending || !reportForm.message"
+              class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-4 py-2 rounded-lg transition">{{ t('clubs.report_submit') }}</button>
+            <button type="button" @click="reportType = null" class="text-gray-400 text-sm px-3 py-2 hover:text-white transition">{{ t('clubs.report_cancel') }}</button>
+          </div>
+        </form>
       </div>
     </div>
   </AppLayout>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { computed, reactive, ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
@@ -101,11 +117,28 @@ const week = computed(() => DAYS.map((code) => {
   return { code, label: t('clubs.day_' + code), text };
 }));
 
-function reportMailto(kind) {
-  const to = props.supportEmail || '';
-  const subjectKey = kind === 'claim' ? 'clubs.claim_entry' : 'clubs.report_entry';
-  const subject = encodeURIComponent(`${t(subjectKey)}: ${props.club.name}`);
-  const body = encodeURIComponent(`${window.location.href}`);
-  return `mailto:${to}?subject=${subject}&body=${body}`;
+// ── Meldung / Beanspruchen ──────────────────────────────────────────────────
+const reportType    = ref(null);         // 'report' | 'claim'
+const reportSending = ref(false);
+const reportSent    = ref(false);
+const reportForm    = reactive({ message: '', email: '' });
+
+function openReport(type) {
+  reportType.value = type;
+  reportSent.value = false;
+  reportForm.message = '';
+  reportForm.email = '';
+}
+
+function submitReport() {
+  if (! reportForm.message || reportSending.value) return;
+  reportSending.value = true;
+  router.post(route('clubs.report', props.club.slug), {
+    type: reportType.value, message: reportForm.message, email: reportForm.email,
+  }, {
+    preserveScroll: true,
+    onSuccess: () => { reportSent.value = true; reportType.value = null; },
+    onFinish:  () => { reportSending.value = false; },
+  });
 }
 </script>
