@@ -55,46 +55,51 @@
         <p class="text-sm">{{ t('clubs.none') }}</p>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Längliche Zeilen: je Club eine horizontale Reihe -->
+      <div v-else class="space-y-2.5">
         <div v-for="club in clubs" :key="club.id"
-          class="bg-[#1a1a1a] border border-white/8 rounded-2xl overflow-hidden flex flex-col hover:border-[#e35d8f]/40 transition">
-          <div class="p-5 flex-1">
-            <div class="flex items-start justify-between gap-2 mb-2">
-              <h2 class="text-lg font-bold text-white leading-tight">{{ club.name }}</h2>
-              <span v-if="club.is_open_now" class="shrink-0 text-[10px] font-bold text-green-400 bg-green-500/10 border border-green-500/30 px-2 py-0.5 rounded-full">{{ t('clubs.open_now') }}</span>
-            </div>
+          class="bg-[#1a1a1a] border border-white/8 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 hover:border-[#e35d8f]/40 transition">
 
-            <div class="flex flex-wrap gap-1.5 mb-3">
-              <span class="text-[11px] font-semibold text-[#e35d8f] bg-[#e35d8f]/10 border border-[#e35d8f]/30 px-2 py-0.5 rounded-full">{{ club.category }}</span>
-              <span v-if="club.is_premium" class="text-[11px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-2 py-0.5 rounded-full">★ {{ t('clubs.premium') }}</span>
-              <span v-if="club.is_verified" class="text-[11px] font-bold text-sky-300 bg-sky-400/10 border border-sky-400/40 px-2 py-0.5 rounded-full">✓ {{ t('clubs.verified') }}</span>
+          <!-- Name + Badges -->
+          <div class="sm:w-60 md:w-72 shrink-0 min-w-0">
+            <div class="flex items-center gap-2">
+              <h2 class="font-bold text-white truncate">{{ club.name }}</h2>
+              <span v-if="club.is_open_now" class="shrink-0 text-[10px] font-bold text-green-400 bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 rounded-full">{{ t('clubs.open_now') }}</span>
             </div>
-
-            <div class="space-y-1.5 text-sm text-gray-400">
-              <p class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-[#e35d8f] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                {{ club.city }} · {{ club.canton_name }}
-              </p>
-              <p v-if="club.address" class="pl-6 text-gray-500 text-xs">{{ club.address }}</p>
-              <p v-if="club.today_label" class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-[#e35d8f] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                {{ t('clubs.today') }}: {{ club.today_label }}
-              </p>
-              <p v-if="club.rating_average" class="flex items-center gap-1.5 text-yellow-400">
-                ★ <span class="text-white font-semibold">{{ Number(club.rating_average).toFixed(1) }}</span>
-                <span class="text-gray-500 text-xs">({{ club.rating_count }})</span>
-              </p>
+            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+              <span class="text-[10px] font-semibold text-[#e35d8f] bg-[#e35d8f]/10 border border-[#e35d8f]/30 px-1.5 py-0.5 rounded-full">{{ club.category }}</span>
+              <span v-if="club.is_premium" class="text-[10px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-1.5 py-0.5 rounded-full">★ {{ t('clubs.premium') }}</span>
+              <span v-if="club.is_verified" class="text-[10px] font-bold text-sky-300 bg-sky-400/10 border border-sky-400/40 px-1.5 py-0.5 rounded-full">✓ {{ t('clubs.verified') }}</span>
             </div>
           </div>
 
-          <div class="px-5 pb-5 flex gap-2">
+          <!-- Adresse -->
+          <div class="flex-1 min-w-0 text-sm">
+            <p v-if="club.address" class="text-gray-300 truncate">{{ club.address }}</p>
+            <p class="text-xs text-gray-500 truncate">{{ club.city }} · {{ club.canton_name }}</p>
+          </div>
+
+          <!-- Öffnungszeiten heute -->
+          <div class="sm:w-32 shrink-0 text-xs text-gray-400 truncate">
+            <span v-if="club.today_label">{{ t('clubs.today') }}: {{ club.today_label }}</span>
+          </div>
+
+          <!-- Bewertung -->
+          <div class="sm:w-20 shrink-0 text-sm">
+            <span v-if="club.rating_average" class="text-yellow-400 whitespace-nowrap">
+              ★ <span class="text-white font-semibold">{{ Number(club.rating_average).toFixed(1) }}</span>
+            </span>
+          </div>
+
+          <!-- Aktionen -->
+          <div class="flex gap-2 shrink-0">
             <Link :href="route('clubs.show', club.slug)"
-              class="flex-1 text-center bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-semibold px-3 py-2.5 rounded-xl transition">
+              class="text-center bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
               {{ t('clubs.details') }}
             </Link>
             <a v-if="club.website_url" :href="route('clubs.visit', club.slug)"
               target="_blank" rel="nofollow noopener noreferrer"
-              class="flex-1 text-center bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-3 py-2.5 rounded-xl transition">
+              class="text-center bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-2 rounded-lg transition whitespace-nowrap">
               {{ t('clubs.open_website') }}
             </a>
           </div>
