@@ -6,7 +6,7 @@ import 'lazysizes';
 import 'lazysizes/plugins/attrchange/ls.attrchange';
 
 createInertiaApp({
-    title: (title) => title ? `${title} – Inserate Plattform` : 'Inserate Plattform',
+    title: (title) => title ? `${title} – booklola.ch` : 'booklola.ch',
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
