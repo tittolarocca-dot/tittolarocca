@@ -17,5 +17,5 @@ return [
     'imprint'         => 'Aviso legal',
     'privacy'         => 'Privacidad',
     'terms'           => 'Condiciones',
-    'copyright'       => '© :year Inserate Plataforma – Solo para adultos mayores de 18 años.',
+    'copyright'       => '© :year booklola.ch – Solo para adultos mayores de 18 años.',
 ];

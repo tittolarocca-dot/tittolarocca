@@ -17,5 +17,5 @@ return [
     'imprint'         => 'Impresszum',
     'privacy'         => 'Adatvédelem',
     'terms'           => 'ÁSZF',
-    'copyright'       => '© :year Inserate Platform – Csak 18 éven felülieknek.',
+    'copyright'       => '© :year booklola.ch – Csak 18 éven felülieknek.',
 ];

@@ -9,5 +9,5 @@
 Nachricht lesen
 </x-mail::button>
 
-Inserate Plattform
+booklola.ch
 </x-mail::message>

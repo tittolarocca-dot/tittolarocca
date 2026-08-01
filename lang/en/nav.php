@@ -17,5 +17,5 @@ return [
     'imprint'         => 'Imprint',
     'privacy'         => 'Privacy policy',
     'terms'           => 'Terms of service',
-    'copyright'       => '© :year Inserate Platform – Adults 18+ only.',
+    'copyright'       => '© :year booklola.ch – Adults 18+ only.',
 ];

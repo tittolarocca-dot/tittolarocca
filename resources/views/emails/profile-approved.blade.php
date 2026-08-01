@@ -9,5 +9,5 @@ Profil ansehen
 
 Tipp: Lade Fotos hoch um mehr Abonnenten zu gewinnen!
 
-Inserate Plattform
+booklola.ch
 </x-mail::message>

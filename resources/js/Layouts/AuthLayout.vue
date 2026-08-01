@@ -6,7 +6,7 @@
     <div class="text-center mb-8">
       <Link href="/" class="inline-block">
         <span class="text-white font-black text-3xl tracking-tight">
-          inserate<span class="text-[#e35d8f]">®</span>
+          booklola<span class="text-[#e35d8f]">.ch</span>
         </span>
         <p class="text-gray-500 text-sm mt-1">Schweizer Erotik-Inserate · 18+</p>
       </Link>

@@ -25,6 +25,6 @@ class NewReviewNotification extends Notification
             ->line(str_repeat('⭐', $this->stars) . ' Neue Bewertung erhalten!')
             ->line('Ein Abonnent hat dein Profil **' . $this->profile->display_name . '** bewertet.')
             ->action('Bewertung ansehen', route('profile.show', $this->profile->slug))
-            ->line('Inserate Plattform');
+            ->line('booklola.ch');
     }
 }

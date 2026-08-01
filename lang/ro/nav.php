@@ -17,5 +17,5 @@ return [
     'imprint'         => 'Mențiuni legale',
     'privacy'         => 'Confidențialitate',
     'terms'           => 'Termeni',
-    'copyright'       => '© :year Inserate Platformă – Numai pentru adulți 18+.',
+    'copyright'       => '© :year booklola.ch – Numai pentru adulți 18+.',
 ];

@@ -11,5 +11,5 @@ Du erhältst davon **CHF {{ number_format($amountChf * 0.8, 2) }}** (80%) monatl
 Nachrichten öffnen
 </x-mail::button>
 
-Viel Erfolg auf der Inserate Plattform!
+Viel Erfolg auf der booklola.ch!
 </x-mail::message>

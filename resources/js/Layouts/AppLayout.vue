@@ -9,7 +9,7 @@
         <!-- Logo -->
         <Link :href="route('home')" class="flex items-center gap-2.5 shrink-0">
           <img src="/images/logo.png" alt="Logo" class="h-8 w-8 rounded-xl object-cover" />
-          <span class="text-lg font-black text-white">inserate<span class="text-white/70">®</span></span>
+          <span class="text-lg font-black text-white">booklola<span class="text-white/70">.ch</span></span>
         </Link>
 
         <!-- Desktop right: language switcher + auth -->

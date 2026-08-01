@@ -17,5 +17,5 @@ return [
     'imprint'         => 'Impressum',
     'privacy'         => 'Privacy',
     'terms'           => 'Termini',
-    'copyright'       => '© :year Inserate Piattaforma – Solo per adulti di 18+ anni.',
+    'copyright'       => '© :year booklola.ch – Solo per adulti di 18+ anni.',
 ];
