@@ -4,11 +4,11 @@
 
     <!-- Navbar -->
     <header class="bg-[#e35d8f] sticky top-0 z-50 shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-4">
+      <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-2 sm:gap-4">
 
         <!-- Logo -->
         <Link :href="route('home')" class="flex items-center shrink-0">
-          <img src="/images/logo-booklola.png" alt="BookLola.ch" class="h-9 w-auto object-contain" />
+          <img src="/images/logo-booklola.png" alt="BookLola.ch" class="h-7 sm:h-8 md:h-9 w-auto max-w-[52vw] sm:max-w-none object-contain" />
         </Link>
 
         <!-- Desktop right: language switcher + auth -->
