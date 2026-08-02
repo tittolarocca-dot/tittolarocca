@@ -7,9 +7,8 @@
       <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-4">
 
         <!-- Logo -->
-        <Link :href="route('home')" class="flex items-center gap-2.5 shrink-0">
-          <img src="/images/logo.png" alt="Logo" class="h-8 w-8 rounded-xl object-cover" />
-          <span class="text-2xl font-black text-white">booklola<span class="text-white/70">.ch</span></span>
+        <Link :href="route('home')" class="flex items-center shrink-0">
+          <span class="text-3xl font-black text-white leading-none">booklola<span class="text-white/70">.ch</span></span>
         </Link>
 
         <!-- Desktop right: language switcher + auth -->
