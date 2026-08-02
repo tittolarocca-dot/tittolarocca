@@ -8,7 +8,7 @@
 
         <!-- Logo -->
         <Link :href="route('home')" class="flex items-center shrink-0">
-          <span class="text-3xl font-black text-white leading-none">booklola<span class="text-white/70">.ch</span></span>
+          <img src="/images/logo-booklola.png" alt="BookLola.ch" class="h-9 w-auto object-contain" />
         </Link>
 
         <!-- Desktop right: language switcher + auth -->
