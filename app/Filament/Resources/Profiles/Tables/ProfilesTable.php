@@ -37,7 +37,8 @@ class ProfilesTable
                     ->label('Kategorien')
                     ->badge()
                     ->separator(',')
-                    ->placeholder('—'),
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn ($state) => match ($state) {
@@ -79,7 +80,8 @@ class ProfilesTable
                         'pending'  => '⏳ Ausstehend',
                         'rejected' => '✗ Abgelehnt',
                         default    => 'Nicht beantragt',
-                    }),
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('listing_expires_at')
                     ->label('Läuft ab')
                     ->date('d.m.Y')
@@ -96,27 +98,29 @@ class ProfilesTable
                     ->label('Abos')
                     ->numeric()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('has_private_media')
                     ->label('Privat')
                     ->boolean()
-                    ->getStateUsing(fn (Profile $record) => $record->privateMedia()->exists()),
+                    ->getStateUsing(fn (Profile $record) => $record->privateMedia()->exists())
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('launch_gallery_free')
                     ->label('Launch-Galerie')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('push_count')
                     ->label('Pushs')
                     ->badge()
                     ->color('info')
                     ->getStateUsing(fn (Profile $record) => CreditTransaction::where('profile_id', $record->id)
                         ->where('type', 'profile_push')->count())
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('pushed_at')
                     ->label('Letzter Push')
                     ->dateTime('d.m.Y H:i')
                     ->placeholder('—')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Erstellt')
                     ->date('d.m.Y')
