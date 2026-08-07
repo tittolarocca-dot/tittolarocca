@@ -87,8 +87,15 @@
             <button @click="closeConversation" class="sm:hidden text-gray-400 hover:text-white p-1 -ml-1">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <span class="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold">{{ initials(activeConv.profile?.display_name ?? activeConv.name) }}</span>
-            <span class="font-semibold text-white text-sm">{{ activeConv.profile?.display_name ?? activeConv.name }}</span>
+            <Link v-if="activeConv.profile?.slug" :href="route('profile.show', activeConv.profile.slug)"
+              class="flex items-center gap-3 min-w-0 group" title="Profil ansehen">
+              <span class="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold">{{ initials(activeConv.profile?.display_name ?? activeConv.name) }}</span>
+              <span class="font-semibold text-white text-sm truncate group-hover:text-[#e35d8f] transition">{{ activeConv.profile?.display_name ?? activeConv.name }}</span>
+            </Link>
+            <div v-else class="flex items-center gap-3 min-w-0">
+              <span class="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold">{{ initials(activeConv.name) }}</span>
+              <span class="font-semibold text-white text-sm truncate">{{ activeConv.name }}</span>
+            </div>
           </div>
 
           <!-- Nachrichten -->
@@ -198,7 +205,7 @@
 
 <script setup>
 import { ref, computed, nextTick, onMounted } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({

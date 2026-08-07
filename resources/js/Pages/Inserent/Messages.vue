@@ -62,8 +62,11 @@
             <button @click="closeConversation" class="sm:hidden text-gray-400 hover:text-white p-1 -ml-1">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <span class="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold">{{ initials(activeConv.name) }}</span>
-            <span class="font-semibold text-white text-sm flex-1">{{ activeConv.name }}</span>
+            <Link :href="route('mitglied.show', activeConv.user_id)"
+              class="flex items-center gap-3 min-w-0 flex-1 group" title="Mitglieder-Profil ansehen">
+              <span class="shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-xs font-bold">{{ initials(activeConv.name) }}</span>
+              <span class="font-semibold text-white text-sm truncate group-hover:text-[#e35d8f] transition">{{ activeConv.name }}</span>
+            </Link>
             <button v-if="!activeConv.blocked" @click="blockUser"
               class="shrink-0 text-xs font-semibold text-gray-400 hover:text-red-400 transition inline-flex items-center gap-1">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
@@ -184,7 +187,7 @@
 
 <script setup>
 import { ref, computed, nextTick } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
