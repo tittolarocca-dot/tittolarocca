@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
         $tagGroups = [
             null => ['GFE', 'Dinner Date', 'Übernachtung', 'Reisebegleitung',
                      'Tantra', 'Body2Body', 'Erotik', 'BDSM', 'Outdoor',
-                     'AO', 'Französisch', 'Anal', 'Safe Sex'],
+                     'Pornosex', 'Französisch', 'Anal', 'Safe Sex'],
             'Klassisch' => [
                 'Sex Klassisch', 'Blasen mit Gummi',
             ],
