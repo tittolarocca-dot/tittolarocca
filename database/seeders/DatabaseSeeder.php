@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Chur',        'canton' => 'GR', 'slug' => 'chur'],
         ];
         foreach ($cities as $i => $city) {
-            City::create(array_merge($city, ['sort_order' => $i]));
+            City::firstOrCreate(['slug' => $city['slug']], array_merge($city, ['sort_order' => $i]));
         }
 
         // Kategorien
@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Content (Fotos/Videos)', 'slug' => 'content-fotos-videos'],
         ];
         foreach ($categories as $i => $cat) {
-            Category::create(array_merge($cat, ['sort_order' => $i]));
+            Category::firstOrCreate(['slug' => $cat['slug']], array_merge($cat, ['sort_order' => $i]));
         }
 
         // Tags / Leistungen
@@ -90,6 +90,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Listing-Pakete
+        if (ListingPackage::count() === 0) {
         ListingPackage::insert([
             ['name' => 'Gratis Test', 'duration_days' => 14, 'price_chf' => 0.00,  'features' => json_encode(['3 öffentliche Fotos', '14 Tage Laufzeit', 'Testmodus – kein Stripe']), 'sort_order' => 0, 'is_active' => 1],
             ['name' => 'Starter',    'duration_days' => 7,  'price_chf' => 19.00, 'features' => json_encode(['3 öffentliche Fotos', '7 Tage Laufzeit']),                            'sort_order' => 1, 'is_active' => 1],
@@ -97,14 +98,17 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Pro',        'duration_days' => 30, 'price_chf' => 79.00, 'features' => json_encode(['10 Fotos', 'VIP-Badge', '30 Tage Laufzeit']),                         'sort_order' => 3, 'is_active' => 1],
             ['name' => 'Premium',    'duration_days' => 90, 'price_chf' => 149.00,'features' => json_encode(['Unbegrenzte Fotos', 'Top-Platzierung', '90 Tage']),                  'sort_order' => 4, 'is_active' => 1],
         ]);
+        }
 
         // Admin-User
-        User::create([
-            'name'              => 'Admin',
-            'email'             => 'admin@platform.local',
-            'password'          => Hash::make('secret123'),
-            'role'              => 'admin',
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@platform.local'],
+            [
+                'name'              => 'Admin',
+                'password'          => Hash::make('secret123'),
+                'role'              => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }
