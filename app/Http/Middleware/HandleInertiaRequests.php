@@ -26,6 +26,7 @@ class HandleInertiaRequests extends Middleware
                     'name'  => $request->user()->name,
                     'email' => $request->user()->email,
                     'role'  => $request->user()->role,
+                    'email_verified' => (bool) $request->user()->hasVerifiedEmail(),
                 ] : null,
             ],
             'flash' => [

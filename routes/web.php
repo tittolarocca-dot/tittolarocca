@@ -45,6 +45,27 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout')->middleware('auth');
 
+// ── E-Mail-Verifizierung ──────────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    // Hinweisseite: "Bitte bestätige deine E-Mail-Adresse"
+    Route::get('/email/verifizieren', fn () => inertia('Auth/VerifyEmail'))
+        ->name('verification.notice');
+
+    // Klick auf den signierten Link in der Bestätigungsmail
+    Route::get('/email/verifizieren/{id}/{hash}', \App\Http\Controllers\Auth\VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    // "Mail erneut senden"
+    Route::post('/email/verifizieren/senden', function (\Illuminate\Http\Request $request) {
+        if ($request->user()->hasVerifiedEmail()) {
+            return back();
+        }
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('success', 'Wir haben dir eine neue Bestätigungs-E-Mail gesendet.');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
+
 // ── Admin: Verifikationsfoto streamen (nur für Admins) ────────────────────────
 Route::get('/admin/verification-photo/{profile}', function (\App\Models\Profile $profile) {
     abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
@@ -53,7 +74,7 @@ Route::get('/admin/verification-photo/{profile}', function (\App\Models\Profile 
 })->middleware('auth')->name('admin.verification.photo');
 
 // ── Inserent-Bereich ──────────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->group(function () {
     Route::get('/dashboard',   [\App\Http\Controllers\Inserent\DashboardController::class,  'index'])->name('dashboard');
     Route::get('/profil',      [\App\Http\Controllers\Inserent\ProfileController::class,    'edit'])->name('profile.edit');
     Route::post('/profil',     [\App\Http\Controllers\Inserent\ProfileController::class,    'store'])->name('profile.store');
@@ -86,7 +107,7 @@ Route::middleware(['auth'])->prefix('inserat')->name('inserat.')->group(function
 });
 
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('konto')->name('konto.')->group(function () {
     Route::get('/',              [\App\Http\Controllers\Member\DashboardController::class,    'index'])->name('dashboard');
     Route::get('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'edit'])->name('account.edit');
     Route::put('/profil',        [\App\Http\Controllers\Member\AccountController::class,      'update'])->name('account.update');

@@ -28,4 +28,13 @@ return [
     'register_now'       => 'Jetzt registrieren',
     'login_btn'          => 'Anmelden',
     'back_to_home'       => '← Zurück zur Startseite',
+
+    // E-Mail-Verifizierung
+    'verify_title'       => 'E-Mail bestätigen',
+    'verify_subtitle'    => 'Nur noch ein Schritt',
+    'verify_intro'       => 'Wir haben dir einen Bestätigungslink geschickt an:',
+    'verify_hint'        => 'Bitte öffne die E-Mail und klicke auf den Link, um dein Konto zu aktivieren. Schau ggf. auch im Spam-Ordner nach.',
+    'verify_resend'      => 'E-Mail erneut senden',
+    'verify_sending'     => 'Wird gesendet…',
+    'verify_logout'      => 'Abmelden',
 ];
