@@ -588,16 +588,16 @@
         {{ lightboxIndex + 1 }} / {{ allMedia.length }}
       </div>
 
-      <!-- Prev arrow -->
+      <!-- Prev arrow (Desktop; auf Mobile wischt man) -->
       <button v-if="lightboxIndex > 0"
-        class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full flex items-center justify-center text-white transition z-10"
+        class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full hidden sm:flex items-center justify-center text-white transition z-10"
         @click.stop="lightboxPrev">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
       </button>
 
-      <!-- Next arrow -->
+      <!-- Next arrow (Desktop; auf Mobile wischt man) -->
       <button v-if="lightboxIndex < allMedia.length - 1"
-        class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full flex items-center justify-center text-white transition z-10"
+        class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-black/60 hover:bg-[#e35d8f] rounded-full hidden sm:flex items-center justify-center text-white transition z-10"
         @click.stop="lightboxNext">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
       </button>
