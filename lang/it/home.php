@@ -24,7 +24,7 @@ return [
     'new_images_desc' => 'I caricamenti più recenti degli annunci',
     'private_label'   => 'Privato',
     'no_images'       => 'Nessuna immagine trovata.',
-    'members_only'    => 'Solo per abbonati',
+    'members_only'    => 'Solo per membri',
     'yes' => 'Sì',
     'no' => 'No',
     'photo_verified' => 'Foto confermata',

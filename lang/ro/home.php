@@ -24,7 +24,7 @@ return [
     'new_images_desc' => 'Cele mai recente încărcări ale anunțurilor',
     'private_label'   => 'Privat',
     'no_images'       => 'Nu s-au găsit imagini.',
-    'members_only'    => 'Doar pentru abonați',
+    'members_only'    => 'Doar pentru membri',
     'yes' => 'Da',
     'no' => 'Nu',
     'photo_verified' => 'Foto confirmată',

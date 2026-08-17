@@ -24,7 +24,7 @@ return [
     'new_images_desc' => 'The latest uploads from listings',
     'private_label'   => 'Private',
     'no_images'       => 'No images found.',
-    'members_only'    => 'Subscribers only',
+    'members_only'    => 'Members only',
     'yes' => 'Yes',
     'no' => 'No',
     'photo_verified' => 'Photo confirmed',

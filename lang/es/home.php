@@ -24,7 +24,7 @@ return [
     'new_images_desc' => 'Las últimas subidas de los anuncios',
     'private_label'   => 'Privado',
     'no_images'       => 'No se encontraron imágenes.',
-    'members_only'    => 'Solo para suscriptores',
+    'members_only'    => 'Solo para miembros',
     'yes' => 'Sí',
     'no' => 'No',
     'photo_verified' => 'Foto confirmada',

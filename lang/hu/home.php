@@ -24,7 +24,7 @@ return [
     'new_images_desc' => 'A hirdetések legújabb feltöltései',
     'private_label'   => 'Privát',
     'no_images'       => 'Nem találhatók képek.',
-    'members_only'    => 'Csak előfizetőknek',
+    'members_only'    => 'Csak tagoknak',
     'yes' => 'Igen',
     'no' => 'Nem',
     'photo_verified' => 'Fotó megerősítve',
