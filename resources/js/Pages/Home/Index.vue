@@ -203,15 +203,8 @@
 
             <!-- Photo -->
             <div class="relative w-[160px] sm:w-[220px] md:w-[300px] shrink-0 overflow-hidden">
-              <img v-if="profiles.data[0].public_media?.[0]"
-                :src="mediaSrc(profiles.data[0].public_media[0], 'card')"
-                :srcset="mediaSrcset(profiles.data[0].public_media[0])"
-                sizes="(max-width: 640px) 160px, (max-width: 768px) 220px, 300px"
-                :alt="profiles.data[0].display_name"
-                class="w-full h-full object-cover object-top transition duration-500"
-                loading="eager" fetchpriority="high" />
-              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-5xl">👤</div>
-              <span class="absolute top-2 left-2 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">{{ t('home.top_ad') }}</span>
+              <CardGallery :media="profiles.data[0].public_media" :alt="profiles.data[0].display_name" eager-first />
+              <span class="absolute top-2 left-2 z-10 bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">{{ t('home.top_ad') }}</span>
             </div>
 
             <!-- Info -->
@@ -262,17 +255,10 @@
 
             <!-- Photo -->
             <div class="relative w-[50%] shrink-0 overflow-hidden">
-              <img v-if="profile.public_media?.[0]"
-                class="lazyload w-full h-full object-cover object-top transition duration-500"
-                :data-src="mediaSrc(profile.public_media[0], 'card')"
-                :data-srcset="mediaSrcset(profile.public_media[0])"
-                data-sizes="auto"
-                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-                :alt="profile.display_name" />
-              <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
+              <CardGallery :media="profile.public_media" :alt="profile.display_name" />
 
               <!-- Badges top-left -->
-              <div class="absolute top-2 left-2 flex flex-col gap-1">
+              <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
                 <span v-if="profile.listing_orders?.[0]?.amount_chf > 0"
                   class="bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
                 <span v-if="profile.identity_verification_status === 'approved'"
@@ -348,6 +334,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import CardGallery from '@/Components/CardGallery.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
@@ -355,9 +342,6 @@ const { t } = useI18n();
 // Bild-Variante wählen (Fallback auf Original-Stream bei Alt-Medien)
 function mediaSrc(m, size) {
   return m?.src?.[size] ?? m?.url;
-}
-function mediaSrcset(m) {
-  return m?.src ? `${m.src.thumbnail} 320w, ${m.src.card} 720w` : undefined;
 }
 
 const props = defineProps({

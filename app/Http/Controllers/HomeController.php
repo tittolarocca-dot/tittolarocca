@@ -20,7 +20,8 @@ class HomeController extends Controller
 
     private function baseQuery(?string $search, ?string $verified, array $services, array $ages, array $categories)
     {
-        $q = Profile::with(['city', 'category', 'publicMedia',
+        $q = Profile::with(['city', 'category',
+            'publicMedia' => fn ($q) => $q->orderBy('sort_order'),
             'listingOrders' => fn ($q) => $q
                 ->where('status', 'paid')
                 ->where('expires_at', '>', now())

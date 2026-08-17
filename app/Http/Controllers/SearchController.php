@@ -35,7 +35,8 @@ class SearchController extends Controller
         }
 
         $query = Profile::with([
-            'city', 'category', 'publicMedia',
+            'city', 'category',
+            'publicMedia' => fn ($q) => $q->orderBy('sort_order'),
             'listingOrders' => fn ($q) => $q
                 ->where('status', 'paid')
                 ->where('expires_at', '>', now())

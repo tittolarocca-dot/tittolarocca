@@ -4,19 +4,10 @@
 
     <!-- Photo -->
     <div class="relative w-[50%] shrink-0 overflow-hidden">
-      <img v-if="img"
-        class="lazyload w-full h-full object-cover object-top transition duration-500"
-        :data-src="src(img, 'card')"
-        :data-srcset="srcset(img)"
-        data-sizes="auto"
-        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        :width="img.width || undefined"
-        :height="img.height || undefined"
-        :alt="profile.display_name" />
-      <div v-else class="w-full h-full bg-white/5 flex items-center justify-center text-3xl">👤</div>
+      <CardGallery :media="profile.public_media" :alt="profile.display_name" />
 
       <!-- Badges top-left -->
-      <div class="absolute top-2 left-2 flex flex-col gap-1">
+      <div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
         <span v-if="profile.listing_orders?.[0]?.amount_chf > 0"
           class="bg-[#e35d8f] text-white text-[10px] font-black px-2 py-0.5 rounded-full tracking-wider">TOP AD</span>
         <span v-if="profile.identity_verification_status === 'approved'"
@@ -73,24 +64,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { useI18n } from '@/composables/useI18n';
+import CardGallery from '@/Components/CardGallery.vue';
 
 const { t } = useI18n();
 
-const props = defineProps({
+defineProps({
   profile: { type: Object, required: true },
 });
-
-const img = computed(() => props.profile.public_media?.[0] ?? null);
-
-// Variante wählen, mit Fallback auf den Original-Stream (Alt-Medien ohne Varianten)
-function src(m, size) {
-  return m?.src?.[size] ?? m?.url;
-}
-function srcset(m) {
-  return m?.src ? `${m.src.thumbnail} 320w, ${m.src.card} 720w` : undefined;
-}
 
 function isNew(iso) {
   if (!iso) return false;
