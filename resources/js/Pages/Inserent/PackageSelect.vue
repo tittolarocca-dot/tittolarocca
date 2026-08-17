@@ -83,13 +83,13 @@
           <div>
             <p class="font-semibold text-gray-900">{{ selected.name }}-Paket</p>
             <p class="text-sm text-gray-500">{{ selected.duration_days }} Tage Laufzeit · automatisch deaktiviert nach Ablauf</p>
-            <p v-if="selected.price_chf == 0" class="text-xs text-green-700 mt-1">✓ Testmodus – keine Zahlung erforderlich</p>
+            <p v-if="selected.price_chf == 0" class="text-xs text-green-700 mt-1">✓ keine Zahlung erforderlich</p>
             <p v-else class="text-xs text-gray-400 mt-1">Sichere Zahlung via Stripe · Kreditkarte, TWINT (bald)</p>
           </div>
           <div class="text-right">
             <p v-if="selected.price_chf == 0" class="text-3xl font-extrabold text-green-600">GRATIS</p>
             <p v-else class="text-3xl font-extrabold text-[#e35d8f]">CHF {{ selected.price_chf }}</p>
-            <p class="text-xs text-gray-400">{{ selected.price_chf == 0 ? '14 Tage kostenlos' : 'inkl. MwSt.' }}</p>
+            <p class="text-xs text-gray-400">{{ selected.price_chf == 0 ? `${selected.duration_days} Tage kostenlos` : 'inkl. MwSt.' }}</p>
           </div>
         </div>
 
