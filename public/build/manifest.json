@@ -253,7 +253,7 @@
     ]
   },
   "resources/js/Pages/Inserent/PackageSelect.vue": {
-    "file": "assets/PackageSelect-BowYKMAq.js",
+    "file": "assets/PackageSelect-DMsYbXdw.js",
     "name": "PackageSelect",
     "src": "resources/js/Pages/Inserent/PackageSelect.vue",
     "isDynamicEntry": true,
@@ -461,7 +461,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Dsq1UcJp.js",
+    "file": "assets/app-C9UrvFgV.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

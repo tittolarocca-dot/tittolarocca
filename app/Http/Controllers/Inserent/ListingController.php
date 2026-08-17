@@ -21,10 +21,16 @@ class ListingController extends Controller
                 ->with('error', 'Bitte erstelle zuerst dein Profil.');
         }
 
+        $launchMode = (bool) config('features.launch_mode');
+
         return inertia('Inserent/PackageSelect', [
+            // Im Launch-Modus ist alles gratis – nur das Gratis-Paket anzeigen,
+            // die Bezahl-Pakete werden erst im Normalbetrieb sichtbar.
             'packages' => ListingPackage::where('is_active', true)
+                ->when($launchMode, fn ($q) => $q->where('price_chf', 0))
                 ->orderBy('sort_order')
                 ->get(),
+            'launchMode' => $launchMode,
             'profile'  => [
                 'display_name'   => $profile->display_name,
                 'status'         => $profile->status,

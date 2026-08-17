@@ -23,7 +23,8 @@
       <h1 class="text-2xl font-bold text-gray-900 mb-2">Paket wählen</h1>
       <p class="text-gray-500 text-sm mb-8">
         Wähle ein Laufzeit-Paket für <strong class="text-gray-900">„{{ profile.display_name }}"</strong>.
-        Nach erfolgreicher Zahlung ist dein Inserat <span class="text-[#e35d8f] font-semibold">sofort aktiv</span>.
+        <span v-if="launchMode">Im Launch-Modus ist dein Inserat <span class="text-[#e35d8f] font-semibold">gratis und sofort aktiv</span>.</span>
+        <span v-else>Nach erfolgreicher Zahlung ist dein Inserat <span class="text-[#e35d8f] font-semibold">sofort aktiv</span>.</span>
       </p>
 
       <!-- Pakete -->
@@ -130,8 +131,9 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-  packages: Array,
-  profile:  Object,
+  packages:  Array,
+  profile:   Object,
+  launchMode: { type: Boolean, default: false },
 });
 
 const steps      = ['Profil erstellen', 'Paket wählen', 'Zahlung', 'Live!'];
