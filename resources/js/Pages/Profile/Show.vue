@@ -605,7 +605,10 @@
       <!-- Media -->
       <img v-if="lightboxItem.type === 'image'"
         :src="lightboxItem.src?.full ?? lightboxItem.url"
-        class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
+        class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg select-none touch-pan-y"
+        draggable="false"
+        @touchstart.passive="lbTouchStart"
+        @touchend.passive="lbTouchEnd" />
       <video v-else
         :src="lightboxItem.url"
         class="max-h-[90vh] max-w-[90vw] rounded-lg"
@@ -673,6 +676,18 @@ function onKeydown(e) {
   if (e.key === 'ArrowRight') lightboxNext();
   if (e.key === 'ArrowLeft')  lightboxPrev();
   if (e.key === 'Escape')     lightboxIndex.value = null;
+}
+
+// Touch-Wischen in der Lightbox: nach links = nächstes, nach rechts = vorheriges Foto
+let lbTouchX = null;
+function lbTouchStart(e) { lbTouchX = e.changedTouches[0].clientX; }
+function lbTouchEnd(e) {
+  if (lbTouchX === null) return;
+  const dx = e.changedTouches[0].clientX - lbTouchX;
+  lbTouchX = null;
+  if (Math.abs(dx) < 40) return;   // kleine Bewegungen ignorieren (= Tap)
+  if (dx < 0) lightboxNext();
+  else        lightboxPrev();
 }
 
 onMounted(()   => window.addEventListener('keydown', onKeydown));

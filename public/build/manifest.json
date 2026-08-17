@@ -80,7 +80,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-DI6Nl-jV.css",
+    "file": "assets/app-rt7jh8lU.css",
     "name": "app",
     "names": [
       "app.css"
@@ -426,7 +426,7 @@
     ]
   },
   "resources/js/Pages/Profile/Show.vue": {
-    "file": "assets/Show-C83E0MMt.js",
+    "file": "assets/Show-CRxPM1S1.js",
     "name": "Show",
     "src": "resources/js/Pages/Profile/Show.vue",
     "isDynamicEntry": true,
@@ -461,7 +461,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CFFMgWQH.js",
+    "file": "assets/app-DSzI6GQd.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
