@@ -7,6 +7,7 @@ return [
     'my_account'      => 'Mi cuenta',
     'language'        => 'Idioma',
     'cities'          => 'Ciudades',
+    'categories'      => 'Categorías',
     'footer_platform' => 'Plataforma',
     'footer_list'     => 'Anunciar',
     'footer_legal'    => 'Legal',

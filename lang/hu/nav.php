@@ -7,6 +7,7 @@ return [
     'my_account'      => 'Fiókom',
     'language'        => 'Nyelv',
     'cities'          => 'Városok',
+    'categories'      => 'Kategóriák',
     'footer_platform' => 'Platform',
     'footer_list'     => 'Hirdetés feladása',
     'footer_legal'    => 'Jogi',

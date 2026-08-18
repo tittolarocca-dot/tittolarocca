@@ -7,6 +7,7 @@ return [
     'my_account'      => 'Contul meu',
     'language'        => 'Limbă',
     'cities'          => 'Orașe',
+    'categories'      => 'Categorii',
     'footer_platform' => 'Platformă',
     'footer_list'     => 'Publică',
     'footer_legal'    => 'Legal',

@@ -135,7 +135,7 @@
 
     <!-- Footer -->
     <footer class="mt-16 py-10 bg-[#1a1a1a] border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-400">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-sm text-gray-400">
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_platform') }}</h5>
           <div class="space-y-2">
@@ -153,9 +153,17 @@
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.cities') }}</h5>
           <div class="space-y-1">
-            <Link v-for="city in cities.slice(0,6)" :key="city.id"
+            <Link v-for="city in cities" :key="city.id"
               :href="route('city', { city: city.slug })"
               class="block hover:text-[#e35d8f] transition">{{ city.name }}</Link>
+          </div>
+        </div>
+        <div v-if="categories.length">
+          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.categories') }}</h5>
+          <div class="space-y-1">
+            <Link v-for="cat in categories" :key="cat.id"
+              :href="route('category', { category: cat.slug })"
+              class="block hover:text-[#e35d8f] transition">{{ cat.name }}</Link>
           </div>
         </div>
         <div>
@@ -187,6 +195,7 @@ const locale          = computed(() => page.props.locale ?? 'de');
 const supportedLocales = computed(() => page.props.supportedLocales ?? []);
 // nur Städte mit slug (route('city', slug) würde sonst die ganze Seite crashen)
 const cities          = computed(() => (page.props.cities ?? []).filter((c) => c?.slug));
+const categories      = computed(() => (page.props.categories ?? []).filter((c) => c?.slug));
 
 const dashboardRoute = computed(() =>
   page.props.auth.user?.role === 'inserent'

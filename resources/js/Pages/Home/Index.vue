@@ -187,6 +187,12 @@
       </div>
     </div>
 
+    <!-- SEO-Intro auf lokalen Landingpages (Stadt/Kategorie/Service) -->
+    <div v-if="isLanding && seoTitle" class="max-w-7xl mx-auto px-3 sm:px-4 pt-4">
+      <h2 class="text-base font-bold text-white/90 mb-1">{{ seoTitle }}</h2>
+      <p v-if="seoDescription" class="text-sm text-gray-500 leading-relaxed">{{ seoDescription }}</p>
+    </div>
+
     <!-- Listings -->
     <div class="max-w-7xl mx-auto px-3 sm:px-4 pb-12 pt-4 sm:pt-6">
       <div v-if="profiles.data.length === 0" class="text-center py-20 text-gray-600">
@@ -358,6 +364,13 @@ const props = defineProps({
   seoTitle:          { type: String, default: '' },
   seoDescription:    { type: String, default: '' },
 });
+
+// Lokale Landingpage (Stadt/Kategorie/Service) → eigener Intro-Text
+const isLanding = computed(() =>
+  !!props.activeCity
+  || (props.activeCategories?.length ?? 0) > 0
+  || (props.activeServices?.length ?? 0) > 0
+);
 
 const serviceMenuOpen  = ref(false);
 const ageMenuOpen       = ref(false);
