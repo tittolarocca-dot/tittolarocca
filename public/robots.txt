@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+
+# Private/interne Bereiche nicht crawlen
+Disallow: /konto
+Disallow: /inserat
+Disallow: /login
+Disallow: /registrieren
+Disallow: /email
+Disallow: /zahlung
+
+Sitemap: https://booklola.ch/sitemap.xml

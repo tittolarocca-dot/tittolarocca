@@ -21,6 +21,9 @@ Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
 
+// SEO: dynamische XML-Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 // ── Clubs & Lokale ──────────────────────────────────────────────────────────
 Route::get('/clubs',                     [\App\Http\Controllers\ClubController::class, 'index'])->name('clubs.index');
 Route::get('/clubs/{club:slug}/visit',   [\App\Http\Controllers\ClubController::class, 'visit'])->name('clubs.visit');
