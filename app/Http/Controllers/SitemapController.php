@@ -42,6 +42,11 @@ class SitemapController extends Controller
         $add(route('neue-bilder'), 'daily',  '0.7');
         $add(route('clubs.index'), 'weekly', '0.6');
 
+        // Rechtstexte
+        $add(route('legal.imprint'), 'yearly', '0.2');
+        $add(route('legal.privacy'), 'yearly', '0.2');
+        $add(route('legal.terms'),   'yearly', '0.2');
+
         // Städte (lokale Landingpages)
         $cityHasTs = Schema::hasColumn('cities', 'updated_at');
         foreach (City::where('is_active', true)->get() as $city) {

@@ -169,9 +169,9 @@
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_legal') }}</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.imprint') }}</a>
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.privacy') }}</a>
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.terms') }}</a>
+            <Link :href="route('legal.imprint')" class="block hover:text-[#e35d8f] transition">{{ t('nav.imprint') }}</Link>
+            <Link :href="route('legal.privacy')" class="block hover:text-[#e35d8f] transition">{{ t('nav.privacy') }}</Link>
+            <Link :href="route('legal.terms')" class="block hover:text-[#e35d8f] transition">{{ t('nav.terms') }}</Link>
           </div>
         </div>
       </div>

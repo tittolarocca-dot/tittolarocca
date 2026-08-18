@@ -24,6 +24,28 @@ Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesControl
 // SEO: dynamische XML-Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// ── Rechtstexte ───────────────────────────────────────────────────────────────
+Route::get('/impressum', function () {
+    app(\App\Support\SeoData::class)
+        ->forPage('Impressum', 'Impressum und Anbieterkennzeichnung von booklola.ch.')
+        ->setCanonical(route('legal.imprint'));
+    return inertia('Legal/Imprint');
+})->name('legal.imprint');
+
+Route::get('/datenschutz', function () {
+    app(\App\Support\SeoData::class)
+        ->forPage('Datenschutzerklärung', 'Wie booklola.ch personenbezogene Daten bearbeitet – Datenschutzerklärung nach revDSG/DSGVO.')
+        ->setCanonical(route('legal.privacy'));
+    return inertia('Legal/Privacy');
+})->name('legal.privacy');
+
+Route::get('/agb', function () {
+    app(\App\Support\SeoData::class)
+        ->forPage('AGB', 'Allgemeine Geschäftsbedingungen für die Nutzung der Plattform booklola.ch.')
+        ->setCanonical(route('legal.terms'));
+    return inertia('Legal/Terms');
+})->name('legal.terms');
+
 // ── Clubs & Lokale ──────────────────────────────────────────────────────────
 Route::get('/clubs',                     [\App\Http\Controllers\ClubController::class, 'index'])->name('clubs.index');
 Route::get('/clubs/{club:slug}/visit',   [\App\Http\Controllers\ClubController::class, 'visit'])->name('clubs.visit');
