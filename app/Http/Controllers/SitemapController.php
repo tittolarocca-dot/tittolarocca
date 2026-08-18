@@ -17,8 +17,9 @@ class SitemapController extends Controller
      * Startseite, Städte, Kategorien, Services, Kanton-Club-Seiten, Clubs und
      * alle aktiven Inserate. Wird in der robots.txt referenziert.
      *
-     * Robust gegen Schema-Abweichungen: <lastmod> wird nur ausgegeben, wenn
-     * die jeweilige Tabelle tatsächlich eine updated_at-Spalte besitzt.
+     * Das XML wird bewusst direkt als String gebaut (nicht via Blade), damit
+     * die XML-Deklaration nicht mit PHPs short_open_tag kollidiert. <lastmod>
+     * wird nur ausgegeben, wenn die Tabelle die Spalte updated_at besitzt.
      */
     public function index(): Response
     {
@@ -80,8 +81,21 @@ class SitemapController extends Controller
                 }
             });
 
-        return response()
-            ->view('sitemap', ['urls' => $urls])
-            ->header('Content-Type', 'application/xml');
+        // XML als String zusammenbauen (kein Blade -> keine short_open_tag-Probleme)
+        $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        foreach ($urls as $u) {
+            $xml .= "  <url>\n";
+            $xml .= '    <loc>' . htmlspecialchars($u['loc'], ENT_XML1 | ENT_QUOTES, 'UTF-8') . "</loc>\n";
+            if (! empty($u['lastmod'])) {
+                $xml .= '    <lastmod>' . $u['lastmod'] . "</lastmod>\n";
+            }
+            $xml .= '    <changefreq>' . $u['changefreq'] . "</changefreq>\n";
+            $xml .= '    <priority>' . $u['priority'] . "</priority>\n";
+            $xml .= "  </url>\n";
+        }
+        $xml .= '</urlset>';
+
+        return response($xml, 200)->header('Content-Type', 'application/xml');
     }
 }
