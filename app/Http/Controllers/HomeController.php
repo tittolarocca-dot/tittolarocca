@@ -10,10 +10,14 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /** Setzt die SEO-Meta-Daten für die aktuelle Seite und gibt sie zurück. */
-    private function seo(string $title, string $description): SeoData
+    /**
+     * Setzt die SEO-Meta-Daten für die aktuelle Seite und gibt sie zurück.
+     * $canonical ist die normalisierte URL (ohne Filter-/Seiten-Parameter),
+     * damit gefilterte/paginierte Varianten nicht als Duplikate gelten.
+     */
+    private function seo(string $title, string $description, string $canonical): SeoData
     {
-        return app(SeoData::class)->forPage($title, $description);
+        return app(SeoData::class)->forPage($title, $description)->setCanonical($canonical);
     }
 
     private function sharedData(): array
@@ -111,7 +115,8 @@ class HomeController extends Controller
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         $seo = $this->seo(
             'Erotik, Escort & Begleitung in der Schweiz',
-            'Aktuelle Escort-, Begleit- und Erotikinserate aus der ganzen Schweiz – mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.'
+            'Aktuelle Escort-, Begleit- und Erotikinserate aus der ganzen Schweiz – mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.',
+            route('home')
         );
         $seo->addJsonLd([
             '@context' => 'https://schema.org',
@@ -142,7 +147,8 @@ class HomeController extends Controller
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         $seo = $this->seo(
             "Escort & Begleitung in {$city->name}",
-            "Escort-, Begleit- und Erotikinserate in {$city->name} – aktuelle Profile mit Fotos auf booklola.ch."
+            "Escort-, Begleit- und Erotikinserate in {$city->name} – aktuelle Profile mit Fotos auf booklola.ch.",
+            route('city', $city->slug)
         );
         $seo->addBreadcrumb([
             ['Startseite', route('home')],
@@ -168,7 +174,8 @@ class HomeController extends Controller
         $categories = array_values(array_unique(array_merge($categories, [$category->slug])));
         $seo = $this->seo(
             "{$category->name} – Inserate & Begleitung",
-            "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz auf booklola.ch."
+            "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz auf booklola.ch.",
+            route('category', $category->slug)
         );
         $seo->addBreadcrumb([
             ['Startseite', route('home')],
@@ -193,7 +200,8 @@ class HomeController extends Controller
         $services = array_values(array_unique(array_merge($services, [$tag->slug])));
         $seo = $this->seo(
             "{$tag->name} – Inserate & Begleitung",
-            "Inserate mit {$tag->name} – Begleitung & Erotik in der Schweiz auf booklola.ch."
+            "Inserate mit {$tag->name} – Begleitung & Erotik in der Schweiz auf booklola.ch.",
+            route('service', $tag->slug)
         );
         $seo->addBreadcrumb([
             ['Startseite', route('home')],

@@ -66,7 +66,10 @@ class ClubController extends Controller
         $cantonName = $cantonCode ? config("cantons.{$cantonCode}.name") : null;
 
         $meta = $this->listMeta($cantonName);
-        $seo  = app(SeoData::class)->forPage($meta['title'], $meta['description']);
+        $canonicalUrl = $cantonCode
+            ? route('clubs.canton', config("cantons.{$cantonCode}.slug"))
+            : route('clubs.index');
+        $seo  = app(SeoData::class)->forPage($meta['title'], $meta['description'])->setCanonical($canonicalUrl);
         $crumbs = [['Startseite', route('home')], ['Clubs', route('clubs.index')]];
         if ($cantonCode && $cantonName) {
             $crumbs[] = [$cantonName, route('clubs.canton', config("cantons.{$cantonCode}.slug"))];
@@ -102,10 +105,11 @@ class ClubController extends Controller
         ];
         app(SeoData::class)
             ->forPage($meta['title'], $meta['description'])
+            ->setCanonical(route('clubs.show', $club->slug))
             ->addBreadcrumb([
                 ['Startseite', route('home')],
                 ['Clubs', route('clubs.index')],
-                [$club->name, url()->current()],
+                [$club->name, route('clubs.show', $club->slug)],
             ])
             ->addJsonLd(array_filter([
                 '@context'  => 'https://schema.org',

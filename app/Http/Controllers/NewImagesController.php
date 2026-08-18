@@ -37,7 +37,7 @@ class NewImagesController extends Controller
         app(SeoData::class)->forPage(
             'Neue Bilder',
             'Die neuesten Foto-Uploads der Inserate auf booklola.ch – frische Profile und Bilder aus der ganzen Schweiz.'
-        )->addBreadcrumb([
+        )->setCanonical(route('neue-bilder'))->addBreadcrumb([
             ['Startseite', route('home')],
             ['Neue Bilder', route('neue-bilder')],
         ]);

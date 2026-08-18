@@ -89,6 +89,7 @@ class ProfileController extends Controller
         $crumbs[] = [$profile->display_name, url()->current()];
 
         app(SeoData::class)
+            ->setCanonical(route('profile.show', $profile->slug))
             ->setOg('profile', $ogImage)
             ->addBreadcrumb($crumbs)
             ->addJsonLd(array_filter([
