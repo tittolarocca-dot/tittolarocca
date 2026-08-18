@@ -113,6 +113,18 @@ class HomeController extends Controller
             'Erotik, Escort & Begleitung in der Schweiz',
             'Aktuelle Escort-, Begleit- und Erotikinserate aus der ganzen Schweiz – mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.'
         );
+        $seo->addJsonLd([
+            '@context' => 'https://schema.org',
+            '@type'    => 'WebSite',
+            'name'     => config('seo.site_name'),
+            'url'      => url('/'),
+        ])->addJsonLd([
+            '@context' => 'https://schema.org',
+            '@type'    => 'Organization',
+            'name'     => config('seo.site_name'),
+            'url'      => url('/'),
+            'logo'     => asset('images/logo-booklola.png'),
+        ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
             'activeSearch'     => $search,
@@ -132,6 +144,10 @@ class HomeController extends Controller
             "Escort & Begleitung in {$city->name}",
             "Escort-, Begleit- und Erotikinserate in {$city->name} – aktuelle Profile mit Fotos auf booklola.ch."
         );
+        $seo->addBreadcrumb([
+            ['Startseite', route('home')],
+            [$city->name, route('city', $city->slug)],
+        ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
             'activeCity'       => $city,
@@ -154,6 +170,10 @@ class HomeController extends Controller
             "{$category->name} – Inserate & Begleitung",
             "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz auf booklola.ch."
         );
+        $seo->addBreadcrumb([
+            ['Startseite', route('home')],
+            [$category->name, route('category', $category->slug)],
+        ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
             'activeSearch'     => $search,
@@ -175,6 +195,10 @@ class HomeController extends Controller
             "{$tag->name} – Inserate & Begleitung",
             "Inserate mit {$tag->name} – Begleitung & Erotik in der Schweiz auf booklola.ch."
         );
+        $seo->addBreadcrumb([
+            ['Startseite', route('home')],
+            [$tag->name, route('service', $tag->slug)],
+        ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)
                 ->paginate(20)->withQueryString(),

@@ -66,7 +66,12 @@ class ClubController extends Controller
         $cantonName = $cantonCode ? config("cantons.{$cantonCode}.name") : null;
 
         $meta = $this->listMeta($cantonName);
-        app(SeoData::class)->forPage($meta['title'], $meta['description']);
+        $seo  = app(SeoData::class)->forPage($meta['title'], $meta['description']);
+        $crumbs = [['Startseite', route('home')], ['Clubs', route('clubs.index')]];
+        if ($cantonCode && $cantonName) {
+            $crumbs[] = [$cantonName, route('clubs.canton', config("cantons.{$cantonCode}.slug"))];
+        }
+        $seo->addBreadcrumb($crumbs);
 
         return Inertia::render('Clubs/Index', [
             'clubs'       => $clubs->map(fn (Club $c) => $this->cardData($c))->values(),
@@ -95,7 +100,28 @@ class ClubController extends Controller
             'title'       => "{$club->name} – {$club->category} in {$club->city} | Clubs",
             'description' => "Erotikclub {$club->name} in {$club->city} ({$club->canton_name}) – Adresse, Öffnungszeiten und Website.",
         ];
-        app(SeoData::class)->forPage($meta['title'], $meta['description']);
+        app(SeoData::class)
+            ->forPage($meta['title'], $meta['description'])
+            ->addBreadcrumb([
+                ['Startseite', route('home')],
+                ['Clubs', route('clubs.index')],
+                [$club->name, url()->current()],
+            ])
+            ->addJsonLd(array_filter([
+                '@context'  => 'https://schema.org',
+                '@type'     => 'LocalBusiness',
+                'name'      => $club->name,
+                'url'       => url()->current(),
+                'telephone' => $club->phone ?: null,
+                'address'   => array_filter([
+                    '@type'           => 'PostalAddress',
+                    'streetAddress'   => $club->address ?: null,
+                    'addressLocality' => $club->city ?: null,
+                    'postalCode'      => $club->postal_code ?: null,
+                    'addressRegion'   => $club->canton_name ?: null,
+                    'addressCountry'  => 'CH',
+                ]),
+            ]));
 
         return Inertia::render('Clubs/Show', [
             'club' => array_merge($this->cardData($club), [

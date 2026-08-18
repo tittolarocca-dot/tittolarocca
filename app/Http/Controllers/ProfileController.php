@@ -76,6 +76,34 @@ class ProfileController extends Controller
         $publicMedia = $profile->publicMedia()->get($cols)
             ->map($streamItem)->values();
 
+        // SEO: OG-Bild (Hauptfoto) + strukturierte Daten (Breadcrumb + Person)
+        $firstImage = $publicMedia->firstWhere('type', 'image');
+        $ogImage    = ($firstImage && ! empty($firstImage['src']))
+            ? ($firstImage['src']['full'] ?? $firstImage['src']['card'] ?? null)
+            : null;
+
+        $crumbs = [['Startseite', route('home')]];
+        if ($profile->city) {
+            $crumbs[] = [$profile->city->name, route('city', $profile->city->slug)];
+        }
+        $crumbs[] = [$profile->display_name, url()->current()];
+
+        app(SeoData::class)
+            ->setOg('profile', $ogImage)
+            ->addBreadcrumb($crumbs)
+            ->addJsonLd(array_filter([
+                '@context' => 'https://schema.org',
+                '@type'    => 'Person',
+                'name'     => $profile->display_name,
+                'url'      => url()->current(),
+                'image'    => $ogImage,
+                'address'  => $profile->city ? [
+                    '@type'           => 'PostalAddress',
+                    'addressLocality' => $profile->city->name,
+                    'addressCountry'  => 'CH',
+                ] : null,
+            ]));
+
         // Launch-Modus: Inserentin kann private Galerie kostenlos für registrierte
         // Mitglieder freigeben. Niemals für Gäste – nur eingeloggte Mitglieder.
         $launchMode        = (bool) config('features.launch_mode');

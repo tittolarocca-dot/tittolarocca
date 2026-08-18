@@ -37,7 +37,10 @@ class NewImagesController extends Controller
         app(SeoData::class)->forPage(
             'Neue Bilder',
             'Die neuesten Foto-Uploads der Inserate auf booklola.ch – frische Profile und Bilder aus der ganzen Schweiz.'
-        );
+        )->addBreadcrumb([
+            ['Startseite', route('home')],
+            ['Neue Bilder', route('neue-bilder')],
+        ]);
 
         return inertia('NewImages/Index', [
             'images' => $images,
