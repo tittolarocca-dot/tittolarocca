@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use App\Support\SeoData;
 use Illuminate\Http\Request;
 
 class NewImagesController extends Controller
@@ -32,6 +33,11 @@ class NewImagesController extends Controller
                     ],
                 ];
             });
+
+        app(SeoData::class)->forPage(
+            'Neue Bilder',
+            'Die neuesten Foto-Uploads der Inserate auf booklola.ch – frische Profile und Bilder aus der ganzen Schweiz.'
+        );
 
         return inertia('NewImages/Index', [
             'images' => $images,

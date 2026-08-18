@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Support\SeoData;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Ein SEO-Container pro Request; Controller füllen ihn, das Root-Blade liest ihn.
+        $this->app->singleton(SeoData::class);
     }
 
     /**
@@ -24,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         User::observe(UserObserver::class);
+
+        // $seo im Root-Layout (app.blade.php) verfügbar machen.
+        View::composer('app', fn ($view) => $view->with('seo', app(SeoData::class)));
 
         // Bestätigungsmail auf Deutsch (Booklola-Branding)
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {

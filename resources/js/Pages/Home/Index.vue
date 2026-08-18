@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <Head :title="t('home.title')" />
+    <Head :title="seoTitle || t('home.title')" />
 
     <!-- Hero + Filters -->
     <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4">
@@ -355,6 +355,8 @@ const props = defineProps({
   activeSearch:      String,
   activeAges:        { type: Array, default: () => [] },
   activeVerified:    String,
+  seoTitle:          { type: String, default: '' },
+  seoDescription:    { type: String, default: '' },
 });
 
 const serviceMenuOpen  = ref(false);

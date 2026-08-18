@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Club;
 use App\Models\ClubReport;
+use App\Support\SeoData;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -64,6 +65,9 @@ class ClubController extends Controller
 
         $cantonName = $cantonCode ? config("cantons.{$cantonCode}.name") : null;
 
+        $meta = $this->listMeta($cantonName);
+        app(SeoData::class)->forPage($meta['title'], $meta['description']);
+
         return Inertia::render('Clubs/Index', [
             'clubs'       => $clubs->map(fn (Club $c) => $this->cardData($c))->values(),
             'cantons'     => collect(config('cantons'))->map(fn ($c, $code) => [
@@ -75,7 +79,7 @@ class ClubController extends Controller
                 'opening' => $opening, 'sort' => $sort,
             ],
             'activeCanton' => $cantonCode ? ['code' => $cantonCode, 'name' => $cantonName] : null,
-            'meta'        => $this->listMeta($cantonName),
+            'meta'        => $meta,
         ]);
     }
 
@@ -87,6 +91,12 @@ class ClubController extends Controller
 
         $club->increment('profile_views');
 
+        $meta = [
+            'title'       => "{$club->name} – {$club->category} in {$club->city} | Clubs",
+            'description' => "Erotikclub {$club->name} in {$club->city} ({$club->canton_name}) – Adresse, Öffnungszeiten und Website.",
+        ];
+        app(SeoData::class)->forPage($meta['title'], $meta['description']);
+
         return Inertia::render('Clubs/Show', [
             'club' => array_merge($this->cardData($club), [
                 'description'  => $club->description,
@@ -97,10 +107,7 @@ class ClubController extends Controller
                 'is_24h'       => $club->is24h(),
             ]),
             'supportEmail' => config('mail.from.address'),
-            'meta' => [
-                'title'       => "{$club->name} – {$club->category} in {$club->city} | Clubs",
-                'description' => "Erotikclub {$club->name} in {$club->city} ({$club->canton_name}) – Adresse, Öffnungszeiten und Website.",
-            ],
+            'meta' => $meta,
         ]);
     }
 

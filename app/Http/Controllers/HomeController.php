@@ -5,10 +5,17 @@ use App\Models\City;
 use App\Models\Category;
 use App\Models\Profile;
 use App\Models\Tag;
+use App\Support\SeoData;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    /** Setzt die SEO-Meta-Daten für die aktuelle Seite und gibt sie zurück. */
+    private function seo(string $title, string $description): SeoData
+    {
+        return app(SeoData::class)->forPage($title, $description);
+    }
+
     private function sharedData(): array
     {
         return [
@@ -102,6 +109,10 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
+        $seo = $this->seo(
+            'Erotik, Escort & Begleitung in der Schweiz',
+            'Aktuelle Escort-, Begleit- und Erotikinserate aus der ganzen Schweiz – mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.'
+        );
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
             'activeSearch'     => $search,
@@ -109,12 +120,18 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
+            'seoTitle'         => $seo->pageTitle,
+            'seoDescription'   => $seo->description,
         ]));
     }
 
     public function city(City $city, Request $request)
     {
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
+        $seo = $this->seo(
+            "Escort & Begleitung in {$city->name}",
+            "Escort-, Begleit- und Erotikinserate in {$city->name} – aktuelle Profile mit Fotos auf booklola.ch."
+        );
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
             'activeCity'       => $city,
@@ -123,6 +140,8 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
+            'seoTitle'         => $seo->pageTitle,
+            'seoDescription'   => $seo->description,
         ]));
     }
 
@@ -131,6 +150,10 @@ class HomeController extends Controller
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         // Pfad-Kategorie in die Mehrfachauswahl aufnehmen (Direktlinks /kategorie/{slug} bleiben gültig)
         $categories = array_values(array_unique(array_merge($categories, [$category->slug])));
+        $seo = $this->seo(
+            "{$category->name} – Inserate & Begleitung",
+            "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz auf booklola.ch."
+        );
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
             'activeSearch'     => $search,
@@ -138,6 +161,8 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
+            'seoTitle'         => $seo->pageTitle,
+            'seoDescription'   => $seo->description,
         ]));
     }
 
@@ -146,6 +171,10 @@ class HomeController extends Controller
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         // Pfad-Service in die Mehrfachauswahl aufnehmen (Direktlinks /service/{slug} bleiben gültig)
         $services = array_values(array_unique(array_merge($services, [$tag->slug])));
+        $seo = $this->seo(
+            "{$tag->name} – Inserate & Begleitung",
+            "Inserate mit {$tag->name} – Begleitung & Erotik in der Schweiz auf booklola.ch."
+        );
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)
                 ->paginate(20)->withQueryString(),
@@ -154,6 +183,8 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
+            'seoTitle'         => $seo->pageTitle,
+            'seoDescription'   => $seo->description,
         ]));
     }
 }

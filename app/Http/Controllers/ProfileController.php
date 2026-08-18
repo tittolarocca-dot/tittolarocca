@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use App\Models\ProfileVisit;
+use App\Support\SeoData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -21,6 +23,17 @@ class ProfileController extends Controller
 
         $profile->loadMissing(['city', 'category', 'categories', 'tags', 'approvedReviews.reviewer']);
         $profile->increment('total_views');
+
+        // SEO: Titel = Anzeigename, Description aus der Profilbeschreibung (Fallback generisch)
+        $rawDesc = trim(strip_tags((string) $profile->description));
+        app(SeoData::class)->forPage(
+            $profile->display_name,
+            $rawDesc !== ''
+                ? Str::limit($rawDesc, 155)
+                : $profile->display_name . ' – Begleitung & Erotik'
+                    . ($profile->city ? ' in ' . $profile->city->name : '')
+                    . '. Profil mit Fotos auf booklola.ch.'
+        );
 
         if ($user && !$isOwner) {
             ProfileVisit::updateOrCreate(

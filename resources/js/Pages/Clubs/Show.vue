@@ -1,8 +1,6 @@
 <template>
   <AppLayout>
-    <Head :title="meta.title">
-      <meta name="description" :content="meta.description" />
-    </Head>
+    <Head :title="meta.title" />
 
     <div class="max-w-3xl mx-auto px-4 py-6">
       <!-- Zurück -->

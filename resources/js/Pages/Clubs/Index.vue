@@ -1,8 +1,6 @@
 <template>
   <AppLayout>
-    <Head :title="meta.title">
-      <meta name="description" :content="meta.description" />
-    </Head>
+    <Head :title="meta.title" />
 
     <!-- Hero -->
     <div class="bg-[#111] border-b border-white/5 pt-6 pb-5 px-4">

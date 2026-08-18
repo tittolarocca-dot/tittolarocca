@@ -131,7 +131,7 @@
     ]
   },
   "resources/js/Pages/Clubs/Index.vue": {
-    "file": "assets/Index-BZCUOlQF.js",
+    "file": "assets/Index-x5ggx0AV.js",
     "name": "Index",
     "src": "resources/js/Pages/Clubs/Index.vue",
     "isDynamicEntry": true,
@@ -144,11 +144,11 @@
       "_AppLayout-SYvij_s2.js"
     ],
     "css": [
-      "assets/Index-BZJwbiN9.css"
+      "assets/Index-CfIeOF7G.css"
     ]
   },
   "resources/js/Pages/Clubs/Show.vue": {
-    "file": "assets/Show-x6wrrfyC.js",
+    "file": "assets/Show-DplOo4rS.js",
     "name": "Show",
     "src": "resources/js/Pages/Clubs/Show.vue",
     "isDynamicEntry": true,
@@ -161,7 +161,7 @@
     ]
   },
   "resources/js/Pages/Home/Index.vue": {
-    "file": "assets/Index-DB49fAGU.js",
+    "file": "assets/Index-CApZ-0qr.js",
     "name": "Index",
     "src": "resources/js/Pages/Home/Index.vue",
     "isDynamicEntry": true,
@@ -175,7 +175,7 @@
       "_AppLayout-SYvij_s2.js"
     ],
     "css": [
-      "assets/Index-D-ZD24Ak.css"
+      "assets/Index-DbsSLrEA.css"
     ]
   },
   "resources/js/Pages/Inserent/Dashboard.vue": {
@@ -461,7 +461,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Du59PRtj.js",
+    "file": "assets/app-CzoyEIm4.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
