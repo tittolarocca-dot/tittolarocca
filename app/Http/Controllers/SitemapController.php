@@ -8,6 +8,7 @@ use App\Models\Club;
 use App\Models\Profile;
 use App\Models\Tag;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
 
 class SitemapController extends Controller
 {
@@ -15,12 +16,18 @@ class SitemapController extends Controller
      * Dynamische XML-Sitemap. Listet alle öffentlichen, indexierbaren URLs:
      * Startseite, Städte, Kategorien, Services, Kanton-Club-Seiten, Clubs und
      * alle aktiven Inserate. Wird in der robots.txt referenziert.
+     *
+     * Robust gegen Schema-Abweichungen: <lastmod> wird nur ausgegeben, wenn
+     * die jeweilige Tabelle tatsächlich eine updated_at-Spalte besitzt.
      */
     public function index(): Response
     {
         $urls = [];
 
-        $add = function (string $loc, string $changefreq, string $priority, $lastmod = null) use (&$urls) {
+        $add = function (?string $loc, string $changefreq, string $priority, $lastmod = null) use (&$urls) {
+            if (! $loc) {
+                return;
+            }
             $urls[] = [
                 'loc'        => $loc,
                 'changefreq' => $changefreq,
@@ -35,40 +42,41 @@ class SitemapController extends Controller
         $add(route('clubs.index'), 'weekly', '0.6');
 
         // Städte (lokale Landingpages)
-        foreach (City::where('is_active', true)->get(['slug', 'updated_at']) as $city) {
-            $add(route('city', $city->slug), 'daily', '0.8', $city->updated_at);
+        $cityHasTs = Schema::hasColumn('cities', 'updated_at');
+        foreach (City::where('is_active', true)->get() as $city) {
+            $add($city->slug ? route('city', $city->slug) : null, 'daily', '0.8', $cityHasTs ? $city->updated_at : null);
         }
 
         // Kategorien
-        foreach (Category::where('is_active', true)->get(['slug', 'updated_at']) as $category) {
-            $add(route('category', $category->slug), 'weekly', '0.7', $category->updated_at);
+        $catHasTs = Schema::hasColumn('categories', 'updated_at');
+        foreach (Category::where('is_active', true)->get() as $category) {
+            $add($category->slug ? route('category', $category->slug) : null, 'weekly', '0.7', $catHasTs ? $category->updated_at : null);
         }
 
         // Services / Leistungen
-        foreach (Tag::get(['slug']) as $tag) {
-            $add(route('service', $tag->slug), 'weekly', '0.5');
+        foreach (Tag::all() as $tag) {
+            $add($tag->slug ? route('service', $tag->slug) : null, 'weekly', '0.5');
         }
 
         // Kanton-Club-Seiten
         foreach (array_column(config('cantons', []), 'slug') as $cantonSlug) {
-            $add(route('clubs.canton', $cantonSlug), 'weekly', '0.5');
+            $add($cantonSlug ? route('clubs.canton', $cantonSlug) : null, 'weekly', '0.5');
         }
 
         // Clubs
-        foreach (Club::active()->get(['slug', 'updated_at']) as $club) {
-            $add(route('clubs.show', $club->slug), 'weekly', '0.6', $club->updated_at);
+        $clubHasTs = Schema::hasColumn('clubs', 'updated_at');
+        foreach (Club::active()->get() as $club) {
+            $add($club->slug ? route('clubs.show', $club->slug) : null, 'weekly', '0.6', $clubHasTs ? $club->updated_at : null);
         }
 
         // Aktive Inserate (in Blöcken, speicherschonend)
+        $profileHasTs = Schema::hasColumn('profiles', 'updated_at');
         Profile::where('status', 'active')
             ->where('listing_expires_at', '>', now())
-            ->select(['slug', 'updated_at'])
             ->orderBy('id')
-            ->chunk(500, function ($profiles) use ($add) {
+            ->chunk(500, function ($profiles) use ($add, $profileHasTs) {
                 foreach ($profiles as $profile) {
-                    if ($profile->slug) {
-                        $add(route('profile.show', $profile->slug), 'daily', '0.9', $profile->updated_at);
-                    }
+                    $add($profile->slug ? route('profile.show', $profile->slug) : null, 'daily', '0.9', $profileHasTs ? $profile->updated_at : null);
                 }
             });
 
