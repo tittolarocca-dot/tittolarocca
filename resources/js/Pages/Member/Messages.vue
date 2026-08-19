@@ -180,6 +180,8 @@
               </div>
             </div>
 
+            <div v-if="sendError" class="px-4 pt-2 -mb-1 text-xs text-amber-400">{{ sendError }}</div>
+
             <div class="px-3 py-2.5 flex items-end gap-2">
               <button type="button" @click="showEmoji = !showEmoji" class="shrink-0 p-1.5 text-xl leading-none transition" :class="showEmoji ? 'text-[#e35d8f]' : 'text-gray-400 hover:text-[#e35d8f]'">😊</button>
               <label class="shrink-0 cursor-pointer text-gray-400 hover:text-[#e35d8f] transition p-1.5">
@@ -250,6 +252,7 @@ const chatMessages       = ref([]);
 const chatLoading        = ref(false);
 const replyText          = ref('');
 const sending            = ref(false);
+const sendError          = ref('');
 const chatBox            = ref(null);
 const textInput          = ref(null);
 const imageInput         = ref(null);
@@ -286,6 +289,7 @@ onMounted(() => {
 });
 
 async function openConversation(conv) {
+  sendError.value    = '';
   activeConv.value   = { ...conv, isNew: false };
   chatLoading.value  = true;
   chatMessages.value = [];
@@ -355,6 +359,7 @@ async function sendOrUpload() {
 
 async function sendText() {
   sending.value = true;
+  sendError.value = '';
   try {
     const res = await fetch(route('konto.messages.send', activeConv.value.profile.slug), {
       method:  'POST',
@@ -369,6 +374,9 @@ async function sendText() {
       replyText.value = '';
       if (textInput.value) { textInput.value.style.height = 'auto'; }
       await refreshConversation();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      sendError.value = data.error || 'Nachricht konnte nicht gesendet werden.';
     }
   } finally {
     sending.value = false;
@@ -377,6 +385,7 @@ async function sendText() {
 
 async function uploadImage() {
   sending.value = true;
+  sendError.value = '';
   try {
     const fd = new FormData();
     fd.append('media', pendingImage.value);
@@ -394,6 +403,9 @@ async function uploadImage() {
       replyText.value = '';
       clearImage();
       await refreshConversation();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      sendError.value = data.error || 'Nachricht konnte nicht gesendet werden.';
     }
   } finally {
     sending.value = false;

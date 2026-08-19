@@ -12,6 +12,9 @@ use Stripe\StripeClient;
 
 class MessageController extends Controller
 {
+    /** Max. neue Konversationen (unterschiedliche Empfänger), die ein Mitglied pro 24h starten darf. */
+    private const MAX_NEW_CHATS_PER_DAY = 10;
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -95,6 +98,42 @@ class MessageController extends Controller
         return ! ($owner && $owner->hasBlocked($user->id));
     }
 
+    /**
+     * Spam-Schutz beim Senden (Option A):
+     * - Erst-Kontakt: nur EINE Nachricht, bis die Inserierende geantwortet hat.
+     * - Neue Konversation: max. MAX_NEW_CHATS_PER_DAY pro 24h.
+     * Gibt eine Fehlermeldung zurück oder null, wenn erlaubt.
+     */
+    private function sendBlockReason(\App\Models\User $user, Profile $profile): ?string
+    {
+        $ownerId = $profile->user_id;
+
+        $memberSent = Message::where('from_user_id', $user->id)
+            ->where('to_user_id', $ownerId)->exists();
+
+        if ($memberSent) {
+            // Bestehende Konversation: erst offen, wenn die Inserierende schon einmal geantwortet hat.
+            $ownerReplied = Message::where('from_user_id', $ownerId)
+                ->where('to_user_id', $user->id)->exists();
+
+            return $ownerReplied
+                ? null
+                : 'Bitte warte, bis ' . $profile->display_name . ' auf deine Anfrage geantwortet hat.';
+        }
+
+        // Neue Konversation → Tageslimit für neue Chats prüfen.
+        $recipientsToday = Message::where('from_user_id', $user->id)
+            ->where('created_at', '>=', now()->subDay())
+            ->distinct()
+            ->count('to_user_id');
+
+        if ($recipientsToday >= self::MAX_NEW_CHATS_PER_DAY) {
+            return 'Du hast heute bereits viele neue Chats gestartet. Bitte versuche es später wieder.';
+        }
+
+        return null;
+    }
+
     public function send(Request $request, Profile $profile)
     {
         $request->validate(['body' => ['required', 'string', 'max:2000']]);
@@ -103,6 +142,10 @@ class MessageController extends Controller
 
         if (! $this->canChatWith($user, $profile)) {
             return response()->json(['error' => 'Du kannst dieser Person aktuell nicht schreiben.'], 403);
+        }
+
+        if ($reason = $this->sendBlockReason($user, $profile)) {
+            return response()->json(['error' => $reason], 429);
         }
 
         Message::create([
@@ -125,6 +168,10 @@ class MessageController extends Controller
 
         if (! $this->canChatWith($user, $profile)) {
             return response()->json(['error' => 'Du kannst dieser Person aktuell nicht schreiben.'], 403);
+        }
+
+        if ($reason = $this->sendBlockReason($user, $profile)) {
+            return response()->json(['error' => $reason], 429);
         }
 
         $file    = $request->file('media');
