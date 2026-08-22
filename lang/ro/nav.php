@@ -13,7 +13,7 @@ return [
     'footer_legal'    => 'Legal',
     'about'           => 'Despre noi',
     'contact'         => 'Contact',
-    'create_listing'  => 'Creează anunț',
+    'create_listing'  => 'Creează anunț gratuit',
     'prices'          => 'Prețuri',
     'imprint'         => 'Mențiuni legale',
     'privacy'         => 'Confidențialitate',

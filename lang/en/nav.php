@@ -13,7 +13,7 @@ return [
     'footer_legal'    => 'Legal',
     'about'           => 'About us',
     'contact'         => 'Contact',
-    'create_listing'  => 'Create listing',
+    'create_listing'  => 'Create free listing',
     'prices'          => 'Pricing',
     'imprint'         => 'Imprint',
     'privacy'         => 'Privacy policy',

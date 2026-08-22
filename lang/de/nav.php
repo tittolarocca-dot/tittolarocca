@@ -13,7 +13,7 @@ return [
     'footer_legal'    => 'Rechtliches',
     'about'           => 'Über uns',
     'contact'         => 'Kontakt',
-    'create_listing'  => 'Inserat erstellen',
+    'create_listing'  => 'Gratis Inserat erstellen',
     'prices'          => 'Preise',
     'imprint'         => 'Impressum',
     'privacy'         => 'Datenschutz',

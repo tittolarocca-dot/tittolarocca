@@ -13,7 +13,7 @@ return [
     'footer_legal'    => 'Legale',
     'about'           => 'Chi siamo',
     'contact'         => 'Contatto',
-    'create_listing'  => 'Crea annuncio',
+    'create_listing'  => 'Crea annuncio gratis',
     'prices'          => 'Prezzi',
     'imprint'         => 'Impressum',
     'privacy'         => 'Privacy',

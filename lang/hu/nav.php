@@ -13,7 +13,7 @@ return [
     'footer_legal'    => 'Jogi',
     'about'           => 'Rólunk',
     'contact'         => 'Kapcsolat',
-    'create_listing'  => 'Hirdetés létrehozása',
+    'create_listing'  => 'Ingyenes hirdetés feladása',
     'prices'          => 'Árak',
     'imprint'         => 'Impresszum',
     'privacy'         => 'Adatvédelem',
