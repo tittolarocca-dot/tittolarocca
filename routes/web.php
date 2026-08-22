@@ -46,6 +46,17 @@ Route::get('/agb', function () {
     return inertia('Legal/Terms');
 })->name('legal.terms');
 
+// ── Werbe-Landingpage für Inserierende (Kampagnen-Ziel, ändert die Startseite nicht) ──
+Route::get('/inserieren', function () {
+    app(\App\Support\SeoData::class)
+        ->forPage(
+            'Gratis inserieren – Escort- & Begleitinserate in der Schweiz',
+            'Erstelle dein Escort- oder Begleitinserat auf booklola.ch – in der Startphase komplett gratis, schweizweite Reichweite, diskret und in Minuten erstellt.'
+        )
+        ->setCanonical(route('landing.advertise'));
+    return inertia('Landing/Advertise');
+})->name('landing.advertise');
+
 // ── Clubs & Lokale ──────────────────────────────────────────────────────────
 Route::get('/clubs',                     [\App\Http\Controllers\ClubController::class, 'index'])->name('clubs.index');
 Route::get('/clubs/{club:slug}/visit',   [\App\Http\Controllers\ClubController::class, 'visit'])->name('clubs.visit');
