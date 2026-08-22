@@ -6,20 +6,20 @@
     <section class="relative overflow-hidden bg-gradient-to-b from-[#1a1a1a] to-[#111] border-b border-white/10">
       <div class="max-w-4xl mx-auto px-4 py-16 sm:py-20 text-center">
         <span class="inline-block bg-[#e35d8f]/15 text-[#e35d8f] text-xs font-bold px-3 py-1 rounded-full tracking-wide mb-5">
-          🚀 Startphase – aktuell 100 % gratis
+          🆓 Inserieren ist &amp; bleibt kostenlos
         </span>
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4">
           Werde entdeckt – <span class="text-[#e35d8f]">gratis inserieren</span> in der ganzen Schweiz
         </h1>
         <p class="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
           booklola.ch ist die neue Schweizer Plattform für Erotik- &amp; Begleitinserate.
-          Erstelle dein Inserat in wenigen Minuten – in der Startphase komplett kostenlos.
+          Erstelle dein Inserat in wenigen Minuten – kostenlos.
         </p>
         <Link :href="route('register')"
           class="inline-flex items-center gap-2 bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-base font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-[#e35d8f]/30">
           Gratis Inserat erstellen →
         </Link>
-        <p class="text-gray-500 text-xs mt-4">Keine Zahlung · 30 Tage gratis aktiv · jederzeit kündbar</p>
+        <p class="text-gray-500 text-xs mt-4">Kostenlos · keine Zahlung nötig · jederzeit kündbar</p>
       </div>
     </section>
 
@@ -55,7 +55,7 @@
     <!-- Abschluss-CTA -->
     <section class="max-w-3xl mx-auto px-4 py-16 text-center">
       <h2 class="text-2xl sm:text-3xl font-black text-white mb-3">Bereit? Erstelle jetzt dein gratis Inserat.</h2>
-      <p class="text-gray-400 text-sm mb-7">Sichere dir deinen Platz, solange die Startphase kostenlos ist.</p>
+      <p class="text-gray-400 text-sm mb-7">Erstelle jetzt dein kostenloses Inserat und werde schweizweit gefunden.</p>
       <Link :href="route('register')"
         class="inline-flex items-center gap-2 bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-base font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-[#e35d8f]/30">
         Gratis Inserat erstellen →
@@ -70,7 +70,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const benefits = [
-  { icon: '🆓', title: 'Gratis in der Startphase', text: 'Inserate sind aktuell komplett kostenlos – kein Stripe, keine versteckten Kosten. 30 Tage aktiv.' },
+  { icon: '🆓', title: 'Kostenlos inserieren', text: 'Ein Inserat zu erstellen ist und bleibt kostenlos – keine Zahlung, keine versteckten Kosten.' },
   { icon: '🇨🇭', title: 'Schweizweite Reichweite', text: 'Auffindbar nach Stadt, Kanton und Kategorie – von Zürich bis Genf.' },
   { icon: '🔒', title: 'Diskret & sicher', text: 'Private Galerie nur für Freigeschaltete, Länder-Sperren (Geoblocking) – du behältst die Kontrolle.' },
   { icon: '✅', title: 'Verifiziert = mehr Vertrauen', text: 'Foto- und ID-Verifizierung mit Badge hebt dich von anonymen Inseraten ab.' },
