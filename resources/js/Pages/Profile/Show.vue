@@ -879,14 +879,40 @@ function onFavoriteClick() {
 const shareCopied = ref(false);
 async function shareProfile() {
   const url = window.location.href;
+
+  // 1) Native Teilen-Funktion (Mobile): öffnet das OS-Teilen-Menü
   if (navigator.share) {
-    try { await navigator.share({ title: props.profile.display_name, url }); } catch {}
-  } else {
     try {
-      await navigator.clipboard.writeText(url);
-      shareCopied.value = true;
-      setTimeout(() => { shareCopied.value = false; }, 2000);
-    } catch {}
+      await navigator.share({ title: props.profile.display_name, url });
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // vom Nutzer abgebrochen
+      // sonst: unten auf "Link kopieren" zurückfallen
+    }
+  }
+
+  // 2) Fallback: Link in die Zwischenablage kopieren
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(url);
+    copied = true;
+  } catch {
+    // 3) Letzter Fallback für ältere Browser
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch { /* ignore */ }
+  }
+
+  if (copied) {
+    shareCopied.value = true;
+    setTimeout(() => { shareCopied.value = false; }, 2000);
   }
 }
 </script>
