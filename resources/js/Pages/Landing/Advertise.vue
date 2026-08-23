@@ -19,7 +19,7 @@
           class="inline-flex items-center gap-2 bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-base font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-[#e35d8f]/30">
           Gratis Inserat erstellen →
         </Link>
-        <p class="text-gray-500 text-xs mt-4">Kostenlos · keine Zahlung nötig · jederzeit kündbar</p>
+        <p class="text-gray-500 text-xs mt-4">Keine Kreditkarte · keine Verpflichtung · jederzeit löschbar</p>
       </div>
     </section>
 
