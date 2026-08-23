@@ -80,7 +80,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-Ca17m9nx.css",
+    "file": "assets/app-CPj43sw9.css",
     "name": "app",
     "names": [
       "app.css"
@@ -293,7 +293,7 @@
     ]
   },
   "resources/js/Pages/Landing/Advertise.vue": {
-    "file": "assets/Advertise-DeFxCfEw.js",
+    "file": "assets/Advertise-9PIp_EmS.js",
     "name": "Advertise",
     "src": "resources/js/Pages/Landing/Advertise.vue",
     "isDynamicEntry": true,
@@ -505,7 +505,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-OwJwSnv2.js",
+    "file": "assets/app-BQg7i7o_.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
