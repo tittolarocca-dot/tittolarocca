@@ -32,6 +32,11 @@ return [
     // false = Veriff-Block ausgeblendet (Standard, solange unentschieden).
     'veriff_enabled' => (bool) env('VERIFF_ENABLED', false),
 
+    // Pre-Launch: true = Gäste sehen nur /inserieren + Anmelde-Strecke,
+    // der Marktplatz ist versteckt (nur für eingeloggte Nutzer/Admin).
+    // false = Seite komplett öffentlich (Voll-Launch).
+    'prelaunch_mode' => (bool) env('PRELAUNCH_MODE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Credit-Pakete (Vorbereitung für später – KEIN aktiver Checkout)
