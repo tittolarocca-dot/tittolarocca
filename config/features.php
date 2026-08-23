@@ -28,6 +28,10 @@ return [
     // passenden Header setzen (z. B. wenn ein anderer Proxy das Land liefert).
     'geo_country_header' => env('GEO_COUNTRY_HEADER'),
 
+    // Veriff (Identitäts-/Altersprüfung) im Inserenten-Dashboard anzeigen.
+    // false = Veriff-Block ausgeblendet (Standard, solange unentschieden).
+    'veriff_enabled' => (bool) env('VERIFF_ENABLED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Credit-Pakete (Vorbereitung für später – KEIN aktiver Checkout)

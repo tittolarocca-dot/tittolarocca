@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
             // Feature-Flags (Launch-Modus etc.) – für Preise/Buttons im Frontend
             'features' => [
                 'launchMode' => (bool) config('features.launch_mode'),
+                'veriff'     => (bool) config('features.veriff_enabled'),
             ],
 
             // i18n

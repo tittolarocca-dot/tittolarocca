@@ -219,7 +219,7 @@
         </div>
 
         <!-- Identität & Alter verifizieren (Veriff) -->
-        <div class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
+        <div v-if="$page.props.features?.veriff" class="bg-[#1a1a1a] rounded-xl border border-white/8 overflow-hidden shadow-sm">
           <div class="bg-[#111] border-b border-white/8 px-5 py-3 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-white flex items-center gap-2">
               🪪 {{ t('dashboard.id_verif_title') }}
