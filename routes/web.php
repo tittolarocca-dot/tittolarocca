@@ -106,7 +106,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/admin/verification-photo/{profile}', function (\App\Models\Profile $profile) {
     abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
     abort_unless($profile->verification_photo && \Illuminate\Support\Facades\Storage::disk('local')->exists($profile->verification_photo), 404);
-    return response()->file(storage_path('app/' . $profile->verification_photo));
+    return response()->file(\Illuminate\Support\Facades\Storage::disk('local')->path($profile->verification_photo));
 })->middleware('auth')->name('admin.verification.photo');
 
 // ── Inserent-Bereich ──────────────────────────────────────────────────────────
