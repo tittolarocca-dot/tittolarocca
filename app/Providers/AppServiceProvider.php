@@ -19,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Ein SEO-Container pro Request; Controller füllen ihn, das Root-Blade liest ihn.
         $this->app->singleton(SeoData::class);
+
+        // Admin-Login immer aufs Dashboard leiten (nicht auf eine gemerkte URL).
+        $this->app->bind(
+            \Filament\Auth\Http\Responses\Contracts\LoginResponse::class,
+            \App\Http\Responses\FilamentLoginResponse::class,
+        );
     }
 
     /**
