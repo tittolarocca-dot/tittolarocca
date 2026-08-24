@@ -44,6 +44,13 @@ class PreLaunch
 
         $path = $request->path(); // ohne führenden Slash; '/' bei der Startseite
 
+        // Livewire-Endpunkte (auch mit obfusziertem Prefix, z. B. livewire-xxxx/update)
+        // niemals abfangen – sonst schlägt u. a. der Filament-Admin-Login fehl,
+        // weil die Authentifizierung erst INNERHALB dieser Anfrage passiert.
+        if (str_starts_with($path, 'livewire')) {
+            return $next($request);
+        }
+
         foreach (self::GUEST_ALLOWED as $prefix) {
             if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
                 return $next($request);
