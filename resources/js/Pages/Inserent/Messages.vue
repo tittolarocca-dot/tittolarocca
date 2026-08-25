@@ -1,7 +1,7 @@
 <template>
   <AppLayout>
     <Head title="Nachrichten" />
-    <div class="max-w-5xl mx-auto px-2 sm:px-4 py-4 sm:py-6 flex gap-3 h-[calc(100vh-110px)]">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:py-6 flex gap-3 h-[calc(100vh-110px)]">
 
       <!-- Sidebar -->
       <div class="w-full sm:w-80 shrink-0 bg-[#1a1a1a] rounded-2xl border border-white/8 flex-col overflow-hidden"

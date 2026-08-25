@@ -179,7 +179,7 @@
     ]
   },
   "resources/js/Pages/Inserent/Dashboard.vue": {
-    "file": "assets/Dashboard-DMGPVAFF.js",
+    "file": "assets/Dashboard-B1Bz-Jg8.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Inserent/Dashboard.vue",
     "isDynamicEntry": true,
@@ -237,7 +237,7 @@
     ]
   },
   "resources/js/Pages/Inserent/Messages.vue": {
-    "file": "assets/Messages-CaJjOgEL.js",
+    "file": "assets/Messages-DIaFQDE6.js",
     "name": "Messages",
     "src": "resources/js/Pages/Inserent/Messages.vue",
     "isDynamicEntry": true,
@@ -249,7 +249,7 @@
       "_AppLayout-CgKpngcI.js"
     ],
     "css": [
-      "assets/Messages-BTcoVGpm.css"
+      "assets/Messages-BT-XXHJ9.css"
     ]
   },
   "resources/js/Pages/Inserent/PackageSelect.vue": {
@@ -505,7 +505,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CfU-z5Sh.js",
+    "file": "assets/app-f7Uw0kOq.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
