@@ -83,6 +83,25 @@ Beide werden über `.env`-Flags gesteuert (Config: `config/features.php`).
   Altersprüfung) im Inserenten-Dashboard angezeigt wird. Standard aus, solange
   unentschieden.
 
+## Launch-Strategie (Absicht hinter den Modi)
+
+Der Betreiber verfolgt einen bewussten **zweistufigen Start**:
+
+1. **Jetzt / Anlaufphase:** `PRELAUNCH_MODE=true` **und** `LAUNCH_MODE=true`.
+   Öffentliche Besucher sehen nur die Werbeseite `/inserieren` — Ziel ist es, zuerst
+   **genügend Inserent:innen** zu gewinnen, damit der Marktplatz beim Öffentlich-Schalten
+   nicht leer wirkt. Inserate sind dabei kostenlos (Launch-Modus), um die Hürde für neue
+   Anbieter:innen niedrig zu halten.
+2. **Umschalten, sobald genügend Inserierende da sind:** Wenn genug Profile/Inserate
+   existieren, wird der Marktplatz für alle geöffnet, indem **`PRELAUNCH_MODE=false`**
+   gesetzt wird (danach auf dem Server `php artisan config:clear`). Ab dann sehen auch
+   nicht eingeloggte Gäste den vollen Marktplatz. `LAUNCH_MODE` bleibt zunächst weiter
+   `true` (Inserate bleiben gratis), bis der Betreiber später bewusst monetarisieren will
+   (`LAUNCH_MODE=false` → Preise/Abos/Payment aktiv).
+
+Die Reihenfolge beim vollständigen Go-Live steht unten in der **Go-Live-Checkliste**;
+`SEO_INDEXABLE=true` (Google-Indexierung) wird bewusst **zuletzt** gesetzt.
+
 ## Werbe-Landingpage `/inserieren`
 
 - Route `landing.advertise`, Seite `resources/js/Pages/Landing/Advertise.vue`.
@@ -113,7 +132,8 @@ Beide werden über `.env`-Flags gesteuert (Config: `config/features.php`).
 - **Mobile-UX:** Swipeable Foto-Galerie auf Listing-Cards; swipeable Profil-Lightbox
   (Pfeile auf Mobile ausgeblendet); robustes "Profil teilen" (native Share + Clipboard-
   Fallback).
-- **Mitglieder-Dashboard & Chat** laufen auf Header-Breite (`max-w-7xl`).
+- **Mitglieder-Dashboard & Chat** laufen auf Header-Breite (`max-w-7xl`); die
+  Inserent-Ansicht (Dashboard + Chat) wurde ebenfalls auf `max-w-7xl` angeglichen.
 
 ## Go-Live-Checkliste (wenn Betreiber bereit ist)
 
