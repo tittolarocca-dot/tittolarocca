@@ -94,16 +94,23 @@
                 </div>
 
                 <div class="flex" :class="msg.from_me ? 'justify-end' : 'justify-start'">
-                  <!-- PPV (von der Inserentin gesendet) -->
+                  <!-- Medien (von der Inserentin gesendet) -->
                   <template v-if="msg.ppv_media_type">
-                    <div class="max-w-[78%] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-[#e35d8f]/30">
-                      <div class="bg-[#e35d8f]/10 px-3 py-2 flex items-center gap-2">
+                    <div class="max-w-[78%] rounded-2xl overflow-hidden bg-[#1a1a1a] border"
+                      :class="msg.ppv_media_mode === 'free' ? 'border-white/8' : 'border-[#e35d8f]/30'">
+                      <div class="px-3 py-2 flex items-center gap-2"
+                        :class="msg.ppv_media_mode === 'free' ? 'bg-white/5' : 'bg-[#e35d8f]/10'">
                         <span class="text-lg">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</span>
-                        <div>
-                          <p class="text-xs font-semibold text-[#e35d8f]">Bezahlter Inhalt</p>
-                          <p class="text-xs text-gray-400">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</p>
+                        <div class="min-w-0">
+                          <p class="text-xs font-semibold" :class="msg.ppv_media_mode === 'free' ? 'text-gray-300' : 'text-[#e35d8f]'">{{ mediaModeLabel(msg.ppv_media_mode) }}</p>
+                          <p v-if="msg.ppv_media_mode === 'paid'" class="text-xs text-gray-400">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</p>
                         </div>
-                        <span class="ml-auto text-xs text-green-400 font-medium">{{ msg.ppv_purchase_count ?? 0 }}× gekauft</span>
+                        <span v-if="msg.ppv_media_mode === 'paid'" class="ml-auto text-xs text-green-400 font-medium shrink-0">{{ msg.ppv_purchase_count ?? 0 }}× gekauft</span>
+                        <span v-else-if="msg.ppv_media_mode === 'manual' && msg.ppv_released" class="ml-auto text-xs text-green-400 font-medium shrink-0">✓ Freigegeben</span>
+                        <button v-else-if="msg.ppv_media_mode === 'manual'" @click="releaseMedia(msg)" :disabled="releasingId === msg.id"
+                          class="ml-auto bg-[#e35d8f] text-white text-xs font-bold px-2.5 py-1 rounded-lg hover:bg-[#c44a7a] disabled:opacity-50 transition shrink-0">
+                          {{ releasingId === msg.id ? '…' : 'Freigeben' }}
+                        </button>
                       </div>
                       <div class="p-2">
                         <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" class="w-full rounded object-cover max-h-48" />
@@ -132,10 +139,10 @@
 
           <!-- Eingabe -->
           <div class="border-t border-white/8 bg-[#1a1a1a] px-3 py-2.5">
-            <!-- PPV-Sendeformular -->
-            <div v-if="ppvMode" class="bg-[#e35d8f]/5 border border-[#e35d8f]/20 rounded-xl p-3 space-y-2 mb-1">
+            <!-- Medien-Sendeformular (Foto/Video mit Freigabe-Modus) -->
+            <div v-if="ppvMode" class="bg-[#e35d8f]/5 border border-[#e35d8f]/20 rounded-xl p-3 space-y-2.5 mb-1">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-[#e35d8f]">🔒 Bezahlten Inhalt senden</span>
+                <span class="text-xs font-semibold text-[#e35d8f]">📎 Foto / Video senden</span>
                 <button @click="cancelPpv" class="text-gray-400 hover:text-white text-xs">✕ Abbrechen</button>
               </div>
               <div v-if="ppvPreview" class="relative">
@@ -143,31 +150,46 @@
                 <video v-else :src="ppvPreview" class="w-full rounded-lg max-h-40" />
                 <button @click="clearPpvFile" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">✕</button>
               </div>
-              <div v-if="!ppvPreview">
+              <div v-else>
                 <label class="block w-full border-2 border-dashed border-[#e35d8f]/30 rounded-lg p-4 text-center cursor-pointer hover:border-[#e35d8f]/60 transition">
                   <span class="text-gray-400 text-sm">Bild oder Video auswählen…</span>
                   <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm" class="hidden" @change="onPpvFileChange" ref="ppvFileInput" />
                 </label>
               </div>
-              <div class="flex items-center gap-2">
-                <div class="relative flex-shrink-0 w-28">
-                  <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">CHF</span>
-                  <input v-model="ppvPrice" type="number" min="1" max="999" step="1" placeholder="9"
-                    class="w-full pl-8 pr-2 py-1.5 bg-[#111] border border-white/10 text-gray-100 rounded-lg text-sm focus:outline-none focus:border-[#e35d8f]" />
+
+              <!-- Freigabe-Modus -->
+              <div>
+                <p class="text-[11px] text-gray-400 mb-1.5">Freigabe</p>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <button v-for="opt in mediaModes" :key="opt.k" type="button" @click="mediaMode = opt.k"
+                    class="px-2 py-1.5 rounded-lg text-xs font-semibold border transition"
+                    :class="mediaMode === opt.k ? 'bg-[#e35d8f] text-white border-[#e35d8f]' : 'bg-[#111] text-gray-300 border-white/10 hover:border-[#e35d8f]/50'">
+                    {{ opt.label }}
+                  </button>
                 </div>
-                <input v-model="ppvText" type="text" placeholder="Optionaler Text…"
-                  class="flex-1 bg-[#111] border border-white/10 text-gray-100 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#e35d8f]" />
+                <p class="text-[10px] text-gray-500 mt-1.5 leading-snug">{{ mediaModeHint }}</p>
               </div>
-              <button @click="sendPpv" :disabled="!ppvFile || !ppvPrice || sending"
+
+              <!-- Preis nur bei Online-Zahlung -->
+              <div v-if="mediaMode === 'paid'" class="relative w-32">
+                <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">CHF</span>
+                <input v-model="ppvPrice" type="number" min="1" max="999" step="1" placeholder="9"
+                  class="w-full pl-8 pr-2 py-1.5 bg-[#111] border border-white/10 text-gray-100 rounded-lg text-sm focus:outline-none focus:border-[#e35d8f]" />
+              </div>
+
+              <input v-model="ppvText" type="text" placeholder="Optionaler Text…"
+                class="w-full bg-[#111] border border-white/10 text-gray-100 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#e35d8f]" />
+
+              <button @click="sendPpv" :disabled="!canSendMedia || sending"
                 class="w-full bg-[#e35d8f] text-white py-2 rounded-lg text-sm font-bold hover:bg-[#c44a7a] disabled:opacity-40 transition">
-                {{ sending ? 'Wird gesendet…' : 'PPV senden' }}
+                {{ sending ? 'Wird gesendet…' : sendMediaLabel }}
               </button>
             </div>
 
             <!-- Normales Antwortformular -->
             <form v-else @submit.prevent="sendReply" class="flex items-end gap-2">
-              <button type="button" @click="ppvMode = true" title="Bezahlten Inhalt senden"
-                class="shrink-0 text-gray-400 hover:text-[#e35d8f] p-1.5 text-lg leading-none transition">🔒</button>
+              <button type="button" @click="ppvMode = true" title="Foto/Video senden"
+                class="shrink-0 text-gray-400 hover:text-[#e35d8f] p-1.5 text-lg leading-none transition">📎</button>
               <textarea v-model="replyText" rows="1" placeholder="Nachricht schreiben…"
                 @keydown.enter.exact.prevent="sendReply"
                 class="flex-1 border border-white/10 bg-[#111] text-gray-100 rounded-2xl px-3.5 py-2 text-sm placeholder-gray-500 focus:outline-none focus:border-[#e35d8f] resize-none overflow-hidden leading-5 max-h-32"
@@ -226,7 +248,7 @@ const replyText    = ref('');
 const sending      = ref(false);
 const chatBox      = ref(null);
 
-// PPV state
+// Medien-/Freigabe-State
 const ppvMode      = ref(false);
 const ppvFile      = ref(null);
 const ppvPreview   = ref(null);
@@ -234,6 +256,44 @@ const ppvFileType  = ref('image');
 const ppvPrice     = ref('');
 const ppvText      = ref('');
 const ppvFileInput = ref(null);
+const mediaMode    = ref('free');   // free | paid | manual
+const releasingId  = ref(null);
+
+const mediaModes = [
+  { k: 'free',   label: 'Gratis' },
+  { k: 'paid',   label: 'Online-Zahlung' },
+  { k: 'manual', label: 'Manuell' },
+];
+
+const mediaModeHint = computed(() => ({
+  free:   'Das Mitglied sieht Foto/Video sofort – kostenlos.',
+  paid:   'Gesperrt. Das Mitglied schaltet gegen Online-Zahlung (CHF) frei.',
+  manual: 'Gesperrt. Du gibst es später manuell frei – z. B. nach TWINT-Zahlung.',
+}[mediaMode.value]));
+
+const sendMediaLabel = computed(() => ({
+  free:   'Gratis senden',
+  paid:   'Kostenpflichtig senden',
+  manual: 'Gesperrt senden',
+}[mediaMode.value]));
+
+const canSendMedia = computed(() =>
+  !!ppvFile.value && (mediaMode.value !== 'paid' || !!ppvPrice.value)
+);
+
+function mediaModeLabel(mode) {
+  return { free: 'Gratis geteilt', paid: 'Online-Zahlung', manual: 'Manuelle Freigabe' }[mode] ?? 'Inhalt';
+}
+
+function releaseMedia(msg) {
+  if (releasingId.value) return;
+  releasingId.value = msg.id;
+  router.post(route('inserat.messages.release', msg.id), {}, {
+    preserveScroll: true,
+    onSuccess: () => { openConversation(activeConv.value); },
+    onFinish: () => { releasingId.value = null; },
+  });
+}
 
 async function openConversation(conv) {
   activeConv.value   = conv;
@@ -303,19 +363,21 @@ function clearPpvFile() {
 }
 
 function cancelPpv() {
-  ppvMode.value  = false;
-  ppvPrice.value = '';
-  ppvText.value  = '';
+  ppvMode.value   = false;
+  ppvPrice.value  = '';
+  ppvText.value   = '';
+  mediaMode.value = 'free';
   clearPpvFile();
 }
 
 function sendPpv() {
-  if (!ppvFile.value || !ppvPrice.value || sending.value) return;
+  if (!canSendMedia.value || sending.value) return;
   sending.value = true;
 
   const formData = new FormData();
   formData.append('media', ppvFile.value);
-  formData.append('price', ppvPrice.value);
+  formData.append('mode', mediaMode.value);
+  if (mediaMode.value === 'paid') formData.append('price', ppvPrice.value);
   if (ppvText.value) formData.append('body', ppvText.value);
   formData.append('_method', 'POST');
 

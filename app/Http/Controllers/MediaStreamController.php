@@ -131,12 +131,14 @@ class MediaStreamController extends Controller
             abort(403);
         }
 
-        // Regular (non-PPV) chat media → both parties can view
-        if (!$message->isPpv()) {
+        // Freie Chat-Medien → beide Seiten dürfen sie sehen.
+        if (!$message->requiresUnlock()) {
             return $this->streamFile($request, $message->ppv_media_path);
         }
 
-        // PPV media → sender (creator) always; receiver needs paid purchase
+        // Gesperrte Medien → Erstellerin immer; Empfänger nur nach Freischaltung
+        // (bezahlt via Stripe ODER manuell freigegeben – beides erzeugt einen
+        // PpvPurchase mit status „paid").
         $isCreator = $message->from_user_id === $user->id;
         if (!$isCreator) {
             $purchased = PpvPurchase::where('message_id', $message->id)

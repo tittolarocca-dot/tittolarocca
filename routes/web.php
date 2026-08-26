@@ -128,6 +128,7 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::get('/nachrichten',              [\App\Http\Controllers\Inserent\MessageController::class, 'index'])->name('messages');
     Route::post('/nachrichten/{userId}',    [\App\Http\Controllers\Inserent\MessageController::class, 'reply'])->name('messages.reply');
     Route::post('/nachrichten/{userId}/ppv',[\App\Http\Controllers\Inserent\MessageController::class, 'sendPpv'])->name('messages.ppv');
+    Route::post('/nachrichten/medien/{messageId}/freigeben', [\App\Http\Controllers\Inserent\MessageController::class, 'releaseMedia'])->name('messages.release');
     Route::get('/nachrichten/{userId}/verlauf', [\App\Http\Controllers\Inserent\MessageController::class, 'conversation'])->name('messages.conversation');
     Route::post('/nachrichten/{userId}/blockieren', [\App\Http\Controllers\Inserent\MessageController::class, 'block'])->name('messages.block');
     Route::post('/nachrichten/{userId}/entsperren', [\App\Http\Controllers\Inserent\MessageController::class, 'unblock'])->name('messages.unblock');

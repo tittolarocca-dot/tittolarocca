@@ -98,35 +98,70 @@ class MessageController extends Controller
         return response()->json(['count' => $count]);
     }
 
+    /**
+     * Inserentin sendet Foto/Video im Chat mit einem Freigabe-Modus:
+     *   free   – sofort sichtbar
+     *   paid   – gesperrt, Freischaltung über Online-Zahlung (Preis nötig)
+     *   manual – gesperrt, Freigabe später manuell (z. B. nach TWINT)
+     */
     public function sendPpv(Request $request, int $toUserId)
     {
         $request->validate([
-            'media'     => ['required', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,webm', 'max:102400'],
-            'price'     => ['required', 'numeric', 'min:1', 'max:999'],
-            'body'      => ['nullable', 'string', 'max:500'],
+            'media' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,webm', 'max:102400'],
+            'mode'  => ['required', 'in:free,paid,manual'],
+            'price' => ['required_if:mode,paid', 'nullable', 'numeric', 'min:1', 'max:999'],
+            'body'  => ['nullable', 'string', 'max:500'],
         ]);
 
         $user = $request->user();
+        $mode = $request->input('mode');
 
         $file      = $request->file('media');
         $ext       = $file->getClientOriginalExtension();
         $mediaType = in_array(strtolower($ext), ['mp4', 'mov', 'webm']) ? 'video' : 'image';
 
-        // Create message first to get ID, then store file
+        // Nachricht zuerst anlegen (für die ID), dann Datei ablegen.
         $message = Message::create([
-            'from_user_id'  => $user->id,
-            'to_user_id'    => $toUserId,
-            'profile_id'    => $user->profile?->id,
-            'body'          => $request->input('body') ?: null,
-            'ppv_media_type'=> $mediaType,
-            'ppv_price_chf' => $request->input('price'),
-            'ppv_media_path'=> 'placeholder', // updated below
+            'from_user_id'   => $user->id,
+            'to_user_id'     => $toUserId,
+            'profile_id'     => $user->profile?->id,
+            'body'           => $request->input('body') ?: null,
+            'ppv_media_type' => $mediaType,
+            'ppv_media_mode' => $mode,
+            'ppv_price_chf'  => $mode === 'paid' ? $request->input('price') : null,
+            'ppv_media_path' => 'placeholder', // unten aktualisiert
         ]);
 
         $path = $file->storeAs("ppv/{$message->id}", "media.{$ext}", 'local');
         $message->update(['ppv_media_path' => $path]);
 
-        return back()->with('success', 'PPV-Inhalt gesendet.');
+        return back()->with('success', 'Inhalt gesendet.');
+    }
+
+    /**
+     * Manuelle Freigabe eines gesperrten Mediums (Modus „manual") für den
+     * Empfänger – z. B. nachdem der Kunde per TWINT bezahlt hat.
+     */
+    public function releaseMedia(Request $request, int $messageId)
+    {
+        $user = $request->user();
+
+        $message = Message::where('id', $messageId)
+            ->where('from_user_id', $user->id)   // nur eigene Nachrichten
+            ->where('ppv_media_mode', 'manual')
+            ->firstOrFail();
+
+        PpvPurchase::updateOrCreate(
+            ['message_id' => $message->id, 'buyer_user_id' => $message->to_user_id],
+            [
+                'amount_chf' => $message->ppv_price_chf ?? 0,
+                'status'     => 'paid',
+                'method'     => 'manual',
+                'paid_at'    => now(),
+            ],
+        );
+
+        return back()->with('success', 'Inhalt freigegeben.');
     }
 
     public function conversation(Request $request, int $userId)
@@ -142,15 +177,16 @@ class MessageController extends Controller
         ->orderBy('created_at')
         ->get();
 
-        // For PPV messages sent by inserent, count paid purchases
-        $ppvMessageIds = $messages->filter(fn($m) => $m->isPpv())->pluck('id');
-        $purchaseCounts = PpvPurchase::whereIn('message_id', $ppvMessageIds)
+        // Für gesperrte Inhalte: bezahlte/freigegebene Käufe zählen.
+        $gatedIds = $messages->filter(fn($m) => $m->requiresUnlock())->pluck('id');
+        $purchaseCounts = PpvPurchase::whereIn('message_id', $gatedIds)
             ->where('status', 'paid')
             ->selectRaw('message_id, count(*) as cnt')
             ->groupBy('message_id')
             ->pluck('cnt', 'message_id');
 
         $mapped = $messages->map(function ($m) use ($user, $purchaseCounts) {
+            $count = $purchaseCounts[$m->id] ?? 0;
             return [
                 'id'                 => $m->id,
                 'body'               => $m->body,
@@ -161,9 +197,12 @@ class MessageController extends Controller
                 'date'               => $m->created_at->format('d.m.Y'),
                 'read'               => $m->from_user_id === $user->id ? (bool) $m->read_at : null,
                 'ppv_media_type'     => $m->ppv_media_type,
+                'ppv_media_mode'     => $m->ppv_media_mode,
                 'ppv_price_chf'      => $m->ppv_price_chf,
-                'ppv_media_url'      => $m->isPpv() ? route('media.ppv', $m->id) : null,
-                'ppv_purchase_count' => $m->isPpv() ? ($purchaseCounts[$m->id] ?? 0) : null,
+                // Die Inserentin (Erstellerin) darf ihre eigenen Medien immer sehen.
+                'ppv_media_url'      => $m->hasMedia() ? route('media.ppv', $m->id) : null,
+                'ppv_purchase_count' => $m->isPaidOnline() ? $count : null,
+                'ppv_released'       => $m->isManual() ? ($count > 0) : null,
             ];
         });
 

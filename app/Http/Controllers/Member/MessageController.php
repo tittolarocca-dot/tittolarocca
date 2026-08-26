@@ -182,6 +182,7 @@ class MessageController extends Controller
             'to_user_id'     => $profile->user_id,
             'profile_id'     => $profile->id,
             'ppv_media_type' => 'image',
+            'ppv_media_mode' => 'free',
         ]);
 
         $path = $file->storeAs("chat/{$message->id}", "img.{$ext}", 'local');
@@ -212,17 +213,17 @@ class MessageController extends Controller
             ->flip();
 
         $mapped = $messages->map(function ($m) use ($user, $paidIds) {
-            $isPpv      = $m->isPpv();
-            $hasMedia   = $m->ppv_media_type !== null;
-            $purchased  = $isPpv && $paidIds->has($m->id);
+            $gated      = $m->requiresUnlock();
+            $hasMedia   = $m->hasMedia();
+            $purchased  = $gated && $paidIds->has($m->id);
             $fromMe     = $m->from_user_id === $user->id;
 
-            // Regular (free) media is visible to both parties; PPV only if purchased
+            // Freie Medien sehen beide Seiten; gesperrte nur nach Freischaltung.
             $mediaUrl = match(true) {
-                !$hasMedia        => null,
-                !$isPpv           => route('media.ppv', $m->id), // regular chat image
-                $purchased        => route('media.ppv', $m->id), // paid PPV
-                default           => null,
+                !$hasMedia => null,
+                !$gated    => route('media.ppv', $m->id), // freies Chat-Medium
+                $purchased => route('media.ppv', $m->id), // freigeschaltet
+                default    => null,
             };
 
             return [
@@ -235,10 +236,11 @@ class MessageController extends Controller
                 'date'           => $m->created_at->format('d.m.Y'),
                 'read'           => $fromMe ? (bool) $m->read_at : null,
                 'ppv_media_type' => $m->ppv_media_type,
+                'ppv_media_mode' => $m->ppv_media_mode,
                 'ppv_price_chf'  => $m->ppv_price_chf,
                 'ppv_purchased'  => $purchased,
                 'ppv_media_url'  => $mediaUrl,
-                'is_ppv'         => $isPpv,
+                'requires_unlock'=> $gated,
             ];
         });
 
@@ -254,22 +256,22 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        // Launch-Modus: keine echten Zahlungen (Pay-per-View deaktiviert).
-        if (config('features.launch_mode')) {
-            return back()->with('error', 'Im Launch-Modus sind kostenpflichtige Inhalte deaktiviert.');
+        // Nur „Online-Zahlung"-Inhalte sind kaufbar; manuelle werden von der
+        // Inserentin freigegeben, freie brauchen keinen Kauf.
+        if (!$message->isPaidOnline()) {
+            return back()->with('error', 'Dieser Inhalt kann nicht online gekauft werden.');
         }
 
-        if (!$message->isPpv()) {
-            return back()->with('error', 'Diese Nachricht enthält keinen bezahlten Inhalt.');
+        // Online-Zahlung braucht einen konfigurierten Zahlungsanbieter (Stripe).
+        // Solange keiner hinterlegt ist (z. B. Launch-Phase), sauber abweisen
+        // statt mit einer Ausnahme abzustürzen.
+        if (!config('services.stripe.secret')) {
+            return back()->with('error', 'Online-Zahlung ist noch nicht aktiv. Bitte frag die Anbieterin nach einer manuellen Freigabe.');
         }
 
-        // Must be subscribed to the creator
         $profile = $message->profile;
-        if (!$profile || !$user->isSubscribedTo($profile)) {
-            return back()->with('error', 'Nur Abonnenten können Inhalte freischalten.');
-        }
 
-        // Already purchased?
+        // Bereits gekauft?
         $existing = PpvPurchase::where('message_id', $message->id)
             ->where('buyer_user_id', $user->id)
             ->where('status', 'paid')
@@ -319,6 +321,7 @@ class MessageController extends Controller
             [
                 'amount_chf'       => $message->ppv_price_chf,
                 'status'           => 'pending',
+                'method'           => 'stripe',
                 'stripe_session_id'=> $session->id,
             ]
         );

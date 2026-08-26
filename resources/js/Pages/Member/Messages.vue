@@ -111,38 +111,43 @@
                 </div>
 
                 <div class="flex" :class="msg.from_me ? 'justify-end' : 'justify-start'">
-                  <!-- Freies Chat-Bild -->
-                  <template v-if="msg.ppv_media_type && !msg.is_ppv">
+                  <!-- Freies Chat-Medium (Foto/Video) -->
+                  <template v-if="msg.ppv_media_type && !msg.requires_unlock">
                     <div class="max-w-[75%] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8">
-                      <img :src="msg.ppv_media_url" class="w-full object-cover max-h-64" />
+                      <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" class="w-full object-cover max-h-64" />
+                      <video v-else :src="msg.ppv_media_url" controls class="w-full max-h-64" />
                       <div v-if="msg.body" class="px-3 py-1.5 text-xs text-gray-300">{{ msg.body }}</div>
                       <div class="px-3 pb-2 text-[10px] text-gray-500 text-right">{{ msg.time }}<span v-if="msg.from_me" class="ml-1" :class="msg.read ? 'text-sky-400' : 'text-gray-500'">{{ msg.read ? '✓✓' : '✓' }}</span></div>
                     </div>
                   </template>
 
-                  <!-- PPV (gesperrt / gekauft) -->
-                  <template v-else-if="msg.ppv_media_type && msg.is_ppv && !msg.from_me">
+                  <!-- Gesperrtes Medium (Online-Zahlung ODER manuelle Freigabe) -->
+                  <template v-else-if="msg.ppv_media_type && msg.requires_unlock && !msg.from_me">
+                    <!-- Freigeschaltet -->
                     <div v-if="msg.ppv_purchased" class="max-w-[75%] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/8">
                       <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" class="w-full object-cover" />
                       <video v-else :src="msg.ppv_media_url" controls class="w-full max-h-64" />
                       <div v-if="msg.body" class="px-3 py-2 text-xs text-gray-300">{{ msg.body }}</div>
                       <div class="px-3 pb-2 text-[10px] text-gray-500">{{ msg.time }}</div>
                     </div>
+                    <!-- Gesperrt -->
                     <div v-else class="max-w-[75%] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-[#e35d8f]/30">
                       <div class="relative h-40 flex items-center justify-center bg-gradient-to-br from-[#e35d8f]/20 to-[#7c3aed]/20">
-                        <div class="text-center">
+                        <div class="text-center px-4">
                           <div class="text-4xl mb-1">{{ msg.ppv_media_type === 'video' ? '🎬' : '📷' }}</div>
                           <div class="text-xs text-gray-300 font-medium">{{ msg.ppv_media_type === 'video' ? 'Privates Video' : 'Privates Foto' }}</div>
-                          <div class="text-lg font-bold text-[#e35d8f] mt-1">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</div>
+                          <div v-if="msg.ppv_media_mode === 'paid'" class="text-lg font-bold text-[#e35d8f] mt-1">CHF {{ Number(msg.ppv_price_chf).toFixed(2) }}</div>
+                          <div v-else class="text-[11px] text-gray-400 mt-1.5 leading-snug">🔒 Die Anbieterin schaltet dieses Medium nach Vereinbarung frei.</div>
                         </div>
                       </div>
                       <div v-if="msg.body" class="px-3 pt-2 text-xs text-gray-300">{{ msg.body }}</div>
                       <div class="px-3 py-2 flex items-center justify-between">
                         <span class="text-[10px] text-gray-500">{{ msg.time }}</span>
-                        <button @click="buyPpv(msg)" :disabled="buyingId === msg.id"
+                        <button v-if="msg.ppv_media_mode === 'paid'" @click="buyPpv(msg)" :disabled="buyingId === msg.id"
                           class="bg-[#e35d8f] text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-[#c44a7a] disabled:opacity-60 transition">
                           {{ buyingId === msg.id ? '…' : `🔓 CHF ${Number(msg.ppv_price_chf).toFixed(2)} freischalten` }}
                         </button>
+                        <span v-else class="text-[11px] text-gray-500 font-medium">🔒 Gesperrt</span>
                       </div>
                     </div>
                   </template>
