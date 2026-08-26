@@ -105,4 +105,9 @@ return [
     'report_review' => 'Report',
     'report_reason_ph' => 'Why are you reporting this review?',
     'languages_section' => 'Languages',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Request private photos",
+    'private_request_pending' => "Request sent",
+    'private_request_declined' => "Your request was declined.",
 ];

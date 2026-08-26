@@ -161,4 +161,15 @@ return [
     'id_pending_title' => 'Prüfung läuft',
     'id_pending_desc' => 'Deine Veriff-Prüfung wird bearbeitet.',
     'id_rejected_prefix' => 'Abgelehnt:',
+
+    // Foto-Anfragen (private Galerie)
+    'action_gallery_requests' => "Foto-Anfragen",
+    'action_gallery_requests_desc' => "Zugang zu privaten Bildern freigeben",
+    'gallery_requests_title' => "Foto-Anfragen",
+    'gallery_requests_intro' => "Mitglieder, die deine privaten Bilder sehen möchten. Du entscheidest, wer Zugang bekommt.",
+    'gallery_requests_empty' => "Keine offenen Anfragen.",
+    'gallery_requests_approve' => "Freigeben",
+    'gallery_requests_decline' => "Ablehnen",
+    'gallery_requests_approved' => "Freigegeben",
+    'gallery_requests_declined' => "Abgelehnt",
 ];

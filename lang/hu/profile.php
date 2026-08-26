@@ -105,4 +105,9 @@ return [
     'report_review' => 'Jelentés',
     'report_reason_ph' => 'Miért jelented ezt az értékelést?',
     'languages_section' => 'Nyelvek',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Privát képek kérése",
+    'private_request_pending' => "Kérés elküldve",
+    'private_request_declined' => "A kérésedet elutasították.",
 ];

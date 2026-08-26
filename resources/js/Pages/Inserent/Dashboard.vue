@@ -36,7 +36,8 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <Link v-for="action in quickActions" :key="action.label"
             :href="action.href"
-            class="bg-[#1a1a1a] rounded-xl border border-white/8 p-4 flex items-center gap-3 hover:border-[#e35d8f]/40 transition group shadow-sm">
+            class="relative bg-[#1a1a1a] rounded-xl border border-white/8 p-4 flex items-center gap-3 hover:border-[#e35d8f]/40 transition group shadow-sm">
+            <span v-if="action.badge" class="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[#e35d8f] text-white text-[10px] font-bold flex items-center justify-center">{{ action.badge }}</span>
             <span v-if="action.footprint" class="w-8 h-8 shrink-0 flex items-center justify-center">
               <svg class="w-7 h-7 text-[#e35d8f]" viewBox="0 0 64 64" fill="currentColor">
                 <ellipse cx="22" cy="14" rx="7" ry="9" transform="rotate(-15 22 14)"/>
@@ -394,6 +395,7 @@ const props = defineProps({
   credits:        { type: Number,  default: 0 },
   pushCost:       { type: Number,  default: 1 },
   unreadMessages: { type: Number,  default: 0 },
+  galleryRequests:{ type: Number,  default: 0 },
   countries:      { type: Object,  default: () => ({}) },
 });
 
@@ -573,6 +575,7 @@ const quickActions = computed(() => [
   { icon: '✏️', label: t('dashboard.action_edit'),     desc: t('dashboard.action_edit_desc'),     href: route('inserat.profile.edit'),  footprint: false },
   { icon: '🖼️', label: t('dashboard.action_media'),    desc: t('dashboard.action_media_desc'),    href: route('inserat.media.index'),   footprint: false },
   { icon: '💬', label: t('dashboard.action_messages'), desc: t('dashboard.action_msg_desc'),      href: route('inserat.messages'),      footprint: false },
+  { icon: '🔓', label: t('dashboard.action_gallery_requests'), desc: t('dashboard.action_gallery_requests_desc'), href: route('inserat.gallery.requests'), footprint: false, badge: props.galleryRequests },
   { icon: null, label: t('dashboard.action_visitors'), desc: t('dashboard.action_visitors_desc'), href: route('inserat.visitors'),      footprint: true  },
 ]);
 </script>

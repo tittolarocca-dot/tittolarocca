@@ -154,4 +154,15 @@ return [
     'id_pending_title' => 'Verificare în curs',
     'id_pending_desc' => 'Verificarea ta Veriff este în curs de procesare.',
     'id_rejected_prefix' => 'Respins:',
+
+    // Foto-Anfragen (private Galerie)
+    'action_gallery_requests' => "Cereri foto",
+    'action_gallery_requests_desc' => "Acordă acces la pozele private",
+    'gallery_requests_title' => "Cereri foto",
+    'gallery_requests_intro' => "Membrii care vor să vadă pozele tale private. Tu decizi cine primește acces.",
+    'gallery_requests_empty' => "Nicio cerere în așteptare.",
+    'gallery_requests_approve' => "Aprobă",
+    'gallery_requests_decline' => "Respinge",
+    'gallery_requests_approved' => "Aprobat",
+    'gallery_requests_declined' => "Respins",
 ];

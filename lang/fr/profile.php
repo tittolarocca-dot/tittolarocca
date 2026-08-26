@@ -105,4 +105,9 @@ return [
     'report_review' => 'Signaler',
     'report_reason_ph' => 'Pourquoi signales-tu cet avis ?',
     'languages_section' => 'Langues',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Demander les photos privées",
+    'private_request_pending' => "Demande envoyée",
+    'private_request_declined' => "Ta demande a été refusée.",
 ];

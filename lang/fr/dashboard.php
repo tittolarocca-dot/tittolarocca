@@ -154,4 +154,15 @@ return [
     'id_pending_title' => 'Vérification en cours',
     'id_pending_desc' => 'Ta vérification Veriff est en cours de traitement.',
     'id_rejected_prefix' => 'Refusé :',
+
+    // Foto-Anfragen (private Galerie)
+    'action_gallery_requests' => "Demandes de photos",
+    'action_gallery_requests_desc' => "Autoriser l'accès aux photos privées",
+    'gallery_requests_title' => "Demandes de photos",
+    'gallery_requests_intro' => "Les membres qui veulent voir tes photos privées. Tu décides qui obtient l'accès.",
+    'gallery_requests_empty' => "Aucune demande en attente.",
+    'gallery_requests_approve' => "Autoriser",
+    'gallery_requests_decline' => "Refuser",
+    'gallery_requests_approved' => "Autorisé",
+    'gallery_requests_declined' => "Refusé",
 ];

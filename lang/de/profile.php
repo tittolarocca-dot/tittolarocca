@@ -105,4 +105,9 @@ return [
     'report_review' => 'Melden',
     'report_reason_ph' => 'Warum meldest du diese Bewertung?',
     'languages_section' => 'Sprachen',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Private Bilder anfragen",
+    'private_request_pending' => "Anfrage gesendet",
+    'private_request_declined' => "Deine Anfrage wurde abgelehnt.",
 ];

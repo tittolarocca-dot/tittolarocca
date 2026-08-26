@@ -105,4 +105,9 @@ return [
     'report_review' => 'Raportează',
     'report_reason_ph' => 'De ce raportezi această recenzie?',
     'languages_section' => 'Limbi',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Solicită pozele private",
+    'private_request_pending' => "Cerere trimisă",
+    'private_request_declined' => "Cererea ta a fost respinsă.",
 ];

@@ -105,4 +105,9 @@ return [
     'report_review' => 'Reportar',
     'report_reason_ph' => '¿Por qué reportas esta reseña?',
     'languages_section' => 'Idiomas',
+
+    // Foto-Anfragen (private Galerie)
+    'private_request_cta' => "Solicitar fotos privadas",
+    'private_request_pending' => "Solicitud enviada",
+    'private_request_declined' => "Tu solicitud fue rechazada.",
 ];

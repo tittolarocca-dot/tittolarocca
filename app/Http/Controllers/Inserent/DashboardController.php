@@ -23,13 +23,18 @@ class DashboardController extends Controller
 
         $unreadMessages = Message::where('to_user_id', $user->id)->whereNull('read_at')->count();
 
+        $galleryRequests = $profile
+            ? \App\Models\PrivateGalleryRequest::where('profile_id', $profile->id)->where('status', 'pending')->count()
+            : 0;
+
         return inertia('Inserent/Dashboard', [
-            'profile'        => $profile,
-            'launchMode'     => (bool) config('features.launch_mode'),
-            'credits'        => $user->creditsBalance(),
-            'pushCost'       => (int) config('features.push_credit_cost', 1),
-            'unreadMessages' => $unreadMessages,
-            'countries'      => config('countries', []),
+            'profile'         => $profile,
+            'launchMode'      => (bool) config('features.launch_mode'),
+            'credits'         => $user->creditsBalance(),
+            'pushCost'        => (int) config('features.push_credit_cost', 1),
+            'unreadMessages'  => $unreadMessages,
+            'galleryRequests' => $galleryRequests,
+            'countries'       => config('countries', []),
             'stats' => $profile ? [
                 'views'         => $profile->total_views,
                 'subscribers'   => $profile->total_subscribers,

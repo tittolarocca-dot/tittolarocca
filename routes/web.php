@@ -141,6 +141,9 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
+    Route::get('/foto-anfragen',                             [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'index'])->name('gallery.requests');
+    Route::post('/foto-anfragen/{galleryRequest}/freigeben', [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'approve'])->name('gallery.requests.approve');
+    Route::post('/foto-anfragen/{galleryRequest}/ablehnen',  [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'decline'])->name('gallery.requests.decline');
 });
 
 // ── Mitglieder-Bereich ────────────────────────────────────────────────────────
@@ -166,6 +169,7 @@ Route::middleware(['auth', 'verified'])->prefix('konto')->name('konto.')->group(
     Route::put('/bewertung/{review}',                      [\App\Http\Controllers\Member\ReviewController::class, 'update'])->middleware('throttle:6,1')->name('review.update');
     Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/foto-anfrage/{profile:slug}',            [\App\Http\Controllers\Member\GalleryRequestController::class, 'store'])->name('gallery.request');
     Route::post('/like/{profile:slug}',                    [\App\Http\Controllers\Member\LikeController::class, 'toggle'])->name('likes.toggle');
     Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');
 });

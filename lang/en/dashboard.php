@@ -154,4 +154,15 @@ return [
     'id_pending_title' => 'Review in progress',
     'id_pending_desc' => 'Your Veriff check is being processed.',
     'id_rejected_prefix' => 'Rejected:',
+
+    // Foto-Anfragen (private Galerie)
+    'action_gallery_requests' => "Photo requests",
+    'action_gallery_requests_desc' => "Grant access to private photos",
+    'gallery_requests_title' => "Photo requests",
+    'gallery_requests_intro' => "Members who want to see your private photos. You decide who gets access.",
+    'gallery_requests_empty' => "No open requests.",
+    'gallery_requests_approve' => "Approve",
+    'gallery_requests_decline' => "Decline",
+    'gallery_requests_approved' => "Approved",
+    'gallery_requests_declined' => "Declined",
 ];

@@ -84,10 +84,15 @@
                       </template>
                       <template v-else>
                         <p class="text-xs text-gray-300 mb-4">{{ t('profile.launch_gallery_locked') }}</p>
-                        <button type="button" @click="onFavoriteClick"
-                          class="border border-white/20 text-white/90 text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-[#e35d8f] hover:text-[#e35d8f] transition">
-                          {{ favorited ? t('profile.saved_favorite') : t('profile.launch_notify_me') }}
+                        <button v-if="galleryStatus === 'pending'" type="button" disabled
+                          class="border border-green-500/40 text-green-300 text-sm font-semibold px-5 py-2.5 rounded-lg cursor-default">
+                          ✓ {{ t('profile.private_request_pending') }}
                         </button>
+                        <button v-else type="button" @click="onRequestGallery" :disabled="requestingGallery"
+                          class="bg-[#e35d8f] hover:bg-[#c44a7a] disabled:opacity-50 text-white text-sm font-bold px-6 py-2.5 rounded-lg transition">
+                          {{ requestingGallery ? '…' : t('profile.private_request_cta') }}
+                        </button>
+                        <p v-if="galleryStatus === 'declined'" class="text-[11px] text-gray-400 mt-2">{{ t('profile.private_request_declined') }}</p>
                       </template>
                     </template>
 
@@ -715,9 +720,12 @@ const props = defineProps({
   launchMode:          { type: Boolean, default: false },
   launchGalleryFree:   { type: Boolean, default: false },
   isLaunchUnlocked:    { type: Boolean, default: false },
+  galleryRequestStatus:{ type: String,  default: null },
 });
 
 const activeTab        = ref('public');
+const galleryStatus    = ref(props.galleryRequestStatus); // null | pending | approved | declined
+const requestingGallery = ref(false);
 const favorited        = ref(props.isFavorited);
 const liked            = ref(props.isLiked);
 const likesCount       = ref(props.profile.likes_count ?? 0);
@@ -873,6 +881,18 @@ function onFavoriteClick() {
       favorited.value = !favorited.value;
       followersCount.value = Math.max(0, followersCount.value + (favorited.value ? 1 : -1));
     },
+  });
+}
+
+// Zugang zur privaten Galerie bei der Inserentin anfragen (Launch-Modus).
+function onRequestGallery() {
+  if (!page.props.auth?.user) { showMemberGate.value = true; return; }
+  if (requestingGallery.value || galleryStatus.value === 'pending') return;
+  requestingGallery.value = true;
+  router.post(route('konto.gallery.request', props.profile.slug), {}, {
+    preserveScroll: true,
+    onSuccess: () => { galleryStatus.value = 'pending'; },
+    onFinish: () => { requestingGallery.value = false; },
   });
 }
 

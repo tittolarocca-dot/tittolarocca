@@ -107,9 +107,18 @@ class ProfileController extends Controller
 
         // Launch-Modus: Inserentin kann private Galerie kostenlos für registrierte
         // Mitglieder freigeben. Niemals für Gäste – nur eingeloggte Mitglieder.
+        // Zusätzlich kann ein Mitglied individuell Zugang anfragen; die Inserentin
+        // gibt pro Person frei (private_gallery_requests).
         $launchMode        = (bool) config('features.launch_mode');
         $launchGalleryFree = (bool) $profile->launch_gallery_free;
-        $launchUnlocked    = $launchMode && $launchGalleryFree && $user !== null;
+
+        $galleryRequest = ($launchMode && $user && ! $isOwner)
+            ? \App\Models\PrivateGalleryRequest::where('profile_id', $profile->id)
+                ->where('user_id', $user->id)->first()
+            : null;
+        $galleryApproved = $galleryRequest?->status === 'approved';
+
+        $launchUnlocked = $launchMode && $user !== null && ($launchGalleryFree || $galleryApproved);
 
         $unlocked      = $isOwner || $subscribed || (bool) $trialSub || $launchUnlocked;
         $privateItems  = $profile->privateMedia()->get($cols);
@@ -220,6 +229,7 @@ class ProfileController extends Controller
             'launchMode'          => $launchMode,
             'launchGalleryFree'   => $launchGalleryFree,
             'isLaunchUnlocked'    => $launchUnlocked,
+            'galleryRequestStatus'=> $galleryRequest?->status, // null | pending | approved | declined
             'subscribed'          => $request->query('subscribed') === '1',
         ]);
     }

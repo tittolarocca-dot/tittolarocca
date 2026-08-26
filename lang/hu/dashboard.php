@@ -154,4 +154,15 @@ return [
     'id_pending_title' => 'Ellenőrzés folyamatban',
     'id_pending_desc' => 'A Veriff-ellenőrzésed feldolgozás alatt áll.',
     'id_rejected_prefix' => 'Elutasítva:',
+
+    // Foto-Anfragen (private Galerie)
+    'action_gallery_requests' => "Fotókérések",
+    'action_gallery_requests_desc' => "Hozzáférés a privát képekhez",
+    'gallery_requests_title' => "Fotókérések",
+    'gallery_requests_intro' => "Tagok, akik látni szeretnék a privát képeidet. Te döntöd el, ki kap hozzáférést.",
+    'gallery_requests_empty' => "Nincs függőben lévő kérés.",
+    'gallery_requests_approve' => "Jóváhagyás",
+    'gallery_requests_decline' => "Elutasítás",
+    'gallery_requests_approved' => "Jóváhagyva",
+    'gallery_requests_declined' => "Elutasítva",
 ];
