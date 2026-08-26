@@ -6,18 +6,19 @@
     <section class="relative overflow-hidden bg-gradient-to-b from-[#1a1a1a] to-[#111] border-b border-white/10">
       <div class="max-w-4xl mx-auto px-4 py-16 sm:py-20 text-center">
         <span class="inline-block bg-[#e35d8f]/15 text-[#e35d8f] text-xs font-bold px-3 py-1 rounded-full tracking-wide mb-5">
-          🆓 Inserieren ist &amp; bleibt kostenlos
+          💬 Plattform &amp; Community für die Schweiz
         </span>
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-4">
-          Werde entdeckt – <span class="text-[#e35d8f]">gratis inserieren</span> in der ganzen Schweiz
+          Mehr als ein Inserat – <span class="text-[#e35d8f]">deine Community</span>
         </h1>
         <p class="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          booklola.ch ist die neue Schweizer Plattform für Erotik- &amp; Begleitinserate.
-          Erstelle dein Inserat in wenigen Minuten – kostenlos.
+          Auf booklola.ch inserierst du nicht nur: Du chattest direkt mit Interessenten,
+          sammelst echte Bewertungen und baust dir Stammkundschaft auf –
+          schweizweit sichtbar und dauerhaft kostenlos.
         </p>
         <Link :href="route('register')"
           class="inline-flex items-center gap-2 bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-base font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-[#e35d8f]/30">
-          Gratis Inserat erstellen →
+          Gratis Profil erstellen →
         </Link>
         <p class="text-gray-500 text-xs mt-4">Keine Kreditkarte · keine Verpflichtung · jederzeit löschbar</p>
       </div>
