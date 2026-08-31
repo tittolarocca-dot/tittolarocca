@@ -10,26 +10,11 @@
       </p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">Betreiber der Website</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[Name des Betreibers / Firmenname]</span></p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[Rechtsform, z. B. Einzelunternehmen / GmbH / AG]</span></p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[Strasse und Hausnummer]</span></p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[PLZ Ort]</span></p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-4"><span class="text-amber-400">[Land, z. B. Schweiz]</span></p>
+      <p class="text-sm text-gray-300 leading-relaxed mb-1">booklola (Beta-Phase)</p>
+      <p class="text-sm text-gray-300 leading-relaxed mb-4">Schweiz</p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">Kontakt</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1">E-Mail: support@booklola.ch</p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-4">Telefon: <span class="text-amber-400">[optional: Telefonnummer]</span></p>
-
-      <h2 class="text-lg font-bold text-white mt-8 mb-2">Vertretungsberechtigte Person</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-4"><span class="text-amber-400">[Vor- und Nachname der vertretungsberechtigten Person]</span></p>
-
-      <h2 class="text-lg font-bold text-white mt-8 mb-2">Handelsregister / UID</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-4">
-        <span class="text-amber-400">[UID-Nummer (CHE-xxx.xxx.xxx) und Handelsregistereintrag, sofern vorhanden]</span>
-      </p>
-
-      <h2 class="text-lg font-bold text-white mt-8 mb-2">Verantwortlich für den Inhalt</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-4"><span class="text-amber-400">[Name der verantwortlichen Person]</span></p>
+      <p class="text-sm text-gray-300 leading-relaxed mb-4">E-Mail: support@booklola.ch</p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">Haftung für Inhalte</h2>
       <p class="text-sm text-gray-300 leading-relaxed mb-3">
