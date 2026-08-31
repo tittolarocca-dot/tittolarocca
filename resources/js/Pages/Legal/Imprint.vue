@@ -44,7 +44,7 @@
         und enthält Inhalte für Erwachsene.
       </p>
 
-      <p class="text-xs text-gray-500 mt-10">Stand: <span class="text-amber-400">[Datum der letzten Aktualisierung]</span></p>
+      <p class="text-xs text-gray-500 mt-10">Stand: 1.9.2026</p>
     </div>
   </AppLayout>
 </template>
