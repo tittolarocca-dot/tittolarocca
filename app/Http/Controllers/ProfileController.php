@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\ProfilePost;
 use App\Models\ProfileVisit;
+use App\Models\User;
+use App\Support\RelativeTime;
 use App\Support\SeoData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -21,7 +25,7 @@ class ProfileController extends Controller
         $isOwner    = $user && $profile->user_id === $user->id;
         $subscribed = $user && $user->isSubscribedTo($profile);
 
-        $profile->loadMissing(['city', 'category', 'categories', 'tags', 'approvedReviews.reviewer']);
+        $profile->loadMissing(['city', 'category', 'categories', 'tags', 'approvedReviews.reviewer', 'user']);
         $profile->increment('total_views');
 
         // SEO: Titel = Anzeigename, Description aus der Profilbeschreibung (Fallback generisch)
@@ -169,6 +173,31 @@ class ProfileController extends Controller
                 ->first(['id', 'stars', 'comment', 'status'])
             : null;
 
+        // ── Bewertungs-Zusammenfassung (server-seitig, volle Menge) ──
+        $ratingCount = $profile->approvedReviews()->count();
+        $ratingAvg   = $ratingCount > 0
+            ? round((float) $profile->approvedReviews()->avg('stars'), 1)
+            : null;
+
+        // ── Follow (getrennt von Favorit) ──
+        $followersCount = $profile->followers()->count();
+        $isFollowing    = $user ? $user->follows()->where('profile_id', $profile->id)->exists() : false;
+
+        // ── Aktivitätsstatus (nur wenn freigegeben) ──
+        $activity = null;
+        if ($profile->show_activity_status) {
+            $lastActive = $profile->user?->last_active_at;
+            if ($lastActive) {
+                $activity = [
+                    'online'    => RelativeTime::isOnline($lastActive),
+                    'last_seen' => RelativeTime::short($lastActive),
+                ];
+            }
+        }
+
+        // ── Feed: max. 3 neueste sichtbare Beiträge ──
+        $feedPosts = $this->mapFeedPosts($this->visibleFeedQuery($profile, $user)->take(3)->get(), $user);
+
         return Inertia::render('Profile/Show', [
             'profile' => [
                 'id'                     => $profile->id,
@@ -200,7 +229,7 @@ class ProfileController extends Controller
                 'total_subscribers'      => $profile->total_subscribers,
                 'total_views'            => $profile->total_views,
                 'likes_count'            => $profile->likedBy()->count(),
-                'followers_count'        => $profile->favoritedBy()->count(),
+                'followers_count'        => $followersCount,
                 'whatsapp_number'        => $geoBlocked ? null : $profile->whatsapp_number,
                 'telegram_username'      => $geoBlocked ? null : $profile->telegram_username,
                 'address'                => $geoBlocked ? null : $profile->address,
@@ -226,11 +255,88 @@ class ProfileController extends Controller
             'myReview'            => $myReview,
             'isFavorited'         => $user ? $user->favorites()->where('profile_id', $profile->id)->exists() : false,
             'isLiked'             => $user ? $user->likes()->where('profile_id', $profile->id)->exists() : false,
+            'isFollowing'         => $isFollowing,
+            'ratingAvg'           => $ratingAvg,
+            'ratingCount'         => $ratingCount,
+            'activity'            => $activity,
+            'feedPosts'           => $feedPosts,
+            'feedHasMore'         => $this->visibleFeedQuery($profile, $user)->count() > 3,
             'launchMode'          => $launchMode,
             'launchGalleryFree'   => $launchGalleryFree,
             'isLaunchUnlocked'    => $launchUnlocked,
             'galleryRequestStatus'=> $galleryRequest?->status, // null | pending | approved | declined
             'subscribed'          => $request->query('subscribed') === '1',
         ]);
+    }
+
+    /** Öffentliche „Alle Beiträge"-Seite eines Profils. */
+    public function feed(Request $request, Profile $profile)
+    {
+        if (! $profile->isActive()) {
+            abort(404);
+        }
+
+        $user = $request->user();
+        $profile->loadMissing('user');
+
+        $paginator = $this->visibleFeedQuery($profile, $user)->paginate(10)->withQueryString();
+
+        app(SeoData::class)
+            ->forPage($profile->display_name . ' – Feed')
+            ->setCanonical(route('profile.feed', $profile->slug));
+
+        return Inertia::render('Profile/Feed', [
+            'profile'     => ['slug' => $profile->slug, 'display_name' => $profile->display_name],
+            'posts'       => $this->mapFeedPosts($paginator->getCollection(), $user),
+            'nextPageUrl' => $paginator->nextPageUrl(),
+            'isFollowing' => $user ? $user->follows()->where('profile_id', $profile->id)->exists() : false,
+        ]);
+    }
+
+    /** Query über die für $user sichtbaren, veröffentlichten Beiträge eines Profils. */
+    private function visibleFeedQuery(Profile $profile, ?User $user)
+    {
+        $q = $profile->posts()
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
+
+        $isOwner = $user && $profile->user_id === $user->id;
+        if (! $isOwner) {
+            $allowed = ['public'];
+            if ($user && $user->follows()->where('profile_id', $profile->id)->exists()) {
+                $allowed[] = 'followers';
+            }
+            $q->whereIn('visibility', $allowed);
+        }
+
+        return $q->with('media')->withCount('likedBy')->orderByDesc('published_at');
+    }
+
+    /** Feed-Beiträge für die Ausgabe aufbereiten (inkl. Like-Status des Betrachters). */
+    private function mapFeedPosts($posts, ?User $user): array
+    {
+        $ids      = $posts->pluck('id');
+        $likedIds = ($user && $ids->isNotEmpty())
+            ? DB::table('profile_post_likes')
+                ->where('user_id', $user->id)
+                ->whereIn('post_id', $ids)
+                ->pluck('post_id')->flip()
+            : collect();
+
+        return $posts->map(fn ($p) => [
+            'id'         => $p->id,
+            'text'       => $p->text,
+            'visibility' => $p->visibility,
+            'post_type'  => $p->post_type,
+            'time'       => RelativeTime::short($p->published_at ?? $p->created_at),
+            'likes'      => $p->liked_by_count ?? 0,
+            'liked'      => $likedIds->has($p->id),
+            'media'      => $p->media->map(fn ($m) => [
+                'id'   => $m->id,
+                'type' => $m->type,
+                'src'  => $m->type === 'image' ? ($m->src['card'] ?? $m->url) : $m->url,
+                'full' => $m->type === 'image' ? ($m->src['full'] ?? $m->url) : $m->url,
+            ])->values(),
+        ])->values()->all();
     }
 }

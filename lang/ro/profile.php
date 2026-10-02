@@ -110,4 +110,23 @@ return [
     'private_request_cta' => "Solicită pozele private",
     'private_request_pending' => "Cerere trimisă",
     'private_request_declined' => "Cererea ta a fost respinsă.",
+
+    // Feed & Follow
+    'online_now' => "Online",
+    'last_active' => "Activ :time",
+    'status_label' => "Status",
+    'reviews_count' => ":count recenzii",
+    'no_reviews_yet' => "Încă fără recenzii",
+    'followers_label' => "Urmăritori",
+    'follow' => "Urmărește",
+    'following' => "Urmărești",
+    'feed_title' => "Feedul lui :name",
+    'feed_all' => "Toate postările",
+    'feed_older' => "Postări mai vechi",
+    'feed_empty' => ":name nu a publicat încă nimic.",
+    'feed_empty_follow' => "Urmărește :name ca să nu ratezi postările noi.",
+    'feed_create' => "Creează prima postare",
+    'feed_vis_public' => "Public",
+    'feed_vis_followers' => "Doar urmăritori",
+    'feed_vis_private' => "Doar eu",
 ];

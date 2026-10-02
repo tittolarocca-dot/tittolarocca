@@ -165,4 +165,18 @@ return [
     'gallery_requests_decline' => "Respinge",
     'gallery_requests_approved' => "Aprobat",
     'gallery_requests_declined' => "Respins",
+
+    // Feed & Follow
+    'posts_title' => "Postări",
+    'posts_action_desc' => "Creează și gestionează postări",
+    'posts_intro' => "Împărtășește noutăți, poze și videoclipuri cu urmăritorii tăi.",
+    'posts_text_ph' => "Ce vrei să împărtășești?",
+    'posts_add_media' => "Foto/video",
+    'posts_publish' => "Publică",
+    'posts_empty' => "Încă fără postări.",
+    'posts_edit' => "Editează",
+    'posts_delete' => "Șterge",
+    'posts_save' => "Salvează",
+    'posts_cancel' => "Anulează",
+    'posts_delete_confirm' => "Sigur ștergi postarea?",
 ];

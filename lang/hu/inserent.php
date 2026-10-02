@@ -94,4 +94,8 @@ return [
     'g_gigolo' => 'Gigoló',
     'languages' => 'Nyelvek',
     'languages_hint' => 'Válaszd ki a nyelveket, és értékeld, mennyire beszéled (több csillag = jobb).',
+
+    // Aktivitätsstatus
+    'activity_status_title' => "Aktivitási állapot mutatása",
+    'activity_status_hint' => "„Online\" vagy „utoljára aktív\" megjelenítése a profilodon. Ki = nincs aktivitási idő.",
 ];

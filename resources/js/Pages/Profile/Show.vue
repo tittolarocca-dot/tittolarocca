@@ -169,16 +169,10 @@
             class="text-xs bg-[#e35d8f]/10 text-[#e35d8f] border border-[#e35d8f]/30 px-3 py-1 rounded-full font-semibold">
             {{ profile.category }}
           </span>
-          <!-- Rating pills -->
-          <div v-if="reviews.length" class="flex items-center gap-1 text-yellow-400 text-sm">
-            <span>★</span>
-            <span class="text-white font-bold text-sm">{{ avgRating.toFixed(1) }}</span>
-            <span class="text-gray-500 text-xs">({{ reviews.length }})</span>
-          </div>
         </div>
 
-        <!-- Quick info pills -->
-        <div class="flex flex-wrap gap-2 mt-3">
+        <!-- Quick info: Ort · Alter · Aktivität -->
+        <div class="flex flex-wrap items-center gap-2 mt-3">
           <span v-if="profile.city" class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
             <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
             {{ profile.city }}
@@ -187,18 +181,40 @@
             <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ t('profile.age_years', { age: profile.age }) }}
           </span>
-          <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-            <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
-            {{ profile.total_views }} {{ t('profile.views_count') }}
+          <span v-if="activity" class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
+            :class="activity.online ? 'text-green-300 bg-green-500/10 border border-green-500/40' : 'text-gray-400 bg-white/5 border border-white/8'">
+            <span v-if="activity.online" class="w-2 h-2 rounded-full bg-green-400"></span>
+            {{ activity.online ? t('profile.online_now') : t('profile.last_active', { time: activity.last_seen }) }}
           </span>
-          <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
-            {{ likesCount }} {{ t('profile.likes_count') }}
+        </div>
+
+        <!-- Bewertungs-Summary + Follower + Folgen -->
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4">
+          <button type="button" @click="scrollToReviews" class="inline-flex items-center gap-1.5 text-sm text-gray-300 hover:text-[#e35d8f] transition">
+            <template v-if="ratingCount > 0">
+              <span class="text-yellow-400">★</span>
+              <span class="font-bold text-white">{{ Number(ratingAvg).toFixed(1) }}</span>
+              <span class="text-gray-500">· {{ t('profile.reviews_count', { count: ratingCount }) }}</span>
+            </template>
+            <span v-else class="text-gray-500">{{ t('profile.no_reviews_yet') }}</span>
+          </button>
+          <span class="inline-flex items-center gap-1.5 text-sm text-gray-300">
+            <svg class="w-4 h-4 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+            <span class="font-bold text-white">{{ followersCount }}</span>
+            <span class="text-gray-500">{{ t('profile.followers_label') }}</span>
           </span>
-          <span class="inline-flex items-center gap-1 text-xs text-gray-400 bg-white/5 border border-white/8 px-3 py-1.5 rounded-full">
-            <svg class="w-3.5 h-3.5 text-[#e35d8f]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
-            {{ followersCount }} {{ t('profile.followers_count') }}
-          </span>
+        </div>
+
+        <!-- Folgen-Button -->
+        <div v-if="!isOwner" class="mt-4">
+          <button type="button" @click="onFollowClick" :disabled="followBusy"
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition border disabled:opacity-60"
+            :class="following
+              ? 'bg-[#e35d8f]/15 text-[#e35d8f] border-[#e35d8f]/50 hover:bg-[#e35d8f]/25'
+              : 'bg-[#1a1a1a] text-white border-[#e35d8f]/40 hover:border-[#e35d8f] hover:text-[#e35d8f]'">
+            <svg class="w-4 h-4" :fill="following ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            {{ following ? t('profile.following') : t('profile.follow') }}
+          </button>
         </div>
       </div>
     </div>
@@ -214,6 +230,35 @@
           <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">{{ t('profile.about_section', { name: profile.display_name }) }}</h2>
             <p class="text-white text-[16px] leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
+          </div>
+
+          <!-- [Name]s Feed -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider">{{ t('profile.feed_title', { name: profile.display_name }) }}</h2>
+              <Link v-if="feedPosts.length" :href="route('profile.feed', profile.slug)" class="text-xs text-[#e35d8f] hover:underline">{{ t('profile.feed_all') }} →</Link>
+            </div>
+
+            <div v-if="feedPosts.length" class="space-y-4">
+              <FeedPost v-for="p in feedPosts" :key="p.id" :post="p" :author-name="profile.display_name"
+                :avatar-url="feedAvatar" :is-authed="isAuthed" @login="showMemberGate = true" />
+              <Link v-if="feedHasMore" :href="route('profile.feed', profile.slug)"
+                class="block text-center text-sm text-[#e35d8f] hover:underline py-1">{{ t('profile.feed_all') }} →</Link>
+            </div>
+
+            <div v-else class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-6 text-center">
+              <p class="text-gray-300 text-sm">{{ t('profile.feed_empty', { name: profile.display_name }) }}</p>
+              <template v-if="!isOwner">
+                <p class="text-gray-500 text-xs mt-1">{{ t('profile.feed_empty_follow', { name: profile.display_name }) }}</p>
+                <button type="button" @click="onFollowClick" :disabled="followBusy"
+                  class="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold border transition disabled:opacity-60"
+                  :class="following ? 'bg-[#e35d8f]/15 text-[#e35d8f] border-[#e35d8f]/50' : 'bg-[#1a1a1a] text-white border-[#e35d8f]/40 hover:border-[#e35d8f] hover:text-[#e35d8f]'">
+                  {{ following ? t('profile.following') : t('profile.follow') }}
+                </button>
+              </template>
+              <Link v-else :href="route('inserat.posts.index')"
+                class="mt-4 inline-block bg-[#e35d8f] text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-[#c44a7a] transition">{{ t('profile.feed_create') }}</Link>
+            </div>
           </div>
 
           <!-- Steckbrief / Details -->
@@ -293,7 +338,7 @@
           </div>
 
           <!-- Reviews -->
-          <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+          <div id="bewertungen" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 scroll-mt-20">
             <h2 class="font-semibold text-white mb-4">
               {{ t('profile.reviews') }}
               <span class="text-gray-500 font-normal text-sm">({{ reviews.length }})</span>
@@ -519,7 +564,7 @@
               <span class="ml-0.5 opacity-70 font-bold">({{ likesCount }})</span>
             </button>
 
-            <!-- Favorit / Follow -->
+            <!-- Favorit (merken) – getrennt von Follow -->
             <button type="button" @click="onFavoriteClick"
               class="flex items-center justify-center gap-2.5 w-full border text-sm font-bold px-4 py-3.5 rounded-xl transition"
               :class="favorited
@@ -529,7 +574,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
               </svg>
               {{ favorited ? t('profile.saved_favorite') : t('profile.save_favorite') }}
-              <span class="ml-0.5 opacity-70 font-bold">({{ followersCount }})</span>
             </button>
           </div>
 
@@ -556,25 +600,29 @@
           <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{{ t('profile.stat_section') }}</p>
             <div class="space-y-2.5 text-sm">
+              <div v-if="activity" class="flex justify-between items-center">
+                <span class="text-gray-500">{{ t('profile.status_label') }}</span>
+                <span v-if="activity.online" class="inline-flex items-center gap-1.5 text-green-300 font-semibold">
+                  <span class="w-2 h-2 rounded-full bg-green-400"></span>{{ t('profile.online_now') }}
+                </span>
+                <span v-else class="text-gray-300">{{ t('profile.last_active', { time: activity.last_seen }) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">{{ t('profile.followers_label') }}</span>
+                <span class="text-white font-semibold">{{ followersCount }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">{{ t('profile.rating_label') }}</span>
+                <span v-if="ratingCount > 0" class="text-white font-semibold">{{ Number(ratingAvg).toFixed(1) }} ★ ({{ ratingCount }})</span>
+                <span v-else class="text-gray-500">{{ t('profile.no_reviews_yet') }}</span>
+              </div>
               <div class="flex justify-between">
                 <span class="text-gray-500">{{ t('profile.listed_since') }}</span>
                 <span class="text-gray-300">{{ profile.created_at }}</span>
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-500">{{ t('profile.views_count') }}</span>
-                <span class="text-white font-semibold">{{ profile.total_views }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-500">{{ t('profile.likes_count') }}</span>
-                <span class="text-white font-semibold">{{ likesCount }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-500">{{ t('profile.followers_count') }}</span>
-                <span class="text-white font-semibold">{{ followersCount }}</span>
-              </div>
-              <div v-if="reviews.length" class="flex justify-between">
-                <span class="text-gray-500">{{ t('profile.rating_label') }}</span>
-                <span class="text-white font-semibold">{{ avgRating.toFixed(1) }} ★ ({{ reviews.length }})</span>
+              <div class="flex justify-between text-xs pt-1">
+                <span class="text-gray-600">{{ t('profile.views_count') }}</span>
+                <span class="text-gray-500">{{ profile.total_views }}</span>
               </div>
             </div>
           </div>
@@ -631,6 +679,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import MediaThumb from '@/Components/MediaThumb.vue';
+import FeedPost from '@/Components/FeedPost.vue';
 import MemberGateModal from '@/Components/MemberGateModal.vue';
 import { useI18n } from '@/composables/useI18n';
 
@@ -721,6 +770,12 @@ const props = defineProps({
   launchGalleryFree:   { type: Boolean, default: false },
   isLaunchUnlocked:    { type: Boolean, default: false },
   galleryRequestStatus:{ type: String,  default: null },
+  isFollowing:         { type: Boolean, default: false },
+  ratingAvg:           { type: Number,  default: null },
+  ratingCount:         { type: Number,  default: 0 },
+  activity:            { type: Object,  default: null },
+  feedPosts:           { type: Array,   default: () => [] },
+  feedHasMore:         { type: Boolean, default: false },
 });
 
 const activeTab        = ref('public');
@@ -730,6 +785,8 @@ const favorited        = ref(props.isFavorited);
 const liked            = ref(props.isLiked);
 const likesCount       = ref(props.profile.likes_count ?? 0);
 const followersCount   = ref(props.profile.followers_count ?? 0);
+const following        = ref(props.isFollowing);
+const followBusy       = ref(false);
 const showMemberGate   = ref(false);
 const subscribing      = ref(false);
 const trialing         = ref(false);
@@ -752,6 +809,29 @@ const avgRating = computed(() => {
 
 const photoVerified = computed(() => props.profile.verification_status === 'approved');
 const idVerified    = computed(() => props.profile.identity_verification_status === 'approved');
+
+// Feed / Follow Helpers
+const isAuthed  = computed(() => !!page.props.auth?.user);
+const feedAvatar = computed(() => props.publicMedia?.[0]?.src?.thumbnail ?? null);
+
+function onFollowClick() {
+  if (!page.props.auth?.user) { showMemberGate.value = true; return; }
+  if (followBusy.value) return;
+  followBusy.value = true;
+  // optimistisch
+  following.value = !following.value;
+  followersCount.value = Math.max(0, followersCount.value + (following.value ? 1 : -1));
+  router.post(route('konto.follow.toggle', props.profile.slug), {}, {
+    preserveScroll: true,
+    preserveState: true,
+    onFinish: () => { followBusy.value = false; },
+  });
+}
+
+function scrollToReviews() {
+  const el = document.getElementById('bewertungen');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 // Outline-Icons (Heroicons-Stil, 24er viewBox) – bewusst andere Motive als die Vorlage
 const detailIcons = {
@@ -872,14 +952,13 @@ function onLikeClick() {
   });
 }
 
-// Favorit = Follow. Followers = Anzahl Member, die favorisiert haben.
+// Favorit = „merken" (getrennt von Follow; verändert NICHT die Follower-Zahl).
 function onFavoriteClick() {
   if (!page.props.auth?.user) { showMemberGate.value = true; return; }
   router.post(route('konto.favorites.toggle', props.profile.slug), {}, {
     preserveScroll: true,
     onSuccess: () => {
       favorited.value = !favorited.value;
-      followersCount.value = Math.max(0, followersCount.value + (favorited.value ? 1 : -1));
     },
   });
 }

@@ -574,6 +574,7 @@ function deleteProfile() {
 const quickActions = computed(() => [
   { icon: '✏️', label: t('dashboard.action_edit'),     desc: t('dashboard.action_edit_desc'),     href: route('inserat.profile.edit'),  footprint: false },
   { icon: '🖼️', label: t('dashboard.action_media'),    desc: t('dashboard.action_media_desc'),    href: route('inserat.media.index'),   footprint: false },
+  { icon: '📝', label: t('dashboard.posts_title'),     desc: t('dashboard.posts_action_desc'),    href: route('inserat.posts.index'),   footprint: false },
   { icon: '💬', label: t('dashboard.action_messages'), desc: t('dashboard.action_msg_desc'),      href: route('inserat.messages'),      footprint: false },
   { icon: '🔓', label: t('dashboard.action_gallery_requests'), desc: t('dashboard.action_gallery_requests_desc'), href: route('inserat.gallery.requests'), footprint: false, badge: props.galleryRequests },
   { icon: null, label: t('dashboard.action_visitors'), desc: t('dashboard.action_visitors_desc'), href: route('inserat.visitors'),      footprint: true  },

@@ -110,4 +110,23 @@ return [
     'private_request_cta' => "Request private photos",
     'private_request_pending' => "Request sent",
     'private_request_declined' => "Your request was declined.",
+
+    // Feed & Follow
+    'online_now' => "Online",
+    'last_active' => "Last active :time",
+    'status_label' => "Status",
+    'reviews_count' => ":count reviews",
+    'no_reviews_yet' => "No reviews yet",
+    'followers_label' => "Followers",
+    'follow' => "Follow",
+    'following' => "Following",
+    'feed_title' => ":name's feed",
+    'feed_all' => "All posts",
+    'feed_older' => "Older posts",
+    'feed_empty' => ":name hasn't posted anything yet.",
+    'feed_empty_follow' => "Follow :name so you don't miss new posts.",
+    'feed_create' => "Create first post",
+    'feed_vis_public' => "Public",
+    'feed_vis_followers' => "Followers only",
+    'feed_vis_private' => "Only me",
 ];

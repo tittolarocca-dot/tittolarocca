@@ -110,4 +110,23 @@ return [
     'private_request_cta' => "Richiedi le foto private",
     'private_request_pending' => "Richiesta inviata",
     'private_request_declined' => "La tua richiesta è stata rifiutata.",
+
+    // Feed & Follow
+    'online_now' => "Online",
+    'last_active' => "Attiva :time",
+    'status_label' => "Stato",
+    'reviews_count' => ":count recensioni",
+    'no_reviews_yet' => "Ancora nessuna recensione",
+    'followers_label' => "Follower",
+    'follow' => "Segui",
+    'following' => "Segui già",
+    'feed_title' => "Feed di :name",
+    'feed_all' => "Tutti i post",
+    'feed_older' => "Post precedenti",
+    'feed_empty' => ":name non ha ancora pubblicato nulla.",
+    'feed_empty_follow' => "Segui :name per non perderti i nuovi post.",
+    'feed_create' => "Crea il primo post",
+    'feed_vis_public' => "Pubblico",
+    'feed_vis_followers' => "Solo follower",
+    'feed_vis_private' => "Solo io",
 ];

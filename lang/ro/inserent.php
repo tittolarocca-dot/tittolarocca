@@ -94,4 +94,8 @@ return [
     'g_gigolo' => 'Gigolo',
     'languages' => 'Limbi',
     'languages_hint' => 'Alege limbile și evaluează cât de bine le vorbești (mai multe stele = mai bine).',
+
+    // Aktivitätsstatus
+    'activity_status_title' => "Afișează statusul de activitate",
+    'activity_status_hint' => "Afișează „online\" sau „activ\" pe profil. Oprit = fără oră de activitate.",
 ];

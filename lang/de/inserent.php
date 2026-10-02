@@ -94,4 +94,8 @@ return [
     'g_gigolo' => 'Gigolo',
     'languages' => 'Sprachen',
     'languages_hint' => 'Wähle die Sprachen und bewerte, wie gut du sie sprichst (mehr Sterne = besser).',
+
+    // Aktivitätsstatus
+    'activity_status_title' => "Aktivitätsstatus anzeigen",
+    'activity_status_hint' => "Zeigt „Online\" bzw. „zuletzt aktiv\" auf deinem Profil. Aus = kein Aktivitätszeitpunkt sichtbar.",
 ];

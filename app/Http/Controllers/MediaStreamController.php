@@ -95,6 +95,22 @@ class MediaStreamController extends Controller
         $profile = $media->profile;
         $isOwner = $user && $profile->user_id === $user->id;
 
+        // Feed-Medien: Zugriff richtet sich nach der Sichtbarkeit des Beitrags
+        // (public / followers / private) – NICHT nach den Galerie-Regeln.
+        if ($media->context === 'feed') {
+            if ($isOwner) {
+                return;
+            }
+            if ($media->status !== 'approved') {
+                abort(404);
+            }
+            $post = $media->posts()->with('profile')->first();
+            if (! $post || ! $post->isVisibleTo($user)) {
+                abort(403, 'Zugriff nicht erlaubt.');
+            }
+            return;
+        }
+
         if (!$isOwner) {
             if ($media->status !== 'approved') {
                 abort(404);

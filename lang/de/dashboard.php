@@ -172,4 +172,18 @@ return [
     'gallery_requests_decline' => "Ablehnen",
     'gallery_requests_approved' => "Freigegeben",
     'gallery_requests_declined' => "Abgelehnt",
+
+    // Feed & Follow
+    'posts_title' => "Beiträge",
+    'posts_action_desc' => "Feed-Beiträge erstellen & verwalten",
+    'posts_intro' => "Teile Updates, Fotos und Videos mit deinen Follower:innen.",
+    'posts_text_ph' => "Was möchtest du teilen?",
+    'posts_add_media' => "Foto/Video",
+    'posts_publish' => "Veröffentlichen",
+    'posts_empty' => "Noch keine Beiträge.",
+    'posts_edit' => "Bearbeiten",
+    'posts_delete' => "Löschen",
+    'posts_save' => "Speichern",
+    'posts_cancel' => "Abbrechen",
+    'posts_delete_confirm' => "Beitrag wirklich löschen?",
 ];

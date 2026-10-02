@@ -16,6 +16,7 @@ class Profile extends Model
         'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'launch_gallery_free',
+        'show_activity_status',
         'blocked_countries',
         'status', 'listing_expires_at', 'featured_until', 'pushed_at',
         'stripe_product_id', 'stripe_price_id',
@@ -40,6 +41,7 @@ class Profile extends Model
         'age_verified_at'           => 'datetime',
         'subscription_price_chf'    => 'decimal:2',
         'launch_gallery_free'       => 'boolean',
+        'show_activity_status'      => 'boolean',
         'blocked_countries'         => 'array',
         'smoking'                   => 'boolean',
         'tattoo'                    => 'boolean',
@@ -80,9 +82,13 @@ class Profile extends Model
     public function tags()         { return $this->belongsToMany(Tag::class, 'profile_tags'); }
     public function favoritedBy()  { return $this->belongsToMany(User::class, 'favorites')->withTimestamps(); }
     public function likedBy()      { return $this->belongsToMany(User::class, 'likes')->withTimestamps(); }
-    public function media()        { return $this->hasMany(Media::class)->orderBy('sort_order'); }
-    public function publicMedia()  { return $this->hasMany(Media::class)->where('visibility', 'public')->where('status', 'approved'); }
-    public function privateMedia() { return $this->hasMany(Media::class)->where('visibility', 'private')->where('status', 'approved'); }
+    /** Echte Follower (getrennt von „Favorit"). */
+    public function followers()    { return $this->belongsToMany(User::class, 'profile_follows', 'profile_id', 'follower_user_id')->withTimestamps(); }
+    /** Galerie-Medien (context='gallery'); Feed-Medien erscheinen hier NICHT. */
+    public function media()        { return $this->hasMany(Media::class)->where('context', 'gallery')->orderBy('sort_order'); }
+    public function publicMedia()  { return $this->hasMany(Media::class)->where('context', 'gallery')->where('visibility', 'public')->where('status', 'approved'); }
+    public function privateMedia() { return $this->hasMany(Media::class)->where('context', 'gallery')->where('visibility', 'private')->where('status', 'approved'); }
+    public function posts()        { return $this->hasMany(ProfilePost::class); }
     public function subscriptions(){ return $this->hasMany(PlatformSubscription::class); }
     public function reviews()      { return $this->hasMany(Review::class); }
     public function approvedReviews() { return $this->hasMany(Review::class)->where('status', 'approved'); }

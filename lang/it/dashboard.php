@@ -165,4 +165,18 @@ return [
     'gallery_requests_decline' => "Rifiuta",
     'gallery_requests_approved' => "Concesso",
     'gallery_requests_declined' => "Rifiutato",
+
+    // Feed & Follow
+    'posts_title' => "Post",
+    'posts_action_desc' => "Crea e gestisci i post",
+    'posts_intro' => "Condividi aggiornamenti, foto e video con i tuoi follower.",
+    'posts_text_ph' => "Cosa vuoi condividere?",
+    'posts_add_media' => "Foto/video",
+    'posts_publish' => "Pubblica",
+    'posts_empty' => "Ancora nessun post.",
+    'posts_edit' => "Modifica",
+    'posts_delete' => "Elimina",
+    'posts_save' => "Salva",
+    'posts_cancel' => "Annulla",
+    'posts_delete_confirm' => "Eliminare davvero questo post?",
 ];

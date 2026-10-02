@@ -8,7 +8,7 @@ class Media extends Model
     protected $fillable = [
         'profile_id', 'type', 'storage_path', 'blur_path', 'variants',
         'width', 'height', 'mime_type',
-        'visibility', 'status', 'rejection_reason', 'sort_order',
+        'visibility', 'status', 'context', 'rejection_reason', 'sort_order',
         'filesize_bytes', 'duration_seconds',
     ];
 
@@ -58,6 +58,8 @@ class Media extends Model
     }
 
     public function profile()   { return $this->belongsTo(Profile::class); }
+    /** Feed-Beiträge, zu denen dieses Medium gehört (für Visibility-Prüfung). */
+    public function posts()     { return $this->belongsToMany(ProfilePost::class, 'profile_post_media', 'media_id', 'post_id'); }
     public function isPublic()  { return $this->visibility === 'public'; }
     public function isApproved(){ return $this->status === 'approved'; }
 }

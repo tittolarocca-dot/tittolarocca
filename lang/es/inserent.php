@@ -94,4 +94,8 @@ return [
     'g_gigolo' => 'Gigoló',
     'languages' => 'Idiomas',
     'languages_hint' => 'Selecciona los idiomas y valora cómo los hablas (más estrellas = mejor).',
+
+    // Aktivitätsstatus
+    'activity_status_title' => "Mostrar estado de actividad",
+    'activity_status_hint' => "Muestra \"en línea\" o \"activa\" en tu perfil. Off = sin hora de actividad.",
 ];

@@ -110,4 +110,23 @@ return [
     'private_request_cta' => "Privát képek kérése",
     'private_request_pending' => "Kérés elküldve",
     'private_request_declined' => "A kérésedet elutasították.",
+
+    // Feed & Follow
+    'online_now' => "Online",
+    'last_active' => "Utoljára aktív :time",
+    'status_label' => "Állapot",
+    'reviews_count' => ":count értékelés",
+    'no_reviews_yet' => "Még nincs értékelés",
+    'followers_label' => "Követő",
+    'follow' => "Követés",
+    'following' => "Követed",
+    'feed_title' => ":name hírfolyama",
+    'feed_all' => "Összes bejegyzés",
+    'feed_older' => "Régebbi bejegyzések",
+    'feed_empty' => ":name még nem tett közzé bejegyzést.",
+    'feed_empty_follow' => "Kövesd :name-t, hogy ne maradj le az új bejegyzésekről.",
+    'feed_create' => "Első bejegyzés létrehozása",
+    'feed_vis_public' => "Nyilvános",
+    'feed_vis_followers' => "Csak követők",
+    'feed_vis_private' => "Csak én",
 ];

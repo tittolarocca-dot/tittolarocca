@@ -19,6 +19,7 @@ Route::get('/stadt/{city:slug}',         [HomeController::class,   'city'])->nam
 Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])->name('category');
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
+Route::get('/profil/{profile:slug}/feed', [ProfileController::class,'feed'])->name('profile.feed');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
 
 // SEO: dynamische XML-Sitemap
@@ -141,6 +142,10 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
+    Route::get('/beitraege',            [\App\Http\Controllers\Inserent\PostController::class, 'index'])->name('posts.index');
+    Route::post('/beitraege',           [\App\Http\Controllers\Inserent\PostController::class, 'store'])->name('posts.store');
+    Route::put('/beitraege/{post}',     [\App\Http\Controllers\Inserent\PostController::class, 'update'])->name('posts.update');
+    Route::delete('/beitraege/{post}',  [\App\Http\Controllers\Inserent\PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/foto-anfragen',                             [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'index'])->name('gallery.requests');
     Route::post('/foto-anfragen/{galleryRequest}/freigeben', [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'approve'])->name('gallery.requests.approve');
     Route::post('/foto-anfragen/{galleryRequest}/ablehnen',  [\App\Http\Controllers\Inserent\GalleryRequestController::class, 'decline'])->name('gallery.requests.decline');
@@ -171,6 +176,8 @@ Route::middleware(['auth', 'verified'])->prefix('konto')->name('konto.')->group(
     Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::post('/foto-anfrage/{profile:slug}',            [\App\Http\Controllers\Member\GalleryRequestController::class, 'store'])->name('gallery.request');
     Route::post('/like/{profile:slug}',                    [\App\Http\Controllers\Member\LikeController::class, 'toggle'])->name('likes.toggle');
+    Route::post('/folgen/{profile:slug}',                  [\App\Http\Controllers\Member\FollowController::class, 'toggle'])->name('follow.toggle');
+    Route::post('/beitrag/{post}/like',                    [\App\Http\Controllers\Member\PostLikeController::class, 'toggle'])->name('posts.like');
     Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');
 });
 

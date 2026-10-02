@@ -165,4 +165,18 @@ return [
     'gallery_requests_decline' => "Elutasítás",
     'gallery_requests_approved' => "Jóváhagyva",
     'gallery_requests_declined' => "Elutasítva",
+
+    // Feed & Follow
+    'posts_title' => "Bejegyzések",
+    'posts_action_desc' => "Bejegyzések kezelése",
+    'posts_intro' => "Oszd meg az újdonságokat, képeket és videókat a követőiddel.",
+    'posts_text_ph' => "Mit szeretnél megosztani?",
+    'posts_add_media' => "Fotó/videó",
+    'posts_publish' => "Közzététel",
+    'posts_empty' => "Még nincs bejegyzés.",
+    'posts_edit' => "Szerkesztés",
+    'posts_delete' => "Törlés",
+    'posts_save' => "Mentés",
+    'posts_cancel' => "Mégse",
+    'posts_delete_confirm' => "Biztosan törlöd a bejegyzést?",
 ];

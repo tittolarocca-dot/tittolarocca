@@ -330,6 +330,17 @@
               </span>
             </label>
           </div>
+          <!-- Aktivitätsstatus (Online / zuletzt aktiv) anzeigen -->
+          <div class="sm:col-span-2 bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" v-model="form.show_activity_status"
+                class="mt-0.5 w-5 h-5 rounded accent-[#e35d8f] cursor-pointer shrink-0" />
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-gray-800">{{ t('inserent.activity_status_title') }}</span>
+                <span class="block text-xs text-gray-500 mt-0.5">{{ t('inserent.activity_status_hint') }}</span>
+              </span>
+            </label>
+          </div>
         </div>
 
         <!-- Actions -->
@@ -434,6 +445,7 @@ const form = useForm({
   website:                props.profile?.website                ?? '',
   subscription_price_chf: props.profile?.subscription_price_chf ?? 10,
   launch_gallery_free:    props.profile?.launch_gallery_free    ?? false,
+  show_activity_status:   props.profile?.show_activity_status   ?? true,
   tag_ids:                props.profile?.tag_ids                ?? [],
 });
 

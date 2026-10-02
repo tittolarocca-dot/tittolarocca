@@ -18,6 +18,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'gender', 'age', 'height_cm', 'weight_kg', 'city_id', 'languages',
         'smoking', 'bio', 'preferences', 'deactivated_at',
         'avatar_path', 'avatar_status', 'avatar_rejection_reason', 'avatar_moderated_at',
+        'last_active_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -30,6 +31,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             'blocked_at'        => 'datetime',
             'deactivated_at'    => 'datetime',
             'avatar_moderated_at' => 'datetime',
+            'last_active_at'    => 'datetime',
             'languages'         => 'array',
             'smoking'           => 'boolean',
             'age'               => 'integer',
@@ -53,6 +55,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function platformSubscriptions() { return $this->hasMany(PlatformSubscription::class, 'subscriber_user_id'); }
     public function favorites() { return $this->belongsToMany(Profile::class, 'favorites')->withTimestamps(); }
     public function likes()     { return $this->belongsToMany(Profile::class, 'likes')->withTimestamps(); }
+    /** Profile, denen dieser Nutzer folgt (getrennt von „Favorit"). */
+    public function follows()   { return $this->belongsToMany(Profile::class, 'profile_follows', 'follower_user_id', 'profile_id')->withTimestamps(); }
     public function creditBalance()      { return $this->hasOne(CreditBalance::class); }
     public function creditTransactions() { return $this->hasMany(CreditTransaction::class); }
     public function chatBlocks()         { return $this->hasMany(ChatBlock::class); }
