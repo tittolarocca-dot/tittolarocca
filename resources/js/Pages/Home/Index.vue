@@ -2,8 +2,8 @@
   <AppLayout>
     <Head :title="seoTitle || t('home.title')" />
 
-    <!-- Hero + Filters -->
-    <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4">
+    <!-- Hero + Filters (ab Tablet/Desktop fixiert, damit nur die Inserate scrollen) -->
+    <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4 md:sticky md:top-13 md:z-30">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
           {{ t('home.hero') }}
