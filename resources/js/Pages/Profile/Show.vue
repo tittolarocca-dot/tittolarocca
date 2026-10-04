@@ -226,41 +226,6 @@
         <!-- ── MAIN CONTENT ──────────────────────────────────────────────── -->
         <div class="flex-1 min-w-0 space-y-5 lg:order-2">
 
-          <!-- Über mich / Beschreibung -->
-          <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
-            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">{{ t('profile.about_section', { name: profile.display_name }) }}</h2>
-            <p class="text-white text-[16px] leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
-          </div>
-
-          <!-- [Name]s Feed -->
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider">{{ t('profile.feed_title', { name: profile.display_name }) }}</h2>
-              <Link v-if="feedPosts.length" :href="route('profile.feed', profile.slug)" class="text-xs text-[#e35d8f] hover:underline">{{ t('profile.feed_all') }} →</Link>
-            </div>
-
-            <div v-if="feedPosts.length" class="space-y-4">
-              <FeedPost v-for="p in feedPosts" :key="p.id" :post="p" :author-name="profile.display_name"
-                :avatar-url="feedAvatar" :is-authed="isAuthed" @login="showMemberGate = true" />
-              <Link v-if="feedHasMore" :href="route('profile.feed', profile.slug)"
-                class="block text-center text-sm text-[#e35d8f] hover:underline py-1">{{ t('profile.feed_all') }} →</Link>
-            </div>
-
-            <div v-else class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-6 text-center">
-              <p class="text-gray-300 text-sm">{{ t('profile.feed_empty', { name: profile.display_name }) }}</p>
-              <template v-if="!isOwner">
-                <p class="text-gray-500 text-xs mt-1">{{ t('profile.feed_empty_follow', { name: profile.display_name }) }}</p>
-                <button type="button" @click="onFollowClick" :disabled="followBusy"
-                  class="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold border transition disabled:opacity-60"
-                  :class="following ? 'bg-[#e35d8f]/15 text-[#e35d8f] border-[#e35d8f]/50' : 'bg-[#1a1a1a] text-white border-[#e35d8f]/40 hover:border-[#e35d8f] hover:text-[#e35d8f]'">
-                  {{ following ? t('profile.following') : t('profile.follow') }}
-                </button>
-              </template>
-              <Link v-else :href="route('inserat.posts.index')"
-                class="mt-4 inline-block bg-[#e35d8f] text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-[#c44a7a] transition">{{ t('profile.feed_create') }}</Link>
-            </div>
-          </div>
-
           <!-- Steckbrief / Details -->
           <div v-if="details.length" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{{ t('profile.details_section') }}</h2>
@@ -306,6 +271,41 @@
                 </span>
               </div>
             </div>
+          </div>
+
+          <!-- [Name]s Feed -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider">{{ t('profile.feed_title', { name: profile.display_name }) }}</h2>
+              <Link v-if="feedPosts.length" :href="route('profile.feed', profile.slug)" class="text-xs text-[#e35d8f] hover:underline">{{ t('profile.feed_all') }} →</Link>
+            </div>
+
+            <div v-if="feedPosts.length" class="space-y-4">
+              <FeedPost v-for="p in feedPosts" :key="p.id" :post="p" :author-name="profile.display_name"
+                :avatar-url="feedAvatar" :is-authed="isAuthed" @login="showMemberGate = true" />
+              <Link v-if="feedHasMore" :href="route('profile.feed', profile.slug)"
+                class="block text-center text-sm text-[#e35d8f] hover:underline py-1">{{ t('profile.feed_all') }} →</Link>
+            </div>
+
+            <div v-else class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-6 text-center">
+              <p class="text-gray-300 text-sm">{{ t('profile.feed_empty', { name: profile.display_name }) }}</p>
+              <template v-if="!isOwner">
+                <p class="text-gray-500 text-xs mt-1">{{ t('profile.feed_empty_follow', { name: profile.display_name }) }}</p>
+                <button type="button" @click="onFollowClick" :disabled="followBusy"
+                  class="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold border transition disabled:opacity-60"
+                  :class="following ? 'bg-[#e35d8f]/15 text-[#e35d8f] border-[#e35d8f]/50' : 'bg-[#1a1a1a] text-white border-[#e35d8f]/40 hover:border-[#e35d8f] hover:text-[#e35d8f]'">
+                  {{ following ? t('profile.following') : t('profile.follow') }}
+                </button>
+              </template>
+              <Link v-else :href="route('inserat.posts.index')"
+                class="mt-4 inline-block bg-[#e35d8f] text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-[#c44a7a] transition">{{ t('profile.feed_create') }}</Link>
+            </div>
+          </div>
+
+          <!-- Über mich / Beschreibung -->
+          <div v-if="profile.description" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5">
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">{{ t('profile.about_section', { name: profile.display_name }) }}</h2>
+            <p class="text-white text-[16px] leading-relaxed whitespace-pre-line">{{ profile.description }}</p>
           </div>
 
           <!-- Review Form / eigene Bewertung -->
