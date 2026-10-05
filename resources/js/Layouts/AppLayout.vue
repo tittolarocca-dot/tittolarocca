@@ -139,7 +139,6 @@
         <div>
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_platform') }}</h5>
           <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.about') }}</a>
             <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.contact') }}</a>
           </div>
         </div>
