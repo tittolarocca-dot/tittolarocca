@@ -6,6 +6,7 @@ use App\Models\Media;
 use App\Models\Message;
 use App\Models\PpvPurchase;
 use App\Services\ImageBlur;
+use App\Services\ImageVariants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,38 +50,68 @@ class MediaStreamController extends Controller
     public function show(Request $request, Media $media)
     {
         $this->authorizeOriginal($request, $media);
-        return $this->streamFile($request, $media->storage_path);
+        return $this->streamFile($request, $media->storage_path, $media->visibility === 'public');
+    }
+
+    /** Öffentlicher, stateless Original-/Video-Stream (nur public+approved) – CDN-cachebar. */
+    public function pubStream(Request $request, Media $media)
+    {
+        $this->assertPublic($media);
+        return $this->streamFile($request, $media->storage_path, true);
     }
 
     /**
-     * Liefert eine optimierte Variante (thumbnail/card/full).
-     * WICHTIG: identische Berechtigungsprüfung wie beim Original – scharfe
-     * Varianten privater Medien nur an Owner/Abonnenten.
+     * Liefert eine optimierte Variante (thumbnail/card/full). Fehlende Varianten
+     * werden on-the-fly erzeugt – es wird NIE das volle Original ausgeliefert.
+     * Gleiche Berechtigungsprüfung wie beim Original.
      */
-    public function variant(Request $request, Media $media, string $variant, ImageBlur $blur)
+    public function variant(Request $request, Media $media, string $variant, ImageVariants $gen)
     {
-        if (! array_key_exists($variant, \App\Services\ImageVariants::SIZES)) {
+        $this->authorizeOriginal($request, $media);
+        return $this->serveVariant($request, $media, $variant, $media->visibility === 'public', $gen);
+    }
+
+    /** Öffentliche, stateless Variante (nur public+approved) – CDN-cachebar. */
+    public function pubVariant(Request $request, Media $media, string $variant, ImageVariants $gen)
+    {
+        $this->assertPublic($media);
+        return $this->serveVariant($request, $media, $variant, true, $gen);
+    }
+
+    /** Nur öffentliche, freigegebene Medien dürfen über die stateless Public-Routen. */
+    private function assertPublic(Media $media): void
+    {
+        abort_unless($media->visibility === 'public' && $media->status === 'approved', 404);
+    }
+
+    private function serveVariant(Request $request, Media $media, string $variant, bool $public, ImageVariants $gen)
+    {
+        if (! array_key_exists($variant, ImageVariants::SIZES)) {
             abort(404);
         }
 
-        $this->authorizeOriginal($request, $media);
-
-        $variants = $media->variants ?? [];
-        $path     = $variants[$variant] ?? null;
-        $disk     = Storage::disk('local');
-
-        // Variante fehlt (noch nicht erzeugt) → auf Original-Stream zurückfallen
-        if (! $path || ! $disk->exists($path)) {
-            return $this->streamFile($request, $media->storage_path);
+        // Kein Bild (Video) → Original streamen.
+        if ($media->type !== 'image') {
+            return $this->streamFile($request, $media->storage_path, $public);
         }
 
-        $isPublic  = $media->visibility === 'public';
-        $mime      = str_ends_with($path, '.webp') ? 'image/webp' : 'image/jpeg';
-        // Öffentliche Varianten: lange, unveränderliche Cache-Zeit (URL ist versioniert).
-        // Private Varianten: nur privat cachen (nie in Shared-Caches/CDN).
-        $cache = $isPublic
-            ? 'public, max-age=31536000, immutable'
-            : 'private, max-age=3600';
+        $disk = Storage::disk('local');
+        $path = ($media->variants ?? [])[$variant] ?? null;
+
+        // Variante fehlt → on-the-fly erzeugen (statt das Original auszuliefern).
+        if (! $path || ! $disk->exists($path)) {
+            $gen->generate($media);
+            $media->refresh();
+            $path = ($media->variants ?? [])[$variant] ?? null;
+        }
+
+        // Falls die Generierung scheitert: Original (beim Upload auf ≤2000px gekappt).
+        if (! $path || ! $disk->exists($path)) {
+            return $this->streamFile($request, $media->storage_path, $public);
+        }
+
+        $mime  = str_ends_with($path, '.webp') ? 'image/webp' : 'image/jpeg';
+        $cache = $public ? 'public, max-age=31536000, immutable' : 'private, max-age=3600';
 
         return response($disk->get($path), 200, [
             'Content-Type'  => $mime,
@@ -170,7 +201,7 @@ class MediaStreamController extends Controller
         return $this->streamFile($request, $message->ppv_media_path);
     }
 
-    private function streamFile(Request $request, string $path)
+    private function streamFile(Request $request, string $path, bool $public = false)
     {
         $disk = Storage::disk('local');
 
@@ -189,10 +220,11 @@ class MediaStreamController extends Controller
             default       => 'application/octet-stream',
         };
 
-        $size = $disk->size($path);
+        $size  = $disk->size($path);
+        $cache = $public ? 'public, max-age=31536000, immutable' : 'private, max-age=3600';
 
         if ($request->hasHeader('Range')) {
-            return $this->streamRange($disk, $path, $size, $mimeType, $request->header('Range'));
+            return $this->streamRange($disk, $path, $size, $mimeType, $request->header('Range'), $cache);
         }
 
         return response()->stream(function () use ($disk, $path) {
@@ -209,12 +241,12 @@ class MediaStreamController extends Controller
             'Content-Length'      => $size,
             'Content-Disposition' => 'inline',
             'Accept-Ranges'       => 'bytes',
-            'Cache-Control'       => 'private, max-age=3600',
+            'Cache-Control'       => $cache,
             'X-Accel-Buffering'   => 'no',
         ]);
     }
 
-    private function streamRange($disk, string $path, int $size, string $mimeType, string $rangeHeader)
+    private function streamRange($disk, string $path, int $size, string $mimeType, string $rangeHeader, string $cache = 'private, max-age=3600')
     {
         preg_match('/bytes=(\d*)-(\d*)/', $rangeHeader, $m);
         $start = ($m[1] !== '') ? (int) $m[1] : 0;
@@ -244,7 +276,7 @@ class MediaStreamController extends Controller
             'Content-Range'       => "bytes {$start}-{$end}/{$size}",
             'Accept-Ranges'       => 'bytes',
             'Content-Disposition' => 'inline',
-            'Cache-Control'       => 'private, max-age=3600',
+            'Cache-Control'       => $cache,
             'X-Accel-Buffering'   => 'no',
         ]);
     }

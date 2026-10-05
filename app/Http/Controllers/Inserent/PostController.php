@@ -106,9 +106,13 @@ class PostController extends Controller
             'visibility' => $request->input('visibility'),
         ]);
 
-        // Medien-Sichtbarkeit nachziehen (öffentlich vs. geschützt).
+        // Medien-Sichtbarkeit nachziehen (öffentlich vs. geschützt) und updated_at
+        // bumpen, damit die ?v=-URL wechselt (keine veraltet-öffentlichen CDN-Treffer).
         $mediaVisibility = $request->input('visibility') === 'public' ? 'public' : 'private';
-        Media::whereIn('id', $post->media()->pluck('media.id'))->update(['visibility' => $mediaVisibility]);
+        Media::whereIn('id', $post->media()->pluck('media.id'))->update([
+            'visibility' => $mediaVisibility,
+            'updated_at' => now(),
+        ]);
 
         return back()->with('success', 'Beitrag aktualisiert.');
     }
@@ -168,6 +172,7 @@ class PostController extends Controller
         if ($isImage) {
             app(ImageVariants::class)->generate($media);
             app(ImageBlur::class)->generate($media);
+            app(ImageVariants::class)->capOriginal($media);
         }
 
         return $media->fresh();

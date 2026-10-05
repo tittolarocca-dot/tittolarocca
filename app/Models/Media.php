@@ -23,16 +23,19 @@ class Media extends Model
         'height'           => 'integer',
     ];
 
-    /** Original-Stream (auth-geprüft in MediaStreamController). */
+    /** Original-/Video-Stream. Öffentliche Medien: stateless + CDN-cachebar. */
     public function getUrlAttribute(): string
     {
-        return route('media.stream', $this->id);
+        return $this->visibility === 'public'
+            ? route('media.pub.stream', $this->id)
+            : route('media.stream', $this->id);
     }
 
     /**
-     * Optimierte, versionierte Varianten-URLs (thumbnail/card/full).
-     * Nur für Bilder; fehlende Varianten fallen auf den Original-Stream zurück.
-     * Die Route ist bei privaten Medien identisch autorisiert wie das Original.
+     * Optimierte, versionierte Varianten-URLs (thumbnail/card/full) – nur Bilder.
+     * Zeigt IMMER auf die Varianten-Route (diese erzeugt fehlende Varianten
+     * on-the-fly) – es wird nie das volle Original verlinkt.
+     * Öffentliche Medien laufen über die stateless, CDN-cachebare Public-Route.
      */
     public function getSrcAttribute(): ?array
     {
@@ -40,14 +43,11 @@ class Media extends Model
             return null;
         }
 
-        $variants = $this->variants ?? [];
-        $version  = $this->updated_at?->timestamp ?? 1;
-        $fallback = $this->getUrlAttribute();
+        $version = $this->updated_at?->timestamp ?? 1;
+        $route   = $this->visibility === 'public' ? 'media.pub.variant' : 'media.variant';
 
-        $build = function (string $size) use ($variants, $version, $fallback) {
-            return ! empty($variants[$size])
-                ? route('media.variant', ['media' => $this->id, 'variant' => $size]) . '?v=' . $version
-                : $fallback;
+        $build = function (string $size) use ($route, $version) {
+            return route($route, ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
         };
 
         return [

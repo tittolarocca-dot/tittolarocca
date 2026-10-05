@@ -67,7 +67,7 @@ class ProfileController extends Controller
             'visibility' => $m->visibility,
             'width'      => $m->width,
             'height'     => $m->height,
-            'url'        => route('media.stream', $m->id), // Video + Fallback
+            'url'        => $m->url,                        // Video + Fallback (public → CDN-cachebar)
             'src'        => $m->src,                        // Bild-Varianten (null bei Video)
         ];
         $lockedItem = fn ($m) => [

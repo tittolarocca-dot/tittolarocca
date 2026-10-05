@@ -118,4 +118,66 @@ class ImageVariants
     {
         return array_values($media->variants ?? []);
     }
+
+    /**
+     * Verkleinert das gespeicherte ORIGINAL in-place auf max. $maxW px Breite
+     * (gleiches Format). Damit landet nie ein Multi-MB-/4000px-Original im
+     * Storage – die Varianten (≤1600px) genügen für die Auslieferung, das
+     * Original dient nur noch als Generierungs-/Notfall-Quelle.
+     * Sollte NACH generate() laufen (Varianten aus bester Quelle).
+     */
+    public function capOriginal(Media $media, int $maxW = 2000): void
+    {
+        if ($media->type !== 'image') {
+            return;
+        }
+
+        $disk = Storage::disk('local');
+        if (! $media->storage_path || ! $disk->exists($media->storage_path)) {
+            return;
+        }
+
+        $raw  = $disk->get($media->storage_path);
+        $info = @getimagesizefromstring($raw);
+        if ($info === false) {
+            return;
+        }
+
+        [$ow, $oh] = $info;
+        if ($ow < 1 || $oh < 1 || ($ow * $oh) > self::MAX_PIXELS || $ow <= $maxW) {
+            return; // schon klein genug
+        }
+
+        $src = @imagecreatefromstring($raw);
+        if ($src === false) {
+            return;
+        }
+
+        $tw  = $maxW;
+        $th  = max(1, (int) round($oh * $tw / $ow));
+        $dst = imagecreatetruecolor($tw, $th);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $tw, $th, $ow, $oh);
+
+        $ext = strtolower(pathinfo($media->storage_path, PATHINFO_EXTENSION));
+        ob_start();
+        $ok = match ($ext) {
+            'png'  => imagepng($dst, null, 6),
+            'webp' => function_exists('imagewebp') ? imagewebp($dst, null, self::QUALITY) : imagejpeg($dst, null, self::QUALITY),
+            default => imagejpeg($dst, null, self::QUALITY),
+        };
+        $data = ob_get_clean();
+        imagedestroy($dst);
+        imagedestroy($src);
+
+        if ($ok && $data) {
+            $disk->put($media->storage_path, $data);
+            $media->forceFill([
+                'width'          => $tw,
+                'height'         => $th,
+                'filesize_bytes' => strlen($data),
+            ])->save();
+        }
+    }
 }

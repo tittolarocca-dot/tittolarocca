@@ -108,10 +108,12 @@ class MediaController extends Controller
             'filesize_bytes' => $file->getSize(),
         ]);
 
-        // Optimierte WebP-Varianten + Locked-Content-Blur erzeugen (synchron)
+        // Optimierte WebP-Varianten + Locked-Content-Blur erzeugen (synchron),
+        // danach das Original auf max. 2000px kappen (keine Multi-MB-Originale).
         if ($type === 'image') {
             app(\App\Services\ImageVariants::class)->generate($media);
             app(\App\Services\ImageBlur::class)->generate($media);
+            app(\App\Services\ImageVariants::class)->capOriginal($media);
         }
 
         return back()->with('success', 'Datei hochgeladen und sofort sichtbar.');
