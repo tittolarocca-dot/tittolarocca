@@ -14,8 +14,8 @@
       </p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">1. Verantwortliche Stelle</h2>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[Name des Betreibers / Firmenname]</span></p>
-      <p class="text-sm text-gray-300 leading-relaxed mb-1"><span class="text-amber-400">[Adresse, PLZ Ort, Land]</span></p>
+      <p class="text-sm text-gray-300 leading-relaxed mb-1">booklola.ch</p>
+      <p class="text-sm text-gray-300 leading-relaxed mb-1">Diese Website befindet sich im Beta-Betrieb. Es findet keine Geschäftstätigkeit statt, und es werden keine Zahlungen verarbeitet.</p>
       <p class="text-sm text-gray-300 leading-relaxed mb-4">E-Mail: support@booklola.ch</p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">2. Welche Daten wir bearbeiten</h2>
