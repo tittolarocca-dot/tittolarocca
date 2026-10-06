@@ -69,6 +69,7 @@ class ProfileController extends Controller
             'height'     => $m->height,
             'url'        => $m->url,                        // Video + Fallback (public → CDN-cachebar)
             'src'        => $m->src,                        // Bild-Varianten (null bei Video)
+            'lqip'       => $m->lqip,                       // Blur-Platzhalter (data-URI)
         ];
         $lockedItem = fn ($m) => [
             'id'          => $m->id,

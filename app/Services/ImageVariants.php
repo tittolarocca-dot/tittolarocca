@@ -100,10 +100,13 @@ class ImageVariants
             return null;
         }
 
+        $lqip = $this->makeLqip($src, $ow, $oh);
+
         imagedestroy($src);
 
         $media->forceFill([
             'variants'       => $variants,
+            'lqip'           => $lqip,
             'width'          => $ow,
             'height'         => $oh,
             'mime_type'      => $mime,
@@ -111,6 +114,33 @@ class ImageVariants
         ])->save();
 
         return $variants;
+    }
+
+    /** Winziges, unscharfes Vorschaubild als data-URI (base64) für LQIP-Platzhalter. */
+    private function makeLqip($src, int $ow, int $oh): ?string
+    {
+        $w = 24;
+        $h = max(1, (int) round($oh * $w / $ow));
+
+        $small = imagecreatetruecolor($w, $h);
+        imagealphablending($small, false);
+        imagesavealpha($small, true);
+        imagecopyresampled($small, $src, 0, 0, 0, 0, $w, $h, $ow, $oh);
+        for ($i = 0; $i < 2; $i++) {
+            @imagefilter($small, IMG_FILTER_GAUSSIAN_BLUR);
+        }
+
+        $useWebp = function_exists('imagewebp');
+        ob_start();
+        $ok = $useWebp ? imagewebp($small, null, 45) : imagejpeg($small, null, 40);
+        $data = ob_get_clean();
+        imagedestroy($small);
+
+        if (! $ok || ! $data) {
+            return null;
+        }
+
+        return 'data:' . ($useWebp ? 'image/webp' : 'image/jpeg') . ';base64,' . base64_encode($data);
     }
 
     /** Alle Variant-Storage-Pfade eines Media (für das Löschen). */

@@ -20,11 +20,11 @@
           draggable="false"
           :alt="alt" />
         <img v-else
-          class="lazyload w-full h-full object-cover object-top select-none"
+          class="cg-lazy lazyload w-full h-full object-cover object-top select-none"
           :data-src="src(m, 'card')"
           :data-srcset="srcset(m)"
           data-sizes="auto"
-          src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+          :src="placeholder(m)"
           draggable="false"
           :alt="alt" />
       </div>
@@ -79,6 +79,11 @@ function src(m, size) {
 function srcset(m) {
   return m?.src ? `${m.src.thumbnail} 320w, ${m.src.card} 720w` : undefined;
 }
+// LQIP-Platzhalter (winziges Blur-Bild als data-URI); Fallback: transparentes Pixel
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+function placeholder(m) {
+  return m?.lqip ?? BLANK;
+}
 </script>
 
 <style scoped>
@@ -86,4 +91,7 @@ function srcset(m) {
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 /* Horizontales Wischen erlauben, vertikales Scrollen der Seite nicht blockieren */
 .cg-track { touch-action: pan-x pan-y; }
+/* LQIP-Blur-Up: Platzhalter leicht unscharf, echtes Bild blendet scharf ein */
+.cg-lazy { filter: blur(10px); transform: scale(1.04); }
+.cg-lazy.lazyloaded { filter: blur(0); transform: none; transition: filter .35s ease, transform .35s ease; }
 </style>

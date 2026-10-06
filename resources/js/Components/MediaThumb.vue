@@ -30,12 +30,12 @@
     <!-- Image thumbnail -->
     <img
       v-else
-      :src="eager ? primary : undefined"
+      :src="eager ? primary : placeholder"
       :srcset="eager ? srcset : undefined"
       :data-src="!eager ? primary : undefined"
       :data-srcset="!eager ? srcset : undefined"
       data-sizes="auto"
-      :class="['absolute inset-0 w-full h-full object-cover object-top transition duration-300', !eager ? 'lazyload' : '']"
+      :class="['mt-img absolute inset-0 w-full h-full object-cover object-top transition duration-300', !eager ? 'lazyload' : '']"
       :width="item.width || undefined"
       :height="item.height || undefined"
       :alt="alt"
@@ -58,4 +58,14 @@ const primary = computed(() => props.item.src?.card ?? props.item.src?.full ?? p
 const srcset = computed(() =>
   props.item.src ? `${props.item.src.thumbnail} 320w, ${props.item.src.card} 720w` : undefined
 );
+// LQIP-Blur-Platzhalter (data-URI); Fallback: transparentes Pixel
+const placeholder = computed(() =>
+  props.item.lqip ?? 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+);
 </script>
+
+<style scoped>
+/* LQIP-Blur-Up: Platzhalter unscharf, echtes Bild blendet scharf ein */
+.mt-img.lazyload { filter: blur(10px); transform: scale(1.04); }
+.mt-img.lazyloaded { filter: blur(0); transform: none; transition: filter .35s ease, transform .35s ease; }
+</style>
