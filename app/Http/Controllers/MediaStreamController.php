@@ -61,21 +61,23 @@ class MediaStreamController extends Controller
     }
 
     /**
-     * Liefert eine optimierte Variante (thumbnail/card/full). Fehlende Varianten
-     * werden on-the-fly erzeugt – es wird NIE das volle Original ausgeliefert.
+     * Liefert eine optimierte Variante (thumbnail/card/full). Fehlt die Variante,
+     * wird sicher auf das (beim Upload gekappte) Original zurückgefallen – es wird
+     * NICHT synchron im Request generiert (kann bei grossen Originalen fatal werden;
+     * Varianten entstehen beim Upload bzw. per `php artisan media:optimize`).
      * Gleiche Berechtigungsprüfung wie beim Original.
      */
-    public function variant(Request $request, Media $media, string $variant, ImageVariants $gen)
+    public function variant(Request $request, Media $media, string $variant)
     {
         $this->authorizeOriginal($request, $media);
-        return $this->serveVariant($request, $media, $variant, $media->visibility === 'public', $gen);
+        return $this->serveVariant($request, $media, $variant, $media->visibility === 'public');
     }
 
     /** Öffentliche, stateless Variante (nur public+approved) – CDN-cachebar. */
-    public function pubVariant(Request $request, Media $media, string $variant, ImageVariants $gen)
+    public function pubVariant(Request $request, Media $media, string $variant)
     {
         $this->assertPublic($media);
-        return $this->serveVariant($request, $media, $variant, true, $gen);
+        return $this->serveVariant($request, $media, $variant, true);
     }
 
     /** Nur öffentliche, freigegebene Medien dürfen über die stateless Public-Routen. */
@@ -84,7 +86,7 @@ class MediaStreamController extends Controller
         abort_unless($media->visibility === 'public' && $media->status === 'approved', 404);
     }
 
-    private function serveVariant(Request $request, Media $media, string $variant, bool $public, ImageVariants $gen)
+    private function serveVariant(Request $request, Media $media, string $variant, bool $public)
     {
         if (! array_key_exists($variant, ImageVariants::SIZES)) {
             abort(404);
@@ -98,25 +100,18 @@ class MediaStreamController extends Controller
         $disk = Storage::disk('local');
         $path = ($media->variants ?? [])[$variant] ?? null;
 
-        // Variante fehlt → on-the-fly erzeugen (statt das Original auszuliefern).
-        if (! $path || ! $disk->exists($path)) {
-            $gen->generate($media);
-            $media->refresh();
-            $path = ($media->variants ?? [])[$variant] ?? null;
+        // Variante vorhanden → ausliefern; sonst sicher auf das Original zurückfallen.
+        if ($path && $disk->exists($path)) {
+            $mime  = str_ends_with($path, '.webp') ? 'image/webp' : 'image/jpeg';
+            $cache = $public ? 'public, max-age=31536000, immutable' : 'private, max-age=3600';
+
+            return response($disk->get($path), 200, [
+                'Content-Type'  => $mime,
+                'Cache-Control' => $cache,
+            ]);
         }
 
-        // Falls die Generierung scheitert: Original (beim Upload auf ≤2000px gekappt).
-        if (! $path || ! $disk->exists($path)) {
-            return $this->streamFile($request, $media->storage_path, $public);
-        }
-
-        $mime  = str_ends_with($path, '.webp') ? 'image/webp' : 'image/jpeg';
-        $cache = $public ? 'public, max-age=31536000, immutable' : 'private, max-age=3600';
-
-        return response($disk->get($path), 200, [
-            'Content-Type'  => $mime,
-            'Cache-Control' => $cache,
-        ]);
+        return $this->streamFile($request, $media->storage_path, $public);
     }
 
     /** Gemeinsame Autorisierung für Original + scharfe Varianten. */
