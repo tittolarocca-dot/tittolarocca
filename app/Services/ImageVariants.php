@@ -149,6 +149,52 @@ class ImageVariants
         return array_values($media->variants ?? []);
     }
 
+    /** Relativer Pfad einer Variante in der public-Disk (web-erreichbar). */
+    public function publicVariantPath(int $profileId, string $variantStoragePath): string
+    {
+        return "pubmedia/{$profileId}/" . basename($variantStoragePath);
+    }
+
+    /**
+     * Kopiert die Varianten eines ÖFFENTLICHEN Mediums in die public-Disk, sodass
+     * sie als statische Dateien (/storage/pubmedia/…) direkt vom Webserver kommen –
+     * kein PHP, automatisch CDN-cachebar. Nur public+approved Bilder.
+     */
+    public function publishPublic(Media $media): void
+    {
+        if ($media->type !== 'image' || $media->visibility !== 'public' || $media->status !== 'approved') {
+            return;
+        }
+
+        $local  = Storage::disk('local');
+        $public = Storage::disk('public');
+
+        foreach (($media->variants ?? []) as $vp) {
+            if (! $local->exists($vp)) {
+                continue;
+            }
+            $public->put($this->publicVariantPath($media->profile_id, $vp), $local->get($vp));
+        }
+
+        if (! $media->public_published) {
+            $media->forceFill(['public_published' => true])->save();
+        }
+    }
+
+    /** Entfernt die statischen öffentlichen Kopien (Wechsel auf privat / Löschen). */
+    public function unpublishPublic(Media $media): void
+    {
+        $public = Storage::disk('public');
+
+        foreach (($media->variants ?? []) as $vp) {
+            $public->delete($this->publicVariantPath($media->profile_id, $vp));
+        }
+
+        if ($media->public_published) {
+            $media->forceFill(['public_published' => false])->save();
+        }
+    }
+
     /**
      * Verkleinert das gespeicherte ORIGINAL in-place auf max. $maxW px Breite
      * (gleiches Format). Damit landet nie ein Multi-MB-/4000px-Original im

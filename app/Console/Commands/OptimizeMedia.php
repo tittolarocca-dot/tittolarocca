@@ -39,6 +39,7 @@ class OptimizeMedia extends Command
                         $blur->generate($media->refresh());
                     }
                     $variants->capOriginal($media->refresh());
+                    $variants->publishPublic($media->refresh()); // statische öffentliche Kopien
                     $ok++;
                 } catch (\Throwable $e) {
                     $fail++;

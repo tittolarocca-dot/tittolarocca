@@ -109,11 +109,16 @@ class MediaController extends Controller
         ]);
 
         // Optimierte WebP-Varianten + Locked-Content-Blur erzeugen (synchron),
-        // danach das Original auf max. 2000px kappen (keine Multi-MB-Originale).
+        // Original auf max. 2000px kappen, und öffentliche Varianten als statische
+        // Dateien publizieren (direkt vom Webserver, CDN-cachebar).
         if ($type === 'image') {
-            app(\App\Services\ImageVariants::class)->generate($media);
+            $variants = app(\App\Services\ImageVariants::class);
+            $variants->generate($media);
             app(\App\Services\ImageBlur::class)->generate($media);
-            app(\App\Services\ImageVariants::class)->capOriginal($media);
+            $variants->capOriginal($media);
+            if ($visibility === 'public') {
+                $variants->publishPublic($media->refresh());
+            }
         }
 
         return back()->with('success', 'Datei hochgeladen und sofort sichtbar.');
@@ -133,6 +138,7 @@ class MediaController extends Controller
         foreach (app(\App\Services\ImageVariants::class)->paths($media) as $variantPath) {
             $disk->delete($variantPath);
         }
+        app(\App\Services\ImageVariants::class)->unpublishPublic($media); // statische Kopien entfernen
         $media->delete();
 
         return back()->with('success', 'Datei gelöscht.');

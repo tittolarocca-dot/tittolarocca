@@ -106,13 +106,15 @@ class PostController extends Controller
             'visibility' => $request->input('visibility'),
         ]);
 
-        // Medien-Sichtbarkeit nachziehen (öffentlich vs. geschützt) und updated_at
-        // bumpen, damit die ?v=-URL wechselt (keine veraltet-öffentlichen CDN-Treffer).
+        // Medien-Sichtbarkeit nachziehen (öffentlich vs. geschützt), updated_at
+        // bumpen (frische ?v=-URL) und statische Public-Kopien an-/abschalten.
         $mediaVisibility = $request->input('visibility') === 'public' ? 'public' : 'private';
-        Media::whereIn('id', $post->media()->pluck('media.id'))->update([
-            'visibility' => $mediaVisibility,
-            'updated_at' => now(),
-        ]);
+        $iv = app(ImageVariants::class);
+        foreach ($post->media()->get() as $m) {
+            $m->forceFill(['visibility' => $mediaVisibility, 'updated_at' => now()])->save();
+            $m->refresh();
+            $mediaVisibility === 'public' ? $iv->publishPublic($m) : $iv->unpublishPublic($m);
+        }
 
         return back()->with('success', 'Beitrag aktualisiert.');
     }
@@ -132,6 +134,7 @@ class PostController extends Controller
             foreach ($variants->paths($media) as $variantPath) {
                 $disk->delete($variantPath);
             }
+            $variants->unpublishPublic($media); // statische Kopien entfernen
             $media->delete(); // profile_post_media-Pivot via cascade
         }
 
@@ -173,6 +176,7 @@ class PostController extends Controller
             app(ImageVariants::class)->generate($media);
             app(ImageBlur::class)->generate($media);
             app(ImageVariants::class)->capOriginal($media);
+            app(ImageVariants::class)->publishPublic($media->refresh()); // no-op wenn privat
         }
 
         return $media->fresh();

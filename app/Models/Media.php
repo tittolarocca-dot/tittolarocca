@@ -8,7 +8,7 @@ class Media extends Model
     protected $fillable = [
         'profile_id', 'type', 'storage_path', 'blur_path', 'variants', 'lqip',
         'width', 'height', 'mime_type',
-        'visibility', 'status', 'context', 'rejection_reason', 'sort_order',
+        'visibility', 'status', 'context', 'public_published', 'rejection_reason', 'sort_order',
         'filesize_bytes', 'duration_seconds',
     ];
 
@@ -16,6 +16,7 @@ class Media extends Model
 
     protected $casts = [
         'variants'         => 'array',
+        'public_published' => 'boolean',
         'sort_order'       => 'integer',
         'filesize_bytes'   => 'integer',
         'duration_seconds' => 'integer',
@@ -33,9 +34,12 @@ class Media extends Model
 
     /**
      * Optimierte, versionierte Varianten-URLs (thumbnail/card/full) – nur Bilder.
-     * Zeigt IMMER auf die Varianten-Route (liefert Variante oder fällt sicher auf
-     * das beim Upload gekappte Original zurück) – nie das volle Original.
-     * Öffentliche Medien laufen über die stateless, CDN-cachebare Public-Route.
+     *
+     * - Öffentliche, als statische Dateien PUBLIZIERTE Medien → direkte
+     *   /storage/pubmedia/…-URLs (Webserver liefert ohne PHP, CDN-cachebar).
+     * - Sonst öffentliche Medien → stateless PHP-Route /media/pub/… (Fallback).
+     * - Private Medien → authed PHP-Route /media/… .
+     * Es wird nie das volle Original verlinkt.
      */
     public function getSrcAttribute(): ?array
     {
@@ -43,11 +47,27 @@ class Media extends Model
             return null;
         }
 
-        $version = $this->updated_at?->timestamp ?? 1;
-        $route   = $this->visibility === 'public' ? 'media.pub.variant' : 'media.variant';
+        $version  = $this->updated_at?->timestamp ?? 1;
+        $variants = $this->variants ?? [];
 
-        $build = function (string $size) use ($route, $version) {
-            return route($route, ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
+        // Statische, web-erreichbare Dateien für publizierte öffentliche Medien.
+        if ($this->visibility === 'public' && $this->public_published) {
+            $build = function (string $size) use ($variants, $version) {
+                $vp = $variants[$size] ?? null;
+                return $vp
+                    ? asset('storage/pubmedia/' . $this->profile_id . '/' . basename($vp)) . '?v=' . $version
+                    : route('media.pub.variant', ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
+            };
+            return [
+                'thumbnail' => $build('thumbnail'),
+                'card'      => $build('card'),
+                'full'      => $build('full'),
+            ];
+        }
+
+        $routeName = $this->visibility === 'public' ? 'media.pub.variant' : 'media.variant';
+        $build = function (string $size) use ($routeName, $version) {
+            return route($routeName, ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
         };
 
         return [
