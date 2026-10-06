@@ -192,25 +192,8 @@ Route::post('/veriff/webhook', [\App\Http\Controllers\VeriffWebhookController::c
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ── Media streams ─────────────────────────────────────────────────────────────
-// Öffentliche Bild-/Video-Auslieferung: stateless (keine Session/Cookies), damit
-// Cloudflare/CDN sie cachen kann. Nur public+approved Medien (serverseitig geprüft).
-Route::withoutMiddleware([
-    \Illuminate\Cookie\Middleware\EncryptCookies::class,
-    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-    \Illuminate\Session\Middleware\StartSession::class,
-    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
-    \App\Http\Middleware\SetLocale::class,
-    \App\Http\Middleware\PreLaunch::class,
-    \App\Http\Middleware\TrackActivity::class,
-    \App\Http\Middleware\HandleInertiaRequests::class,
-    \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-])->group(function () {
-    Route::get('/media/pub/{media}',           [\App\Http\Controllers\MediaStreamController::class, 'pubStream'])->name('media.pub.stream');
-    Route::get('/media/pub/{media}/{variant}', [\App\Http\Controllers\MediaStreamController::class, 'pubVariant'])
-        ->where('variant', 'thumbnail|card|full')->name('media.pub.variant');
-});
-
+// Öffentliche, CDN-cachebare Medien laufen über routes/media_public.php
+// (stateless, in bootstrap/app.php registriert). Hier nur die authed-Routen:
 Route::get('/media/{media}',       [\App\Http\Controllers\MediaStreamController::class, 'show'])->name('media.stream');
 Route::get('/media/{media}/vorschau', [\App\Http\Controllers\MediaStreamController::class, 'preview'])->name('media.preview');
 Route::get('/media/{media}/{variant}', [\App\Http\Controllers\MediaStreamController::class, 'variant'])

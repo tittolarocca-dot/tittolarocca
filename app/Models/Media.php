@@ -23,17 +23,19 @@ class Media extends Model
         'height'           => 'integer',
     ];
 
-    /** Original-/Video-Stream (auth-geprüft in MediaStreamController). */
+    /** Original-/Video-Stream. Öffentliche Medien: stateless + CDN-cachebar. */
     public function getUrlAttribute(): string
     {
-        return route('media.stream', $this->id);
+        return $this->visibility === 'public'
+            ? route('media.pub.stream', $this->id)
+            : route('media.stream', $this->id);
     }
 
     /**
      * Optimierte, versionierte Varianten-URLs (thumbnail/card/full) – nur Bilder.
-     * Zeigt IMMER auf die Varianten-Route (diese liefert die Variante oder fällt
-     * sicher auf das – beim Upload gekappte – Original zurück); das volle Original
-     * wird nie direkt verlinkt.
+     * Zeigt IMMER auf die Varianten-Route (liefert Variante oder fällt sicher auf
+     * das beim Upload gekappte Original zurück) – nie das volle Original.
+     * Öffentliche Medien laufen über die stateless, CDN-cachebare Public-Route.
      */
     public function getSrcAttribute(): ?array
     {
@@ -42,9 +44,10 @@ class Media extends Model
         }
 
         $version = $this->updated_at?->timestamp ?? 1;
+        $route   = $this->visibility === 'public' ? 'media.pub.variant' : 'media.variant';
 
-        $build = function (string $size) use ($version) {
-            return route('media.variant', ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
+        $build = function (string $size) use ($route, $version) {
+            return route($route, ['media' => $this->id, 'variant' => $size]) . '?v=' . $version;
         };
 
         return [
