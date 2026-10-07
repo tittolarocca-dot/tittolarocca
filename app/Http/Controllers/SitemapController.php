@@ -47,15 +47,26 @@ class SitemapController extends Controller
         $add(route('legal.privacy'), 'yearly', '0.2');
         $add(route('legal.terms'),   'yearly', '0.2');
 
-        // Städte (lokale Landingpages)
+        // Kategorien (einmal laden, auch für die Stadt×Kategorie-Kombis genutzt)
+        $activeCategories = Category::where('is_active', true)->get();
+
+        // Städte (lokale Landingpages) + Stadt×Kategorie-Kombiseiten
         $cityHasTs = Schema::hasColumn('cities', 'updated_at');
         foreach (City::where('is_active', true)->get() as $city) {
-            $add($city->slug ? route('city', $city->slug) : null, 'daily', '0.8', $cityHasTs ? $city->updated_at : null);
+            if (! $city->slug) {
+                continue;
+            }
+            $add(route('city', $city->slug), 'daily', '0.8', $cityHasTs ? $city->updated_at : null);
+            foreach ($activeCategories as $category) {
+                if ($category->slug) {
+                    $add(route('city.category', [$city->slug, $category->slug]), 'weekly', '0.7');
+                }
+            }
         }
 
-        // Kategorien
+        // Kategorien (schweizweit)
         $catHasTs = Schema::hasColumn('categories', 'updated_at');
-        foreach (Category::where('is_active', true)->get() as $category) {
+        foreach ($activeCategories as $category) {
             $add($category->slug ? route('category', $category->slug) : null, 'weekly', '0.7', $catHasTs ? $category->updated_at : null);
         }
 

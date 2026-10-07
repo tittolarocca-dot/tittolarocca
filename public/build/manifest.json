@@ -170,7 +170,7 @@
     ]
   },
   "resources/js/Pages/Home/Index.vue": {
-    "file": "assets/Index-Ck69MMbP.js",
+    "file": "assets/Index-CsgWWoEm.js",
     "name": "Index",
     "src": "resources/js/Pages/Home/Index.vue",
     "isDynamicEntry": true,
@@ -184,7 +184,7 @@
       "_AppLayout-B2jXJ-0Y.js"
     ],
     "css": [
-      "assets/Index-_foYFijm.css"
+      "assets/Index-C7X-6mdL.css"
     ]
   },
   "resources/js/Pages/Inserent/Dashboard.vue": {
@@ -553,7 +553,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DtHkzt3m.js",
+    "file": "assets/app-BkD48g_P.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

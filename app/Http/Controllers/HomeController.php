@@ -20,6 +20,30 @@ class HomeController extends Controller
         return app(SeoData::class)->forPage($title, $description)->setCanonical($canonical);
     }
 
+    /**
+     * Gemeinsame SEO-Props für die Inertia-Seite. $heading ist die sichtbare,
+     * lokalisierte H1 (z. B. "Sex, Escort & Begleitung in Luzern und Umgebung");
+     * fehlt sie, nutzt das Frontend den generischen Hero-Text. $crumbs sind
+     * sichtbare Breadcrumbs, $cityIntro der einzigartige Stadttext und
+     * $categoryLinks die crawlbaren Stadt×Kategorie-Links.
+     */
+    private function seoProps(
+        SeoData $seo,
+        ?string $heading = null,
+        array $crumbs = [],
+        ?string $cityIntro = null,
+        array $categoryLinks = []
+    ): array {
+        return [
+            'seoTitle'          => $seo->pageTitle,
+            'seoDescription'    => $seo->description,
+            'seoHeading'        => $heading,
+            'crumbs'            => $crumbs,
+            'cityIntro'         => $cityIntro,
+            'cityCategoryLinks' => $categoryLinks,
+        ];
+    }
+
     private function sharedData(): array
     {
         return [
@@ -110,12 +134,25 @@ class HomeController extends Controller
         ];
     }
 
+    /**
+     * Crawlbare Links zu den Stadt×Kategorie-Seiten einer Stadt
+     * (z. B. "Escort Luzern", "Massage Luzern") – für interne Verlinkung.
+     */
+    private function cityCategoryLinks(City $city): array
+    {
+        return Category::where('is_active', true)->orderBy('sort_order')->get()
+            ->map(fn ($cat) => [
+                'name' => "{$cat->name} {$city->name}",
+                'url'  => route('city.category', [$city->slug, $cat->slug]),
+            ])->values()->all();
+    }
+
     public function index(Request $request)
     {
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         $seo = $this->seo(
-            'Erotik, Escort & Begleitung in der Schweiz',
-            'Aktuelle Escort-, Begleit- und Erotikinserate aus der ganzen Schweiz – mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.',
+            'Sex, Erotik & Escort in der Schweiz',
+            'Sextreffen, Escorts & Begleitung aus der ganzen Schweiz – aktuelle Inserate mit Fotos, nach Stadt und Kategorie. Jetzt entdecken auf booklola.ch.',
             route('home')
         );
         $seo->addJsonLd([
@@ -137,17 +174,15 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
-            'seoTitle'         => $seo->pageTitle,
-            'seoDescription'   => $seo->description,
-        ]));
+        ], $this->seoProps($seo)));
     }
 
     public function city(City $city, Request $request)
     {
         [$search, $verified, $services, $ages, $categories] = $this->filters($request);
         $seo = $this->seo(
-            "Escort & Begleitung in {$city->name}",
-            "Escort-, Begleit- und Erotikinserate in {$city->name} – aktuelle Profile mit Fotos auf booklola.ch.",
+            "Sex & Escort {$city->name} – Sextreffen & Begleitung",
+            "Sextreffen, Sex-Dates, Escorts & Begleitung in {$city->name} und Region: aktuelle, verifizierte Inserate mit Fotos. Diskret & gratis Kontakt aufnehmen – auf booklola.ch.",
             route('city', $city->slug)
         );
         $seo->addBreadcrumb([
@@ -162,9 +197,52 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
-            'seoTitle'         => $seo->pageTitle,
-            'seoDescription'   => $seo->description,
-        ]));
+        ], $this->seoProps(
+            $seo,
+            "Sex, Escort & Begleitung in {$city->name} und Umgebung",
+            [
+                ['name' => 'Startseite', 'url' => route('home')],
+                ['name' => $city->name,  'url' => null],
+            ],
+            $city->intro_text,
+            $this->cityCategoryLinks($city),
+        )));
+    }
+
+    public function cityCategory(City $city, Category $category, Request $request)
+    {
+        [$search, $verified, $services, $ages, $categories] = $this->filters($request);
+        // Pfad-Kategorie in die Mehrfachauswahl aufnehmen
+        $categories = array_values(array_unique(array_merge($categories, [$category->slug])));
+        $seo = $this->seo(
+            "{$category->name} {$city->name} – Sex & Begleitung",
+            "{$category->name} in {$city->name} und Region: aktuelle Inserate mit Fotos, verifiziert. Sextreffen & Begleitung in {$city->name} – diskret & gratis auf booklola.ch.",
+            route('city.category', [$city->slug, $category->slug])
+        );
+        $seo->addBreadcrumb([
+            ['Startseite', route('home')],
+            [$city->name, route('city', $city->slug)],
+            [$category->name, route('city.category', [$city->slug, $category->slug])],
+        ]);
+        return inertia('Home/Index', array_merge($this->sharedData(), [
+            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
+            'activeCity'       => $city,
+            'activeSearch'     => $search,
+            'activeAges'       => $ages,
+            'activeVerified'   => $verified,
+            'activeServices'   => $services,
+            'activeCategories' => $categories,
+        ], $this->seoProps(
+            $seo,
+            "{$category->name} in {$city->name}",
+            [
+                ['name' => 'Startseite',     'url' => route('home')],
+                ['name' => $city->name,      'url' => route('city', $city->slug)],
+                ['name' => $category->name,  'url' => null],
+            ],
+            null,
+            $this->cityCategoryLinks($city),
+        )));
     }
 
     public function category(Category $category, Request $request)
@@ -173,8 +251,8 @@ class HomeController extends Controller
         // Pfad-Kategorie in die Mehrfachauswahl aufnehmen (Direktlinks /kategorie/{slug} bleiben gültig)
         $categories = array_values(array_unique(array_merge($categories, [$category->slug])));
         $seo = $this->seo(
-            "{$category->name} – Inserate & Begleitung",
-            "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz auf booklola.ch.",
+            "{$category->name} – Inserate, Sex & Begleitung Schweiz",
+            "{$category->name}: aktuelle Inserate mit Fotos aus der ganzen Schweiz. Sextreffen & Begleitung – diskret auf booklola.ch.",
             route('category', $category->slug)
         );
         $seo->addBreadcrumb([
@@ -188,9 +266,14 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
-            'seoTitle'         => $seo->pageTitle,
-            'seoDescription'   => $seo->description,
-        ]));
+        ], $this->seoProps(
+            $seo,
+            "{$category->name} – Inserate in der Schweiz",
+            [
+                ['name' => 'Startseite',    'url' => route('home')],
+                ['name' => $category->name, 'url' => null],
+            ],
+        )));
     }
 
     public function service(Tag $tag, Request $request)
@@ -200,7 +283,7 @@ class HomeController extends Controller
         $services = array_values(array_unique(array_merge($services, [$tag->slug])));
         $seo = $this->seo(
             "{$tag->name} – Inserate & Begleitung",
-            "Inserate mit {$tag->name} – Begleitung & Erotik in der Schweiz auf booklola.ch.",
+            "Inserate mit {$tag->name} – Sex, Begleitung & Erotik in der Schweiz auf booklola.ch.",
             route('service', $tag->slug)
         );
         $seo->addBreadcrumb([
@@ -215,8 +298,13 @@ class HomeController extends Controller
             'activeVerified'   => $verified,
             'activeServices'   => $services,
             'activeCategories' => $categories,
-            'seoTitle'         => $seo->pageTitle,
-            'seoDescription'   => $seo->description,
-        ]));
+        ], $this->seoProps(
+            $seo,
+            "{$tag->name} – Inserate in der Schweiz",
+            [
+                ['name' => 'Startseite', 'url' => route('home')],
+                ['name' => $tag->name,   'url' => null],
+            ],
+        )));
     }
 }

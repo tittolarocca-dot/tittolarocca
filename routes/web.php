@@ -16,6 +16,10 @@ Route::get('/lang/{locale}', [LocaleController::class, 'switch'])
 Route::get('/',                          [HomeController::class,   'index'])->name('home');
 Route::get('/suchen',                    [SearchController::class, 'index'])->name('search');
 Route::get('/stadt/{city:slug}',         [HomeController::class,   'city'])->name('city');
+// withoutScopedBindings: Kategorie ist global, nicht Kind der Stadt – sonst
+// würde Laravel fälschlich $city->categories() aufrufen (Scoped Binding).
+Route::get('/stadt/{city:slug}/{category:slug}', [HomeController::class, 'cityCategory'])
+    ->name('city.category')->withoutScopedBindings();
 Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])->name('category');
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');

@@ -6,7 +6,7 @@
     <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4 md:sticky md:top-13 md:z-30">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#e35d8f] mb-4">
-          {{ t('home.hero') }}
+          {{ seoHeading || t('home.hero') }}
         </h1>
 
         <!-- Featured Profiles Carousel -->
@@ -187,10 +187,29 @@
       </div>
     </div>
 
-    <!-- SEO-Intro auf lokalen Landingpages (Stadt/Kategorie/Service) -->
-    <div v-if="isLanding && seoTitle" class="max-w-7xl mx-auto px-3 sm:px-4 pt-4">
-      <h2 class="text-base font-bold text-white/90 mb-1">{{ seoTitle }}</h2>
-      <p v-if="seoDescription" class="text-sm text-gray-500 leading-relaxed">{{ seoDescription }}</p>
+    <!-- SEO-Bereich auf lokalen Landingpages: Breadcrumb + einzigartiger Text + interne Links -->
+    <div v-if="isLanding" class="max-w-7xl mx-auto px-3 sm:px-4 pt-4">
+      <!-- Sichtbare, crawlbare Breadcrumbs -->
+      <nav v-if="crumbs.length" class="flex flex-wrap items-center gap-1.5 text-xs text-gray-500 mb-3" aria-label="Breadcrumb">
+        <template v-for="(c, i) in crumbs" :key="i">
+          <Link v-if="c.url" :href="c.url" class="hover:text-[#e35d8f] transition">{{ c.name }}</Link>
+          <span v-else class="text-gray-300">{{ c.name }}</span>
+          <span v-if="i < crumbs.length - 1" class="text-gray-700">›</span>
+        </template>
+      </nav>
+
+      <!-- Einzigartiger Stadttext (Fallback: Meta-Description) -->
+      <p v-if="cityIntro || seoDescription" class="text-sm text-gray-500 leading-relaxed max-w-3xl">
+        {{ cityIntro || seoDescription }}
+      </p>
+
+      <!-- Crawlbare Stadt×Kategorie-Links -->
+      <div v-if="cityCategoryLinks.length" class="mt-3 flex flex-wrap gap-2">
+        <Link v-for="l in cityCategoryLinks" :key="l.url" :href="l.url"
+          class="text-xs bg-[#1a1a1a] border border-white/10 text-gray-300 hover:border-[#e35d8f] hover:text-[#e35d8f] rounded-full px-3 py-1 transition">
+          {{ l.name }}
+        </Link>
+      </div>
     </div>
 
     <!-- Listings -->
@@ -363,6 +382,10 @@ const props = defineProps({
   activeVerified:    String,
   seoTitle:          { type: String, default: '' },
   seoDescription:    { type: String, default: '' },
+  seoHeading:        { type: String, default: '' },
+  crumbs:            { type: Array,  default: () => [] },
+  cityIntro:         { type: String, default: '' },
+  cityCategoryLinks: { type: Array,  default: () => [] },
 });
 
 // Lokale Landingpage (Stadt/Kategorie/Service) → eigener Intro-Text

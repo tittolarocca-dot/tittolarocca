@@ -32,6 +32,26 @@ class DatabaseSeeder extends Seeder
             City::firstOrCreate(['slug' => $city['slug']], array_merge($city, ['sort_order' => $i]));
         }
 
+        // Einzigartige, redaktionelle Stadttexte (SEO: kein Duplicate Content).
+        // Nur das intro_text-Feld wird gesetzt – is_active/sort_order bleiben unberührt.
+        $cityIntros = [
+            'zuerich'    => 'Zürich ist die grösste Stadt der Schweiz – und auf booklola.ch findest du hier Escort-, Begleit- und Erotikinserate aus der Stadt Zürich und der ganzen Region, von Oerlikon bis an den Zürichsee. Alle Profile mit Fotos, filterbar nach Kategorie, und du nimmst diskret und direkt Kontakt auf.',
+            'bern'       => 'In der Bundesstadt Bern und im Berner Umland findest du auf booklola.ch aktuelle Escort- und Begleitinserate mit Fotos. Ob in der Innenstadt oder in der Agglomeration – filtere nach Kategorie und kontaktiere die Anbieter:innen direkt und diskret.',
+            'basel'      => 'Basel am Dreiländereck ist ein Hotspot für Erotik und Begleitung. Auf booklola.ch findest du Inserate aus Basel-Stadt und der Region – mit Fotos, nach Kategorie sortierbar und mit direktem, diskretem Kontakt.',
+            'genf'       => 'Genf, die internationale Stadt am Lac Léman, hat eine lebendige Escort- und Begleitszene. Auf booklola.ch findest du aktuelle Inserate aus Genf und Umgebung mit Fotos – diskret filterbar und direkt kontaktierbar.',
+            'lausanne'   => 'In Lausanne am Genfersee findest du auf booklola.ch Escort-, Begleit- und Erotikinserate aus der Stadt und der Waadtländer Region. Alle Profile mit Fotos, nach Kategorie filterbar und mit direktem, diskretem Kontakt.',
+            'winterthur' => 'Winterthur im Kanton Zürich liegt nur einen Katzensprung von der Limmatstadt entfernt. Auf booklola.ch findest du hier Escort- und Begleitinserate aus Winterthur und Umgebung – mit Fotos, filterbar und diskret kontaktierbar.',
+            'luzern'     => 'Luzern am Vierwaldstättersee ist das Tor zur Zentralschweiz. Auf booklola.ch findest du Escort-, Begleit- und Erotikinserate aus der Stadt Luzern und der Region – alle mit Fotos, nach Kategorie filterbar und mit direktem, diskretem Kontakt.',
+            'st-gallen'  => 'In St. Gallen in der Ostschweiz findest du auf booklola.ch aktuelle Escort- und Begleitinserate aus der Stadt und der Region Bodensee. Mit Fotos, nach Kategorie sortierbar und diskret direkt kontaktierbar.',
+            'lugano'     => 'Lugano im sonnigen Tessin verbindet mediterranes Flair mit einer lebendigen Begleitszene. Auf booklola.ch findest du Inserate aus Lugano und der Region – mit Fotos, filterbar und mit direktem, diskretem Kontakt.',
+            'biel'       => 'Biel/Bienne, die zweisprachige Stadt am Bielersee, findest du auf booklola.ch mit aktuellen Escort- und Begleitinseraten aus der Stadt und dem Seeland. Alle Profile mit Fotos, nach Kategorie filterbar und diskret kontaktierbar.',
+            'thun'       => 'Thun am Tor zum Berner Oberland bietet auf booklola.ch Escort-, Begleit- und Erotikinserate aus der Stadt und der Region Thunersee. Mit Fotos, filterbar nach Kategorie und mit direktem, diskretem Kontakt.',
+            'chur'       => 'Chur, die älteste Stadt der Schweiz und Hauptort Graubündens, findest du auf booklola.ch mit aktuellen Escort- und Begleitinseraten aus der Stadt und der Bündner Region. Alle Profile mit Fotos, filterbar und diskret kontaktierbar.',
+        ];
+        foreach ($cityIntros as $slug => $intro) {
+            City::where('slug', $slug)->update(['intro_text' => $intro]);
+        }
+
         // Kategorien
         $categories = [
             ['name' => 'Escort',                 'slug' => 'escort'],
