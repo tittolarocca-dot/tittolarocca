@@ -675,7 +675,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import MediaThumb from '@/Components/MediaThumb.vue';
@@ -724,6 +724,49 @@ function lightboxPrev() {
   if (lightboxIndex.value !== null && lightboxIndex.value > 0)
     lightboxIndex.value--;
 }
+
+// ── Lightbox-Preloading ───────────────────────────────────────────────────
+// Warmt den Browser-Cache für die Nachbarbilder (und bei kleinen Galerien für
+// alle), damit der Wechsel zwischen bereits vorbereiteten Fotos nahezu
+// verzögerungsfrei ist – der Zähler und das sichtbare Foto wechseln synchron.
+//
+// WICHTIG (Privacy): Es wird exakt dieselbe, zugriffs-korrekte URL benutzt wie
+// in der Anzeige (src.full ?? url). Öffentliche Fotos laufen über die statische
+// /storage- bzw. Public-Route (CDN-cachebar), PRIVATE Fotos über die
+// authentifizierte Route (Cache-Control: private) – sie werden also NICHT über
+// einen öffentlichen CDN-Cache vorgeladen oder zugänglich. privateMedia steckt
+// ohnehin nur für berechtigte Betrachter:innen in allMedia.
+const preloaded = new Set();
+function preloadFull(item) {
+  if (!item || item.type !== 'image') return;
+  const url = item.src?.full ?? item.url;
+  if (!url || preloaded.has(url)) return;
+  preloaded.add(url);
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+  // Vorab dekodieren, damit das spätere Anzeigen ohne Decode-Flash erfolgt.
+  if (img.decode) img.decode().catch(() => {});
+}
+
+function preloadAround(index) {
+  const list = allMedia.value;
+  if (!list.length) return;
+  // Nachbarn sofort (häufigste Wischrichtung) – damit der nächste Wisch instant ist.
+  preloadFull(list[index + 1]);
+  preloadFull(list[index - 1]);
+  // Bei kleinen Galerien zusätzlich alle übrigen – aber erst im Leerlauf, damit
+  // das aktuell sichtbare Bild + die Nachbarn die Bandbreite zuerst bekommen
+  // (verlangsamt den Aufbau auf langsamem Mobilfunk nicht).
+  if (list.length <= 12) {
+    const warmRest = () => list.forEach(preloadFull);
+    if (typeof requestIdleCallback === 'function') requestIdleCallback(warmRest, { timeout: 1500 });
+    else setTimeout(warmRest, 300);
+  }
+}
+
+// Beim Öffnen und bei jedem Bildwechsel die Umgebung vorbereiten.
+watch(lightboxIndex, (v) => { if (v !== null) preloadAround(v); });
 
 function onKeydown(e) {
   if (lightboxIndex.value === null) return;
