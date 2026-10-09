@@ -671,6 +671,27 @@
 
     <!-- ── MEMBER-GATE (Gäste) ───────────────────────────────────────────────── -->
     <MemberGateModal :open="showMemberGate" @close="showMemberGate = false" />
+
+    <!-- ── E-Mail-Bestätigung nötig (eingeloggt, aber unbestätigt) ───────────── -->
+    <div v-if="showVerifyNotice" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" @click.self="showVerifyNotice = false">
+      <div class="w-full max-w-sm bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 text-center">
+        <div class="text-4xl mb-3">📧</div>
+        <h3 class="text-white font-bold text-lg mb-2">Bitte bestätige deine E-Mail</h3>
+        <p class="text-sm text-gray-400 leading-relaxed mb-5">
+          Für diese Aktion musst du zuerst deine E-Mail-Adresse bestätigen. Wir haben dir bei der Registrierung einen Link geschickt – schau auch im Spam-Ordner nach.
+        </p>
+        <div class="flex flex-col gap-2">
+          <button type="button" @click="resendVerification"
+            class="w-full bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">
+            Bestätigungs-E-Mail erneut senden
+          </button>
+          <button type="button" @click="showVerifyNotice = false"
+            class="w-full text-gray-400 hover:text-white text-sm px-4 py-2 transition">
+            Schließen
+          </button>
+        </div>
+      </div>
+    </div>
   </AppLayout>
 </template>
 
@@ -839,6 +860,22 @@ const replyTarget      = ref(null);
 const replyText        = ref('');
 const reportTarget     = ref(null);
 const reportReason     = ref('');
+const showVerifyNotice = ref(false);
+
+// E-Mail bestätigt? (für bestätigungspflichtige Aktionen wie Abo/Bewertung/Galerie)
+const isVerifiedMember = computed(() => !!page.props.auth?.user?.email_verified);
+
+// Gäste → Member-Gate; eingeloggt, aber E-Mail noch nicht bestätigt →
+// klarer Hinweis statt stillem Fehlschlag. Gibt true zurück, wenn erlaubt.
+function requireVerified() {
+  if (!page.props.auth?.user) { showMemberGate.value = true; return false; }
+  if (!isVerifiedMember.value) { showVerifyNotice.value = true; return false; }
+  return true;
+}
+
+function resendVerification() {
+  router.post(route('verification.send'), {}, { preserveScroll: true });
+}
 
 const tabs = computed(() => [
   { key: 'public',  label: t('profile.tab_public'), count: props.publicMedia.length },
@@ -934,6 +971,7 @@ const details = computed(() => {
 });
 
 function startTrial() {
+  if (!requireVerified()) return;
   trialing.value = true;
   router.post(route('konto.trial', props.profile.slug), {}, {
     onFinish: () => { trialing.value = false; },
@@ -941,6 +979,7 @@ function startTrial() {
 }
 
 function subscribe() {
+  if (!requireVerified()) return;
   subscribing.value = true;
   router.post(route('konto.subscribe', props.profile.slug), {}, {
     onFinish: () => { subscribing.value = false; },
@@ -954,6 +993,7 @@ function cancelSub() {
 
 function submitReview() {
   if (!reviewForm.value.stars) return;
+  if (!requireVerified()) return;
   submittingReview.value = true;
   const opts = {
     preserveScroll: true,
@@ -1008,7 +1048,7 @@ function onFavoriteClick() {
 
 // Zugang zur privaten Galerie bei der Inserentin anfragen (Launch-Modus).
 function onRequestGallery() {
-  if (!page.props.auth?.user) { showMemberGate.value = true; return; }
+  if (!requireVerified()) return;
   if (requestingGallery.value || galleryStatus.value === 'pending') return;
   requestingGallery.value = true;
   router.post(route('konto.gallery.request', props.profile.slug), {}, {

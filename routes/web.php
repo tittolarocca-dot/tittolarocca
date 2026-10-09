@@ -176,13 +176,20 @@ Route::middleware(['auth', 'verified'])->prefix('konto')->name('konto.')->group(
     Route::post('/nachrichten/{message}/ppv-kaufen',       [\App\Http\Controllers\Member\MessageController::class, 'ppvCheckout'])->name('messages.ppv.checkout');
     Route::post('/bewertung/{profile:slug}',               [\App\Http\Controllers\Member\ReviewController::class, 'store'])->middleware('throttle:6,1')->name('review.store');
     Route::put('/bewertung/{review}',                      [\App\Http\Controllers\Member\ReviewController::class, 'update'])->middleware('throttle:6,1')->name('review.update');
-    Route::get('/favoriten',                               [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
-    Route::post('/favoriten/{profile:slug}',               [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::post('/foto-anfrage/{profile:slug}',            [\App\Http\Controllers\Member\GalleryRequestController::class, 'store'])->name('gallery.request');
-    Route::post('/like/{profile:slug}',                    [\App\Http\Controllers\Member\LikeController::class, 'toggle'])->name('likes.toggle');
-    Route::post('/folgen/{profile:slug}',                  [\App\Http\Controllers\Member\FollowController::class, 'toggle'])->name('follow.toggle');
-    Route::post('/beitrag/{post}/like',                    [\App\Http\Controllers\Member\PostLikeController::class, 'toggle'])->name('posts.like');
     Route::get('/profilbesucher',                          [\App\Http\Controllers\Member\ProfileVisitorController::class, 'index'])->name('visitors');
+});
+
+// Leichte Interaktionen (Like/Favorit/Folgen) brauchen KEINE E-Mail-Bestätigung –
+// nur Login. Harmlos, reversibel, kein Spam/keine Kosten → maximiert die
+// Früh-Interaktion neuer Mitglieder. Sensible Aktionen (Nachrichten, Abo,
+// Bewertung, Galerie-Anfrage) bleiben oben unter 'verified'.
+Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () {
+    Route::get('/favoriten',                   [\App\Http\Controllers\Member\FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favoriten/{profile:slug}',   [\App\Http\Controllers\Member\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/like/{profile:slug}',        [\App\Http\Controllers\Member\LikeController::class, 'toggle'])->name('likes.toggle');
+    Route::post('/folgen/{profile:slug}',      [\App\Http\Controllers\Member\FollowController::class, 'toggle'])->name('follow.toggle');
+    Route::post('/beitrag/{post}/like',        [\App\Http\Controllers\Member\PostLikeController::class, 'toggle'])->name('posts.like');
 });
 
 // ── Stripe Webhooks ───────────────────────────────────────────────────────────
