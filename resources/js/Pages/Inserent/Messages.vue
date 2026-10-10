@@ -134,8 +134,8 @@
                         </button>
                       </div>
                       <div class="p-2">
-                        <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" class="w-full rounded object-cover max-h-48" />
-                        <video v-else :src="msg.ppv_media_url" controls class="w-full rounded max-h-48" />
+                        <img v-if="msg.ppv_media_type === 'image'" :src="msg.ppv_media_url" @click.stop="openImage(msg.ppv_media_url)" class="w-full rounded max-h-[400px] object-cover cursor-zoom-in" />
+                        <video v-else :src="msg.ppv_media_url" controls class="w-full rounded max-h-[400px]" />
                       </div>
                       <div v-if="msg.body" class="px-3 pb-1 text-xs text-gray-300">{{ msg.body }}</div>
                       <div class="px-3 pb-2 text-[10px] text-gray-500 text-right">{{ msg.time }}<span v-if="msg.from_me" class="ml-1" :class="msg.read ? 'text-sky-400' : 'text-gray-500'">{{ msg.read ? '✓✓' : '✓' }}</span></div>
@@ -225,6 +225,12 @@
         </template>
       </div>
     </div>
+
+    <!-- Foto-Lightbox (Originalgröße) -->
+    <div v-if="lightboxImage" class="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4" @click="lightboxImage = null">
+      <img :src="lightboxImage" class="max-h-[92vh] max-w-[92vw] object-contain rounded-lg select-none" />
+      <button class="absolute top-4 right-4 text-white text-3xl w-10 h-10 flex items-center justify-center hover:text-gray-300" @click.stop="lightboxImage = null">✕</button>
+    </div>
   </AppLayout>
 </template>
 
@@ -241,6 +247,8 @@ const props = defineProps({
 const search     = ref('');
 const chatFilter = ref('all');
 const menuOpen    = ref(null);
+const lightboxImage = ref(null);
+function openImage(url) { if (url) lightboxImage.value = url; }
 const filteredConversations = computed(() => {
   let list = props.conversations;
   if (chatFilter.value === 'unread') list = list.filter(c => c.unread || c.marked_unread);
