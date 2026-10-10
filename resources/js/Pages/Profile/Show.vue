@@ -496,7 +496,7 @@
           </div>
 
           <!-- Contact Buttons -->
-          <div v-if="profile.whatsapp_number || profile.telegram_username" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 space-y-3">
+          <div v-if="profile.whatsapp_number || profile.telegram_username || profile.website" class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-5 space-y-3">
             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{{ t('profile.contact') }}</p>
             <a v-if="profile.whatsapp_number"
               :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`"

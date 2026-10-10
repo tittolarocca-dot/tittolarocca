@@ -13,7 +13,7 @@ class Profile extends Model
         'intimate_area', 'body_type',
         'gender', 'origin', 'weight_kg', 'cup_size', 'breast_type', 'has_video',
         'languages',
-        'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
+        'whatsapp_number', 'whatsapp_number_encrypted', 'telegram_username', 'address', 'website',
         'subscription_price_chf',
         'launch_gallery_free',
         'show_activity_status',

@@ -51,6 +51,23 @@ class ProfileForm
                     ->helperText('Das Profil erscheint unter jeder gewählten Kategorie.'),
                 TextInput::make('age')->numeric(),
                 TextInput::make('subscription_price_chf')->label('Abo-Preis (CHF)')->numeric(),
+                // Kontaktdaten – werden im öffentlichen Inserat angezeigt.
+                // whatsapp_number ist der (verschlüsselte) Telefon-/WhatsApp-Wert
+                // und läuft über den Model-Mutator (fillable ergänzt).
+                TextInput::make('whatsapp_number')
+                    ->label('Telefon / WhatsApp')
+                    ->tel()
+                    ->maxLength(20),
+                TextInput::make('website')
+                    ->label('Website')
+                    ->url()
+                    ->maxLength(255),
+                TextInput::make('telegram_username')
+                    ->label('Telegram-Benutzername')
+                    ->maxLength(100),
+                TextInput::make('address')
+                    ->label('Adresse')
+                    ->maxLength(255),
                 Toggle::make('launch_gallery_free')
                     ->label('Private Galerie im Launch kostenlos freigeben')
                     ->helperText('Registrierte Mitglieder erhalten im Launch-Modus kostenlosen Zugang zur privaten Galerie.')
