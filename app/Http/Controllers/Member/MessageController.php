@@ -21,30 +21,61 @@ class MessageController extends Controller
 
         $messages = Message::where('from_user_id', $user->id)
             ->orWhere('to_user_id', $user->id)
-            ->with(['from:id,name', 'to:id,name', 'profile:id,display_name,slug'])
+            ->with(['from:id,name', 'to:id,name', 'profile:id,display_name,slug,user_id'])
             ->orderByDesc('created_at')
             ->get();
 
-        $conversations = [];
+        $states  = \App\Models\ConversationState::mapFor($user->id);
+        $avatars = $this->advertiserAvatars($messages->pluck('profile_id')->filter()->unique());
+
+        // Nachrichten je Gesprächspartner:in gruppieren (bleiben neueste-zuerst).
+        $byOther = [];
         foreach ($messages as $msg) {
-            $otherId   = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
-            $otherName = $msg->from_user_id === $user->id ? $msg->to->name : $msg->from->name;
-            if (!isset($conversations[$otherId])) {
-                $conversations[$otherId] = [
-                    'user_id'      => $otherId,
-                    'name'         => $otherName,
-                    'profile'      => $msg->profile ? [
-                        'display_name' => $msg->profile->display_name,
-                        'slug'         => $msg->profile->slug,
-                    ] : null,
-                    'last_message' => $msg->previewText(),
-                    'last_at'      => $msg->created_at->format('d.m.Y H:i'),
-                    'unread'       => 0,
-                ];
+            $otherId = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
+            $byOther[$otherId][] = $msg;
+        }
+
+        $conversations = [];
+        foreach ($byOther as $otherId => $msgs) {
+            $state   = $states->get($otherId);
+            $cleared = $state?->cleared_at;
+
+            // „Löschen": nur Nachrichten nach cleared_at zählen.
+            $eff = $cleared
+                ? array_values(array_filter($msgs, fn ($m) => $m->created_at > $cleared))
+                : $msgs;
+            if (empty($eff)) {
+                continue; // vollständig gelöscht und nichts Neues
             }
-            if ($msg->to_user_id === $user->id && !$msg->read_at) {
-                $conversations[$otherId]['unread']++;
+
+            $newest = $eff[0];
+            // „Verstecken": nur zeigen, wenn es seit dem Verstecken etwas Neues gibt.
+            if ($state?->hidden_at && $newest->created_at <= $state->hidden_at) {
+                continue;
             }
+
+            $unread = 0;
+            foreach ($eff as $m) {
+                if ($m->to_user_id === $user->id && ! $m->read_at) {
+                    $unread++;
+                }
+            }
+
+            $otherName = $newest->from_user_id === $user->id ? $newest->to->name : $newest->from->name;
+            $conversations[] = [
+                'user_id'       => $otherId,
+                'name'          => $otherName,
+                'profile'       => $newest->profile ? [
+                    'display_name' => $newest->profile->display_name,
+                    'slug'         => $newest->profile->slug,
+                ] : null,
+                'avatar_url'    => $avatars[$otherId] ?? null,
+                'last_message'  => $newest->previewText(),
+                'last_at'       => $newest->created_at->format('d.m.Y H:i'),
+                'unread'        => $unread,
+                'marked_unread' => (bool) $state?->marked_unread_at,
+                'blocked'       => $user->hasBlocked($otherId),
+            ];
         }
 
         // Active subscriptions – used to populate the sidebar even before any message exists
@@ -64,7 +95,8 @@ class MessageController extends Controller
         $startWith = null;
         if ($slug = $request->query('to')) {
             $target = Profile::where('slug', $slug)->first();
-            if ($target && $this->canChatWith($user, $target) && ! isset($conversations[$target->user_id])) {
+            $alreadyListed = collect($conversations)->contains('user_id', $target?->user_id);
+            if ($target && $this->canChatWith($user, $target) && ! $alreadyListed) {
                 $startWith = [
                     'user_id' => $target->user_id,
                     'name'    => $target->display_name,
@@ -94,8 +126,32 @@ class MessageController extends Controller
             return false;
         }
 
+        // In beide Richtungen blockiert? Dann kein Chat.
         $owner = \App\Models\User::find($profile->user_id);
-        return ! ($owner && $owner->hasBlocked($user->id));
+        if ($owner && $owner->hasBlocked($user->id)) {
+            return false;
+        }
+        return ! $user->hasBlocked($profile->user_id);
+    }
+
+    /**
+     * Avatar-URLs der Inserentinnen (Profil-Vorschaufoto), indexiert nach deren
+     * user_id – für die Gesprächsliste. Nur freigegebene öffentliche Bilder.
+     */
+    private function advertiserAvatars(\Illuminate\Support\Collection $profileIds): array
+    {
+        if ($profileIds->isEmpty()) {
+            return [];
+        }
+        $avatars = [];
+        $profiles = Profile::whereIn('id', $profileIds)
+            ->with(['publicMedia' => fn ($q) => $q->where('type', 'image')->orderBy('sort_order')])
+            ->get(['id', 'user_id']);
+        foreach ($profiles as $p) {
+            $m = $p->publicMedia->first();
+            $avatars[$p->user_id] = $m ? ($m->src['thumbnail'] ?? $m->url) : null;
+        }
+        return $avatars;
     }
 
     /**
@@ -203,6 +259,17 @@ class MessageController extends Controller
         ->with(['from:id,name'])
         ->orderBy('created_at')
         ->get();
+
+        // „Löschen": nur Nachrichten nach cleared_at anzeigen; „Ungelesen"-Markierung
+        // beim Öffnen zurücksetzen.
+        $state = \App\Models\ConversationState::where('user_id', $user->id)
+            ->where('other_user_id', $userId)->first();
+        if ($state?->cleared_at) {
+            $messages = $messages->filter(fn ($m) => $m->created_at > $state->cleared_at)->values();
+        }
+        if ($state?->marked_unread_at) {
+            $state->update(['marked_unread_at' => null]);
+        }
 
         // Batch-load paid PPV purchases for this user
         $messageIds = $messages->pluck('id');

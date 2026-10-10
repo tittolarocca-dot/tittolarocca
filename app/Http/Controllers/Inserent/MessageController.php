@@ -23,33 +23,74 @@ class MessageController extends Controller
 
         $messages = Message::where('to_user_id', $user->id)
             ->orWhere('from_user_id', $user->id)
-            ->with(['from:id,name', 'to:id,name'])
+            ->with([
+                'from:id,name,avatar_path,avatar_status,updated_at',
+                'to:id,name,avatar_path,avatar_status,updated_at',
+            ])
             ->orderByDesc('created_at')
             ->get();
 
-        $conversations = [];
+        $states = \App\Models\ConversationState::mapFor($user->id);
+
+        $byOther = [];
         foreach ($messages as $msg) {
-            $otherId   = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
-            $otherName = $msg->from_user_id === $user->id ? $msg->to->name : $msg->from->name;
-            if (!isset($conversations[$otherId])) {
-                $conversations[$otherId] = [
-                    'user_id'      => $otherId,
-                    'name'         => $otherName,
-                    'last_message' => $msg->previewText(),
-                    'last_at'      => $msg->created_at->format('d.m.Y H:i'),
-                    'unread'       => 0,
-                    'blocked'      => $user->hasBlocked($otherId),
-                ];
+            $otherId = $msg->from_user_id === $user->id ? $msg->to_user_id : $msg->from_user_id;
+            $byOther[$otherId][] = $msg;
+        }
+
+        $conversations = [];
+        $totalUnread   = 0;
+        foreach ($byOther as $otherId => $msgs) {
+            $state   = $states->get($otherId);
+            $cleared = $state?->cleared_at;
+
+            $eff = $cleared
+                ? array_values(array_filter($msgs, fn ($m) => $m->created_at > $cleared))
+                : $msgs;
+            if (empty($eff)) {
+                continue;
             }
-            if ($msg->to_user_id === $user->id && !$msg->read_at) {
-                $conversations[$otherId]['unread']++;
+
+            $newest = $eff[0];
+            if ($state?->hidden_at && $newest->created_at <= $state->hidden_at) {
+                continue;
             }
+
+            $unread = 0;
+            foreach ($eff as $m) {
+                if ($m->to_user_id === $user->id && ! $m->read_at) {
+                    $unread++;
+                }
+            }
+            $totalUnread += $unread;
+
+            $other = $newest->from_user_id === $user->id ? $newest->to : $newest->from;
+            $hasAvatar = $other && $other->avatar_path && $other->avatar_status === 'approved';
+            $conversations[] = [
+                'user_id'       => $otherId,
+                'name'          => $other->name ?? 'Mitglied',
+                'avatar_url'    => $hasAvatar
+                    ? route('mitglied.avatar', $otherId) . '?v=' . ($other->updated_at?->timestamp ?? 1)
+                    : null,
+                'last_message'  => $newest->previewText(),
+                'last_at'       => $newest->created_at->format('d.m.Y H:i'),
+                'unread'        => $unread,
+                'marked_unread' => (bool) $state?->marked_unread_at,
+                'blocked'       => $user->hasBlocked($otherId),
+            ];
         }
 
         return Inertia::render('Inserent/Messages', [
-            'conversations' => array_values($conversations),
-            'unreadCount'   => array_sum(array_column(array_values($conversations), 'unread')),
+            'conversations' => $conversations,
+            'unreadCount'   => $totalUnread,
         ]);
+    }
+
+    /** Ist die Konversation in EINE der beiden Richtungen blockiert? */
+    private function chatBlocked(\App\Models\User $user, int $otherId): bool
+    {
+        return $user->hasBlocked($otherId)
+            || (\App\Models\User::find($otherId)?->hasBlocked($user->id) ?? false);
     }
 
     public function reply(Request $request, int $toUserId)
@@ -57,6 +98,10 @@ class MessageController extends Controller
         $request->validate(['body' => ['required', 'string', 'max:2000']]);
 
         $user = $request->user();
+
+        if ($this->chatBlocked($user, $toUserId)) {
+            return back()->with('error', 'Diese Konversation ist blockiert.');
+        }
 
         Message::create([
             'from_user_id' => $user->id,
@@ -115,6 +160,10 @@ class MessageController extends Controller
 
         $user = $request->user();
         $mode = $request->input('mode');
+
+        if ($this->chatBlocked($user, $toUserId)) {
+            return back()->with('error', 'Diese Konversation ist blockiert.');
+        }
 
         $file      = $request->file('media');
         $ext       = $file->getClientOriginalExtension();
@@ -176,6 +225,16 @@ class MessageController extends Controller
         ->with(['from:id,name'])
         ->orderBy('created_at')
         ->get();
+
+        // „Löschen": nur Nachrichten nach cleared_at; „Ungelesen" beim Öffnen zurücksetzen.
+        $state = \App\Models\ConversationState::where('user_id', $user->id)
+            ->where('other_user_id', $userId)->first();
+        if ($state?->cleared_at) {
+            $messages = $messages->filter(fn ($m) => $m->created_at > $state->cleared_at)->values();
+        }
+        if ($state?->marked_unread_at) {
+            $state->update(['marked_unread_at' => null]);
+        }
 
         // Für gesperrte Inhalte: bezahlte/freigegebene Käufe zählen.
         $gatedIds = $messages->filter(fn($m) => $m->requiresUnlock())->pluck('id');

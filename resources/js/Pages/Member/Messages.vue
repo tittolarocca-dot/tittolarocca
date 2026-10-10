@@ -34,23 +34,44 @@
 
         <div class="flex-1 overflow-y-auto">
           <template v-if="filteredConversations.length">
-            <button v-for="conv in filteredConversations" :key="'conv-' + conv.user_id"
-              @click="openConversation(conv)"
-              class="w-full text-left px-3 py-2.5 flex items-center gap-3 hover:bg-white/5 transition"
+            <div v-for="conv in filteredConversations" :key="'conv-' + conv.user_id"
+              class="relative flex items-center hover:bg-white/5 transition"
               :class="activeConv?.user_id === conv.user_id && !activeConv?.isNew ? 'bg-white/5' : ''">
-              <span class="shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white text-sm font-bold">{{ initials(conv.profile?.display_name ?? conv.name) }}</span>
-              <span class="flex-1 min-w-0">
-                <span class="flex items-center justify-between gap-2">
-                  <span class="font-semibold text-sm text-white truncate">{{ conv.profile?.display_name ?? conv.name }}</span>
-                  <span class="text-[11px] text-gray-500 shrink-0">{{ conv.last_at }}</span>
+              <button @click="openConversation(conv)"
+                class="flex-1 min-w-0 text-left pl-3 pr-9 py-2.5 flex items-center gap-3">
+                <span class="shrink-0 w-11 h-11 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] text-white text-sm font-bold">
+                  <img v-if="conv.avatar_url" :src="conv.avatar_url" class="w-full h-full object-cover" :alt="conv.profile?.display_name ?? conv.name" />
+                  <template v-else>{{ initials(conv.profile?.display_name ?? conv.name) }}</template>
                 </span>
-                <span class="flex items-center justify-between gap-2 mt-0.5">
-                  <span class="text-xs text-gray-500 truncate">{{ conv.last_message }}</span>
-                  <span v-if="conv.unread" class="shrink-0 min-w-[18px] h-[18px] px-1 bg-[#e35d8f] text-white text-[10px] font-bold rounded-full flex items-center justify-center">{{ conv.unread }}</span>
+                <span class="flex-1 min-w-0">
+                  <span class="flex items-center justify-between gap-2">
+                    <span class="font-semibold text-sm text-white truncate">{{ conv.profile?.display_name ?? conv.name }}</span>
+                    <span class="text-[11px] text-gray-500 shrink-0">{{ conv.last_at }}</span>
+                  </span>
+                  <span class="flex items-center justify-between gap-2 mt-0.5">
+                    <span class="text-xs text-gray-500 truncate">{{ conv.last_message }}</span>
+                    <span v-if="conv.unread" class="shrink-0 min-w-[18px] h-[18px] px-1 bg-[#e35d8f] text-white text-[10px] font-bold rounded-full flex items-center justify-center">{{ conv.unread }}</span>
+                    <span v-else-if="conv.marked_unread" class="shrink-0 w-2.5 h-2.5 bg-[#e35d8f] rounded-full"></span>
+                  </span>
                 </span>
-              </span>
-            </button>
+              </button>
+              <button @click.stop="toggleMenu(conv.user_id)" title="Optionen"
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center text-gray-500 hover:text-white rounded-full hover:bg-white/10 transition">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+              </button>
+              <div v-if="menuOpen === conv.user_id"
+                class="absolute right-2 top-11 z-20 w-48 bg-[#1f1f1f] border border-white/10 rounded-xl shadow-xl shadow-black/50 py-1 text-sm">
+                <button @click.stop="act('unread', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Ungelesen</button>
+                <button @click.stop="act('report', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Melden</button>
+                <button @click.stop="act(conv.blocked ? 'unblock' : 'block', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ conv.blocked ? 'Blockierung aufheben' : 'Ignorieren' }}</button>
+                <button @click.stop="act('hide', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Verstecken</button>
+                <button @click.stop="act('delete', conv)" class="w-full text-left px-3 py-2 text-red-400 hover:bg-white/5 transition">Löschen</button>
+              </div>
+            </div>
           </template>
+
+          <!-- Klick-außerhalb schließt das Menü -->
+          <div v-if="menuOpen !== null" class="fixed inset-0 z-10" @click="menuOpen = null"></div>
 
           <template v-if="newSubscriptions.length && chatFilter === 'all' && !search">
             <div v-if="filteredConversations.length" class="px-4 py-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Abonnements</div>
@@ -230,13 +251,39 @@ const newSubscriptions = computed(() =>
 
 const search      = ref('');
 const chatFilter  = ref('all');
+const menuOpen     = ref(null);
 const filteredConversations = computed(() => {
   let list = props.conversations;
-  if (chatFilter.value === 'unread') list = list.filter(c => c.unread);
+  if (chatFilter.value === 'unread') list = list.filter(c => c.unread || c.marked_unread);
   const q = search.value.trim().toLowerCase();
   if (q) list = list.filter(c => (c.profile?.display_name ?? c.name ?? '').toLowerCase().includes(q));
   return list;
 });
+
+function toggleMenu(id) { menuOpen.value = menuOpen.value === id ? null : id; }
+
+// 3-Punkte-Aktionen: Ungelesen, Melden, Ignorieren/Blockieren, Verstecken, Löschen.
+function act(action, conv) {
+  menuOpen.value = null;
+  const routes = {
+    unread:  route('chat.unread',  conv.user_id),
+    report:  route('chat.report',  conv.user_id),
+    block:   route('chat.block',   conv.user_id),
+    unblock: route('chat.unblock', conv.user_id),
+    hide:    route('chat.hide',    conv.user_id),
+    delete:  route('chat.clear',   conv.user_id),
+  };
+  if (action === 'delete' && !confirm('Diese Konversation für dich löschen? Der Verlauf wird für dich geleert; schreibt die Person erneut, beginnt der Chat neu.')) return;
+  if (action === 'report' && !confirm('Diese Konversation dem Team melden?')) return;
+  router.post(routes[action], {}, {
+    preserveScroll: true,
+    onSuccess: () => {
+      if (['hide', 'delete', 'block'].includes(action) && activeConv.value?.user_id === conv.user_id) {
+        activeConv.value = null;
+      }
+    },
+  });
+}
 
 function initials(name) {
   return (name || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();

@@ -192,6 +192,16 @@ Route::middleware(['auth'])->prefix('konto')->name('konto.')->group(function () 
     Route::post('/beitrag/{post}/like',        [\App\Http\Controllers\Member\PostLikeController::class, 'toggle'])->name('posts.like');
 });
 
+// ── Konversations-Aktionen (3-Punkte-Menü im Chat) – Mitglieder UND Inserierende ──
+Route::middleware('auth')->prefix('chat')->name('chat.')->group(function () {
+    Route::post('/{userId}/ungelesen',  [\App\Http\Controllers\ConversationController::class, 'markUnread'])->whereNumber('userId')->name('unread');
+    Route::post('/{userId}/verstecken', [\App\Http\Controllers\ConversationController::class, 'hide'])->whereNumber('userId')->name('hide');
+    Route::post('/{userId}/loeschen',   [\App\Http\Controllers\ConversationController::class, 'clear'])->whereNumber('userId')->name('clear');
+    Route::post('/{userId}/blockieren', [\App\Http\Controllers\ConversationController::class, 'block'])->whereNumber('userId')->name('block');
+    Route::post('/{userId}/entsperren', [\App\Http\Controllers\ConversationController::class, 'unblock'])->whereNumber('userId')->name('unblock');
+    Route::post('/{userId}/melden',     [\App\Http\Controllers\ConversationController::class, 'report'])->whereNumber('userId')->name('report');
+});
+
 // ── Stripe Webhooks ───────────────────────────────────────────────────────────
 Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook')
