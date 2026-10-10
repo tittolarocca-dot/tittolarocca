@@ -41,7 +41,12 @@ class ProfileForm
                         'pending'    => 'Ausstehend',
                         'approved'   => 'Verifiziert',
                         'rejected'   => 'Abgelehnt',
-                    ]),
+                    ])
+                    // Spalte ist NOT NULL (Default 'unverified') – leere Auswahl
+                    // darf nicht als null gespeichert werden.
+                    ->default('unverified')
+                    ->selectablePlaceholder(false)
+                    ->dehydrateStateUsing(fn ($state) => $state ?: 'unverified'),
                 DateTimePicker::make('listing_expires_at')->label('Läuft ab'),
                 Select::make('city_id')
                     ->label('Stadt')
@@ -59,7 +64,13 @@ class ProfileForm
                     ->maxItems(3)
                     ->helperText('Das Profil erscheint unter jeder gewählten Kategorie.'),
                 TextInput::make('age')->numeric(),
-                TextInput::make('subscription_price_chf')->label('Abo-Preis (CHF)')->numeric(),
+                // Spalte ist NOT NULL (Default 10.00) – leeres Feld darf nicht als
+                // null gespeichert werden; leer => 0 (kein Abo-Angebot).
+                TextInput::make('subscription_price_chf')
+                    ->label('Abo-Preis (CHF)')
+                    ->numeric()
+                    ->default(0)
+                    ->dehydrateStateUsing(fn ($state) => ($state === null || $state === '') ? 0 : $state),
                 // Kontaktdaten – werden im öffentlichen Inserat angezeigt.
                 // whatsapp_number ist der (verschlüsselte) Telefon-/WhatsApp-Wert
                 // und läuft über den Model-Mutator (fillable ergänzt).
