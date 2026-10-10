@@ -57,9 +57,18 @@ class Profile extends Model
 
     public function getWhatsappNumberAttribute(): ?string
     {
-        return $this->attributes['whatsapp_number_encrypted']
-            ? Crypt::decryptString($this->attributes['whatsapp_number_encrypted'])
-            : null;
+        // Null-sicher: bei neuen/teilweise geladenen Modellen (z. B. Filament-
+        // Create-Seite) existiert der Key noch nicht. decryptString zusätzlich
+        // absichern, damit Alt-/Fehldaten keine 500 auslösen.
+        $enc = $this->attributes['whatsapp_number_encrypted'] ?? null;
+        if (! $enc) {
+            return null;
+        }
+        try {
+            return Crypt::decryptString($enc);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function isActive(): bool { return $this->status === 'active' && $this->listing_expires_at?->isFuture(); }
