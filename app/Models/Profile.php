@@ -49,6 +49,33 @@ class Profile extends Model
         'languages'                 => 'array',
     ];
 
+    /**
+     * Auto-Slug: Wird beim Erstellen gesetzt, falls noch keiner vorhanden ist
+     * (z. B. beim Anlegen über das Filament-Admin-Panel). Der Inserenten-Flow
+     * setzt den Slug weiterhin selbst – dann greift dieser Hook nicht.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $profile) {
+            if (empty($profile->slug)) {
+                $profile->slug = self::uniqueSlug($profile->display_name ?: 'inserat');
+            }
+        });
+    }
+
+    /** Erzeugt einen eindeutigen Slug aus einem Namen. */
+    public static function uniqueSlug(string $name): string
+    {
+        $base = \Illuminate\Support\Str::slug($name) ?: 'inserat';
+        $slug = $base;
+        $i = 2;
+        while (self::where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+        return $slug;
+    }
+
     // Encrypted WhatsApp getter/setter
     public function setWhatsappNumberAttribute(?string $value): void
     {

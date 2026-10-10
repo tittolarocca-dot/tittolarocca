@@ -16,6 +16,15 @@ class ProfileForm
         return $schema
             ->components([
                 TextInput::make('display_name')->required()->columnSpan(2),
+                // Jedes Inserat gehört zu einem Nutzer-Konto. Ohne user_id
+                // schlägt der INSERT fehl (NOT NULL). Admin wählt das Konto.
+                Select::make('user_id')
+                    ->label('Inhaber-Konto')
+                    ->relationship('user', 'email')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan(2),
                 Select::make('status')
                     ->options([
                         'draft'   => 'Entwurf',
