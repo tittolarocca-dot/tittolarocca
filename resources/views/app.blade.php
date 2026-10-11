@@ -42,5 +42,10 @@
 </head>
 <body class="bg-gray-50 antialiased">
     @inertia
+
+    {{-- Cloudflare Web Analytics (cookieless, datenschutzfreundlich) – nur wenn Token in der .env gesetzt ist --}}
+    @if ($token = config('services.cloudflare.web_analytics_token'))
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ $token }}"}'></script>
+    @endif
 </body>
 </html>

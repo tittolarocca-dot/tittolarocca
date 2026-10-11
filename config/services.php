@@ -48,4 +48,11 @@ return [
         'base_url' => env('VERIFF_BASE_URL', 'https://stationapi.veriff.com'),
     ],
 
+    // Cloudflare Web Analytics – cookieloses, datenschutzfreundliches Besucher-
+    // Tracking. Der Token ist öffentlich (steht im Seitenquelltext) und wird nur
+    // aus der .env gelesen; ist er leer, wird kein Beacon eingebunden.
+    'cloudflare' => [
+        'web_analytics_token' => env('CLOUDFLARE_WEB_ANALYTICS_TOKEN'),
+    ],
+
 ];
