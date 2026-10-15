@@ -21,6 +21,15 @@
               <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">{{ t('home.new_images') }}</span>
             </a>
 
+            <!-- Feed (Community) -->
+            <a :href="route('feed')"
+              class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#111] group-hover:ring-[#f08ab0] transition bg-gradient-to-br from-[#e35d8f] via-[#7c3aed] to-[#c44a7a] flex items-center justify-center shadow-lg shadow-[#e35d8f]/40">
+                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"/></svg>
+              </div>
+              <span class="text-xs text-[#e35d8f] font-bold mt-1 text-center w-full">Feed</span>
+            </a>
+
             <!-- Suchen -->
             <a :href="route('search')"
               class="flex flex-col items-center shrink-0 w-16 sm:w-20 cursor-pointer group">

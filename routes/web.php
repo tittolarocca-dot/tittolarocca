@@ -25,6 +25,7 @@ Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/profil/{profile:slug}/feed', [ProfileController::class,'feed'])->name('profile.feed');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
+Route::get('/feed',                      [\App\Http\Controllers\FeedController::class, 'index'])->name('feed');
 
 // SEO: dynamische XML-Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
