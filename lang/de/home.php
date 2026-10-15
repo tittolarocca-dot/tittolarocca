@@ -13,7 +13,7 @@ return [
     'premium'    => 'Premium',
     'reset'      => 'Zurücksetzen',
     'per_month'  => '/Mo',
-    'hero'            => 'Anschauen oder treffen – du entscheidest - Schweizweit',
+    'hero'            => 'Die Erotik-Community der Schweiz. Entdecken. Folgen. Treffen.',
     'new_images'      => 'Neue Bilder',
     'age'             => 'Alter',
     'verified'        => 'Verifiziert',
