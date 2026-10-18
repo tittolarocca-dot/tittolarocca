@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Media;
+use App\Services\Watermark;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -65,6 +66,7 @@ class ImageVariants
         $useWebp = function_exists('imagewebp');
         $ext     = $useWebp ? 'webp' : 'jpg';
         $variants = $media->variants ?? [];
+        $watermark = app(Watermark::class);
 
         try {
             foreach (self::SIZES as $name => $maxW) {
@@ -80,6 +82,17 @@ class ImageVariants
                 imagealphablending($dst, false);
                 imagesavealpha($dst, true);
                 imagecopyresampled($dst, $src, 0, 0, 0, 0, $tw, $th, $ow, $oh);
+
+                // Wasserzeichen nur auf öffentliche Derivate (card/full), nie aufs
+                // Original. Scheitert es, wird die Variante OHNE WM gespeichert –
+                // Upload/Backfill bleiben stabil, Original unberührt.
+                if (Watermark::appliesTo($name)) {
+                    try {
+                        $watermark->apply($dst);
+                    } catch (\Throwable $e) {
+                        Log::warning("Watermark: Media {$media->id}/{$name}: " . $e->getMessage());
+                    }
+                }
 
                 ob_start();
                 $ok = $useWebp
