@@ -9,6 +9,16 @@ use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
+    /** Eigene Unterseite „Verifizierung" (Foto-Verifizierung + Identität/Veriff). */
+    public function page(Request $request)
+    {
+        $profile = $request->user()->profile;
+        if (! $profile) {
+            return redirect()->route('inserat.profile.edit')->with('error', 'Bitte erstelle zuerst dein Profil.');
+        }
+        return inertia('Inserent/Verification', ['profile' => $profile]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

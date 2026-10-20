@@ -107,6 +107,8 @@ const items = computed(() => {
     { label: 'Nachrichten',      icon: 'chat',     href: route('inserat.messages'),         active: cur('inserat.messages*'), badge: props.badges.messages },
     { label: 'Foto-Anfragen',    icon: 'lock',     href: route('inserat.gallery.requests'), active: cur('inserat.gallery.*'), badge: props.badges.gallery },
     { label: 'Besucher',         icon: 'visitors', href: route('inserat.visitors'),         active: cur('inserat.visitors') },
+    { label: 'Verifizierung',    icon: 'shield',   href: route('inserat.verification.page'), active: cur('inserat.verification.page') },
+    { label: 'Einstellungen',    icon: 'gear',     href: route('inserat.settings'),         active: cur('inserat.settings') },
   ];
 });
 
@@ -128,6 +130,8 @@ const icons = {
   sub: '<path d="M4 12a8 8 0 018-8M20 12a8 8 0 01-8 8"/><path d="M12 4l3 3-3 3M12 20l-3-3 3-3"/>',
   star: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z"/>',
   home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.3 1a7 7 0 00-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 00-1.7 1l-2.3-1-2 3.5L4.1 11a7 7 0 000 2l-2 1.5 2 3.5 2.3-1a7 7 0 001.7 1l.3 2.5h4l.3-2.5a7 7 0 001.7-1l2.3 1 2-3.5-2-1.5c.07-.33.1-.66.1-1z"/>',
   logout: '<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
 };
 </script>

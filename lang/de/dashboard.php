@@ -192,4 +192,6 @@ return [
     'next_steps'         => 'Nächste Schritte',
     'tip_done'           => 'Erledigt',
     'tip_do'             => 'Erledigen',
+    'settings_title'     => 'Einstellungen',
+    'settings_desc'      => 'Geoblocking, Inserat deaktivieren oder löschen.',
 ];

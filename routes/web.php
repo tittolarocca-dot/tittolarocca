@@ -144,6 +144,8 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::post('/bewertung/{review}/antworten', [\App\Http\Controllers\Member\ReviewController::class, 'reply'])->middleware('throttle:10,1')->name('review.reply');
     Route::post('/bewertung/{review}/melden',    [\App\Http\Controllers\Member\ReviewController::class, 'report'])->name('review.report');
     Route::post('/verifikation',  [\App\Http\Controllers\Inserent\VerificationController::class, 'store'])->name('verification.store');
+    Route::get('/verifizierung',  [\App\Http\Controllers\Inserent\VerificationController::class, 'page'])->name('verification.page');
+    Route::get('/einstellungen',  [\App\Http\Controllers\Inserent\SettingsController::class, 'index'])->name('settings');
     Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');

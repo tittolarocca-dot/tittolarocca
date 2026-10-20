@@ -35,7 +35,7 @@ class DashboardController extends Controller
             $checks = [
                 ['key' => 'photos',      'label' => 'Fotos hochladen',          'desc' => 'Mindestens ein öffentliches Foto', 'done' => $profile->media()->where('type', 'image')->where('visibility', 'public')->exists(), 'href' => route('inserat.media.index')],
                 ['key' => 'description', 'label' => 'Beschreibung schreiben',    'desc' => 'Erzähl etwas über dich',           'done' => filled($profile->description),                                                       'href' => route('inserat.profile.edit')],
-                ['key' => 'verified',    'label' => 'Foto verifizieren',         'desc' => 'Verifiziert-Badge schafft Vertrauen', 'done' => $profile->verification_status === 'approved',                                      'href' => '#verifizierung'],
+                ['key' => 'verified',    'label' => 'Foto verifizieren',         'desc' => 'Verifiziert-Badge schafft Vertrauen', 'done' => $profile->verification_status === 'approved',                                      'href' => route('inserat.verification.page')],
                 ['key' => 'post',        'label' => 'Ersten Feed-Beitrag posten', 'desc' => 'Erscheine im Community-Feed',       'done' => $profile->posts()->exists(),                                                         'href' => route('inserat.posts.index')],
                 ['key' => 'video',       'label' => 'Video hinzufügen',          'desc' => 'Profile mit Video werden öfter besucht', 'done' => $profile->media()->where('type', 'video')->exists(),                              'href' => route('inserat.media.index')],
             ];
