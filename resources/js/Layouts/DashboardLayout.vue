@@ -17,8 +17,9 @@
           :class="open ? 'translate-x-0' : '-translate-x-[105%]'">
           <!-- Nutzerblock -->
           <div class="flex items-center gap-3 px-1.5 pb-3.5 mb-2 border-b border-white/8">
-            <span class="w-10 h-10 rounded-full bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white font-extrabold shrink-0">
-              {{ initial }}
+            <span class="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#e35d8f] to-[#7c3aed] flex items-center justify-center text-white font-extrabold shrink-0">
+              <img v-if="avatarUrl" :src="avatarUrl" :alt="userName" class="w-full h-full object-cover" />
+              <template v-else>{{ initial }}</template>
             </span>
             <div class="min-w-0">
               <p class="text-sm font-bold text-white truncate leading-tight">{{ userName }}</p>
@@ -80,8 +81,9 @@ const props = defineProps({
 const page = usePage();
 const open = ref(false);
 
-const userName = computed(() => page.props.auth?.user?.name ?? '');
-const initial  = computed(() => (userName.value || '?').trim().charAt(0).toUpperCase());
+const userName  = computed(() => page.props.auth?.user?.name ?? '');
+const avatarUrl = computed(() => page.props.auth?.user?.avatar ?? null);
+const initial   = computed(() => (userName.value || '?').trim().charAt(0).toUpperCase());
 const roleLabel = computed(() => props.role === 'member' ? 'Mitglied' : 'Inserent:in');
 
 const cur = (name) => { try { return route().current(name); } catch { return false; } };
