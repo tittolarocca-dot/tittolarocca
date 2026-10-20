@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="member">
     <Head :title="t('dashboard.subs_title')" />
     <div class="max-w-4xl mx-auto px-4 py-8">
       <h1 class="text-2xl font-bold text-white mb-6">{{ t('dashboard.subs_title') }}</h1>
@@ -52,12 +52,12 @@
         </div>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();

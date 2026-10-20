@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <Head title="Auszahlungen" />
     <div class="max-w-4xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-6">
@@ -83,13 +83,13 @@
         </div>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({

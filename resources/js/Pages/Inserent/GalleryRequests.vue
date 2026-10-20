@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <Head :title="t('dashboard.gallery_requests_title')" />
     <div class="max-w-7xl mx-auto px-4 py-8">
 
@@ -43,13 +43,13 @@
       </div>
 
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();

@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <Head title="Nachrichten" />
     <div class="max-w-7xl mx-auto px-4 py-4 sm:py-6 flex gap-3 h-[calc(100vh-110px)]">
 
@@ -231,13 +231,13 @@
       <img :src="lightboxImage" class="max-h-[92vh] max-w-[92vw] object-contain rounded-lg select-none" />
       <button class="absolute top-4 right-4 text-white text-3xl w-10 h-10 flex items-center justify-center hover:text-gray-300" @click.stop="lightboxImage = null">✕</button>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, nextTick } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 const props = defineProps({
   conversations: { type: Array, default: () => [] },

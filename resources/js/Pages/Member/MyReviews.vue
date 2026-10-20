@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="member">
     <Head title="Meine Berichte" />
 
     <div class="max-w-3xl mx-auto px-4 py-8">
@@ -31,12 +31,12 @@
         </div>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 defineProps({
   reviews: { type: Array, default: () => [] },

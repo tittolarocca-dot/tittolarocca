@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="member">
     <Head title="Mein Profil" />
 
     <div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
@@ -161,13 +161,13 @@
         </div>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 const props = defineProps({
   member: { type: Object, required: true },

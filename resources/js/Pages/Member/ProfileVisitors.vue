@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="member">
     <Head :title="t('dashboard.visited_title')" />
     <div class="max-w-3xl mx-auto px-4 py-8">
 
@@ -100,12 +100,12 @@
       </div>
 
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();

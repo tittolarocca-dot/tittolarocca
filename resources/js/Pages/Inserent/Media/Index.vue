@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <div class="max-w-5xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-6">
         <div>
@@ -81,13 +81,13 @@
         </div>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import DropZone from './DropZone.vue';
 import MediaSection from './MediaSection.vue';
 

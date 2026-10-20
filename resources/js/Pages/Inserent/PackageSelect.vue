@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <Head title="Paket wählen" />
 
     <div class="max-w-4xl mx-auto px-4 py-8">
@@ -121,13 +121,13 @@
         <span class="flex items-center gap-1.5">🔄 Keine automatische Verlängerung</span>
       </div>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({

@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="inserent">
     <Head :title="profile ? t('inserent.edit_title') : t('inserent.create_title')" />
 
     <div class="max-w-3xl mx-auto px-4 py-8">
@@ -356,13 +356,13 @@
 
       </form>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import InputField from '@/Components/InputField.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useI18n } from '@/composables/useI18n';

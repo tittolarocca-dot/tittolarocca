@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <DashboardLayout role="member">
     <Head title="Nachrichten" />
 
     <!-- PPV success toast -->
@@ -234,13 +234,13 @@
       <img :src="lightboxImage" class="max-h-[92vh] max-w-[92vw] object-contain rounded-lg select-none" />
       <button class="absolute top-4 right-4 text-white text-3xl w-10 h-10 flex items-center justify-center hover:text-gray-300" @click.stop="lightboxImage = null">✕</button>
     </div>
-  </AppLayout>
+  </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, nextTick, onMounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 const props = defineProps({
   conversations: { type: Array, default: () => [] },
