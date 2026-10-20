@@ -186,4 +186,10 @@ return [
     'posts_save' => "Speichern",
     'posts_cancel' => "Abbrechen",
     'posts_delete_confirm' => "Beitrag wirklich löschen?",
+
+    // Dashboard-Redesign (App-Shell)
+    'completeness_label' => 'Profil-Vollständigkeit',
+    'next_steps'         => 'Nächste Schritte',
+    'tip_done'           => 'Erledigt',
+    'tip_do'             => 'Erledigen',
 ];
