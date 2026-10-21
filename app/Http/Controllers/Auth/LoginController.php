@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class LoginController extends Controller
 {
@@ -52,11 +53,17 @@ class LoginController extends Controller
             $user->update(['deactivated_at' => null]);
         }
 
-        if ($user->role === 'inserent') {
-            return redirect()->intended(route('inserat.dashboard'));
-        }
+        // Auth-Wechsel: BEWUSST ein voller Browser-Reload (Inertia::location) statt
+        // eines SPA-Besuchs. Gründe: CSRF-Token und geteilte Auth-Props (auth.user,
+        // Avatar …) ändern sich, und iOS Safari zeichnet nach einem Inertia-POST→
+        // Redirect sonst einen unfertigen Frame, bis man den Bildschirm berührt
+        // (Seite erscheint erst „verschoben"/ohne Menü). Für Nicht-Inertia-Requests
+        // liefert Inertia::location einen normalen 302-Redirect.
+        $target = $user->role === 'inserent'
+            ? route('inserat.dashboard')
+            : route('home');
 
-        return redirect()->intended(route('home'));
+        return Inertia::location(redirect()->intended($target)->getTargetUrl());
     }
 
     public function destroy(Request $request)
@@ -65,7 +72,8 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        // Ebenfalls voller Reload nach dem Logout (Auth-Status/CSRF ändern sich).
+        return Inertia::location(route('home'));
     }
 
     private function checkRateLimit(Request $request): void
