@@ -44,8 +44,12 @@ class HandleInertiaRequests extends Middleware
         // ← aktuelle Sprache (gewinnt). So erscheint nie ein roher Schlüssel,
         // auch wenn eine Übersetzung in der aktuellen Sprache fehlt.
         $tr = function (string $group) use ($locale) {
+            // Reihenfolge wichtig: de (Basis) ← en (Fallback) ← aktuelle Sprache
+            // (gewinnt). Die aktuelle Sprache MUSS zuletzt stehen, auch wenn sie
+            // 'de' oder 'en' ist – daher bewusst KEIN array_unique (sonst würde
+            // z. B. für Deutsch Englisch zuletzt gemergt und gewinnen).
             $merged = [];
-            foreach (array_values(array_unique(['de', 'en', $locale])) as $l) {
+            foreach (['de', 'en', $locale] as $l) {
                 $arr = trans($group, [], $l);
                 if (is_array($arr)) {
                     $merged = array_merge($merged, $arr);
