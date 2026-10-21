@@ -36,4 +36,7 @@ return [
     'tip_post_desc' => "Apari în feedul comunității",
     'tip_video_label' => "Adaugă un videoclip",
     'tip_video_desc' => "Profilurile cu video sunt vizitate mai des",
+    "age_identity" => "Verificare 18+",
+    "tip_age_label" => "Confirmă identitatea 18+",
+    "tip_age_desc" => "Protejează comunitatea și confirmă vârsta",
 ];

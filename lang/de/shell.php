@@ -36,4 +36,7 @@ return [
     'tip_post_desc' => "Erscheine im Community-Feed",
     'tip_video_label' => "Video hinzufügen",
     'tip_video_desc' => "Profile mit Video werden öfter besucht",
+    "age_identity" => "18+ Identitätsprüfung",
+    "tip_age_label" => "18+ Identität bestätigen",
+    "tip_age_desc" => "Schützt die Community und bestätigt dein Alter",
 ];

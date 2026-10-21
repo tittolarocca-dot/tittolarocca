@@ -115,6 +115,13 @@ Route::get('/admin/verification-photo/{profile}', function (\App\Models\Profile 
     return response()->file(\Illuminate\Support\Facades\Storage::disk('local')->path($profile->verification_photo));
 })->middleware('auth')->name('admin.verification.photo');
 
+// ── Sichere 18+ Prüfdateien (Ausweis/Video): Eigentümer:in ODER Admin/Moderator ──
+// Autorisierung passiert im Controller (403 für Fremde). Rate-limitiert.
+Route::middleware(['auth', 'throttle:60,1'])->group(function () {
+    Route::get('/datei/age-verification/{ageVerification}/dokument', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'document'])->name('age-verification.document');
+    Route::get('/datei/age-verification/{ageVerification}/video',    [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'video'])->name('age-verification.video');
+});
+
 // ── Inserent-Bereich ──────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->group(function () {
     Route::get('/dashboard',   [\App\Http\Controllers\Inserent\DashboardController::class,  'index'])->name('dashboard');
@@ -147,6 +154,12 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::get('/verifizierung',  [\App\Http\Controllers\Inserent\VerificationController::class, 'page'])->name('verification.page');
     Route::get('/einstellungen',  [\App\Http\Controllers\Inserent\SettingsController::class, 'index'])->name('settings');
     Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
+
+    // 18+ Alters- & Identitätsprüfung (Ausweis + Video). Uploads/Submit rate-limitiert.
+    Route::get('/identitaetspruefung', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'page'])->name('age.page');
+    Route::post('/identitaetspruefung/dokument', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'uploadDocument'])->middleware('throttle:20,1')->name('age.document.upload');
+    Route::post('/identitaetspruefung/video',    [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'uploadVideo'])->middleware('throttle:20,1')->name('age.video.upload');
+    Route::post('/identitaetspruefung/einreichen', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'submit'])->middleware('throttle:10,1')->name('age.submit');
     Route::post('/reaktivieren', [\App\Http\Controllers\Inserent\ListingController::class,       'reactivate'])->name('reactivate');
     Route::get('/besucher',      [\App\Http\Controllers\Inserent\ListingVisitorController::class, 'index'])->name('visitors');
     Route::get('/beitraege',            [\App\Http\Controllers\Inserent\PostController::class, 'index'])->name('posts.index');

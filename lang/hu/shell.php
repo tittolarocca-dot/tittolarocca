@@ -36,4 +36,7 @@ return [
     'tip_post_desc' => "Jelenj meg a közösségi feedben",
     'tip_video_label' => "Videó hozzáadása",
     'tip_video_desc' => "A videós profilokat többen nézik",
+    "age_identity" => "18+ Ellenőrzés",
+    "tip_age_label" => "18+ személyazonosság igazolása",
+    "tip_age_desc" => "Védi a közösséget és igazolja a korodat",
 ];

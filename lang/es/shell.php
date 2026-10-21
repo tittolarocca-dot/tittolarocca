@@ -36,4 +36,7 @@ return [
     'tip_post_desc' => "Aparece en el feed de la comunidad",
     'tip_video_label' => "Añadir un vídeo",
     'tip_video_desc' => "Los perfiles con vídeo reciben más visitas",
+    "age_identity" => "Verificación 18+",
+    "tip_age_label" => "Confirmar identidad 18+",
+    "tip_age_desc" => "Protege la comunidad y confirma tu edad",
 ];

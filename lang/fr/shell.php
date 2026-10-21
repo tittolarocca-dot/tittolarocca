@@ -36,4 +36,7 @@ return [
     'tip_post_desc' => "Apparaissez dans le fil communautaire",
     'tip_video_label' => "Ajouter une vidéo",
     'tip_video_desc' => "Les profils avec vidéo sont plus visités",
+    "age_identity" => "Vérification 18+",
+    "tip_age_label" => "Confirmer l'identité 18+",
+    "tip_age_desc" => "Protège la communauté et confirme ton âge",
 ];

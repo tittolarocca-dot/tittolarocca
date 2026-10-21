@@ -129,9 +129,21 @@ class Profile extends Model
     public function reviews()      { return $this->hasMany(Review::class); }
     public function approvedReviews() { return $this->hasMany(Review::class)->where('status', 'approved'); }
     public function listingOrders(){ return $this->hasMany(ListingOrder::class); }
+    /** Manuelle 18+ Alters-/Identitätsprüfung (Ausweis + Video). */
+    public function ageVerification() { return $this->hasOne(AgeVerification::class); }
 
     /** Manuelle Foto-Verifizierung bestätigt. */
     public function isPhotoVerified(): bool { return $this->verification_status === 'approved'; }
+
+    /**
+     * 18+ Alter & Identität über die manuelle Ausweis-/Video-Prüfung bestätigt.
+     * Bereitet das öffentliche „18+ bestätigt"-Badge vor – wird aber bewusst
+     * noch NICHT automatisch im öffentlichen Profil angezeigt.
+     */
+    public function isAgeVerified(): bool
+    {
+        return $this->ageVerification?->status === AgeVerification::STATUS_VERIFIED;
+    }
 
     /** Identität & Alter über Veriff bestätigt. */
     public function isIdentityVerified(): bool { return $this->identity_verification_status === 'approved'; }
