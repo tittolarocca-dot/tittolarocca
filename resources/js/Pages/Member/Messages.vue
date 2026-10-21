@@ -16,10 +16,10 @@
         :class="activeConv ? 'hidden sm:flex' : 'flex'">
         <!-- Header + Suche -->
         <div class="px-4 pt-3 pb-2 border-b border-white/8">
-          <h2 class="font-bold text-white text-lg mb-2">Chats</h2>
+          <h2 class="font-bold text-white text-lg mb-2">{{ t("chat.chats") }}</h2>
           <div class="relative">
             <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input v-model="search" type="text" placeholder="Suchen…"
+            <input v-model="search" type="text" :placeholder="t('chat.search')"
               class="w-full bg-[#111] border border-white/10 text-gray-200 text-sm rounded-full pl-9 pr-3 py-2 focus:outline-none focus:border-[#e35d8f] transition" />
           </div>
           <div class="flex gap-2 mt-2.5">
@@ -27,7 +27,7 @@
               @click="chatFilter = chip.k"
               class="text-xs font-semibold px-3 py-1 rounded-full transition"
               :class="chatFilter === chip.k ? 'bg-[#e35d8f] text-white' : 'bg-white/5 text-gray-300 hover:bg-white/10'">
-              {{ chip.l }}
+              {{ t("chat." + chip.k) }}
             </button>
           </div>
         </div>
@@ -61,11 +61,11 @@
               </button>
               <div v-if="menuOpen === conv.user_id"
                 class="absolute right-2 top-11 z-20 w-48 bg-[#1f1f1f] border border-white/10 rounded-xl shadow-xl shadow-black/50 py-1 text-sm">
-                <button @click.stop="act('unread', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Ungelesen</button>
-                <button @click.stop="act('report', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Melden</button>
-                <button @click.stop="act(conv.blocked ? 'unblock' : 'block', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ conv.blocked ? 'Blockierung aufheben' : 'Ignorieren' }}</button>
-                <button @click.stop="act('hide', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">Verstecken</button>
-                <button @click.stop="act('delete', conv)" class="w-full text-left px-3 py-2 text-red-400 hover:bg-white/5 transition">Löschen</button>
+                <button @click.stop="act('unread', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ t("chat.mark_unread") }}</button>
+                <button @click.stop="act('report', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ t("chat.report") }}</button>
+                <button @click.stop="act(conv.blocked ? 'unblock' : 'block', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ conv.blocked ? t('chat.unblock') : t('chat.ignore') }}</button>
+                <button @click.stop="act('hide', conv)" class="w-full text-left px-3 py-2 text-gray-200 hover:bg-white/5 transition">{{ t("chat.hide") }}</button>
+                <button @click.stop="act('delete', conv)" class="w-full text-left px-3 py-2 text-red-400 hover:bg-white/5 transition">{{ t("chat.delete") }}</button>
               </div>
             </div>
           </template>
@@ -99,7 +99,7 @@
         <div v-if="!activeConv" class="flex-1 flex items-center justify-center text-gray-600">
           <div class="text-center">
             <div class="text-5xl mb-3">💬</div>
-            <p class="text-sm">Wähle eine Konversation aus.</p>
+            <p class="text-sm">{{ t("chat.select_conversation") }}</p>
           </div>
         </div>
         <template v-else>
@@ -214,7 +214,7 @@
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                 <input type="file" accept="image/*" class="hidden" @change="onImageSelect" ref="imageInput" />
               </label>
-              <textarea v-model="replyText" rows="1" ref="textInput" placeholder="Nachricht schreiben…"
+              <textarea v-model="replyText" rows="1" ref="textInput" :placeholder="t('chat.write_message')"
                 @keydown.enter.exact.prevent="sendOrUpload" @input="autoResize"
                 class="flex-1 border border-white/10 bg-[#111] text-gray-100 rounded-2xl px-3.5 py-2 text-sm placeholder-gray-500 focus:outline-none focus:border-[#e35d8f] resize-none overflow-hidden leading-5 max-h-32"
                 :disabled="sending" />
@@ -241,6 +241,9 @@
 import { ref, computed, nextTick, onMounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   conversations: { type: Array, default: () => [] },
@@ -281,8 +284,8 @@ function act(action, conv) {
     hide:    route('chat.hide',    conv.user_id),
     delete:  route('chat.clear',   conv.user_id),
   };
-  if (action === 'delete' && !confirm('Diese Konversation für dich löschen? Der Verlauf wird für dich geleert; schreibt die Person erneut, beginnt der Chat neu.')) return;
-  if (action === 'report' && !confirm('Diese Konversation dem Team melden?')) return;
+  if (action === 'delete' && !confirm(t('chat.confirm_delete'))) return;
+  if (action === 'report' && !confirm(t('chat.confirm_report'))) return;
   router.post(routes[action], {}, {
     preserveScroll: true,
     onSuccess: () => {

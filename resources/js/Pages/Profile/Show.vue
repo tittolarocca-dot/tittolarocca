@@ -676,18 +676,18 @@
     <div v-if="showVerifyNotice" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" @click.self="showVerifyNotice = false">
       <div class="w-full max-w-sm bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 text-center">
         <div class="text-4xl mb-3">📧</div>
-        <h3 class="text-white font-bold text-lg mb-2">Bitte bestätige deine E-Mail</h3>
+        <h3 class="text-white font-bold text-lg mb-2">{{ t('chat.verify_title') }}</h3>
         <p class="text-sm text-gray-400 leading-relaxed mb-5">
-          Für diese Aktion musst du zuerst deine E-Mail-Adresse bestätigen. Wir haben dir bei der Registrierung einen Link geschickt – schau auch im Spam-Ordner nach.
+          {{ t('chat.verify_body') }}
         </p>
         <div class="flex flex-col gap-2">
           <button type="button" @click="resendVerification"
             class="w-full bg-[#e35d8f] hover:bg-[#c44a7a] text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">
-            Bestätigungs-E-Mail erneut senden
+            {{ t('chat.verify_resend') }}
           </button>
           <button type="button" @click="showVerifyNotice = false"
             class="w-full text-gray-400 hover:text-white text-sm px-4 py-2 transition">
-            Schließen
+            {{ t('chat.verify_close') }}
           </button>
         </div>
       </div>

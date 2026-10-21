@@ -13,7 +13,7 @@
       <div class="min-w-0 flex-1">
         <Link :href="route('profile.show', author.slug)" class="inline-flex items-center gap-1 group">
           <span class="text-sm font-semibold text-white truncate group-hover:text-[#e35d8f] transition">{{ author.name }}</span>
-          <span v-if="author.verified" class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-500 shrink-0" title="Verifiziert">
+          <span v-if="author.verified" class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-500 shrink-0" :title="t('feed.verified')">
             <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           </span>
         </Link>
@@ -45,13 +45,13 @@
     <div class="px-4 py-3 mt-1 flex items-center gap-2">
       <Link :href="route('profile.show', author.slug)"
         class="flex-1 text-center text-sm font-semibold text-gray-200 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3 py-2 transition">
-        Profil ansehen
+        {{ t('feed.view_profile') }}
       </Link>
       <button type="button" @click="toggleFollow" :disabled="busy"
         class="flex-1 text-sm font-bold rounded-lg px-3 py-2 transition disabled:opacity-60 inline-flex items-center justify-center gap-1.5"
         :class="following ? 'bg-white/5 border border-[#e35d8f]/50 text-[#e35d8f]' : 'bg-[#e35d8f] hover:bg-[#c44a7a] text-white'">
         <svg v-if="!following" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        {{ following ? 'Folgst du' : 'Folgen' }}
+        {{ following ? t('feed.following') : t('feed.follow') }}
       </button>
     </div>
   </article>
@@ -60,6 +60,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   post:     { type: Object,  required: true },

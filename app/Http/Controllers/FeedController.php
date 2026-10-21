@@ -36,7 +36,7 @@ class FeedController extends Controller
         }
 
         app(SeoData::class)
-            ->forPage('Aktuell auf Booklola', 'Neue Beiträge, Bilder und Updates aus der Community auf booklola.ch.')
+            ->forPage(__('feed.seo_title'), __('feed.seo_desc'))
             ->setCanonical(route('feed'));
 
         return Inertia::render('Feed/Index', $data + [

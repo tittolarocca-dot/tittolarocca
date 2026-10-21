@@ -5,7 +5,7 @@
       <button type="button" @click="open = true"
         class="lg:hidden inline-flex items-center gap-2 text-sm font-semibold text-gray-200 bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 mb-4">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        Menü
+        {{ t('shell.menu') }}
       </button>
 
       <div class="lg:grid lg:grid-cols-[250px_1fr] lg:gap-6">
@@ -46,12 +46,12 @@
             <a :href="route('home')"
               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition">
               <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="icons.home"></svg>
-              Zur Webseite
+              {{ t('shell.website') }}
             </a>
             <button type="button" @click="logout"
               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition text-left">
               <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="icons.logout"></svg>
-              Abmelden
+              {{ t('shell.logout') }}
             </button>
           </nav>
         </aside>
@@ -72,6 +72,9 @@
 import { ref, computed } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   role:   { type: String, default: 'inserent' }, // 'inserent' | 'member'
@@ -84,33 +87,33 @@ const open = ref(false);
 const userName  = computed(() => page.props.auth?.user?.name ?? '');
 const avatarUrl = computed(() => page.props.auth?.user?.avatar ?? null);
 const initial   = computed(() => (userName.value || '?').trim().charAt(0).toUpperCase());
-const roleLabel = computed(() => props.role === 'member' ? 'Mitglied' : 'Inserent:in');
+const roleLabel = computed(() => props.role === 'member' ? t('shell.role_member') : t('shell.role_inserent'));
 
 const cur = (name) => { try { return route().current(name); } catch { return false; } };
 
 const items = computed(() => {
   if (props.role === 'member') {
     return [
-      { label: 'Dashboard',         icon: 'grid',     href: route('konto.dashboard'),     active: cur('konto.dashboard') },
-      { label: 'Mein Profil',       icon: 'user',     href: route('konto.account.edit'),  active: cur('konto.account.*') },
-      { label: 'Profile entdecken', icon: 'search',   href: route('home'),                active: false },
-      { label: 'Nachrichten',       icon: 'chat',     href: route('konto.messages'),      active: cur('konto.messages*') },
-      { label: 'Favoriten',         icon: 'heart',    href: route('konto.favorites'),     active: cur('konto.favorites*') },
-      { label: 'Abonnements',       icon: 'sub',      href: route('konto.subscriptions'), active: cur('konto.subscriptions') },
-      { label: 'Besucher',          icon: 'visitors', href: route('konto.visitors'),      active: cur('konto.visitors') },
-      { label: 'Bewertungen',       icon: 'star',     href: route('konto.reviews.mine'),  active: cur('konto.reviews.*') },
+      { label: t('shell.dashboard'),     icon: 'grid',     href: route('konto.dashboard'),     active: cur('konto.dashboard') },
+      { label: t('shell.my_profile'),    icon: 'user',     href: route('konto.account.edit'),  active: cur('konto.account.*') },
+      { label: t('shell.discover'),      icon: 'search',   href: route('home'),                active: false },
+      { label: t('shell.messages'),      icon: 'chat',     href: route('konto.messages'),      active: cur('konto.messages*') },
+      { label: t('shell.favorites'),     icon: 'heart',    href: route('konto.favorites'),     active: cur('konto.favorites*') },
+      { label: t('shell.subscriptions'), icon: 'sub',      href: route('konto.subscriptions'), active: cur('konto.subscriptions') },
+      { label: t('shell.visitors'),      icon: 'visitors', href: route('konto.visitors'),      active: cur('konto.visitors') },
+      { label: t('shell.reviews'),       icon: 'star',     href: route('konto.reviews.mine'),  active: cur('konto.reviews.*') },
     ];
   }
   return [
-    { label: 'Dashboard',        icon: 'grid',     href: route('inserat.dashboard'),        active: cur('inserat.dashboard') },
-    { label: 'Profil bearbeiten', icon: 'edit',    href: route('inserat.profile.edit'),     active: cur('inserat.profile.*') },
-    { label: 'Medien',           icon: 'image',    href: route('inserat.media.index'),      active: cur('inserat.media.*') },
-    { label: 'Beiträge',         icon: 'post',     href: route('inserat.posts.index'),      active: cur('inserat.posts.*') },
-    { label: 'Nachrichten',      icon: 'chat',     href: route('inserat.messages'),         active: cur('inserat.messages*'), badge: props.badges.messages },
-    { label: 'Foto-Anfragen',    icon: 'lock',     href: route('inserat.gallery.requests'), active: cur('inserat.gallery.*'), badge: props.badges.gallery },
-    { label: 'Besucher',         icon: 'visitors', href: route('inserat.visitors'),         active: cur('inserat.visitors') },
-    { label: 'Verifizierung',    icon: 'shield',   href: route('inserat.verification.page'), active: cur('inserat.verification.page') },
-    { label: 'Einstellungen',    icon: 'gear',     href: route('inserat.settings'),         active: cur('inserat.settings') },
+    { label: t('shell.dashboard'),        icon: 'grid',     href: route('inserat.dashboard'),        active: cur('inserat.dashboard') },
+    { label: t('shell.edit_profile'),     icon: 'edit',     href: route('inserat.profile.edit'),     active: cur('inserat.profile.*') },
+    { label: t('shell.media'),            icon: 'image',    href: route('inserat.media.index'),      active: cur('inserat.media.*') },
+    { label: t('shell.posts'),            icon: 'post',     href: route('inserat.posts.index'),      active: cur('inserat.posts.*') },
+    { label: t('shell.messages'),         icon: 'chat',     href: route('inserat.messages'),         active: cur('inserat.messages*'), badge: props.badges.messages },
+    { label: t('shell.gallery_requests'), icon: 'lock',     href: route('inserat.gallery.requests'), active: cur('inserat.gallery.*'), badge: props.badges.gallery },
+    { label: t('shell.visitors'),         icon: 'visitors', href: route('inserat.visitors'),         active: cur('inserat.visitors') },
+    { label: t('shell.verification'),     icon: 'shield',   href: route('inserat.verification.page'), active: cur('inserat.verification.page') },
+    { label: t('shell.settings'),         icon: 'gear',     href: route('inserat.settings'),         active: cur('inserat.settings') },
   ];
 });
 

@@ -1,12 +1,12 @@
 <template>
   <AppLayout>
-    <Head title="Aktuell auf Booklola" />
+    <Head :title="t('feed.title')" />
 
     <div class="max-w-xl mx-auto px-4 py-5 sm:py-6">
       <!-- Kopf -->
       <header class="mb-5">
-        <h1 class="text-2xl sm:text-3xl font-black text-white">Aktuell auf Booklola</h1>
-        <p class="text-sm text-gray-400 mt-1">Neue Beiträge, Bilder und Updates aus der Community</p>
+        <h1 class="text-2xl sm:text-3xl font-black text-white">{{ t('feed.title') }}</h1>
+        <p class="text-sm text-gray-400 mt-1">{{ t('feed.subtitle') }}</p>
       </header>
 
       <!-- Beiträge -->
@@ -16,14 +16,14 @@
 
         <!-- Sentinel für Infinite Scroll -->
         <div ref="sentinel" class="h-10"></div>
-        <div v-if="loading" class="text-center text-gray-500 text-sm py-2">Lädt …</div>
-        <div v-else-if="!nextUrl" class="text-center text-gray-600 text-xs py-2">Du bist auf dem neuesten Stand.</div>
+        <div v-if="loading" class="text-center text-gray-500 text-sm py-2">{{ t('feed.loading') }}</div>
+        <div v-else-if="!nextUrl" class="text-center text-gray-600 text-xs py-2">{{ t('feed.end') }}</div>
       </div>
 
       <!-- Empty State -->
       <div v-else class="bg-[#1a1a1a] border border-white/8 rounded-2xl p-10 text-center">
         <div class="text-4xl mb-3">📭</div>
-        <p class="text-gray-300 text-sm">Noch keine Beiträge vorhanden.<br>Schau bald wieder vorbei.</p>
+        <p class="text-gray-300 text-sm">{{ t('feed.empty_line1') }}<br>{{ t('feed.empty_line2') }}</p>
       </div>
     </div>
 
@@ -40,6 +40,9 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import FeedCard from '@/Components/FeedCard.vue';
+import { useI18n } from '@/composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   posts:       { type: Array,  default: () => [] },

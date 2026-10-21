@@ -1,11 +1,11 @@
 <template>
   <DashboardLayout role="inserent">
-    <Head :title="t('dashboard.settings_title')" />
+    <Head :title="t('shell.settings_title')" />
 
     <div class="space-y-5">
       <div>
-        <h1 class="text-2xl font-black text-white">{{ t('dashboard.settings_title') }}</h1>
-        <p class="text-gray-400 text-sm mt-1">{{ t('dashboard.settings_desc') }}</p>
+        <h1 class="text-2xl font-black text-white">{{ t('shell.settings_title') }}</h1>
+        <p class="text-gray-400 text-sm mt-1">{{ t('shell.settings_desc') }}</p>
       </div>
 
       <!-- Geoblocking -->

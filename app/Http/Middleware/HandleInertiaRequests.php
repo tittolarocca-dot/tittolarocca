@@ -40,6 +40,20 @@ class HandleInertiaRequests extends Middleware
     {
         $locale = app()->getLocale();
 
+        // Übersetzungsgruppe mit Fallback-Kette laden: Deutsch (Basis) ← Englisch
+        // ← aktuelle Sprache (gewinnt). So erscheint nie ein roher Schlüssel,
+        // auch wenn eine Übersetzung in der aktuellen Sprache fehlt.
+        $tr = function (string $group) use ($locale) {
+            $merged = [];
+            foreach (array_values(array_unique(['de', 'en', $locale])) as $l) {
+                $arr = trans($group, [], $l);
+                if (is_array($arr)) {
+                    $merged = array_merge($merged, $arr);
+                }
+            }
+            return $merged;
+        };
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -69,15 +83,18 @@ class HandleInertiaRequests extends Middleware
             'locale'           => $locale,
             'supportedLocales' => SetLocale::SUPPORTED,
             'translations'     => fn () => [
-                'nav'       => trans('nav'),
-                'home'      => trans('home'),
-                'profile'   => trans('profile'),
-                'auth'      => trans('auth'),
-                'dashboard' => trans('dashboard'),
-                'inserent'  => trans('inserent'),
-                'languages' => trans('languages'),
-                'gate'      => trans('gate'),
-                'clubs'     => trans('clubs'),
+                'nav'       => $tr('nav'),
+                'home'      => $tr('home'),
+                'profile'   => $tr('profile'),
+                'auth'      => $tr('auth'),
+                'dashboard' => $tr('dashboard'),
+                'inserent'  => $tr('inserent'),
+                'languages' => $tr('languages'),
+                'gate'      => $tr('gate'),
+                'clubs'     => $tr('clubs'),
+                'shell'     => $tr('shell'),
+                'feed'      => $tr('feed'),
+                'chat'      => $tr('chat'),
             ],
         ];
     }

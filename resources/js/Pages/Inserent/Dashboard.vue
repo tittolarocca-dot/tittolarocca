@@ -33,7 +33,7 @@
             <Link :href="route('inserat.profile.edit')" class="border border-white/10 text-gray-200 hover:bg-white/5 text-sm font-bold px-4 py-2.5 rounded-xl transition">{{ t('dashboard.action_edit') }}</Link>
           </div>
         </div>
-        <ProgressRing :percent="completeness" :label="t('dashboard.completeness_label')" class="shrink-0 mx-auto lg:mx-0" />
+        <ProgressRing :percent="completeness" :label="t('shell.completeness_label')" class="shrink-0 mx-auto lg:mx-0" />
       </section>
 
       <!-- ── KPI-Streifen ───────────────────────────────────────────────── -->
@@ -51,7 +51,7 @@
         <!-- Tipps -->
         <div class="bg-[#1a1a1a] border border-white/8 rounded-2xl">
           <div class="flex items-center justify-between px-5 py-4 border-b border-white/8">
-            <h2 class="text-[15px] font-bold text-white">{{ t('dashboard.next_steps') }}</h2>
+            <h2 class="text-[15px] font-bold text-white">{{ t('shell.next_steps') }}</h2>
             <span class="text-xs text-gray-500">{{ completeness }}%</span>
           </div>
           <div class="px-5 py-2">
@@ -68,7 +68,7 @@
                   <div class="text-xs text-gray-500 mt-0.5">{{ tip.desc }}</div>
                 </div>
                 <span class="ml-auto self-center text-xs font-bold whitespace-nowrap" :class="tip.done ? 'text-green-400' : 'text-[#e35d8f]'">
-                  {{ tip.done ? t('dashboard.tip_done') : t('dashboard.tip_do') + ' →' }}
+                  {{ tip.done ? t('shell.tip_done') : t('shell.tip_do') + ' →' }}
                 </span>
               </component>
             </template>
