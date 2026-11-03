@@ -100,6 +100,7 @@ class HandleInertiaRequests extends Middleware
                 'feed'      => $tr('feed'),
                 'chat'      => $tr('chat'),
                 'age'       => $tr('age'),
+                'stats'     => $tr('stats'),
             ],
         ];
     }

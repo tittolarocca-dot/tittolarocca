@@ -39,4 +39,5 @@ return [
     "age_identity" => "18+ ID Check",
     "tip_age_label" => "Confirm 18+ identity",
     "tip_age_desc" => "Protects the community and confirms your age",
+    "statistics" => "Statistics",
 ];

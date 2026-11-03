@@ -24,6 +24,9 @@ Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])-
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
 Route::get('/profil/{profile:slug}/feed', [ProfileController::class,'feed'])->name('profile.feed');
+// Kontakt-Klick-Tracking (WhatsApp/Anruf/…) fürs Inserenten-Statistik-Dashboard.
+Route::post('/profil/{profile:slug}/event', [\App\Http\Controllers\ProfileEventController::class, 'store'])
+    ->middleware('throttle:60,1')->name('profile.event');
 Route::get('/neue-bilder',               [\App\Http\Controllers\NewImagesController::class, 'index'])->name('neue-bilder');
 Route::get('/feed',                      [\App\Http\Controllers\FeedController::class, 'index'])->name('feed');
 
@@ -156,6 +159,8 @@ Route::middleware(['auth', 'verified'])->prefix('inserat')->name('inserat.')->gr
     Route::post('/veriff',        [\App\Http\Controllers\Inserent\VeriffController::class, 'start'])->name('veriff.start');
 
     // 18+ Alters- & Identitätsprüfung (Ausweis + Video). Uploads/Submit rate-limitiert.
+    Route::get('/statistik', [\App\Http\Controllers\Inserent\StatisticsController::class, 'index'])->name('statistics');
+
     Route::get('/identitaetspruefung', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'page'])->name('age.page');
     Route::post('/identitaetspruefung/dokument', [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'uploadDocument'])->middleware('throttle:20,1')->name('age.document.upload');
     Route::post('/identitaetspruefung/video',    [\App\Http\Controllers\Inserent\AgeVerificationController::class, 'uploadVideo'])->middleware('throttle:20,1')->name('age.video.upload');

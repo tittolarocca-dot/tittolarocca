@@ -46,6 +46,21 @@ class ProfileController extends Controller
             );
         }
 
+        // Zeitgestempeltes View-Event für die Statistik (Gäste inkl.). Pro Session
+        // und Profil max. 1× / 30 Min, damit Reloads die Zahlen nicht aufblähen.
+        if (! $isOwner) {
+            $viewKey  = 'pe_view_' . $profile->id;
+            $lastView = (int) $request->session()->get($viewKey, 0);
+            if (now()->timestamp - $lastView >= 1800) {
+                \App\Models\ProfileEvent::create([
+                    'profile_id'      => $profile->id,
+                    'type'            => \App\Models\ProfileEvent::TYPE_VIEW,
+                    'visitor_user_id' => $user?->id,
+                ]);
+                $request->session()->put($viewKey, now()->timestamp);
+            }
+        }
+
         $trialSub = $user ? $user->platformSubscriptions()
             ->where('profile_id', $profile->id)
             ->where('status', 'trialing')

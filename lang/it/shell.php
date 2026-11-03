@@ -39,4 +39,5 @@ return [
     "age_identity" => "Verifica 18+",
     "tip_age_label" => "Conferma identità 18+",
     "tip_age_desc" => "Protegge la community e conferma la tua età",
+    "statistics" => "Statistiche",
 ];

@@ -39,4 +39,5 @@ return [
     "age_identity" => "18+ Ellenőrzés",
     "tip_age_label" => "18+ személyazonosság igazolása",
     "tip_age_desc" => "Védi a közösséget és igazolja a korodat",
+    "statistics" => "Statisztikák",
 ];
