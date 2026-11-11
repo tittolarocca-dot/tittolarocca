@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Biel',        'canton' => 'BE', 'slug' => 'biel'],
             ['name' => 'Thun',        'canton' => 'BE', 'slug' => 'thun'],
             ['name' => 'Chur',        'canton' => 'GR', 'slug' => 'chur'],
+            ['name' => 'Zug',         'canton' => 'ZG', 'slug' => 'zug'],
+            ['name' => 'Emmenbrücke', 'canton' => 'LU', 'slug' => 'emmenbruecke'],
         ];
         foreach ($cities as $i => $city) {
             City::firstOrCreate(['slug' => $city['slug']], array_merge($city, ['sort_order' => $i]));
@@ -47,6 +49,8 @@ class DatabaseSeeder extends Seeder
             'biel'       => 'Biel/Bienne, die zweisprachige Stadt am Bielersee, findest du auf booklola.ch mit aktuellen Escort- und Begleitinseraten aus der Stadt und dem Seeland. Alle Profile mit Fotos, nach Kategorie filterbar und diskret kontaktierbar.',
             'thun'       => 'Thun am Tor zum Berner Oberland bietet auf booklola.ch Escort-, Begleit- und Erotikinserate aus der Stadt und der Region Thunersee. Mit Fotos, filterbar nach Kategorie und mit direktem, diskretem Kontakt.',
             'chur'       => 'Chur, die älteste Stadt der Schweiz und Hauptort Graubündens, findest du auf booklola.ch mit aktuellen Escort- und Begleitinseraten aus der Stadt und der Bündner Region. Alle Profile mit Fotos, filterbar und diskret kontaktierbar.',
+            'zug'          => 'Zug am Zugersee in der Zentralschweiz findest du auf booklola.ch mit aktuellen Escort-, Begleit- und Erotikinseraten aus der Stadt Zug und der Region. Alle Profile mit Fotos, nach Kategorie filterbar und mit direktem, diskretem Kontakt.',
+            'emmenbruecke' => 'Emmenbrücke bei Luzern gehört zur Agglomeration Luzern im Kanton Luzern. Auf booklola.ch findest du Escort- und Begleitinserate aus Emmenbrücke und der Region – mit Fotos, nach Kategorie filterbar und diskret direkt kontaktierbar.',
         ];
         foreach ($cityIntros as $slug => $intro) {
             City::where('slug', $slug)->update(['intro_text' => $intro]);
