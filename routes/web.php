@@ -15,11 +15,24 @@ Route::get('/lang/{locale}', [LocaleController::class, 'switch'])
 // ── Public ────────────────────────────────────────────────────────────────────
 Route::get('/',                          [HomeController::class,   'index'])->name('home');
 Route::get('/suchen',                    [SearchController::class, 'index'])->name('search');
-Route::get('/stadt/{city:slug}',         [HomeController::class,   'city'])->name('city');
+// SEO-Regionen-URLs: /sex-{stadt} und /sex-{stadt}/{kategorie}. Keyword-reich
+// (wie die Konkurrenz: z. B. and6.com/sex-in-bern) und passend zu den schon
+// serverseitig gesetzten Titeln „Sex & Escort {Stadt}".
+Route::get('/sex-{city:slug}',           [HomeController::class,   'city'])->name('city');
 // withoutScopedBindings: Kategorie ist global, nicht Kind der Stadt – sonst
 // würde Laravel fälschlich $city->categories() aufrufen (Scoped Binding).
-Route::get('/stadt/{city:slug}/{category:slug}', [HomeController::class, 'cityCategory'])
+Route::get('/sex-{city:slug}/{category:slug}', [HomeController::class, 'cityCategory'])
     ->name('city.category')->withoutScopedBindings();
+
+// 301-Weiterleitung der ALTEN /stadt-URLs → neue /sex-URLs. Bewahrt bestehendes
+// Ranking und vermeidet Duplicate Content. Die Namen bleiben 'city' /
+// 'city.category', daher zeigen alle internen Links, Breadcrumbs, Canonicals und
+// die Sitemap automatisch auf /sex-...; diese Routen fangen nur die Alt-Pfade ab.
+Route::get('/stadt/{city:slug}', fn (\App\Models\City $city) =>
+    redirect(route('city', $city->slug), 301))->name('city.legacy');
+Route::get('/stadt/{city:slug}/{category:slug}', fn (\App\Models\City $city, \App\Models\Category $category) =>
+    redirect(route('city.category', [$city->slug, $category->slug]), 301))
+    ->withoutScopedBindings()->name('city.category.legacy');
 Route::get('/kategorie/{category:slug}', [HomeController::class,   'category'])->name('category');
 Route::get('/service/{tag:slug}',        [HomeController::class,   'service'])->name('service');
 Route::get('/profil/{profile:slug}',     [ProfileController::class,'show'])->name('profile.show');
