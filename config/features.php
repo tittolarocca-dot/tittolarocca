@@ -28,6 +28,13 @@ return [
     // passenden Header setzen (z. B. wenn ein anderer Proxy das Land liefert).
     'geo_country_header' => env('GEO_COUNTRY_HEADER'),
 
+    // Cloudflare-Region-Header (ISO-3166-2, z. B. "GE", "VD", "TI") für die
+    // automatische Spracherkennung als LETZTER Fallback (nur wenn keine
+    // Browsersprache erkennbar ist). Setzt voraus, dass in Cloudflare unter
+    // "Managed Transforms → Add visitor location headers" aktiviert ist; sonst
+    // ist der Header leer und es wird einfach Deutsch verwendet.
+    'geo_region_header' => env('GEO_REGION_HEADER', 'CF-Region-Code'),
+
     // Veriff (Identitäts-/Altersprüfung) im Inserenten-Dashboard anzeigen.
     // false = Veriff-Block ausgeblendet (Standard, solange unentschieden).
     'veriff_enabled' => (bool) env('VERIFF_ENABLED', false),

@@ -14,7 +14,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use HasFactory, Notifiable, Billable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'status', 'email_verified_at',
+        'name', 'email', 'password', 'role', 'status', 'email_verified_at', 'locale',
         'gender', 'age', 'height_cm', 'weight_kg', 'city_id', 'languages',
         'smoking', 'bio', 'preferences', 'deactivated_at',
         'avatar_path', 'avatar_status', 'avatar_rejection_reason', 'avatar_moderated_at',
