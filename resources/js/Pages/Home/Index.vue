@@ -49,7 +49,19 @@
       <!-- ── Kreis-Navigation ───────────────────────────────────────────── -->
       <section v-if="profiles.data.length" style="background:var(--bl-bg);">
         <div class="max-w-7xl mx-auto px-4">
-          <div class="flex gap-3 sm:gap-4 overflow-x-auto pt-1 pb-3 scrollbar-hide">
+          <div class="relative">
+
+          <!-- Pfeil links -->
+          <button v-show="canScrollLeft" @click="scrollCircles(-1)" type="button" aria-label="Zurück"
+            class="hidden sm:flex absolute left-0 top-[36px] -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full transition"
+            style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);box-shadow:var(--bl-shadow);">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <!-- weicher Verlauf links -->
+          <div v-show="canScrollLeft" class="hidden sm:block pointer-events-none absolute left-0 top-0 bottom-0 w-14 z-10" style="background:linear-gradient(to right, var(--bl-bg), transparent);"></div>
+
+          <div ref="circleScroll" @scroll="updateCircleArrows"
+            class="flex gap-3 sm:gap-4 overflow-x-auto pt-1 pb-3 scrollbar-hide">
             <a v-for="nav in circleNav" :key="nav.label" :href="nav.href"
               class="flex flex-col items-center shrink-0 w-16 sm:w-[76px] cursor-pointer group">
               <div class="w-14 h-14 sm:w-[68px] sm:h-[68px] rounded-full flex items-center justify-center transition p-[2px]"
@@ -76,6 +88,16 @@
               </div>
               <span class="text-[11px] mt-1.5 text-center truncate w-full transition" style="color:var(--bl-text-muted);">{{ profile.display_name }}</span>
             </a>
+          </div>
+
+          <!-- weicher Verlauf rechts -->
+          <div v-show="canScrollRight" class="hidden sm:block pointer-events-none absolute right-0 top-0 bottom-0 w-14 z-10" style="background:linear-gradient(to left, var(--bl-bg), transparent);"></div>
+          <!-- Pfeil rechts -->
+          <button v-show="canScrollRight" @click="scrollCircles(1)" type="button" aria-label="Weiter"
+            class="hidden sm:flex absolute right-0 top-[36px] -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full transition"
+            style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);box-shadow:var(--bl-shadow);">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
           </div>
         </div>
       </section>
@@ -603,7 +625,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardGallery from '@/Components/CardGallery.vue';
@@ -649,6 +671,28 @@ const v2TriggerIdle   = 'background:var(--bl-surface-2);border:1px solid var(--b
 const v2TriggerActive = 'background:var(--bl-surface-2);border:1px solid var(--bl-pink);color:var(--bl-text);';
 const v2Panel = 'absolute z-40 mt-1 left-0 max-h-72 overflow-y-auto rounded-xl p-1 shadow-xl';
 const v2Option = 'flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition hover:bg-white/5';
+
+// ── Kreisel-Navigation: horizontal scrollbar mit Pfeil-Buttons ────────────
+const circleScroll = ref(null);
+const canScrollLeft  = ref(false);
+const canScrollRight = ref(false);
+
+function updateCircleArrows() {
+  const el = circleScroll.value;
+  if (!el) return;
+  canScrollLeft.value  = el.scrollLeft > 4;
+  canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+}
+function scrollCircles(dir) {
+  const el = circleScroll.value;
+  if (!el) return;
+  el.scrollBy({ left: dir * Math.max(el.clientWidth * 0.8, 240), behavior: 'smooth' });
+}
+onMounted(() => {
+  nextTick(updateCircleArrows);
+  window.addEventListener('resize', updateCircleArrows);
+});
+onBeforeUnmount(() => window.removeEventListener('resize', updateCircleArrows));
 
 // Bild-Variante wählen (Fallback auf Original-Stream bei Alt-Medien)
 function mediaSrc(m, size) {
