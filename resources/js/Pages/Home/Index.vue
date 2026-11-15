@@ -2,6 +2,225 @@
   <AppLayout>
     <Head :title="seoTitle || t('home.title')" />
 
+    <!-- =================================================================== -->
+    <!-- V2 – neues Design (hinter BOOKLOLA_UI_V2). Nutzt EXAKT dieselben     -->
+    <!-- Props, filters-State und applyFilters() wie V1 – nur Darstellung.   -->
+    <!-- =================================================================== -->
+    <template v-if="uiV2">
+
+      <!-- ── Hero ───────────────────────────────────────────────────────── -->
+      <section style="background:var(--bl-bg);">
+        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
+            {{ seoHeading || t('home.hero') }}
+          </h1>
+          <p class="mt-3 text-base sm:text-lg font-medium" style="color:var(--bl-text-muted);">
+            Entdecken. Folgen. Treffen.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
+            <div v-for="trust in trustItems" :key="trust.label" class="inline-flex items-center gap-2 text-sm font-medium" style="color:var(--bl-text-muted);">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0" style="background:var(--bl-grad-soft);color:var(--bl-pink);">
+                <span v-html="trust.icon" class="w-3.5 h-3.5 inline-flex"></span>
+              </span>
+              {{ trust.label }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Kreis-Navigation ───────────────────────────────────────────── -->
+      <section v-if="profiles.data.length" style="background:var(--bl-bg);">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="flex gap-3 sm:gap-4 overflow-x-auto pt-1 pb-3 scrollbar-hide">
+            <a v-for="nav in circleNav" :key="nav.label" :href="nav.href"
+              class="flex flex-col items-center shrink-0 w-16 sm:w-[76px] cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[68px] sm:h-[68px] rounded-full flex items-center justify-center transition p-[2px]"
+                style="background:var(--bl-grad);box-shadow:var(--bl-glow);">
+                <span class="w-full h-full rounded-full flex items-center justify-center" style="background:var(--bl-bg);">
+                  <span v-html="nav.icon" class="inline-flex items-center justify-center" style="color:var(--bl-pink);width:26px;height:26px;"></span>
+                </span>
+              </div>
+              <span class="text-[11px] font-bold mt-1.5 text-center w-full truncate" style="color:var(--bl-pink);">{{ nav.label }}</span>
+            </a>
+
+            <a v-for="profile in profiles.data.slice(0,12)" :key="'c'+profile.id"
+              :href="route('profile.show', profile.slug)"
+              class="flex flex-col items-center shrink-0 w-16 sm:w-[76px] cursor-pointer group">
+              <div class="w-14 h-14 sm:w-[68px] sm:h-[68px] rounded-full p-[2px] transition" style="background:var(--bl-grad);">
+                <span class="block w-full h-full rounded-full overflow-hidden" style="background:var(--bl-surface);">
+                  <img v-if="profile.public_media?.[0]"
+                    class="lazyload w-full h-full object-cover object-top"
+                    :data-src="mediaSrc(profile.public_media[0], 'thumbnail')"
+                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                    :alt="profile.display_name" width="68" height="68" />
+                  <span v-else class="w-full h-full flex items-center justify-center text-xl">👤</span>
+                </span>
+              </div>
+              <span class="text-[11px] mt-1.5 text-center truncate w-full transition" style="color:var(--bl-text-muted);">{{ profile.display_name }}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Filterleiste ───────────────────────────────────────────────── -->
+      <section style="background:var(--bl-bg);">
+        <div class="max-w-7xl mx-auto px-4 pt-1 pb-4">
+          <div class="rounded-2xl p-2.5 sm:p-3" style="background:var(--bl-surface);border:1px solid var(--bl-border);box-shadow:var(--bl-shadow);">
+            <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+
+              <!-- Region -->
+              <div class="relative">
+                <select v-model="filters.city" :class="v2Control" style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);">
+                  <option value="">{{ t('home.region') }}</option>
+                  <option v-for="c in cities" :key="c.id" :value="c.slug">{{ c.name }}</option>
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 top-3 w-4 h-4" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+
+              <!-- Alter -->
+              <div class="relative">
+                <button type="button" @click="ageMenuOpen = !ageMenuOpen" :class="v2Trigger"
+                  :style="filters.ages.length ? v2TriggerActive : v2TriggerIdle">
+                  <span class="truncate">{{ filters.ages.length ? t('home.age') + ' (' + filters.ages.length + ')' : t('home.age') }}</span>
+                  <svg class="shrink-0 w-4 h-4 transition-transform" :class="ageMenuOpen ? 'rotate-180' : ''" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div v-if="ageMenuOpen" class="fixed inset-0 z-30" @click="ageMenuOpen = false"></div>
+                <div v-if="ageMenuOpen" :class="v2Panel" class="w-56 max-w-[80vw]" style="background:var(--bl-surface-2);border:1px solid var(--bl-border);">
+                  <label v-for="a in ageOptions" :key="a" :class="v2Option">
+                    <input type="checkbox" :value="a" v-model="filters.ages" class="w-4 h-4 rounded cursor-pointer" style="accent-color:var(--bl-pink);" />
+                    <span class="text-sm" style="color:var(--bl-text);">{{ a }}</span>
+                  </label>
+                  <div v-if="filters.ages.length" class="border-t mt-1 pt-1 px-1" style="border-color:var(--bl-border);">
+                    <button type="button" @click="filters.ages = []" class="w-full text-left text-xs px-2 py-1.5 transition" style="color:var(--bl-text-muted);">✕ {{ t('home.reset') }}</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rubrik -->
+              <div class="relative">
+                <button type="button" @click="categoryMenuOpen = !categoryMenuOpen" :class="v2Trigger"
+                  :style="filters.categories.length ? v2TriggerActive : v2TriggerIdle">
+                  <span class="truncate">{{ filters.categories.length ? t('home.category') + ' (' + filters.categories.length + ')' : t('home.category') }}</span>
+                  <svg class="shrink-0 w-4 h-4 transition-transform" :class="categoryMenuOpen ? 'rotate-180' : ''" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div v-if="categoryMenuOpen" class="fixed inset-0 z-30" @click="categoryMenuOpen = false"></div>
+                <div v-if="categoryMenuOpen" :class="v2Panel" class="w-64 max-w-[80vw]" style="background:var(--bl-surface-2);border:1px solid var(--bl-border);">
+                  <label v-for="c in categories" :key="c.id" :class="v2Option">
+                    <input type="checkbox" :value="c.slug" v-model="filters.categories" class="w-4 h-4 rounded cursor-pointer" style="accent-color:var(--bl-pink);" />
+                    <span class="text-sm truncate" style="color:var(--bl-text);">{{ c.name }}</span>
+                  </label>
+                  <div v-if="filters.categories.length" class="border-t mt-1 pt-1 px-1" style="border-color:var(--bl-border);">
+                    <button type="button" @click="filters.categories = []" class="w-full text-left text-xs px-2 py-1.5 transition" style="color:var(--bl-text-muted);">✕ {{ t('home.reset') }}</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Service -->
+              <div class="relative">
+                <button type="button" @click="serviceMenuOpen = !serviceMenuOpen" :class="v2Trigger"
+                  :style="filters.services.length ? v2TriggerActive : v2TriggerIdle">
+                  <span class="truncate">{{ filters.services.length ? t('home.service') + ' (' + filters.services.length + ')' : t('home.service') }}</span>
+                  <svg class="shrink-0 w-4 h-4 transition-transform" :class="serviceMenuOpen ? 'rotate-180' : ''" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div v-if="serviceMenuOpen" class="fixed inset-0 z-30" @click="serviceMenuOpen = false"></div>
+                <div v-if="serviceMenuOpen" :class="v2Panel" class="w-64 max-w-[80vw]" style="background:var(--bl-surface-2);border:1px solid var(--bl-border);">
+                  <label v-for="s in services" :key="s.id" :class="v2Option">
+                    <input type="checkbox" :value="s.slug" v-model="filters.services" class="w-4 h-4 rounded cursor-pointer" style="accent-color:var(--bl-pink);" />
+                    <span class="text-sm truncate" style="color:var(--bl-text);">{{ s.name }}</span>
+                  </label>
+                  <div v-if="filters.services.length" class="border-t mt-1 pt-1 px-1" style="border-color:var(--bl-border);">
+                    <button type="button" @click="filters.services = []" class="w-full text-left text-xs px-2 py-1.5 transition" style="color:var(--bl-text-muted);">✕ {{ t('home.reset') }}</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Verifiziert -->
+              <div class="relative">
+                <select v-model="filters.verified" @change="applyFilters" :class="v2Control" style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);">
+                  <option value="">{{ t('home.verified') }}</option>
+                  <option value="ja">{{ t('home.yes') }}</option>
+                  <option value="nein">{{ t('home.no') }}</option>
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 top-3 w-4 h-4" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+
+              <!-- Suche (Text) -->
+              <div class="relative col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[180px]">
+                <input v-model="filters.search" type="text" :placeholder="t('home.search')" @keyup.enter="applyFilters"
+                  class="w-full text-sm rounded-xl px-4 py-2.5 pr-10 focus:outline-none"
+                  style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);" />
+                <svg class="absolute right-3 top-3 w-4 h-4" style="color:var(--bl-text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+
+              <!-- Suchen-Button -->
+              <button @click="applyFilters"
+                class="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-1.5 text-sm font-bold px-5 py-2.5 rounded-xl text-white transition"
+                style="background:var(--bl-grad);box-shadow:var(--bl-glow);">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                {{ t('home.search_btn') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Aktive Filter + Anzahl -->
+          <div class="flex items-center justify-between text-xs mt-3" style="color:var(--bl-text-muted);">
+            <div class="flex flex-wrap gap-1.5">
+              <span v-if="activeCity" class="px-2.5 py-1 rounded-full" style="background:var(--bl-grad-soft);color:var(--bl-pink);">{{ activeCity.name }}</span>
+              <span v-for="name in activeCategoryNames" :key="name" class="px-2.5 py-1 rounded-full" style="background:var(--bl-grad-soft);color:var(--bl-pink);">{{ name }}</span>
+              <span v-for="name in activeServiceNames" :key="name" class="px-2.5 py-1 rounded-full" style="background:var(--bl-grad-soft);color:var(--bl-pink);">{{ name }}</span>
+              <span v-for="a in (activeAges || [])" :key="a" class="px-2.5 py-1 rounded-full" style="background:var(--bl-grad-soft);color:var(--bl-pink);">{{ t('home.age') }} {{ a }}</span>
+              <Link v-if="activeCity || activeCategoryNames.length || activeServiceNames.length || (activeAges && activeAges.length)" :href="route('home')" class="px-2 py-1 transition" style="color:var(--bl-text-muted);">✕ {{ t('home.reset') }}</Link>
+            </div>
+            <span class="shrink-0 ml-2">{{ profiles.total }} {{ t('home.listings') }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SEO-Landing (Breadcrumb + Text + interne Links) ─────────────── -->
+      <div v-if="isLanding" class="max-w-7xl mx-auto px-4 pt-1 pb-2">
+        <nav v-if="crumbs.length" class="flex flex-wrap items-center gap-1.5 text-xs mb-3" style="color:var(--bl-text-muted);" aria-label="Breadcrumb">
+          <template v-for="(c, i) in crumbs" :key="i">
+            <Link v-if="c.url" :href="c.url" class="transition" style="color:var(--bl-text-muted);">{{ c.name }}</Link>
+            <span v-else style="color:var(--bl-text);">{{ c.name }}</span>
+            <span v-if="i < crumbs.length - 1" style="opacity:.4;">›</span>
+          </template>
+        </nav>
+        <p v-if="cityIntro || seoDescription" class="text-sm leading-relaxed max-w-3xl" style="color:var(--bl-text-muted);">{{ cityIntro || seoDescription }}</p>
+        <div v-if="cityCategoryLinks.length" class="mt-3 flex flex-wrap gap-2">
+          <Link v-for="l in cityCategoryLinks" :key="l.url" :href="l.url"
+            class="text-xs rounded-full px-3 py-1 transition" style="background:var(--bl-surface);border:1px solid var(--bl-border);color:var(--bl-text-muted);">{{ l.name }}</Link>
+        </div>
+      </div>
+
+      <!-- ── Listings ───────────────────────────────────────────────────── -->
+      <div class="max-w-7xl mx-auto px-4 pb-14 pt-4">
+        <div v-if="profiles.data.length === 0" class="text-center py-20" style="color:var(--bl-text-muted);">
+          <div class="text-5xl mb-4">🔍</div>
+          <p class="text-lg">{{ t('home.no_results') }}</p>
+        </div>
+
+        <div v-else class="space-y-4">
+          <SpotlightCardV2 v-if="profiles.data[0]" :profile="profiles.data[0]" />
+          <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <ProfileCardV2 v-for="profile in profiles.data.slice(1)" :key="profile.id" :profile="profile" />
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="profiles.last_page > 1" class="flex justify-center flex-wrap gap-2 mt-8">
+          <Link v-for="link in profiles.links" :key="link.label" :href="link.url || '#'" v-html="link.label"
+            class="px-3.5 py-2 text-sm rounded-xl transition"
+            :style="link.active
+              ? 'background:var(--bl-grad);color:#fff;'
+              : 'background:var(--bl-surface);border:1px solid var(--bl-border);color:var(--bl-text-muted);'" />
+        </div>
+      </div>
+    </template>
+
+    <!-- =================================================================== -->
+    <!-- V1 – bestehendes Design (unverändert, Fallback bei uiV2 = false)    -->
+    <!-- =================================================================== -->
+    <template v-else>
     <!-- Hero + Filters (ab Tablet/Desktop fixiert, damit nur die Inserate scrollen) -->
     <div class="bg-[#111] border-b border-white/5 pt-5 pb-4 px-4 md:sticky md:top-13 md:z-30">
       <div class="max-w-7xl mx-auto">
@@ -361,17 +580,45 @@
             : 'bg-[#1a1a1a] text-gray-400 border-white/10 hover:border-[#e35d8f]/50 hover:text-[#e35d8f]'" />
       </div>
     </div>
+    </template>
   </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardGallery from '@/Components/CardGallery.vue';
+import ProfileCardV2 from '@/Components/V2/ProfileCardV2.vue';
+import SpotlightCardV2 from '@/Components/V2/SpotlightCardV2.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
+const page = usePage();
+
+// Design-Flag (V2 hinter BOOKLOLA_UI_V2)
+const uiV2 = computed(() => !!page.props.features?.uiV2);
+
+// ── V2-Deko: Trust-Argumente + Kreis-Navigation + Control-Styles ──────────
+const trustItems = [
+  { label: 'Echte Profile',        icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' },
+  { label: 'Diskret & sicher',     icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.4-3 8.4-7 10-4-1.6-7-5.6-7-10V6l7-3z"/></svg>' },
+  { label: 'In der ganzen Schweiz', icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>' },
+];
+
+const circleNav = computed(() => [
+  { label: t('home.new_images'), href: route('neue-bilder'), icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>' },
+  { label: 'Feed', href: route('feed'), icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v11H7l-3 3z"/><path stroke-linecap="round" d="M8 9h8M8 12h5"/></svg>' },
+  { label: t('home.search_btn'), href: route('search'), icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4-4"/></svg>' },
+  { label: t('home.clubs'), href: route('clubs.index'), icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M4 21V7l8-4 8 4v14M9 21v-5h6v5"/></svg>' },
+]);
+
+const v2Control = 'w-full text-sm rounded-xl px-3 py-2.5 pr-8 appearance-none cursor-pointer focus:outline-none sm:min-w-[130px]';
+const v2Trigger = 'w-full flex items-center justify-between gap-2 text-sm rounded-xl px-3 py-2.5 cursor-pointer transition sm:min-w-[130px] focus:outline-none';
+const v2TriggerIdle   = 'background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);';
+const v2TriggerActive = 'background:var(--bl-surface-2);border:1px solid var(--bl-pink);color:var(--bl-text);';
+const v2Panel = 'absolute z-40 mt-1 left-0 max-h-72 overflow-y-auto rounded-xl p-1 shadow-xl';
+const v2Option = 'flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition hover:bg-white/5';
 
 // Bild-Variante wählen (Fallback auf Original-Stream bei Alt-Medien)
 function mediaSrc(m, size) {
