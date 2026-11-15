@@ -10,20 +10,20 @@
 
       <!-- ── Hero ───────────────────────────────────────────────────────── -->
       <section style="background:var(--bl-bg);">
-        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-10">
+        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 xl:gap-4">
 
           <!-- Titel + Subline -->
           <div class="shrink-0">
             <!-- Startseite: gestylter Marketing-Titel mit Pink-Akzent (Desktop: eine Zeile) -->
-            <h1 v-if="!seoHeading" class="text-3xl sm:text-4xl lg:text-[2.6rem] xl:text-5xl font-black leading-[1.08] lg:whitespace-nowrap" style="color:var(--bl-text);">
+            <h1 v-if="!seoHeading" class="text-[34px] md:text-[40px] xl:whitespace-nowrap" style="color:var(--bl-text);font-weight:700;line-height:1.02;letter-spacing:-1.7px;">
               <template v-if="heroTitleParts.accent">{{ heroTitleParts.pre }}<span style="color:var(--bl-pink);">{{ heroTitleParts.accent }}</span>{{ heroTitleParts.post }}</template>
               <template v-else>{{ heroTitleParts.pre }}</template>
             </h1>
             <!-- Landingpage (Stadt/Kategorie): SEO-Heading bleibt H1 (darf umbrechen) -->
-            <h1 v-else class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
+            <h1 v-else class="text-[34px] md:text-[40px]" style="color:var(--bl-text);font-weight:700;line-height:1.02;letter-spacing:-1.7px;">
               {{ seoHeading }}
             </h1>
-            <p class="mt-3 text-base sm:text-lg font-medium" style="color:var(--bl-text-muted);">
+            <p class="mt-3 text-[20px] md:text-[25px]" style="color:#f0f0f3;font-weight:500;">
               {{ t('home.hero_subline') }}
             </p>
           </div>
@@ -31,15 +31,15 @@
           <!-- Trust-Punkte: rechts, mit Unterzeile + Trenner -->
           <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0 shrink-0">
             <div v-for="(trust, i) in trustItems" :key="trust.title"
-              class="flex items-center gap-3 sm:px-5"
-              :class="i > 0 ? 'sm:border-l' : 'sm:pl-0'"
+              class="flex items-center gap-2 sm:px-[11px] first:sm:pl-0 last:sm:pr-0"
+              :class="i > 0 ? 'sm:border-l' : ''"
               :style="i > 0 ? 'border-color:var(--bl-border);' : ''">
-              <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl shrink-0" style="background:var(--bl-grad-soft);color:var(--bl-pink);">
-                <span v-html="trust.icon" class="w-[18px] h-[18px] inline-flex"></span>
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg shrink-0" style="background:var(--bl-grad-soft);color:var(--bl-pink);">
+                <span v-html="trust.icon" class="w-[15px] h-[15px] inline-flex"></span>
               </span>
               <div class="leading-tight">
-                <div class="text-sm font-bold" style="color:var(--bl-text);">{{ trust.title }}</div>
-                <div class="text-xs mt-0.5" style="color:var(--bl-text-muted);">{{ trust.sub }}</div>
+                <div class="text-[12px] font-bold whitespace-nowrap" style="color:var(--bl-text);">{{ trust.title }}</div>
+                <div class="text-[10px] mt-0.5 whitespace-nowrap" style="color:var(--bl-text-muted);">{{ trust.sub }}</div>
               </div>
             </div>
           </div>
