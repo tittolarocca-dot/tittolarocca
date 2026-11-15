@@ -26,7 +26,7 @@ class ImportListings extends Page
     protected static ?string $title = 'Inserate importieren';
     protected static string|\UnitEnum|null $navigationGroup = 'Moderation';
     protected static ?int $navigationSort = 20;
-    protected static string $view = 'filament.pages.import-listings';
+    protected string $view = 'filament.pages.import-listings';
 
     /** @var mixed Hochgeladene CSV (Livewire TemporaryUploadedFile) */
     public $csv = null;
