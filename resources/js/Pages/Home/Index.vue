@@ -13,13 +13,13 @@
         <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-10">
 
           <!-- Titel + Subline -->
-          <div class="min-w-0">
-            <!-- Startseite: gestylter Marketing-Titel mit Pink-Akzent -->
-            <h1 v-if="!seoHeading" class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
+          <div class="shrink-0">
+            <!-- Startseite: gestylter Marketing-Titel mit Pink-Akzent (Desktop: eine Zeile) -->
+            <h1 v-if="!seoHeading" class="text-3xl sm:text-4xl lg:text-[2.6rem] xl:text-5xl font-black leading-[1.08] lg:whitespace-nowrap" style="color:var(--bl-text);">
               <template v-if="heroTitleParts.accent">{{ heroTitleParts.pre }}<span style="color:var(--bl-pink);">{{ heroTitleParts.accent }}</span>{{ heroTitleParts.post }}</template>
               <template v-else>{{ heroTitleParts.pre }}</template>
             </h1>
-            <!-- Landingpage (Stadt/Kategorie): SEO-Heading bleibt H1 -->
+            <!-- Landingpage (Stadt/Kategorie): SEO-Heading bleibt H1 (darf umbrechen) -->
             <h1 v-else class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
               {{ seoHeading }}
             </h1>
