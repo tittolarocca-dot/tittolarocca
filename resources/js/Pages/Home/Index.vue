@@ -53,9 +53,9 @@
 
           <!-- Pfeil links -->
           <button v-show="canScrollLeft" @click="scrollCircles(-1)" type="button" aria-label="Zurück"
-            class="hidden sm:flex absolute left-0 top-[36px] -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full transition"
-            style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);box-shadow:var(--bl-shadow);">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+            class="hidden sm:flex absolute left-0 top-[34px] -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full transition hover:scale-105"
+            style="background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
           </button>
           <!-- weicher Verlauf links -->
           <div v-show="canScrollLeft" class="hidden sm:block pointer-events-none absolute left-0 top-0 bottom-0 w-14 z-10" style="background:linear-gradient(to right, var(--bl-bg), transparent);"></div>
@@ -91,12 +91,12 @@
           </div>
 
           <!-- weicher Verlauf rechts -->
-          <div v-show="canScrollRight" class="hidden sm:block pointer-events-none absolute right-0 top-0 bottom-0 w-14 z-10" style="background:linear-gradient(to left, var(--bl-bg), transparent);"></div>
+          <div v-show="canScrollRight" class="hidden sm:block pointer-events-none absolute right-0 top-0 bottom-0 w-16 z-10" style="background:linear-gradient(to left, var(--bl-bg) 35%, transparent);"></div>
           <!-- Pfeil rechts -->
           <button v-show="canScrollRight" @click="scrollCircles(1)" type="button" aria-label="Weiter"
-            class="hidden sm:flex absolute right-0 top-[36px] -translate-y-1/2 z-20 items-center justify-center w-9 h-9 rounded-full transition"
-            style="background:var(--bl-surface-2);border:1px solid var(--bl-border);color:var(--bl-text);box-shadow:var(--bl-shadow);">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+            class="hidden sm:flex absolute right-0 top-[34px] -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full transition hover:scale-105"
+            style="background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
           </button>
           </div>
         </div>
@@ -675,7 +675,7 @@ const v2Option = 'flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer 
 // ── Kreisel-Navigation: horizontal scrollbar mit Pfeil-Buttons ────────────
 const circleScroll = ref(null);
 const canScrollLeft  = ref(false);
-const canScrollRight = ref(false);
+const canScrollRight = ref(true);   // Standard sichtbar; updateCircleArrows korrigiert
 
 function updateCircleArrows() {
   const el = circleScroll.value;
@@ -689,7 +689,10 @@ function scrollCircles(dir) {
   el.scrollBy({ left: dir * Math.max(el.clientWidth * 0.8, 240), behavior: 'smooth' });
 }
 onMounted(() => {
+  // Mehrfach prüfen: Layout/Fonts/lazyload können die Breite verzögert ändern.
   nextTick(updateCircleArrows);
+  requestAnimationFrame(updateCircleArrows);
+  [150, 450, 900].forEach((ms) => setTimeout(updateCircleArrows, ms));
   window.addEventListener('resize', updateCircleArrows);
 });
 onBeforeUnmount(() => window.removeEventListener('resize', updateCircleArrows));
