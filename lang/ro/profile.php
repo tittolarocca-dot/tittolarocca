@@ -122,6 +122,7 @@ return [
     'no_reviews_yet' => "Încă fără recenzii",
     'followers_label' => "Urmăritori",
     'follow' => "Urmărește",
+    'view_profile' => 'Vezi profilul',
     'following' => "Urmărești",
     'feed_title' => "Feedul lui :name",
     'feed_all' => "Toate postările",

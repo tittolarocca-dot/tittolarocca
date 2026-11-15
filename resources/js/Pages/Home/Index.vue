@@ -241,7 +241,7 @@
 
         <div v-else class="space-y-4">
           <SpotlightCardV2 v-if="profiles.data[0]" :profile="profiles.data[0]" />
-          <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <ProfileCardV2 v-for="profile in profiles.data.slice(1)" :key="profile.id" :profile="profile" />
           </div>
         </div>

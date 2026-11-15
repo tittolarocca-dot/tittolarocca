@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Profile;
 use App\Models\Tag;
 use App\Support\SeoData;
+use App\Support\RelativeTime;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -56,6 +57,7 @@ class HomeController extends Controller
     private function baseQuery(?string $search, ?string $verified, array $services, array $ages, array $categories)
     {
         $q = Profile::with(['city', 'category',
+            'user:id,last_active_at',
             'publicMedia' => fn ($q) => $q->orderBy('sort_order'),
             'listingOrders' => fn ($q) => $q
                 ->where('status', 'paid')
@@ -103,6 +105,35 @@ class HomeController extends Controller
         }
 
         return $q->orderByDesc('pushed_at')->orderByDesc('created_at');
+    }
+
+    /**
+     * Ergänzt jede Karte um ECHTE Zusatzdaten für das V2-Design:
+     *  - activity  = Online-Status aus user.last_active_at (nur wenn die
+     *                Inserentin show_activity_status aktiviert hat; sonst null)
+     *  - is_favorited = ob das eingeloggte Mitglied das Profil gemerkt hat
+     * Es wird NICHTS erfunden – fehlen Daten/Flag, bleibt activity null.
+     */
+    private function decorate($paginator)
+    {
+        $user   = request()->user();
+        $favSet = $user ? array_flip($user->favorites()->pluck('profiles.id')->all()) : [];
+        $folSet = $user ? array_flip($user->follows()->pluck('profiles.id')->all())   : [];
+
+        $paginator->getCollection()->each(function ($p) use ($favSet, $folSet) {
+            $activity = null;
+            if ($p->show_activity_status && $p->user && $p->user->last_active_at) {
+                $activity = [
+                    'online'    => RelativeTime::isOnline($p->user->last_active_at),
+                    'last_seen' => RelativeTime::short($p->user->last_active_at),
+                ];
+            }
+            $p->setAttribute('activity', $activity);
+            $p->setAttribute('is_favorited', isset($favSet[$p->id]));
+            $p->setAttribute('is_following', isset($folSet[$p->id]));
+        });
+
+        return $paginator;
     }
 
     /**
@@ -168,7 +199,7 @@ class HomeController extends Controller
             'logo'     => asset('images/logo-booklola.png'),
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,
@@ -190,7 +221,7 @@ class HomeController extends Controller
             [$city->name, route('city', $city->slug)],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString()),
             'activeCity'       => $city,
             'activeSearch'     => $search,
             'activeAges'       => $ages,
@@ -225,7 +256,7 @@ class HomeController extends Controller
             [$category->name, route('city.category', [$city->slug, $category->slug])],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString(),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(20)->withQueryString()),
             'activeCity'       => $city,
             'activeSearch'     => $search,
             'activeAges'       => $ages,
@@ -260,7 +291,7 @@ class HomeController extends Controller
             [$category->name, route('category', $category->slug)],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString(),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(20)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,
@@ -291,8 +322,8 @@ class HomeController extends Controller
             [$tag->name, route('service', $tag->slug)],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->baseQuery($search, $verified, $services, $ages, $categories)
-                ->paginate(20)->withQueryString(),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)
+                ->paginate(20)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,

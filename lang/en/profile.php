@@ -122,6 +122,7 @@ return [
     'no_reviews_yet' => "No reviews yet",
     'followers_label' => "Followers",
     'follow' => "Follow",
+    'view_profile' => 'View profile',
     'following' => "Following",
     'feed_title' => ":name's feed",
     'feed_all' => "All posts",

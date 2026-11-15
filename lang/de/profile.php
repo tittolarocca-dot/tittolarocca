@@ -122,6 +122,7 @@ return [
     'no_reviews_yet' => "Noch keine Bewertungen",
     'followers_label' => "Follower",
     'follow' => "Folgen",
+    'view_profile' => 'Profil ansehen',
     'following' => "Gefolgt",
     'feed_title' => ":names Feed",
     'feed_all' => "Alle Beiträge",

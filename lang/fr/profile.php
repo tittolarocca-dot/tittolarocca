@@ -122,6 +122,7 @@ return [
     'no_reviews_yet' => "Pas encore d'avis",
     'followers_label' => "Abonnés",
     'follow' => "Suivre",
+    'view_profile' => 'Voir le profil',
     'following' => "Abonné",
     'feed_title' => "Fil de :name",
     'feed_all' => "Tous les posts",

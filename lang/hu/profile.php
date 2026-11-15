@@ -122,6 +122,7 @@ return [
     'no_reviews_yet' => "Még nincs értékelés",
     'followers_label' => "Követő",
     'follow' => "Követés",
+    'view_profile' => 'Profil megtekintése',
     'following' => "Követed",
     'feed_title' => ":name hírfolyama",
     'feed_all' => "Összes bejegyzés",
