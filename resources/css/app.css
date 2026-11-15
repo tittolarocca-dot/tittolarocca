@@ -20,12 +20,12 @@
     --bl-surface-2:  #1f1a27;   /* erhöhte Flächen / Hover */
     --bl-border:     rgba(255,255,255,.08);
 
-    /* Marke */
-    --bl-pink:        #e8488f;
-    --bl-pink-hover:  #d13a7e;
+    /* Marke – exakt das bestehende Booklola-Pink (V1), kein Neon */
+    --bl-pink:        #e35d8f;
+    --bl-pink-hover:  #c44a7a;
     --bl-purple:      #9b55e6;
-    --bl-grad:        linear-gradient(95deg, #e8488f 0%, #c23b9e 55%, #8b43d6 100%);
-    --bl-grad-soft:   linear-gradient(135deg, rgba(232,72,143,.18), rgba(139,67,214,.14));
+    --bl-grad:        linear-gradient(95deg, #e35d8f 0%, #d44a93 55%, #c23b9e 100%);
+    --bl-grad-soft:   linear-gradient(135deg, rgba(227,93,143,.18), rgba(194,59,158,.12));
 
     /* Text */
     --bl-text:        #f6f2f8;

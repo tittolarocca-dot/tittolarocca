@@ -12,11 +12,11 @@
         <Link v-for="item in navItems" :key="item.label" :href="item.href"
           class="relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition"
           :class="item.active ? '' : 'text-white/90 hover:bg-white/15'"
-          :style="item.active ? 'background:rgba(255,255,255,.95);color:#bd327f;box-shadow:0 2px 10px -2px rgba(0,0,0,.25);' : ''">
+          :style="item.active ? 'background:rgba(255,255,255,.95);color:#c44a7a;box-shadow:0 2px 10px -2px rgba(0,0,0,.25);' : ''">
           <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="icons[item.icon]"></svg>
           <span>{{ item.label }}</span>
           <span v-if="item.badge"
-            style="background:#fff;color:#bd327f;" class="min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center">{{ item.badge }}</span>
+            style="background:#fff;color:#c44a7a;" class="min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center">{{ item.badge }}</span>
         </Link>
       </nav>
 
@@ -45,7 +45,7 @@
         </template>
         <template v-else>
           <Link :href="route('login')" class="text-white/90 hover:text-white text-sm font-medium px-3 py-2 rounded-full hover:bg-white/15 transition">{{ t('nav.login') }}</Link>
-          <Link :href="route('register')" class="bg-white text-sm font-bold px-4 py-2 rounded-full transition" style="color:#bd327f;">{{ t('nav.register') }}</Link>
+          <Link :href="route('register')" class="bg-white text-sm font-bold px-4 py-2 rounded-full transition" style="color:#c44a7a;">{{ t('nav.register') }}</Link>
         </template>
 
         <!-- Sprache -->
