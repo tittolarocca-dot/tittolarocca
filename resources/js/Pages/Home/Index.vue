@@ -13,7 +13,7 @@
 
       <!-- ── Hero ───────────────────────────────────────────────────────── -->
       <section style="background:var(--bl-bg);">
-        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 xl:gap-4">
+        <div class="max-w-7xl mx-auto px-4 pt-3 pb-4 sm:pt-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5 xl:gap-4">
 
           <!-- Titel + Subline -->
           <div class="shrink-0">
