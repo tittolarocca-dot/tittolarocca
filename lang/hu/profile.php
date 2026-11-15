@@ -113,6 +113,9 @@ return [
 
     // Feed & Follow
     'online_now' => "Online",
+    'show_more' => 'Több megjelenítése',
+    'show_less' => 'Kevesebb megjelenítése',
+    'chip_age' => '18+ igazolva',
     'last_active' => "Utoljára aktív :time",
     'status_label' => "Állapot",
     'reviews_count' => ":count értékelés",

@@ -113,6 +113,9 @@ return [
 
     // Feed & Follow
     'online_now' => "Online",
+    'show_more' => 'Mehr anzeigen',
+    'show_less' => 'Weniger anzeigen',
+    'chip_age' => '18+ bestätigt',
     'last_active' => "Zuletzt aktiv :time",
     'status_label' => "Status",
     'reviews_count' => ":count Bewertungen",

@@ -7,6 +7,152 @@
       {{ t('profile.subscribed_success') }}
     </div>
 
+    <!-- ===================================================================== -->
+    <!-- V2-Hero (BOOKLOLA_UI_V2) – ersetzt den V1-Textheader. Nutzt dieselben  -->
+    <!-- Props/Funktionen (openLightbox, onFollowClick, shareProfile, activity).-->
+    <!-- ===================================================================== -->
+    <template v-if="uiV2">
+      <section style="background:var(--bl-bg);">
+        <div class="max-w-7xl mx-auto px-4 pt-5 pb-1">
+          <!-- Breadcrumb -->
+          <nav class="flex items-center gap-1.5 text-xs mb-4 flex-wrap" style="color:var(--bl-text-muted);">
+            <Link :href="route('home')" class="hover:underline">{{ t('nav.home') }}</Link>
+            <span style="opacity:.4">/</span>
+            <template v-if="profile.city"><Link :href="route('city', profile.city_slug)" class="hover:underline">{{ profile.city }}</Link><span style="opacity:.4">/</span></template>
+            <template v-if="profile.category"><Link :href="route('category', profile.category_slug)" class="hover:underline">{{ profile.category }}</Link><span style="opacity:.4">/</span></template>
+            <span style="color:var(--bl-text);">{{ profile.display_name }}</span>
+          </nav>
+
+          <!-- Hero-Karte -->
+          <div class="rounded-2xl overflow-hidden" style="background:var(--bl-surface);border:1px solid var(--bl-border);box-shadow:var(--bl-shadow);">
+            <div class="flex flex-col lg:flex-row">
+
+              <!-- Galerie -->
+              <div class="relative lg:w-[46%] shrink-0" style="background:#000;">
+                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-[500px] cursor-pointer group"
+                  @click="heroMedia.length && openLightbox(heroMedia[heroIndex])">
+                  <template v-if="heroMedia.length">
+                    <MediaThumb :key="heroMedia[heroIndex].id" :item="heroMedia[heroIndex]" :alt="profile.display_name" :eager="true" />
+                  </template>
+                  <div v-else class="w-full h-full flex items-center justify-center text-5xl" style="color:var(--bl-text-muted);">👤</div>
+
+                  <!-- Zähler -->
+                  <div v-if="heroMedia.length > 1" class="absolute top-3 right-3 z-10 text-xs font-semibold text-white px-2.5 py-1 rounded-full" style="background:rgba(0,0,0,.55);">
+                    {{ heroIndex + 1 }} / {{ heroMedia.length }}
+                  </div>
+                  <!-- Pfeile -->
+                  <button v-if="heroIndex > 0" @click.stop="heroPrev" type="button" aria-label="Zurück"
+                    class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white transition" style="background:rgba(0,0,0,.5);">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+                  </button>
+                  <button v-if="heroIndex < heroMedia.length - 1" @click.stop="heroNext" type="button" aria-label="Weiter"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white transition" style="background:rgba(0,0,0,.5);">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+                  </button>
+                  <!-- Punkte -->
+                  <div v-if="heroMedia.length > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+                    <button v-for="(m, i) in heroMedia.slice(0, 8)" :key="'d'+m.id" @click.stop="heroIndex = i" type="button"
+                      class="h-2 rounded-full transition-all" :style="i === heroIndex ? 'width:22px;background:#fff;' : 'width:8px;background:rgba(255,255,255,.55);'"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Info + Aktionen -->
+              <div class="p-5 lg:p-7 flex-1 min-w-0 flex flex-col">
+                <!-- Name + Verify -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h1 class="text-2xl lg:text-[32px] font-black leading-tight" style="color:var(--bl-text);">{{ profile.display_name }}</h1>
+                  <span v-if="idVerified || photoVerified" class="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0" style="background:var(--bl-verify);"
+                    :title="idVerified ? t('home.id_verified') : t('home.photo_verified')">
+                    <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+                  </span>
+                </div>
+
+                <!-- Meta -->
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm mt-2" style="color:var(--bl-text-muted);">
+                  <span v-if="profile.age">{{ t('profile.age_years', { age: profile.age }) }}</span>
+                  <span v-if="profile.city" class="inline-flex items-center gap-1">
+                    <svg class="w-4 h-4" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                    {{ profile.city }}
+                  </span>
+                  <span v-if="profile.category" class="font-semibold" style="color:var(--bl-pink);">{{ profile.category }}</span>
+                </div>
+
+                <!-- Rating + Follower -->
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm">
+                  <button type="button" @click="scrollToReviews" class="inline-flex items-center gap-1.5" style="color:var(--bl-text-muted);">
+                    <template v-if="ratingCount > 0">
+                      <span style="color:#f5c518;">★</span>
+                      <span class="font-bold" style="color:var(--bl-text);">{{ Number(ratingAvg).toFixed(1) }}</span>
+                      <span>· {{ t('profile.reviews_count', { count: ratingCount }) }}</span>
+                    </template>
+                    <span v-else>{{ t('profile.no_reviews_yet') }}</span>
+                  </button>
+                  <span class="inline-flex items-center gap-1.5" style="color:var(--bl-text-muted);">
+                    <svg class="w-4 h-4" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+                    <span class="font-bold" style="color:var(--bl-text);">{{ followersCount }}</span> {{ t('profile.followers_label') }}
+                  </span>
+                </div>
+
+                <!-- Beschreibung -->
+                <template v-if="profile.description">
+                  <p class="text-sm mt-4 leading-relaxed whitespace-pre-line" style="color:var(--bl-text-muted);"
+                    :class="(!descExpanded && descIsLong) ? 'line-clamp-3' : ''">{{ profile.description }}</p>
+                  <button v-if="descIsLong" type="button" @click="descExpanded = !descExpanded" class="inline-flex items-center gap-1 text-sm font-semibold mt-1.5 self-start" style="color:var(--bl-pink);">
+                    {{ descExpanded ? t('profile.show_less') : t('profile.show_more') }}
+                    <svg class="w-3.5 h-3.5 transition-transform" :class="descExpanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                </template>
+
+                <!-- Status-Chips -->
+                <div class="flex flex-wrap gap-2 mt-4">
+                  <span v-if="activity && activity.online" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(47,210,122,.15);color:var(--bl-success);">
+                    <span class="w-2 h-2 rounded-full" style="background:var(--bl-success);"></span>{{ t('profile.online_now') }}
+                  </span>
+                  <span v-else-if="activity" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(255,255,255,.06);color:var(--bl-text-muted);">
+                    {{ t('profile.last_active', { time: activity.last_seen }) }}
+                  </span>
+                  <span v-if="photoVerified" class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(59,155,255,.15);color:var(--bl-verify);">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="12" cy="13" r="3"/></svg>
+                    {{ t('home.photo_verified') }}
+                  </span>
+                  <span v-if="idVerified" class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(59,155,255,.15);color:var(--bl-verify);">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.4-3 8.4-7 10-4-1.6-7-5.6-7-10V6l7-3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+                    {{ t('profile.chip_age') }}
+                  </span>
+                </div>
+
+                <!-- Aktionen -->
+                <div v-if="!isOwner" class="flex flex-wrap items-center gap-2.5 mt-5 pt-5" style="border-top:1px solid var(--bl-border);">
+                  <button type="button" @click="onFollowClick" :disabled="followBusy"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition disabled:opacity-60"
+                    :style="following ? 'background:rgba(227,93,143,.15);color:var(--bl-pink);border:1px solid rgba(227,93,143,.5);' : 'background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);'">
+                    <svg class="w-4 h-4" :fill="following ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    {{ following ? t('profile.following') : t('profile.follow') }}
+                  </button>
+                  <Link v-if="canMessage" :href="route('konto.messages', { to: profile.slug })"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    {{ t('profile.send_message') }}
+                  </Link>
+                  <button type="button" @click="shareProfile" aria-label="Teilen"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-xl transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                  </button>
+                  <span v-if="shareCopied" class="text-xs" style="color:var(--bl-success);">{{ t('profile.link_copied') }}</span>
+                </div>
+                <!-- Owner-Aktionen -->
+                <div v-else class="flex flex-wrap gap-2.5 mt-5 pt-5" style="border-top:1px solid var(--bl-border);">
+                  <Link :href="route('inserat.profile.edit')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold" style="background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);">{{ t('profile.edit_profile') }}</Link>
+                  <Link :href="route('inserat.media.index')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">{{ t('profile.manage_media') }}</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </template>
+
     <!-- ── MEDIA TABS ──────────────────────────────────────────────────────────── -->
     <div class="bg-[#0f0f0f] border-b border-white/5">
       <div class="max-w-7xl mx-auto px-4 py-4">
@@ -124,7 +270,8 @@
       </div>
     </div>
 
-    <!-- ── PROFILE HEADER ───────────────────────────────────────────────────── -->
+    <!-- ── PROFILE HEADER (nur V1 – in V2 ersetzt durch den Hero oben) ───────── -->
+    <template v-if="!uiV2">
     <div class="bg-[#111] border-b border-white/5">
       <div class="max-w-7xl mx-auto px-4 py-5">
         <!-- Breadcrumb -->
@@ -218,6 +365,7 @@
         </div>
       </div>
     </div>
+    </template>
 
     <!-- ── MAIN CONTENT ─────────────────────────────────────────────────────── -->
     <div class="max-w-7xl mx-auto px-4 py-6 space-y-5">
@@ -913,6 +1061,17 @@ const avgRating = computed(() => {
 
 const photoVerified = computed(() => props.profile.verification_status === 'approved');
 const idVerified    = computed(() => props.profile.identity_verification_status === 'approved');
+
+// ── V2 (BOOKLOLA_UI_V2) ───────────────────────────────────────────────────
+const uiV2 = computed(() => !!page.props.features?.uiV2);
+const heroIndex = ref(0);
+const descExpanded = ref(false);
+const heroMedia = computed(() => props.publicMedia);
+function heroPrev() { if (heroIndex.value > 0) heroIndex.value--; }
+function heroNext() { if (heroIndex.value < heroMedia.value.length - 1) heroIndex.value++; }
+// Kann das aktuelle Mitglied eine Nachricht schreiben? (gleiche Logik wie Sidebar)
+const canMessage = computed(() => !!page.props.auth?.user && !props.isOwner && (props.launchMode || props.isSubscribed));
+const descIsLong = computed(() => (props.profile.description || '').length > 220);
 
 // Feed / Follow Helpers
 const isAuthed  = computed(() => !!page.props.auth?.user);

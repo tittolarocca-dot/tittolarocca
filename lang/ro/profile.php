@@ -113,6 +113,9 @@ return [
 
     // Feed & Follow
     'online_now' => "Online",
+    'show_more' => 'Arată mai mult',
+    'show_less' => 'Arată mai puțin',
+    'chip_age' => '18+ confirmat',
     'last_active' => "Activ :time",
     'status_label' => "Status",
     'reviews_count' => ":count recenzii",
