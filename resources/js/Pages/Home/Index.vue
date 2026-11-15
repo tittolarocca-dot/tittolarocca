@@ -10,19 +10,37 @@
 
       <!-- ── Hero ───────────────────────────────────────────────────────── -->
       <section style="background:var(--bl-bg);">
-        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
-            {{ seoHeading || t('home.hero') }}
-          </h1>
-          <p class="mt-3 text-base sm:text-lg font-medium" style="color:var(--bl-text-muted);">
-            Entdecken. Folgen. Treffen.
-          </p>
-          <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
-            <div v-for="trust in trustItems" :key="trust.label" class="inline-flex items-center gap-2 text-sm font-medium" style="color:var(--bl-text-muted);">
-              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0" style="background:var(--bl-grad-soft);color:var(--bl-pink);">
-                <span v-html="trust.icon" class="w-3.5 h-3.5 inline-flex"></span>
+        <div class="max-w-7xl mx-auto px-4 pt-8 pb-5 sm:pt-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-10">
+
+          <!-- Titel + Subline -->
+          <div class="min-w-0">
+            <!-- Startseite: gestylter Marketing-Titel mit Pink-Akzent -->
+            <h1 v-if="!seoHeading" class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
+              <template v-if="heroTitleParts.accent">{{ heroTitleParts.pre }}<span style="color:var(--bl-pink);">{{ heroTitleParts.accent }}</span>{{ heroTitleParts.post }}</template>
+              <template v-else>{{ heroTitleParts.pre }}</template>
+            </h1>
+            <!-- Landingpage (Stadt/Kategorie): SEO-Heading bleibt H1 -->
+            <h1 v-else class="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.08]" style="color:var(--bl-text);">
+              {{ seoHeading }}
+            </h1>
+            <p class="mt-3 text-base sm:text-lg font-medium" style="color:var(--bl-text-muted);">
+              {{ t('home.hero_subline') }}
+            </p>
+          </div>
+
+          <!-- Trust-Punkte: rechts, mit Unterzeile + Trenner -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0 shrink-0">
+            <div v-for="(trust, i) in trustItems" :key="trust.title"
+              class="flex items-center gap-3 sm:px-5"
+              :class="i > 0 ? 'sm:border-l' : 'sm:pl-0'"
+              :style="i > 0 ? 'border-color:var(--bl-border);' : ''">
+              <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl shrink-0" style="background:var(--bl-grad-soft);color:var(--bl-pink);">
+                <span v-html="trust.icon" class="w-[18px] h-[18px] inline-flex"></span>
               </span>
-              {{ trust.label }}
+              <div class="leading-tight">
+                <div class="text-sm font-bold" style="color:var(--bl-text);">{{ trust.title }}</div>
+                <div class="text-xs mt-0.5" style="color:var(--bl-text-muted);">{{ trust.sub }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -600,11 +618,23 @@ const page = usePage();
 const uiV2 = computed(() => !!page.props.features?.uiV2);
 
 // ── V2-Deko: Trust-Argumente + Kreis-Navigation + Control-Styles ──────────
-const trustItems = [
-  { label: 'Echte Profile',        icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' },
-  { label: 'Diskret & sicher',     icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.4-3 8.4-7 10-4-1.6-7-5.6-7-10V6l7-3z"/></svg>' },
-  { label: 'In der ganzen Schweiz', icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>' },
-];
+// Hero-Titel in drei Teile splitten, damit das Akzentwort pink gerendert wird.
+const heroTitleParts = computed(() => {
+  const title  = t('home.hero_title');
+  const accent = t('home.hero_accent');
+  const i = accent ? title.indexOf(accent) : -1;
+  if (i === -1) return { pre: title, accent: '', post: '' };
+  return { pre: title.slice(0, i), accent, post: title.slice(i + accent.length) };
+});
+
+const trustItems = computed(() => [
+  { title: t('home.trust_profiles'), sub: t('home.trust_profiles_sub'),
+    icon: '<svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:100%;height:100%"><circle cx="9" cy="8" r="3.2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.5 20a5.5 5.5 0 0111 0M16 5.2a3 3 0 010 5.6M18 20a5.5 5.5 0 00-3.5-5.1"/></svg>' },
+  { title: t('home.trust_discreet'), sub: t('home.trust_discreet_sub'),
+    icon: '<svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.4-3 8.4-7 10-4-1.6-7-5.6-7-10V6l7-3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>' },
+  { title: t('home.trust_swiss'), sub: t('home.trust_swiss_sub'),
+    icon: '<svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L4.5 13.5H11l-1 8L19.5 10H13l0-8z"/></svg>' },
+]);
 
 const circleNav = computed(() => [
   { label: t('home.new_images'), href: route('neue-bilder'), icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:100%;height:100%"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>' },

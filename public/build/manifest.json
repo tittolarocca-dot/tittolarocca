@@ -99,7 +99,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-Dd9b-VbE.css",
+    "file": "assets/app-Bh2nHniO.css",
     "name": "app",
     "names": [
       "app.css"
@@ -193,7 +193,7 @@
     ]
   },
   "resources/js/Pages/Home/Index.vue": {
-    "file": "assets/Index-drvtV2VN.js",
+    "file": "assets/Index-DQe3eLCg.js",
     "name": "Index",
     "src": "resources/js/Pages/Home/Index.vue",
     "isDynamicEntry": true,
@@ -207,7 +207,7 @@
       "_AppLayout-PM_K2fjH.js"
     ],
     "css": [
-      "assets/Index-D9RhW22A.css"
+      "assets/Index-D57eBDFJ.css"
     ]
   },
   "resources/js/Pages/Inserent/AgeVerification.vue": {
@@ -629,7 +629,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CD8RjbzS.js",
+    "file": "assets/app-B0n2HZzh.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
