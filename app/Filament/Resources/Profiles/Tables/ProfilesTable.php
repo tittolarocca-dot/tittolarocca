@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Profiles\Tables;
 
+use App\Filament\Pages\ManagePhotos;
 use App\Models\CreditTransaction;
 use App\Models\Profile;
 use Filament\Actions\BulkActionGroup;
@@ -248,6 +249,12 @@ class ProfilesTable
                         'identity_rejected_reason'     => $data['reason'],
                     ]))
                     ->visible(fn (Profile $record) => $record->identity_verification_status === 'pending'),
+
+                Action::make('photos')
+                    ->label('Fotos')
+                    ->icon('heroicon-o-photo')
+                    ->color('gray')
+                    ->url(fn (Profile $record) => ManagePhotos::getUrl(['profile' => $record->id])),
 
                 EditAction::make(),
             ])

@@ -66,59 +66,15 @@ class MediaController extends Controller
             'visibility' => ['required', 'in:public,private'],
         ]);
 
-        $file       = $request->file('file');
-        $isImage    = str_starts_with((string) $file->getMimeType(), 'image/');
-        $type       = $isImage ? 'image' : 'video';
-        $visibility = $request->input('visibility');
-
-        // Bilddateien serverseitig echt prüfen (nicht nur an der Endung) und
-        // extrem grosse Abmessungen abweisen (Schutz vor Dekompressions-Bomben).
-        if ($isImage) {
-            $dim = @getimagesize($file->getRealPath());
-            if ($dim === false) {
-                return back()->with('error', 'Ungültige oder beschädigte Bilddatei.');
-            }
-            if (($dim[0] * $dim[1]) > 40_000_000) {
-                return back()->with('error', 'Bild zu gross (max. 40 Megapixel).');
-            }
-        }
-
-        // Limit check
-        $existingCount = $profile->media()->where('visibility', $visibility)->count();
-        $limit = $visibility === 'public' ? 10 : 30;
-        if ($existingCount >= $limit) {
-            return back()->with('error', "Maximale Anzahl ({$limit}) für {$visibility} Medien erreicht.");
-        }
-
-        $extension = $file->getClientOriginalExtension();
-        $filename  = Str::uuid() . '.' . $extension;
-        $path      = "media/{$profile->id}/{$filename}";
-
-        Storage::disk('local')->put($path, file_get_contents($file->getRealPath()));
-
-        $nextSort = ($profile->media()->where('visibility', $visibility)->max('sort_order') ?? -1) + 1;
-
-        $media = Media::create([
-            'profile_id'     => $profile->id,
-            'type'           => $type,
-            'storage_path'   => $path,
-            'visibility'     => $visibility,
-            'status'         => 'approved',
-            'sort_order'     => $nextSort,
-            'filesize_bytes' => $file->getSize(),
-        ]);
-
-        // Optimierte WebP-Varianten + Locked-Content-Blur erzeugen (synchron),
-        // Original auf max. 2000px kappen, und öffentliche Varianten als statische
-        // Dateien publizieren (direkt vom Webserver, CDN-cachebar).
-        if ($type === 'image') {
-            $variants = app(\App\Services\ImageVariants::class);
-            $variants->generate($media);
-            app(\App\Services\ImageBlur::class)->generate($media);
-            $variants->capOriginal($media);
-            if ($visibility === 'public') {
-                $variants->publishPublic($media->refresh());
-            }
+        // Zentrale Medienpipeline (WebP/Wasserzeichen/Blur/Cap/Publizierung).
+        try {
+            app(\App\Services\ProfileMediaService::class)->storeUpload(
+                $profile,
+                $request->file('file'),
+                $request->input('visibility')
+            );
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
 
         return back()->with('success', 'Datei hochgeladen und sofort sichtbar.');
@@ -130,16 +86,7 @@ class MediaController extends Controller
             abort(403);
         }
 
-        $disk = Storage::disk('local');
-        $disk->delete($media->storage_path);
-        if ($media->blur_path) {
-            $disk->delete($media->blur_path);
-        }
-        foreach (app(\App\Services\ImageVariants::class)->paths($media) as $variantPath) {
-            $disk->delete($variantPath);
-        }
-        app(\App\Services\ImageVariants::class)->unpublishPublic($media); // statische Kopien entfernen
-        $media->delete();
+        app(\App\Services\ProfileMediaService::class)->deleteMedia($media);
 
         return back()->with('success', 'Datei gelöscht.');
     }
@@ -151,11 +98,7 @@ class MediaController extends Controller
 
         $request->validate(['order' => ['required', 'array']]);
 
-        foreach ($request->input('order') as $index => $mediaId) {
-            Media::where('id', $mediaId)
-                ->where('profile_id', $profile->id)
-                ->update(['sort_order' => $index]);
-        }
+        app(\App\Services\ProfileMediaService::class)->reorderByIds($profile, $request->input('order'));
 
         return response()->json(['ok' => true]);
     }
