@@ -14,7 +14,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use HasFactory, Notifiable, Billable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'status', 'email_verified_at', 'locale',
+        'name', 'email', 'password', 'role', 'status', 'email_verified_at', 'locale', 'import_batch_id',
         'gender', 'age', 'height_cm', 'weight_kg', 'city_id', 'languages',
         'smoking', 'bio', 'preferences', 'deactivated_at',
         'avatar_path', 'avatar_status', 'avatar_rejection_reason', 'avatar_moderated_at',
@@ -49,6 +49,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function isInserent(): bool { return $this->role === 'inserent'; }
 
     public function profile()  { return $this->hasOne(Profile::class); }
+    /** Admin-Bulk-Import, der diesen User erstellt hat (sonst null = normale Registrierung). */
+    public function importBatch() { return $this->belongsTo(ImportBatch::class, 'import_batch_id'); }
     public function city()     { return $this->belongsTo(City::class); }
     public function writtenReviews() { return $this->hasMany(Review::class, 'reviewer_user_id'); }
     public function messages() { return $this->hasMany(Message::class, 'from_user_id'); }
