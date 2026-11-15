@@ -11,6 +11,17 @@ return [
     */
     'launch_mode' => env('LAUNCH_MODE', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | UI-Redesign V2 (Theme-Umschalter)
+    |--------------------------------------------------------------------------
+    | true  = neues V2-Design (BOOKLOLA_UI_V2=true).
+    | false = bisheriges V1-Design (Standard). V1 bleibt vollständig erhalten;
+    |         Admins können V2 zusätzlich per ?ui=v2 vorab ansehen (Cookie),
+    |         ohne dass die Öffentlichkeit V2 sieht.
+    */
+    'ui_v2' => (bool) env('BOOKLOLA_UI_V2', false),
+
     // Anzahl Launch-Credits, die eine neue Inserentin einmalig erhält.
     'launch_credits_initial' => (int) env('LAUNCH_CREDITS_INITIAL', 10),
 

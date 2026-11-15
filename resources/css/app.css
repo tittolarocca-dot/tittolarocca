@@ -9,6 +9,42 @@
     --font-sans: 'Inter', Arial, sans-serif;
 }
 
+/* ============================================================================
+   Booklola V2 Design-Tokens (nur für das neue, hinter BOOKLOLA_UI_V2 liegende
+   Design). V1 nutzt diese NICHT – daher kein Einfluss auf das bestehende Design.
+   ========================================================================= */
+:root {
+    /* Flächen */
+    --bl-bg:         #0b0a0d;   /* App-Hintergrund (sehr dunkel, leicht warm) */
+    --bl-surface:    #16131a;   /* Cards */
+    --bl-surface-2:  #1f1a27;   /* erhöhte Flächen / Hover */
+    --bl-border:     rgba(255,255,255,.08);
+
+    /* Marke */
+    --bl-pink:        #e8488f;
+    --bl-pink-hover:  #d13a7e;
+    --bl-purple:      #9b55e6;
+    --bl-grad:        linear-gradient(95deg, #e8488f 0%, #c23b9e 55%, #8b43d6 100%);
+    --bl-grad-soft:   linear-gradient(135deg, rgba(232,72,143,.18), rgba(139,67,214,.14));
+
+    /* Text */
+    --bl-text:        #f6f2f8;
+    --bl-text-muted:  #9a92a6;
+
+    /* Status */
+    --bl-success:     #2fd27a;
+    --bl-verify:      #3b9bff;  /* Verifizierungs-Blau */
+    --bl-warning:     #f5a623;
+    --bl-error:       #f0506e;
+
+    /* Form */
+    --bl-radius:      18px;
+    --bl-radius-sm:   12px;
+    --bl-radius-pill: 999px;
+    --bl-shadow:      0 10px 30px -12px rgba(0,0,0,.6);
+    --bl-glow:        0 8px 24px -8px rgba(232,72,143,.35);
+}
+
 /* lazysizes – fade-in when image enters viewport */
 .lazyload,
 .lazyloading {

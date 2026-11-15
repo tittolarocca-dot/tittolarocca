@@ -40,6 +40,23 @@ class HandleInertiaRequests extends Middleware
     {
         $locale = app()->getLocale();
 
+        // UI-V2-Theme: Standard aus config. Admins/Moderatoren können V2 per
+        // ?ui=v2 vorab ansehen (in Cookie gemerkt), ohne dass die Öffentlichkeit
+        // V2 sieht. Keine Logik-/Datenänderung – nur die Darstellungsschicht.
+        $uiV2 = (bool) config('features.ui_v2');
+        if (($u = $request->user()) && in_array($u->role, ['admin', 'moderator'], true)) {
+            $ov = $request->query('ui');
+            if ($ov === 'v2') {
+                $uiV2 = true;
+                \Illuminate\Support\Facades\Cookie::queue('ui_pref', 'v2', 60 * 24 * 30);
+            } elseif ($ov === 'v1') {
+                $uiV2 = false;
+                \Illuminate\Support\Facades\Cookie::queue('ui_pref', 'v1', 60 * 24 * 30);
+            } elseif (($c = $request->cookie('ui_pref')) !== null) {
+                $uiV2 = $c === 'v2';
+            }
+        }
+
         // Übersetzungsgruppe mit Fallback-Kette laden: Deutsch (Basis) ← Englisch
         // ← aktuelle Sprache (gewinnt). So erscheint nie ein roher Schlüssel,
         // auch wenn eine Übersetzung in der aktuellen Sprache fehlt.
@@ -81,6 +98,7 @@ class HandleInertiaRequests extends Middleware
             'features' => [
                 'launchMode' => (bool) config('features.launch_mode'),
                 'veriff'     => (bool) config('features.veriff_enabled'),
+                'uiV2'       => $uiV2,
             ],
 
             // i18n

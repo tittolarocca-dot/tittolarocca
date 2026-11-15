@@ -2,8 +2,11 @@
   <div class="min-h-screen bg-[#0f0f0f] text-white">
     <FlashMessage />
 
-    <!-- Navbar -->
-    <header class="bg-[#e35d8f] sticky top-0 z-50 shadow-lg">
+    <!-- V2-Header (hinter BOOKLOLA_UI_V2) -->
+    <HeaderV2 v-if="uiV2" />
+
+    <!-- Navbar (V1) -->
+    <header v-if="!uiV2" class="bg-[#e35d8f] sticky top-0 z-50 shadow-lg">
       <div class="max-w-7xl mx-auto px-4 flex items-center h-13 gap-2 sm:gap-4">
 
         <!-- Logo -->
@@ -185,10 +188,13 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import FlashMessage from '@/Components/FlashMessage.vue';
+import HeaderV2 from '@/Components/V2/HeaderV2.vue';
 import { useI18n } from '@/composables/useI18n';
 
 const { t } = useI18n();
 const page  = usePage();
+
+const uiV2 = computed(() => !!page.props.features?.uiV2);
 
 const locale          = computed(() => page.props.locale ?? 'de');
 const supportedLocales = computed(() => page.props.supportedLocales ?? []);
