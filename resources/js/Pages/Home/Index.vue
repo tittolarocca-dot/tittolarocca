@@ -8,11 +8,8 @@
     <!-- =================================================================== -->
     <template v-if="uiV2">
 
-      <!-- Fixierter Kopfbereich (Hero + Kreisel + Filter) – es scrollen nur die Profile -->
-      <div class="lg:sticky lg:top-[60px] lg:z-30" style="background:var(--bl-bg);">
-
-      <!-- ── Hero ───────────────────────────────────────────────────────── -->
-      <section style="background:var(--bl-bg);">
+      <!-- ── Hero (fixiert – bleibt beim Scrollen oben; Kreisel + Filter scrollen mit) ── -->
+      <section class="lg:sticky lg:top-[60px] lg:z-30" style="background:var(--bl-bg);">
         <div class="max-w-7xl mx-auto px-4 pt-3 pb-4 sm:pt-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5 xl:gap-4">
 
           <!-- Titel + Subline -->
@@ -216,7 +213,6 @@
           </div>
         </div>
       </section>
-      </div><!-- /Fixierter Kopfbereich -->
 
       <!-- ── SEO-Landing (Breadcrumb + Text + interne Links) ─────────────── -->
       <div v-if="isLanding" class="max-w-7xl mx-auto px-4 pt-1 pb-2">
