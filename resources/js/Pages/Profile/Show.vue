@@ -28,8 +28,8 @@
             <div class="flex flex-col lg:flex-row">
 
               <!-- Galerie -->
-              <div class="relative lg:w-[46%] shrink-0" style="background:#000;">
-                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-[470px] cursor-pointer"
+              <div class="relative lg:w-[32%] shrink-0" style="background:#000;">
+                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-[330px] cursor-pointer"
                   @click="heroMedia.length && openLightbox(heroMedia[0])">
                   <template v-if="heroMedia.length">
                     <MediaThumb :item="heroMedia[0]" :alt="profile.display_name" :eager="true" />
