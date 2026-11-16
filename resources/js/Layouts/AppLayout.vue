@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#0f0f0f] text-white">
+  <div class="min-h-screen bg-[#1b1b1b] text-white">
     <FlashMessage />
 
     <!-- V2-Header (hinter BOOKLOLA_UI_V2) -->

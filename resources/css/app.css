@@ -15,7 +15,7 @@
    ========================================================================= */
 :root {
     /* Flächen */
-    --bl-bg:         #0b0a0d;   /* App-Hintergrund (sehr dunkel, leicht warm) */
+    --bl-bg:         #1b1b1b;   /* App-Hintergrund (neutrales Dunkelgrau) */
     --bl-surface:    #16131a;   /* Cards */
     --bl-surface-2:  #1f1a27;   /* erhöhte Flächen / Hover */
     --bl-border:     rgba(255,255,255,.08);
