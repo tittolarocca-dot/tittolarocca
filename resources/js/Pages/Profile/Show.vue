@@ -302,19 +302,6 @@
                 <h2 class="text-sm font-bold uppercase tracking-wider mb-3" style="color:var(--bl-text-muted);">{{ t('profile.about_section', { name: profile.display_name }) }}</h2>
                 <p class="text-[15px] leading-relaxed whitespace-pre-line" style="color:var(--bl-text);">{{ profile.description }}</p>
               </div>
-              <div v-if="details.length" class="rounded-2xl p-5" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-                <h2 class="text-sm font-bold uppercase tracking-wider mb-4" style="color:var(--bl-text-muted);">{{ t('profile.details_section') }}</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
-                  <div v-for="item in details" :key="'a'+item.label" class="flex items-center gap-2.5 min-w-0">
-                    <span class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bl-grad-soft);"><svg class="w-4 h-4" style="color:var(--bl-pink);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" :d="item.icon" /></svg></span>
-                    <span class="min-w-0"><span class="block text-[11px] uppercase tracking-wide leading-tight" style="color:var(--bl-text-muted);">{{ item.label }}</span><span class="block text-sm font-medium leading-tight truncate" style="color:var(--bl-text);">{{ item.value }}</span></span>
-                  </div>
-                </div>
-              </div>
-              <div v-if="profile.tags && profile.tags.length" class="rounded-2xl p-5" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-                <h2 class="text-sm font-bold uppercase tracking-wider mb-4" style="color:var(--bl-text-muted);">{{ t('profile.services_section') }}</h2>
-                <div class="flex flex-wrap gap-2"><span v-for="tag in profile.tags" :key="'a'+tag" class="text-[13px] font-medium px-3 py-1.5 rounded-full" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">{{ tag }}</span></div>
-              </div>
             </div>
 
             <!-- TAB: Bewertungen -->
