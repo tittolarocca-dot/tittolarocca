@@ -26,6 +26,7 @@ return [
     'manage_media'        => '🖼️ Gérer les médias',
     'contact'             => 'Contact',
     'location'            => 'Lieu',
+    'address_label' => 'Adresse',
     'open_maps'           => 'Ouvrir dans Google Maps',
     'views'               => '👁 Vues',
     'subscribers'         => '❤️ Abonnés',

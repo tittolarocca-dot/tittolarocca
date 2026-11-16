@@ -26,6 +26,7 @@ return [
     'manage_media'        => '🖼️ Médiák kezelése',
     'contact'             => 'Kapcsolat',
     'location'            => 'Helyszín',
+    'address_label' => 'Cím',
     'open_maps'           => 'Megnyitás Google Térképen',
     'views'               => '👁 Megtekintések',
     'subscribers'         => '❤️ Előfizetők',

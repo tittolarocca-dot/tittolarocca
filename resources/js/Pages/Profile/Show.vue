@@ -28,8 +28,8 @@
             <div class="flex flex-col lg:flex-row">
 
               <!-- Galerie (füllt die Info-Höhe → kein Leerraum) -->
-              <div class="relative lg:w-[32%] shrink-0 lg:self-stretch" style="background:#000;">
-                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[300px] cursor-pointer"
+              <div class="relative lg:w-[32%] shrink-0 lg:self-stretch p-2.5 lg:p-3">
+                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[300px] cursor-pointer rounded-2xl overflow-hidden" style="background:#000;"
                   @click="heroMedia.length && openLightbox(heroMedia[0])">
                   <template v-if="heroMedia.length">
                     <MediaThumb :item="heroMedia[0]" :alt="profile.display_name" :eager="true" />
@@ -127,7 +127,8 @@
 
             <!-- Kontakt & Buchung -->
             <div v-if="profile.whatsapp_number || profile.telegram_username || profile.website || canMessage || (!$page.props.auth.user && !isOwner)" class="rounded-2xl p-4 space-y-2" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <p class="text-xs font-bold uppercase tracking-wider mb-1" style="color:var(--bl-text-muted);">{{ t('profile.contact_booking') }}</p>
+              <p class="flex items-center gap-2 text-[15px] font-bold mb-2" style="color:var(--bl-text);">
+                <svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M3 9h18M8 3v4M16 3v4"/></svg>{{ t('profile.contact_booking') }}</p>
               <a v-if="profile.whatsapp_number" :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`" target="_blank" @click="trackEvent('whatsapp')" class="flex items-center justify-center gap-2.5 w-full text-white text-sm font-bold px-4 py-2.5 rounded-xl transition" style="background:#25D366;">
                 <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>{{ t('profile.whatsapp_write') }}
               </a>
@@ -147,10 +148,9 @@
 
             <!-- Adresse -->
             <div v-if="profile.address" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <div class="flex items-start gap-2 mb-3">
-                <svg class="w-5 h-5 shrink-0 mt-0.5" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                <span class="text-sm leading-snug" style="color:var(--bl-text);">{{ profile.address }}</span>
-              </div>
+              <h2 class="flex items-center gap-2 text-[15px] font-bold mb-1.5" style="color:var(--bl-text);">
+                <svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>{{ t('profile.address_label') }}</h2>
+              <p class="text-sm leading-snug mb-3" style="color:var(--bl-text-muted);">{{ profile.address }}</p>
               <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full text-sm font-semibold px-4 py-2.5 rounded-xl transition" style="background:var(--bl-surface-2);color:var(--bl-text-muted);border:1px solid var(--bl-border);">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>{{ t('profile.open_maps') }}
               </a>
@@ -158,19 +158,19 @@
 
             <!-- Follower / Favoriten -->
             <div class="rounded-2xl p-4 grid grid-cols-2 gap-2" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <div class="flex flex-col items-center py-1">
-                <span class="text-xl font-black" style="color:var(--bl-text);">{{ followersCount }}</span>
-                <span class="text-xs mt-0.5" style="color:var(--bl-text-muted);">{{ t('profile.followers_label') }}</span>
+              <div class="flex items-center justify-center gap-2.5 py-1">
+                <svg class="w-6 h-6 shrink-0" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+                <span class="flex flex-col leading-tight"><span class="text-xl font-black" style="color:var(--bl-text);">{{ followersCount }}</span><span class="text-xs" style="color:var(--bl-text-muted);">{{ t('profile.followers_label') }}</span></span>
               </div>
-              <div class="flex flex-col items-center py-1" style="border-left:1px solid var(--bl-border);">
-                <span class="text-xl font-black" style="color:var(--bl-text);">{{ profile.favorites_count ?? 0 }}</span>
-                <span class="text-xs mt-0.5" style="color:var(--bl-text-muted);">{{ t('profile.favorites_label') }}</span>
+              <div class="flex items-center justify-center gap-2.5 py-1" style="border-left:1px solid var(--bl-border);">
+                <svg class="w-6 h-6 shrink-0" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4 4 0 018-1 4 4 0 018 1c0 6-8 11-8 11z"/></svg>
+                <span class="flex flex-col leading-tight"><span class="text-xl font-black" style="color:var(--bl-text);">{{ profile.favorites_count ?? 0 }}</span><span class="text-xs" style="color:var(--bl-text-muted);">{{ t('profile.favorites_label') }}</span></span>
               </div>
             </div>
 
             <!-- Steckbrief -->
             <div v-if="details.length" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <h2 class="text-sm font-bold uppercase tracking-wider mb-3" style="color:var(--bl-text-muted);">{{ t('profile.details_section') }}</h2>
+              <h2 class="flex items-center gap-2 text-[15px] font-bold mb-3" style="color:var(--bl-text);"><svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 11v5M12 8h.01"/></svg>{{ t('profile.details_section') }}</h2>
               <div class="grid grid-cols-2 gap-x-3 gap-y-3">
                 <div v-for="item in details" :key="item.label" class="flex items-center gap-2.5 min-w-0">
                   <span class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center" style="background:var(--bl-grad-soft);">
@@ -186,7 +186,7 @@
 
             <!-- Angebote & Services -->
             <div v-if="profile.tags && profile.tags.length" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <h2 class="text-sm font-bold uppercase tracking-wider mb-3" style="color:var(--bl-text-muted);">{{ t('profile.services_section') }}</h2>
+              <h2 class="flex items-center gap-2 text-[15px] font-bold mb-3" style="color:var(--bl-text);"><svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.8 15.9L9 18.75l-.8-2.85a4.5 4.5 0 00-3.1-3.1L2.25 12l2.85-.8a4.5 4.5 0 003.1-3.1L9 5.25l.8 2.85a4.5 4.5 0 003.1 3.1L15.75 12l-2.85.8a4.5 4.5 0 00-3.1 3.1z"/></svg>{{ t('profile.services_section') }}</h2>
               <div class="flex flex-wrap gap-2">
                 <span v-for="tag in profile.tags" :key="tag" class="text-[13px] font-medium px-3 py-1.5 rounded-full" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">{{ tag }}</span>
               </div>
@@ -194,7 +194,7 @@
 
             <!-- Sprachen -->
             <div v-if="languages.length" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <h2 class="text-sm font-bold uppercase tracking-wider mb-3" style="color:var(--bl-text-muted);">{{ t('profile.languages_section') }}</h2>
+              <h2 class="flex items-center gap-2 text-[15px] font-bold mb-3" style="color:var(--bl-text);"><svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg>{{ t('profile.languages_section') }}</h2>
               <div class="grid grid-cols-2 gap-x-4 gap-y-2">
                 <div v-for="l in languages" :key="l.code" class="flex items-center justify-between gap-3">
                   <span class="flex items-center gap-2 text-sm" style="color:var(--bl-text);"><span class="text-base leading-none">{{ langFlag(l.code) }}</span>{{ t('languages.' + l.code) }}</span>
@@ -206,7 +206,7 @@
             <!-- Bewertungen (Summary → Tab) -->
             <div class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
               <div class="flex items-center justify-between mb-2">
-                <h2 class="text-sm font-bold uppercase tracking-wider" style="color:var(--bl-text-muted);">{{ t('profile.reviews') }} ({{ ratingCount }})</h2>
+                <h2 class="flex items-center gap-2 text-[15px] font-bold" style="color:var(--bl-text);"><svg class="w-[18px] h-[18px]" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78L1.58 7.62l5.82-.85L10 1.5z"/></svg>{{ t('profile.reviews') }} ({{ ratingCount }})</h2>
                 <button type="button" @click="activeProfileTab = 'reviews'" class="text-xs font-semibold" style="color:var(--bl-pink);">{{ t('profile.view_all') }} ›</button>
               </div>
               <div v-if="ratingCount > 0" class="flex items-center gap-2">

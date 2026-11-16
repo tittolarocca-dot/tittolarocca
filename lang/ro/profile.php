@@ -26,6 +26,7 @@ return [
     'manage_media'        => '🖼️ Gestionare media',
     'contact'             => 'Contact',
     'location'            => 'Locație',
+    'address_label' => 'Adresă',
     'open_maps'           => 'Deschide în Google Maps',
     'views'               => '👁 Vizualizări',
     'subscribers'         => '❤️ Abonați',
