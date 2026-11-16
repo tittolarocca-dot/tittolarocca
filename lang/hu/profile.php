@@ -38,7 +38,7 @@ return [
     'reviews'             => 'Értékelések',
     'message' => 'Üzenet',
     'favorite' => 'Kedvenc',
-    'tab_posts' => 'Bejegyzések',
+    'tab_posts' => 'Feed',
     'tab_media' => 'Média',
     'tab_about' => 'Rólam',
     'view_all' => 'Összes',

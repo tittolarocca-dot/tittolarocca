@@ -38,7 +38,7 @@ return [
     'reviews'             => 'Recenzii',
     'message' => 'Mesaj',
     'favorite' => 'Favorit',
-    'tab_posts' => 'Postări',
+    'tab_posts' => 'Feed',
     'tab_media' => 'Media',
     'tab_about' => 'Despre mine',
     'view_all' => 'Vezi toate',

@@ -38,7 +38,7 @@ return [
     'reviews'             => 'Avis',
     'message' => 'Message',
     'favorite' => 'Favori',
-    'tab_posts' => 'Publications',
+    'tab_posts' => 'Feed',
     'tab_media' => 'Médias',
     'tab_about' => 'À propos',
     'view_all' => 'Tout afficher',

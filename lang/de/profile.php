@@ -38,7 +38,7 @@ return [
     'reviews'             => 'Bewertungen',
     'message' => 'Nachricht',
     'favorite' => 'Favorit',
-    'tab_posts' => 'Beiträge',
+    'tab_posts' => 'Feed',
     'tab_media' => 'Medien',
     'tab_about' => 'Über mich',
     'view_all' => 'Alle anzeigen',
