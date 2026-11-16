@@ -138,42 +138,49 @@
 
     <!-- Footer -->
     <footer class="mt-16 py-10 bg-[#1a1a1a] border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-sm text-gray-400">
-        <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_platform') }}</h5>
-          <div class="space-y-2">
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.contact') }}</a>
+      <div class="max-w-7xl mx-auto px-4">
+        <!-- Kompakte Spalten -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm text-gray-400">
+          <div>
+            <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_platform') }}</h5>
+            <div class="space-y-2">
+              <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.contact') }}</a>
+            </div>
+          </div>
+          <div>
+            <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_list') }}</h5>
+            <div class="space-y-2">
+              <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">{{ t('nav.create_listing') }}</Link>
+              <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.prices') }}</a>
+            </div>
+          </div>
+          <div>
+            <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_legal') }}</h5>
+            <div class="space-y-2">
+              <Link :href="route('legal.imprint')" class="block hover:text-[#e35d8f] transition">{{ t('nav.imprint') }}</Link>
+              <Link :href="route('legal.privacy')" class="block hover:text-[#e35d8f] transition">{{ t('nav.privacy') }}</Link>
+              <Link :href="route('legal.terms')" class="block hover:text-[#e35d8f] transition">{{ t('nav.terms') }}</Link>
+            </div>
           </div>
         </div>
-        <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_list') }}</h5>
-          <div class="space-y-2">
-            <Link :href="route('register')" class="block hover:text-[#e35d8f] transition">{{ t('nav.create_listing') }}</Link>
-            <a href="#" class="block hover:text-[#e35d8f] transition">{{ t('nav.prices') }}</a>
-          </div>
-        </div>
-        <div>
+
+        <!-- Städte als Buttons (umbrechend, kompakt) -->
+        <div v-if="cities.length" class="mt-8 pt-6 border-t border-white/10">
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.cities') }}</h5>
-          <div class="space-y-1">
+          <div class="flex flex-wrap gap-2">
             <Link v-for="city in cities" :key="city.id"
               :href="route('city', { city: city.slug })"
-              class="block hover:text-[#e35d8f] transition">{{ city.name }}</Link>
+              class="text-xs text-gray-300 bg-white/5 border border-white/10 hover:border-[#e35d8f] hover:text-[#e35d8f] rounded-full px-3 py-1.5 transition">{{ city.name }}</Link>
           </div>
         </div>
-        <div v-if="categories.length">
+
+        <!-- Kategorien als Buttons -->
+        <div v-if="categories.length" class="mt-6">
           <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.categories') }}</h5>
-          <div class="space-y-1">
+          <div class="flex flex-wrap gap-2">
             <Link v-for="cat in categories" :key="cat.id"
               :href="route('category', { category: cat.slug })"
-              class="block hover:text-[#e35d8f] transition">{{ cat.name }}</Link>
-          </div>
-        </div>
-        <div>
-          <h5 class="text-white font-semibold mb-3 uppercase text-xs tracking-wide">{{ t('nav.footer_legal') }}</h5>
-          <div class="space-y-2">
-            <Link :href="route('legal.imprint')" class="block hover:text-[#e35d8f] transition">{{ t('nav.imprint') }}</Link>
-            <Link :href="route('legal.privacy')" class="block hover:text-[#e35d8f] transition">{{ t('nav.privacy') }}</Link>
-            <Link :href="route('legal.terms')" class="block hover:text-[#e35d8f] transition">{{ t('nav.terms') }}</Link>
+              class="text-xs text-gray-300 bg-white/5 border border-white/10 hover:border-[#e35d8f] hover:text-[#e35d8f] rounded-full px-3 py-1.5 transition">{{ cat.name }}</Link>
           </div>
         </div>
       </div>
