@@ -64,7 +64,7 @@
             class="flex gap-3 sm:gap-4 overflow-x-auto pt-1 pb-3 scrollbar-hide">
             <a v-for="nav in circleNav" :key="nav.label" :href="nav.href"
               class="flex flex-col items-center shrink-0 w-16 sm:w-[76px] cursor-pointer group">
-              <div class="w-14 h-14 sm:w-[68px] sm:h-[68px] rounded-full flex items-center justify-center transition ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#1b1b1b] group-hover:ring-[#f08ab0]"
+              <div class="w-14 h-14 sm:w-[68px] sm:h-[68px] rounded-full flex items-center justify-center transition ring-2 ring-[#e35d8f] ring-offset-2 ring-offset-[#0b0a0d] group-hover:ring-[#f08ab0]"
                 style="background:linear-gradient(145deg,#e35d8f 0%,#c44a7a 55%,#8b3ad6 100%);box-shadow:var(--bl-glow);">
                 <span v-html="nav.icon" class="inline-flex items-center justify-center" style="color:#fff;width:28px;height:28px;"></span>
               </div>
