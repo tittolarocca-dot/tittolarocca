@@ -35,6 +35,8 @@ return [
     'age_years'           => ':age ani',
     'listed_at'           => '📅 Publicat',
     'reviews'             => 'Recenzii',
+    'message' => 'Mesaj',
+    'favorite' => 'Favorit',
     'tab_posts' => 'Postări',
     'tab_media' => 'Media',
     'tab_about' => 'Despre mine',

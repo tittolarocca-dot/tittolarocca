@@ -27,9 +27,9 @@
           <div class="rounded-2xl overflow-hidden" style="background:var(--bl-surface);border:1px solid var(--bl-border);box-shadow:var(--bl-shadow);">
             <div class="flex flex-col lg:flex-row">
 
-              <!-- Galerie -->
-              <div class="relative lg:w-[32%] shrink-0" style="background:#000;">
-                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-[330px] cursor-pointer"
+              <!-- Galerie (füllt die Info-Höhe → kein Leerraum) -->
+              <div class="relative lg:w-[32%] shrink-0 lg:self-stretch" style="background:#000;">
+                <div class="relative aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[300px] cursor-pointer"
                   @click="heroMedia.length && openLightbox(heroMedia[0])">
                   <template v-if="heroMedia.length">
                     <MediaThumb :item="heroMedia[0]" :alt="profile.display_name" :eager="true" />
@@ -39,7 +39,7 @@
               </div>
 
               <!-- Profilkopf -->
-              <div class="p-5 lg:p-7 flex-1 min-w-0 flex flex-col">
+              <div class="p-5 lg:p-6 flex-1 min-w-0 flex flex-col justify-center">
                 <div class="flex items-center gap-2 flex-wrap">
                   <h1 class="text-2xl lg:text-[32px] font-black leading-tight" style="color:var(--bl-text);">{{ profile.display_name }}</h1>
                   <span v-if="idVerified || photoVerified" class="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0" style="background:var(--bl-verify);" :title="idVerified ? t('home.id_verified') : t('home.photo_verified')">
@@ -67,14 +67,14 @@
                 </div>
 
                 <template v-if="profile.description">
-                  <p class="text-sm mt-4 leading-relaxed whitespace-pre-line" style="color:var(--bl-text-muted);" :class="(!descExpanded && descIsLong) ? 'line-clamp-3' : ''">{{ profile.description }}</p>
+                  <p class="text-sm mt-3 leading-relaxed whitespace-pre-line" style="color:var(--bl-text-muted);" :class="(!descExpanded && descIsLong) ? 'line-clamp-2' : ''">{{ profile.description }}</p>
                   <button v-if="descIsLong" type="button" @click="descExpanded = !descExpanded" class="inline-flex items-center gap-1 text-sm font-semibold mt-1.5 self-start" style="color:var(--bl-pink);">
                     {{ descExpanded ? t('profile.show_less') : t('profile.show_more') }}
                     <svg class="w-3.5 h-3.5 transition-transform" :class="descExpanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
                   </button>
                 </template>
 
-                <div class="flex flex-wrap gap-2 mt-4">
+                <div class="flex flex-wrap gap-2 mt-3">
                   <span v-if="photoVerified" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(59,155,255,.15);color:var(--bl-verify);">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="12" cy="13" r="3"/></svg>{{ t('home.photo_verified') }}
                   </span>
@@ -83,23 +83,29 @@
                   </span>
                 </div>
 
-                <!-- Aktionen -->
-                <div v-if="!isOwner" class="flex flex-wrap items-center gap-2.5 mt-5 pt-5" style="border-top:1px solid var(--bl-border);">
-                  <button type="button" @click="onFollowClick" :disabled="followBusy" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition disabled:opacity-60"
-                    :style="following ? 'background:rgba(227,93,143,.15);color:var(--bl-pink);border:1px solid rgba(227,93,143,.5);' : 'background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);'">
-                    <svg class="w-4 h-4" :fill="following ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                <!-- Aktionen (kompakte Zeile, wie Vorlage) -->
+                <div v-if="!isOwner" class="flex flex-wrap items-center gap-2 mt-4 pt-4" style="border-top:1px solid var(--bl-border);">
+                  <button type="button" @click="onFollowClick" :disabled="followBusy" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition disabled:opacity-60" :style="following ? 'background:rgba(227,93,143,.15);color:var(--bl-pink);border:1px solid rgba(227,93,143,.5);' : 'background:var(--bl-grad);color:#fff;box-shadow:var(--bl-glow);'">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 20a6 6 0 00-12 0M9 11a4 4 0 100-8 4 4 0 000 8zM19 8v6M22 11h-6"/></svg>
                     {{ following ? t('profile.following') : t('profile.follow') }}
                   </button>
-                  <Link v-if="canMessage" :href="route('konto.messages', { to: profile.slug })" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{{ t('profile.send_message') }}
+                  <Link v-if="canMessage" :href="route('konto.messages', { to: profile.slug })" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{{ t('profile.message') }}
                   </Link>
-                  <button v-else type="button" @click="showMemberGate = true" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{{ t('profile.send_message') }}
+                  <button v-else type="button" @click="showMemberGate = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.87 9.87 0 01-4-.8L3 20l.8-3.6A7.98 7.98 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{{ t('profile.message') }}
                   </button>
-                  <a v-if="profile.whatsapp_number" :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`" target="_blank" @click="trackEvent('whatsapp')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition" style="background:var(--bl-grad);box-shadow:var(--bl-glow);">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>{{ t('profile.contact_whatsapp') }}
+                  <a v-if="profile.whatsapp_number" :href="`https://wa.me/${profile.whatsapp_number.replace(/\D/g,'')}`" target="_blank" @click="trackEvent('whatsapp')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" style="color:#25D366;" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.875 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>WhatsApp
                   </a>
+                  <a v-if="profile.whatsapp_number" :href="`tel:${profile.whatsapp_number.replace(/\s/g,'')}`" @click="trackEvent('call')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition" style="background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);">
+                    <svg class="w-4 h-4" style="color:var(--bl-pink);" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>{{ profile.whatsapp_number }}
+                  </a>
+                  <button type="button" @click="onFavoriteClick" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition" :style="favorited ? 'background:rgba(227,93,143,.12);color:var(--bl-pink);border:1px solid rgba(227,93,143,.5);' : 'background:var(--bl-surface-2);color:var(--bl-text);border:1px solid var(--bl-border);'">
+                    <svg class="w-4 h-4" :fill="favorited ? 'var(--bl-pink)' : 'none'" :stroke="favorited ? 'var(--bl-pink)' : 'currentColor'" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/></svg>{{ favorited ? t('profile.saved_favorite') : t('profile.favorite') }}
+                  </button>
                 </div>
+
                 <!-- Owner-Aktionen -->
                 <div v-else class="flex flex-wrap gap-2.5 mt-5 pt-5" style="border-top:1px solid var(--bl-border);">
                   <Link :href="route('inserat.profile.edit')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white" style="background:var(--bl-grad);box-shadow:var(--bl-glow);">{{ t('profile.edit_profile') }}</Link>

@@ -35,6 +35,8 @@ return [
     'age_years'           => ':age Jahre',
     'listed_at'           => '📅 Inseriert',
     'reviews'             => 'Bewertungen',
+    'message' => 'Nachricht',
+    'favorite' => 'Favorit',
     'tab_posts' => 'Beiträge',
     'tab_media' => 'Medien',
     'tab_about' => 'Über mich',

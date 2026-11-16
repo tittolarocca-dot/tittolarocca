@@ -35,6 +35,8 @@ return [
     'age_years'           => ':age év',
     'listed_at'           => '📅 Közzétéve',
     'reviews'             => 'Értékelések',
+    'message' => 'Üzenet',
+    'favorite' => 'Kedvenc',
     'tab_posts' => 'Bejegyzések',
     'tab_media' => 'Média',
     'tab_about' => 'Rólam',
