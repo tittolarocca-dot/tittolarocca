@@ -212,7 +212,9 @@ class ProfileController extends Controller
         }
 
         // ── Feed: max. 3 neueste sichtbare Beiträge ──
-        $feedPosts = $this->mapFeedPosts($this->visibleFeedQuery($profile, $user)->take(3)->get(), $user);
+        // V2-Community-Profil: erste Feed-Seite serverseitig, Rest inline nachladbar.
+        $feedPaginator = $this->visibleFeedQuery($profile, $user)->paginate(6);
+        $feedPosts     = $this->mapFeedPosts($feedPaginator->getCollection(), $user);
 
         return Inertia::render('Profile/Show', [
             'profile' => [
@@ -246,6 +248,7 @@ class ProfileController extends Controller
                 'total_views'            => $profile->total_views,
                 'likes_count'            => $profile->likedBy()->count(),
                 'followers_count'        => $followersCount,
+                'favorites_count'        => $profile->favoritedBy()->count(),
                 'whatsapp_number'        => $geoBlocked ? null : $profile->whatsapp_number,
                 'telegram_username'      => $geoBlocked ? null : $profile->telegram_username,
                 'address'                => $geoBlocked ? null : $profile->address,
@@ -276,7 +279,9 @@ class ProfileController extends Controller
             'ratingCount'         => $ratingCount,
             'activity'            => $activity,
             'feedPosts'           => $feedPosts,
-            'feedHasMore'         => $this->visibleFeedQuery($profile, $user)->count() > 3,
+            'feedHasMore'         => $feedPaginator->hasMorePages(),
+            'feedNextPage'        => $feedPaginator->nextPageUrl(),
+            'postsCount'          => $feedPaginator->total(),
             'launchMode'          => $launchMode,
             'launchGalleryFree'   => $launchGalleryFree,
             'isLaunchUnlocked'    => $launchUnlocked,
@@ -296,6 +301,15 @@ class ProfileController extends Controller
         $profile->loadMissing('user');
 
         $paginator = $this->visibleFeedQuery($profile, $user)->paginate(10)->withQueryString();
+
+        // Inline-Nachladen im V2-Profil-Tab „Beiträge": JSON statt Inertia-Seite
+        // (gleiche Query + gleicher Mapper – kein paralleles System).
+        if ($request->wantsJson()) {
+            return response()->json([
+                'posts'       => $this->mapFeedPosts($paginator->getCollection(), $user),
+                'nextPageUrl' => $paginator->nextPageUrl(),
+            ]);
+        }
 
         app(SeoData::class)
             ->forPage($profile->display_name . ' – Feed')
