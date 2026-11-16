@@ -1282,7 +1282,7 @@ const canMessage = computed(() => !!page.props.auth?.user && !props.isOwner && (
 const descIsLong = computed(() => (props.profile.description || '').length > 220);
 
 // ── V2-Community-Profil: Tabs + Feed-Nachladen (inline) ────────────────────
-const activeProfileTab = ref('posts');   // Standard: Beiträge (Community zuerst)
+const activeProfileTab = ref('media');   // Standard: Medien (solange Feeds leer sind)
 const mediaTab         = ref('public');  // Medien-Tab: public | private
 const feedItems   = ref([...props.feedPosts]);
 const feedNext    = ref(props.feedNextPage);
@@ -1304,8 +1304,8 @@ async function loadMoreFeed() {
 }
 
 const profileTabs = computed(() => [
-  { key: 'posts',   label: t('profile.tab_posts'), count: props.postsCount },
   { key: 'media',   label: t('profile.tab_media'), count: props.publicMedia.length + (props.privateMediaCount || 0) },
+  { key: 'posts',   label: t('profile.tab_posts'), count: props.postsCount },
   { key: 'about',   label: t('profile.tab_about'), count: null },
   { key: 'reviews', label: t('profile.reviews'),   count: props.ratingCount },
 ]);
