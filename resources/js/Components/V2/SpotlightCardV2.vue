@@ -5,7 +5,7 @@
 
       <!-- Foto -->
       <Link :href="route('profile.show', profile.slug)" class="relative block lg:w-[44%] shrink-0" style="min-height:300px;">
-        <CardGallery :media="profile.public_media" :alt="profile.display_name" eager-first />
+        <CardGallery :media="profile.public_media" :alt="profile.display_name" eager-first :swipe="false" />
         <span class="absolute top-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 text-[13px] font-extrabold px-3.5 py-2 rounded-full"
           style="background:var(--bl-grad);color:#fff;box-shadow:0 6px 18px -4px rgba(227,93,143,.5);">
           <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78L1.58 7.62l5.82-.85L10 1.5z"/></svg>

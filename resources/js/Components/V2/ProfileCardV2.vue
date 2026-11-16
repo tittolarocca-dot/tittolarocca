@@ -9,7 +9,7 @@
 
       <!-- Foto -->
       <div class="relative overflow-hidden" style="min-height:210px;background:#1a1420;">
-        <CardGallery :media="profile.public_media" :alt="profile.display_name" />
+        <CardGallery :media="profile.public_media" :alt="profile.display_name" :swipe="false" />
 
         <!-- Favorit (Herz) -->
         <button type="button" @click.stop.prevent="toggleFav" :aria-label="fav ? 'Gemerkt' : 'Merken'"

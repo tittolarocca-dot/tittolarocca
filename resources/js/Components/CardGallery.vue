@@ -5,7 +5,8 @@
        umschliessenden Karten-Link (öffnet das Profil). -->
   <div v-if="slides.length" class="absolute inset-0">
     <div ref="track"
-      class="cg-track flex h-full w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide overscroll-x-contain"
+      class="flex h-full w-full scrollbar-hide"
+      :class="swipe ? 'cg-track overflow-x-auto snap-x snap-mandatory overscroll-x-contain' : 'cg-noswipe overflow-hidden'"
       @scroll.passive="onScroll">
       <div v-for="(m, i) in slides" :key="m.id ?? i"
         class="snap-center shrink-0 w-full h-full">
@@ -30,8 +31,8 @@
       </div>
     </div>
 
-    <!-- Punkt-Indikator (nur bei mehreren Fotos) -->
-    <div v-if="slides.length > 1"
+    <!-- Punkt-Indikator (nur bei mehreren Fotos + Wischen aktiv) -->
+    <div v-if="slides.length > 1 && swipe"
       class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 pointer-events-none z-10">
       <span v-for="(m, i) in slides" :key="'dot-' + (m.id ?? i)"
         class="h-1.5 w-1.5 rounded-full transition-all duration-200 shadow-sm"
@@ -53,6 +54,9 @@ const props = defineProps({
   max:        { type: Number, default: 8 },
   // Erstes Bild sofort laden (für die grosse Top-Ad-Karte / LCP)
   eagerFirst: { type: Boolean, default: false },
+  // Wischen/Scrollen der Galerie erlauben (V1-Karten: true). Auf V2-Karten
+  // deaktiviert, damit das Foto nicht im Rahmen verschoben werden kann.
+  swipe:      { type: Boolean, default: true },
 });
 
 // Nur Bilder, sortiert kommt bereits vom Backend, auf max begrenzen
@@ -91,6 +95,8 @@ function placeholder(m) {
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 /* Horizontales Wischen erlauben, vertikales Scrollen der Seite nicht blockieren */
 .cg-track { touch-action: pan-x pan-y; }
+/* Kein Wischen: nur vertikales Seiten-Scrollen, Foto bleibt fix im Rahmen */
+.cg-noswipe { touch-action: pan-y; }
 /* LQIP-Blur-Up: Platzhalter leicht unscharf, echtes Bild blendet scharf ein */
 .cg-lazy { filter: blur(10px); transform: scale(1.04); }
 .cg-lazy.lazyloaded { filter: blur(0); transform: none; transition: filter .35s ease, transform .35s ease; }
