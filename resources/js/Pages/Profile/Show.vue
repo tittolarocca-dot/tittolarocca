@@ -30,20 +30,11 @@
               <!-- Galerie -->
               <div class="relative lg:w-[46%] shrink-0" style="background:#000;">
                 <div class="relative aspect-[4/5] lg:aspect-auto lg:h-[470px] cursor-pointer"
-                  @click="heroMedia.length && openLightbox(heroMedia[heroIndex])">
+                  @click="heroMedia.length && openLightbox(heroMedia[0])">
                   <template v-if="heroMedia.length">
-                    <MediaThumb :key="heroMedia[heroIndex].id" :item="heroMedia[heroIndex]" :alt="profile.display_name" :eager="true" />
+                    <MediaThumb :item="heroMedia[0]" :alt="profile.display_name" :eager="true" />
                   </template>
                   <div v-else class="w-full h-full flex items-center justify-center text-5xl" style="color:var(--bl-text-muted);">👤</div>
-
-                  <div v-if="heroMedia.length > 1" class="absolute top-3 left-3 z-10 text-xs font-semibold text-white px-2.5 py-1 rounded-full" style="background:rgba(0,0,0,.55);">{{ heroIndex + 1 }} / {{ heroMedia.length }}</div>
-                  <button v-if="heroMedia.length > 1" @click.stop="openLightbox(heroMedia[heroIndex])" class="absolute bottom-3 right-3 z-10 text-xs font-bold text-white px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,.55);">+{{ heroMedia.length - 1 }} {{ t('profile.more') }}</button>
-                  <button v-if="heroIndex > 0" @click.stop="heroPrev" type="button" aria-label="Zurück" class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white" style="background:rgba(0,0,0,.5);">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-                  </button>
-                  <button v-if="heroIndex < heroMedia.length - 1" @click.stop="heroNext" type="button" aria-label="Weiter" class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white" style="background:rgba(0,0,0,.5);">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                  </button>
                 </div>
               </div>
 
@@ -204,15 +195,6 @@
                   <span class="text-sm tracking-tight whitespace-nowrap"><span style="color:#f5c518;">{{ '★'.repeat(l.level) }}</span><span style="color:#4a4650;">{{ '★'.repeat(5 - l.level) }}</span></span>
                 </div>
               </div>
-            </div>
-
-            <!-- Über {name} (Teaser → Tab) -->
-            <div v-if="profile.description" class="rounded-2xl p-5" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
-              <h2 class="text-sm font-bold uppercase tracking-wider mb-3" style="color:var(--bl-text-muted);">{{ t('profile.about_section', { name: profile.display_name }) }}</h2>
-              <p class="text-sm leading-relaxed line-clamp-4" style="color:var(--bl-text-muted);">{{ profile.description }}</p>
-              <button type="button" @click="activeProfileTab = 'about'" class="inline-flex items-center gap-1 text-sm font-semibold mt-2" style="color:var(--bl-pink);">{{ t('profile.show_more') }}
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-              </button>
             </div>
 
             <!-- Bewertungen (Summary → Tab) -->
