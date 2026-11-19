@@ -8,7 +8,7 @@
       <h2 class="text-lg font-bold text-white mt-8 mb-2">1. Geltungsbereich</h2>
       <p class="text-sm text-gray-300 leading-relaxed mb-3">
         Diese AGB regeln die Nutzung der Plattform booklola.ch (nachfolgend „Plattform")
-        zwischen dem Betreiber (<span class="text-amber-400">[Name des Betreibers]</span>) und
+        zwischen dem Betreiber (booklola.ch) und
         den Nutzenden. Mit der Registrierung oder Nutzung der Plattform akzeptierst du diese AGB.
       </p>
 
@@ -59,7 +59,7 @@
         derzeit kostenlos. Der Betreiber behält sich vor, künftig kostenpflichtige Leistungen
         (z. B. Laufzeit-Pakete, Hervorhebungen) einzuführen. Kostenpflichtige Leistungen werden
         vor dem Kauf klar ausgewiesen; Zahlungen werden über den Zahlungsdienstleister (Stripe)
-        abgewickelt. <span class="text-amber-400">[Hinweise zu Rückerstattung/Widerruf hier ergänzen bzw. juristisch prüfen lassen.]</span>
+        abgewickelt.
       </p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">7. Verhaltensregeln</h2>
@@ -90,10 +90,9 @@
         Form informiert. Es gilt die jeweils aktuelle, auf dieser Seite veröffentlichte Fassung.
       </p>
 
-      <h2 class="text-lg font-bold text-white mt-8 mb-2">11. Anwendbares Recht und Gerichtsstand</h2>
+      <h2 class="text-lg font-bold text-white mt-8 mb-2">11. Anwendbares Recht</h2>
       <p class="text-sm text-gray-300 leading-relaxed mb-3">
-        Es gilt Schweizer Recht. Gerichtsstand ist – soweit gesetzlich zulässig –
-        <span class="text-amber-400">[Ort / Sitz des Betreibers]</span>.
+        Es gilt Schweizer Recht.
       </p>
 
       <h2 class="text-lg font-bold text-white mt-8 mb-2">12. Schlussbestimmungen</h2>
@@ -102,7 +101,7 @@
         übrigen Bestimmungen unberührt.
       </p>
 
-      <p class="text-xs text-gray-500 mt-10">Stand: <span class="text-amber-400">[Datum der letzten Aktualisierung]</span></p>
+      <p class="text-xs text-gray-500 mt-10">Stand: 1.6.2026</p>
     </div>
   </AppLayout>
 </template>
