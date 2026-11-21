@@ -199,7 +199,7 @@ class HomeController extends Controller
             'logo'     => asset('images/logo-booklola.png'),
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(30)->withQueryString()),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(31)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,
@@ -221,7 +221,7 @@ class HomeController extends Controller
             [$city->name, route('city', $city->slug)],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(30)->withQueryString()),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(31)->withQueryString()),
             'activeCity'       => $city,
             'activeSearch'     => $search,
             'activeAges'       => $ages,
@@ -256,7 +256,7 @@ class HomeController extends Controller
             [$category->name, route('city.category', [$city->slug, $category->slug])],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(30)->withQueryString()),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->where('city_id', $city->id)->paginate(31)->withQueryString()),
             'activeCity'       => $city,
             'activeSearch'     => $search,
             'activeAges'       => $ages,
@@ -291,7 +291,7 @@ class HomeController extends Controller
             [$category->name, route('category', $category->slug)],
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
-            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(30)->withQueryString()),
+            'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)->paginate(31)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,
@@ -323,7 +323,7 @@ class HomeController extends Controller
         ]);
         return inertia('Home/Index', array_merge($this->sharedData(), [
             'profiles'         => $this->decorate($this->baseQuery($search, $verified, $services, $ages, $categories)
-                ->paginate(30)->withQueryString()),
+                ->paginate(31)->withQueryString()),
             'activeSearch'     => $search,
             'activeAges'       => $ages,
             'activeVerified'   => $verified,
