@@ -3,6 +3,7 @@
 return [
     'title' => "À la une sur Booklola",
     'new_profiles' => 'Nouveaux profils',
+    'online_now' => 'En ligne',
     'subtitle' => "Nouvelles publications, photos et actus de la communauté",
     'loading' => "Chargement …",
     'end' => "Vous êtes à jour.",

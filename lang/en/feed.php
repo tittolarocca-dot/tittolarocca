@@ -3,6 +3,7 @@
 return [
     'title' => "Latest on Booklola",
     'new_profiles' => 'New profiles',
+    'online_now' => 'Online now',
     'subtitle' => "New posts, photos and updates from the community",
     'loading' => "Loading …",
     'end' => "You're all caught up.",

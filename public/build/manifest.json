@@ -99,7 +99,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-CWV6fVt7.css",
+    "file": "assets/app-DJjibQUe.css",
     "name": "app",
     "names": [
       "app.css"
@@ -180,7 +180,7 @@
     ]
   },
   "resources/js/Pages/Feed/Index.vue": {
-    "file": "assets/Index-B9i95Wky.js",
+    "file": "assets/Index-BKjucqmd.js",
     "name": "Index",
     "src": "resources/js/Pages/Feed/Index.vue",
     "isDynamicEntry": true,
@@ -629,7 +629,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DJ3csZem.js",
+    "file": "assets/app-DJ74vnsn.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

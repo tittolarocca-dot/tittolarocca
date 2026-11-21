@@ -53,6 +53,32 @@
               </div>
             </div>
 
+            <!-- Jetzt online -->
+            <div v-if="onlineProfiles.length" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
+              <h3 class="flex items-center gap-2 text-[15px] font-bold mb-3" style="color:var(--bl-text);">
+                <span class="w-2.5 h-2.5 rounded-full" style="background:var(--bl-success);box-shadow:0 0 0 3px rgba(47,210,122,.2);"></span>
+                {{ t('feed.online_now') }}
+              </h3>
+              <div class="space-y-1">
+                <Link v-for="p in onlineProfiles" :key="'on'+p.slug" :href="route('profile.show', p.slug)" class="flex items-center gap-3 p-2 -mx-1 rounded-xl transition hover:bg-white/5">
+                  <span class="relative w-10 h-10 shrink-0">
+                    <span class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center" style="background:var(--bl-surface-2);">
+                      <img v-if="p.avatar" :src="p.avatar" :alt="p.display_name" class="w-full h-full object-cover object-top" loading="lazy" />
+                      <span v-else class="text-lg">👤</span>
+                    </span>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2" style="background:var(--bl-success);border-color:var(--bl-surface);"></span>
+                  </span>
+                  <span class="min-w-0">
+                    <span class="flex items-center gap-1.5">
+                      <span class="text-sm font-semibold truncate" style="color:var(--bl-text);">{{ p.display_name }}</span>
+                      <svg v-if="p.verified" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20" style="color:var(--bl-verify);"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
+                    </span>
+                    <span v-if="p.city" class="block text-xs truncate" style="color:var(--bl-text-muted);">📍 {{ p.city }}</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+
             <!-- Städte entdecken -->
             <div v-if="cities.length" class="rounded-2xl p-4" style="background:var(--bl-surface);border:1px solid var(--bl-border);">
               <h3 class="flex items-center gap-2 text-[15px] font-bold mb-3" style="color:var(--bl-text);">
@@ -90,7 +116,8 @@ const props = defineProps({
   posts:       { type: Array,  default: () => [] },
   nextPageUrl: { type: String, default: null },
   isAuthed:    { type: Boolean, default: false },
-  newProfiles: { type: Array,  default: () => [] },
+  newProfiles:    { type: Array, default: () => [] },
+  onlineProfiles: { type: Array, default: () => [] },
 });
 
 const page = usePage();

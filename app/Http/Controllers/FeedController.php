@@ -40,8 +40,9 @@ class FeedController extends Controller
             ->setCanonical(route('feed'));
 
         return Inertia::render('Feed/Index', $data + [
-            'isAuthed'    => (bool) $user,
-            'newProfiles' => $this->newProfiles(),
+            'isAuthed'       => (bool) $user,
+            'newProfiles'    => $this->newProfiles(),
+            'onlineProfiles' => $this->onlineProfiles(),
         ]);
     }
 
@@ -80,16 +81,46 @@ class FeedController extends Controller
             ->latest('created_at')
             ->take(6)
             ->get()
-            ->map(function ($p) {
-                $img = $p->publicMedia->first();
-                return [
-                    'slug'         => $p->slug,
-                    'display_name' => $p->display_name,
-                    'city'         => $p->city?->name,
-                    'avatar'       => $img ? ($img->src['thumbnail'] ?? $img->url) : null,
-                    'verified'     => $p->identity_verification_status === 'approved' || $p->verification_status === 'approved',
-                ];
-            })->values()->all();
+            ->map(fn ($p) => $this->miniProfile($p))
+            ->values()->all();
+    }
+
+    /**
+     * Profile, die JETZT online sind – nur echte Daten: Status freigegeben
+     * (show_activity_status) UND in den letzten 10 Minuten aktiv.
+     */
+    private function onlineProfiles(): array
+    {
+        $threshold = now()->subMinutes(10);
+
+        return \App\Models\Profile::where('profiles.status', 'active')
+            ->where('profiles.listing_expires_at', '>', now())
+            ->where('profiles.show_activity_status', true)
+            ->join('users', 'users.id', '=', 'profiles.user_id')
+            ->where('users.last_active_at', '>=', $threshold)
+            ->orderByDesc('users.last_active_at')
+            ->select('profiles.*')
+            ->with([
+                'city:id,name',
+                'publicMedia' => fn ($q) => $q->where('type', 'image')->orderBy('sort_order'),
+            ])
+            ->take(8)
+            ->get()
+            ->map(fn ($p) => $this->miniProfile($p))
+            ->values()->all();
+    }
+
+    /** Kompakte Profil-Darstellung für die Sidebar. */
+    private function miniProfile($p): array
+    {
+        $img = $p->publicMedia->first();
+        return [
+            'slug'         => $p->slug,
+            'display_name' => $p->display_name,
+            'city'         => $p->city?->name,
+            'avatar'       => $img ? ($img->src['thumbnail'] ?? $img->url) : null,
+            'verified'     => $p->identity_verification_status === 'approved' || $p->verification_status === 'approved',
+        ];
     }
 
     private function mapPosts($posts, ?User $user): array
