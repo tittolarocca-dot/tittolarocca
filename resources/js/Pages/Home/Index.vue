@@ -244,13 +244,18 @@
           </div>
         </div>
 
-        <!-- Pagination -->
-        <div v-if="profiles.last_page > 1" class="flex justify-center flex-wrap gap-2 mt-8">
-          <Link v-for="link in profiles.links" :key="link.label" :href="link.url || '#'" v-html="link.label"
-            class="px-3.5 py-2 text-sm rounded-xl transition"
+        <!-- Pagination (erste = zurück ‹, letzte = weiter ›, dazwischen Seitenzahlen) -->
+        <div v-if="profiles.last_page > 1" class="flex justify-center flex-wrap items-center gap-2 mt-8">
+          <Link v-for="(link, i) in profiles.links" :key="i" :href="link.url || '#'"
+            class="min-w-[40px] h-10 inline-flex items-center justify-center px-3.5 text-sm rounded-xl transition"
+            :class="!link.url ? 'opacity-40 pointer-events-none' : ''"
             :style="link.active
               ? 'background:var(--bl-grad);color:#fff;'
-              : 'background:var(--bl-surface);border:1px solid var(--bl-border);color:var(--bl-text-muted);'" />
+              : 'background:var(--bl-surface);border:1px solid var(--bl-border);color:var(--bl-text-muted);'">
+            <svg v-if="i === 0" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+            <svg v-else-if="i === profiles.links.length - 1" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+            <span v-else v-html="link.label"></span>
+          </Link>
         </div>
       </div>
     </template>
