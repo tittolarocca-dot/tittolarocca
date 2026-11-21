@@ -2,6 +2,7 @@
 
 return [
     'title' => "Lo último en Booklola",
+    'new_profiles' => 'Perfiles nuevos',
     'subtitle' => "Nuevas publicaciones, fotos y novedades de la comunidad",
     'loading' => "Cargando …",
     'end' => "Estás al día.",

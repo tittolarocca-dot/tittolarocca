@@ -2,6 +2,7 @@
 
 return [
     'title' => "Latest on Booklola",
+    'new_profiles' => 'New profiles',
     'subtitle' => "New posts, photos and updates from the community",
     'loading' => "Loading …",
     'end' => "You're all caught up.",

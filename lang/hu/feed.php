@@ -2,6 +2,7 @@
 
 return [
     'title' => "Friss a Booklolán",
+    'new_profiles' => 'Új profilok',
     'subtitle' => "Új bejegyzések, fotók és hírek a közösségből",
     'loading' => "Betöltés …",
     'end' => "Mindent láttál.",

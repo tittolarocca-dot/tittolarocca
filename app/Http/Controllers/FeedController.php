@@ -40,7 +40,8 @@ class FeedController extends Controller
             ->setCanonical(route('feed'));
 
         return Inertia::render('Feed/Index', $data + [
-            'isAuthed' => (bool) $user,
+            'isAuthed'    => (bool) $user,
+            'newProfiles' => $this->newProfiles(),
         ]);
     }
 
@@ -65,6 +66,30 @@ class FeedController extends Controller
                 'media',
             ])
             ->orderByDesc('published_at');
+    }
+
+    /** Ein paar neueste aktive Profile für die Feed-Sidebar. */
+    private function newProfiles(): array
+    {
+        return \App\Models\Profile::where('status', 'active')
+            ->where('listing_expires_at', '>', now())
+            ->with([
+                'city:id,name',
+                'publicMedia' => fn ($q) => $q->where('type', 'image')->orderBy('sort_order'),
+            ])
+            ->latest('created_at')
+            ->take(6)
+            ->get()
+            ->map(function ($p) {
+                $img = $p->publicMedia->first();
+                return [
+                    'slug'         => $p->slug,
+                    'display_name' => $p->display_name,
+                    'city'         => $p->city?->name,
+                    'avatar'       => $img ? ($img->src['thumbnail'] ?? $img->url) : null,
+                    'verified'     => $p->identity_verification_status === 'approved' || $p->verification_status === 'approved',
+                ];
+            })->values()->all();
     }
 
     private function mapPosts($posts, ?User $user): array

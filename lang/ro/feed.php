@@ -2,6 +2,7 @@
 
 return [
     'title' => "Noutăți pe Booklola",
+    'new_profiles' => 'Profiluri noi',
     'subtitle' => "Postări, fotografii și noutăți din comunitate",
     'loading' => "Se încarcă …",
     'end' => "Ești la zi.",
