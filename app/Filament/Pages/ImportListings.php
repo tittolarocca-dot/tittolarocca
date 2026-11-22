@@ -79,6 +79,13 @@ class ImportListings extends Page
                 $categories[mb_strtolower($c->slug)] = $c->id;
             }
         }
+        $tags = [];
+        foreach (\App\Models\Tag::all(['id', 'name', 'slug']) as $t) {
+            $tags[mb_strtolower($t->name)] = $t->id;
+            if ($t->slug) {
+                $tags[mb_strtolower($t->slug)] = $t->id;
+            }
+        }
         $existingEmails = [];
         foreach (User::pluck('email') as $e) {
             $existingEmails[mb_strtolower((string) $e)] = true;
@@ -98,6 +105,7 @@ class ImportListings extends Page
             $res = ImportRowValidator::validate($assoc, [
                 'cities'         => $cities,
                 'categories'     => $categories,
+                'tags'           => $tags,
                 'existingEmails' => $existingEmails,
                 'existingNames'  => $existingNames,
                 'seenEmails'     => $seenEmails,

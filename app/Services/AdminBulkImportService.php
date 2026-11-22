@@ -84,9 +84,17 @@ class AdminBulkImportService
                     if (! empty($row['phone'])) {
                         $profile->whatsapp_number = $row['phone'];                   // Mutator verschlüsselt
                     }
+                    if (! empty($row['address'])) {
+                        $profile->address = $row['address'];
+                    }
                     $profile->save();                                               // Slug via Model-Hook
 
                     $profile->categories()->sync(array_values(array_filter([$row['category_id']])));
+
+                    // Services/Tags (optional) – nur gültige Tag-IDs aus der CSV.
+                    if (! empty($row['services'])) {
+                        $profile->tags()->sync($row['services']);
+                    }
 
                     // 3) Freier Launch-ListingOrder (wie reguläre Aktivierung), falls Gratis-Paket existiert.
                     if ($freePackageId) {

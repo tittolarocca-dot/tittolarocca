@@ -38,6 +38,8 @@ class ImportRowValidator
         $phone       = $g('phone');
         $description = $g('description');
         $languageRaw = $g('language');
+        $address     = $g('address');
+        $servicesRaw = $g('services');
 
         $messages = [];
 
@@ -76,6 +78,7 @@ class ImportRowValidator
         }
 
         $languages = self::parseLanguages($languageRaw);
+        $services  = self::parseServices($servicesRaw, $ctx['tags'] ?? []);
 
         // Dubletten (nur sinnvoll, wenn die Identitätsfelder selbst gültig sind)
         $dupMsg = [];
@@ -114,8 +117,34 @@ class ImportRowValidator
                 'phone'        => $phone,
                 'description'  => $description,
                 'languages'    => $languages,
+                'address'      => $address !== '' ? $address : null,
+                'services'     => $services,   // Array von Tag-IDs
             ],
         ];
+    }
+
+    /**
+     * "Erotische Massage, GFE; Striptease" → [Tag-IDs] (best effort, optional).
+     * Matcht Service-Namen/Slugs gegen die übergebene Tag-Nachschlagetabelle
+     * (lowercase name|slug => id). Unbekannte Services werden ignoriert.
+     */
+    public static function parseServices(string $raw, array $tagsLookup): array
+    {
+        if ($raw === '' || empty($tagsLookup)) {
+            return [];
+        }
+        $out = [];
+        foreach (preg_split('/[,;|]+/', $raw) as $p) {
+            $p = mb_strtolower(trim($p));
+            if ($p === '') {
+                continue;
+            }
+            $id = $tagsLookup[$p] ?? null;
+            if ($id && ! in_array($id, $out, true)) {
+                $out[] = $id;
+            }
+        }
+        return $out;
     }
 
     /** "Deutsch, English" / "de;fr" → ['de','en'] (best effort, optionales Feld). */
