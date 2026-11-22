@@ -36,6 +36,7 @@ return [
     'age_years'           => ':age años',
     'listed_at'           => '📅 Publicado',
     'reviews'             => 'Reseñas',
+    'wa_prefill' => 'Hola :name, te vi en Booklola.ch.',
     'message' => 'Mensaje',
     'favorite' => 'Favorito',
     'tab_posts' => 'Feed',

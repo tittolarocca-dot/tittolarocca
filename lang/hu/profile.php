@@ -36,6 +36,7 @@ return [
     'age_years'           => ':age év',
     'listed_at'           => '📅 Közzétéve',
     'reviews'             => 'Értékelések',
+    'wa_prefill' => 'Szia :name, láttalak a Booklola.ch oldalon.',
     'message' => 'Üzenet',
     'favorite' => 'Kedvenc',
     'tab_posts' => 'Feed',

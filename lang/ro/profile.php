@@ -36,6 +36,7 @@ return [
     'age_years'           => ':age ani',
     'listed_at'           => '📅 Publicat',
     'reviews'             => 'Recenzii',
+    'wa_prefill' => 'Bună :name, te-am văzut pe Booklola.ch.',
     'message' => 'Mesaj',
     'favorite' => 'Favorit',
     'tab_posts' => 'Feed',
