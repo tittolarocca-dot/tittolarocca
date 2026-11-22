@@ -32,7 +32,7 @@ return [
     'private_gallery_bonus' => (int) env('PRIVATE_GALLERY_BONUS', 3),
 
     // Laufzeit (Tage), für die ein Inserat im Launch-Modus kostenlos aktiv ist.
-    'launch_listing_days' => (int) env('LAUNCH_LISTING_DAYS', 30),
+    'launch_listing_days' => (int) env('LAUNCH_LISTING_DAYS', 90),
 
     // Geoblocking: HTTP-Header, aus dem das Besucherland gelesen wird.
     // Standard nutzt Cloudflares "CF-IPCountry". Für andere Setups hier den
