@@ -16,7 +16,7 @@
           <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="icons[item.icon]"></svg>
           <span>{{ item.label }}</span>
           <span v-if="item.badge"
-            style="background:#fff;color:#c44a7a;" class="min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center">{{ item.badge }}</span>
+            style="background:#ef4444;color:#fff;" class="min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center shadow">{{ item.badge }}</span>
         </Link>
       </nav>
 
@@ -85,7 +85,7 @@
           :style="item.active ? 'background:var(--bl-grad-soft);color:var(--bl-text);' : 'color:var(--bl-text-muted);'">
           <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="icons[item.icon]"></svg>
           <span>{{ item.label }}</span>
-          <span v-if="item.badge" style="background:var(--bl-pink);color:#fff;" class="ml-auto min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center">{{ item.badge }}</span>
+          <span v-if="item.badge" style="background:#ef4444;color:#fff;" class="ml-auto min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-extrabold flex items-center justify-center">{{ item.badge }}</span>
         </Link>
 
         <div style="border-top:1px solid var(--bl-border);" class="pt-3 mt-2 space-y-1">
@@ -135,6 +135,9 @@ const messagesRoute = computed(() =>
 
 const cur = (n) => { try { return route().current(n); } catch { return false; } };
 
+// Ungelesene Nachrichten (global geteilt) → roter Badge bei "Nachrichten".
+const unreadMessages = computed(() => Number(page.props.unreadMessages ?? 0));
+
 const navItems = computed(() => {
   const items = [
     { label: 'Entdecken', icon: 'home',   href: route('home'),        active: cur('home') },
@@ -143,7 +146,10 @@ const navItems = computed(() => {
     { label: 'Clubs',     icon: 'clubs',  href: route('clubs.index'), active: cur('clubs.*') },
   ];
   if (user.value) {
-    items.push({ label: 'Nachrichten', icon: 'chat', href: messagesRoute.value, active: cur('*messages*') });
+    items.push({
+      label: 'Nachrichten', icon: 'chat', href: messagesRoute.value, active: cur('*messages*'),
+      badge: unreadMessages.value > 0 ? (unreadMessages.value > 9 ? '9+' : unreadMessages.value) : null,
+    });
   }
   return items;
 });
